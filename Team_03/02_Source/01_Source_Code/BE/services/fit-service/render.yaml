@@ -3,11 +3,13 @@ services:
     name: fit-service
     env: docker
     repo: https://github.com/FitTrack-Application/fitness.git
+    plan: free
+    region: oregon
     branch: main
-    buildCommand: mvn -B clean package --file ./pom.xml
-    dockerfilePath: ./Dockerfile
+    healthCheckPath: /actuator/health
+    dockerCommand: "" 
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: prod
-      - key: JAVA_OPTS
-        value: "-Xmx512m -Xms256m"
+      - key: JWT_SECRET
+        sync: false
