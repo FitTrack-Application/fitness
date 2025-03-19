@@ -10,6 +10,7 @@
         <option value="$PROJECT_DIR$/statistic-service/pom.xml" />
         <option value="$PROJECT_DIR$/user-service/pom.xml" />
         <option value="$PROJECT_DIR$/statistic-serivce/pom.xml" />
+        <option value="$PROJECT_DIR$/fit-service/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
