@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.hcmus</groupId>
-    <artifactId>user-service</artifactId>
+    <artifactId>fit-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>user-service</name>
-    <description>user-service</description>
+    <name>fit-service</name>
+    <description>fit-service</description>
     <url/>
     <licenses>
         <license/>
