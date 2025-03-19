@@ -10,11 +10,15 @@ name: Fit Service CI
 
 on:
   push:
-    branches: [ "main", "dev" ]
+    branches:
+      - "main"
+      - "dev"
     paths: 
       - 'Team_03/02_Source/01_Source_Code/BE/services/fit-service/**'
   pull_request:
-    branches: [ "main", "dev" ]
+    branches: 
+      - "main"
+      - "dev"
     paths: 
       - 'Team_03/02_Source/01_Source_Code/BE/services/fit-service/**'
 
