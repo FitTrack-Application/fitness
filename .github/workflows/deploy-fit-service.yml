@@ -36,10 +36,10 @@ jobs:
     - name: Build Docker Image
       run: |
         cd Team_03/02_Source/01_Source_Code/BE/services/fit-service
-        docker build -t fitness-app/fit-service:latest .
+        docker build -t {{ secrets.DOCKER_USERNAME }}/fitness-app:latest .
 
     - name: Push Image to DockerHub
-      run: docker push fitness-app/fit-service:latest
+      run: docker push {{ secrets.DOCKER_USERNAME }}/fitness-app:latest
 
     - name: Deploy to Render
       run: |
