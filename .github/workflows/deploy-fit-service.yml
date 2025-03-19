@@ -43,4 +43,5 @@ jobs:
 
     - name: Deploy to Render
       run: |
-        curl -X POST "https://api.render.com/deploy/srv-cvdhc4lds78s73b6a78g?key={{ secrets.RENDER_DEPLOY_KEY }}"
+        curl -X POST "https://api.render.com/deploy/srv-cvdhc4lds78s73b6a78g?key=${{ secrets.RENDER_DEPLOY_KEY }}"
+    
