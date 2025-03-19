@@ -1,3 +1,5 @@
 package com.hcmus.fitservice.controller;
 
-public class FitController {}
+public class FitController {
+    // Test
+}
