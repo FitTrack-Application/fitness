@@ -37,3 +37,15 @@ jobs:
         
     - name: Build fit-service with Maven
       run: mvn -B clean package --file Team_03/02_Source/01_Source_Code/BE/services/fit-service/pom.xml
+
+    - name: Upload JAR artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: fit-service-jar
+        path: Team_03/02_Source/01_Source_Code/BE/services/fit-service/target/*.jar
+        retention-days: 1
+        
+    - name: Trigger Render Deploy
+      if: github.ref == 'refs/heads/main'
+      run: |
+        curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
