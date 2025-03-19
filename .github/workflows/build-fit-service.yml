@@ -12,11 +12,11 @@ on:
   push:
     branches: [ "main", "dev" ]
     paths: 
-      - 'Team_03/02_Source/01_Source_Code/BE/services/fit-service'
+      - 'Team_03/02_Source/01_Source_Code/BE/services/fit-service/**'
   pull_request:
     branches: [ "main", "dev" ]
     paths: 
-      - 'Team_03/02_Source/01_Source_Code/BE/services/fit-service'
+      - 'Team_03/02_Source/01_Source_Code/BE/services/fit-service/**'
 
 jobs:
   build-fit-service:
