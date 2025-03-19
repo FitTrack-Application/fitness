@@ -4,8 +4,8 @@ services:
     env: docker
     repo: https://github.com/FitTrack-Application/fitness.git
     branch: main
-    buildCommand: mvn -B clean package --file Team_03/02_Source/01_Source_Code/BE/services/fit-service/pom.xml
-    dockerfilePath: ./Team_03/02_Source/01_Source_Code/BE/services/fit-service/Dockerfile
+    buildCommand: mvn -B clean package --file ./pom.xml
+    dockerfilePath: ./Dockerfile
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: prod
