@@ -1,5 +1,11 @@
 package com.hcmus.fitservice.controller;
 
+@RestController
+@RequestMapping("/")
 public class FitController {
-    // Test Test
+    
+    @GetMapping("test")
+    public String testServer() {
+        return "Test";
+    }
 }
