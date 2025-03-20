@@ -13,6 +13,6 @@ public class StatisticController {
 
     @GetMapping("/")
     public ResponseEntity<?> testServer() {
-        return ResponseEntity.ok("Statistic Service");
+        return ResponseEntity.ok("Statistic Service"); //
     }
 }

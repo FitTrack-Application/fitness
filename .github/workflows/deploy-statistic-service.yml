@@ -29,7 +29,7 @@ jobs:
         distribution: 'temurin'
         cache: maven
         
-    - name: Build fit-service with Maven
+    - name: Build statistic-service with Maven
       run: mvn -B clean package --file Team_03/02_Source/01_Source_Code/BE/services/statistic-service/pom.xml
 
     - name: Login to DockerHub
@@ -37,7 +37,7 @@ jobs:
 
     - name: Build Docker Image
       run: |
-        cd Team_03/02_Source/01_Source_Code/BE/services/fit-service
+        cd Team_03/02_Source/01_Source_Code/BE/services/statistic-service
         docker build -t ${{ secrets.DOCKER_USERNAME }}/statistic-server:latest .
 
     - name: Push Image to DockerHub
