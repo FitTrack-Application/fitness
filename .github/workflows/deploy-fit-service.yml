@@ -29,6 +29,19 @@ jobs:
         distribution: 'temurin'
         cache: maven
         
+    - name: Setup environment variables
+      run: |
+        echo "${{ secrets.FITNESS_DATABASE_CONFIG }}" > .env
+        export $(grep -v '^#' .env | xargs)
+        
+    - name: Generate application.properties
+      run: |
+        cat <<EOF > Team_03/02_Source/01_Source_Code/BE/services/fit-service/src/main/resources/application.properties
+        spring.datasource.url=jdbc:postgresql://${POSTGRESQL_DB_HOST}:${POSTGRESQL_DB_PORT}/${POSTGRESQL_DB_NAME}
+        spring.datasource.username=${POSTGRESQL_DB_USERNAME}
+        spring.datasource.password=${POSTGRESQL_DB_PASSWORD}
+        EOF
+
     - name: Build fit-service with Maven
       run: mvn -B clean package --file Team_03/02_Source/01_Source_Code/BE/services/fit-service/pom.xml
 
