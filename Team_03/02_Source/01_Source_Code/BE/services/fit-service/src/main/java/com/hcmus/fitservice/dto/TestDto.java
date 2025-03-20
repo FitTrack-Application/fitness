@@ -2,10 +2,18 @@ package com.hcmus.fitservice.dto;
 
 import com.hcmus.fitservice.db.model.Test;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serializable;
 
-public class TestDto implements Serializable {
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class TestDto {
     Integer id;
     @Size(max = 255)
     String content;
