@@ -17,11 +17,11 @@ public class FitController {
 
     @GetMapping
     public ResponseEntity<TestDto> testServer01() {
-        return ResponseEntity.ok(testService.testServer());  // demo
+        return ResponseEntity.ok(testService.testServer()); 
     }
 
     @GetMapping("/test")
     public ResponseEntity<?> testServer02() {
-        return ResponseEntity.ok("Fitness Service");  
+        return ResponseEntity.ok("Fitness Service");
     }
 }

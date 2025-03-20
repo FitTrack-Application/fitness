@@ -32,7 +32,11 @@ jobs:
     - name: Setup environment variables
       run: |
         echo "${{ secrets.FITNESS_DATABASE_CONFIG }}" > .env
-        export $(grep -v '^#' .env | xargs)
+        
+        # ✅ Cách load biến an toàn hơn
+        set -o allexport
+        source .env
+        set +o allexport
 
     - name: 🔍 Check Environment Variables
       run: |
@@ -40,10 +44,10 @@ jobs:
         cat .env
 
         echo "📌 Kiểm tra giá trị biến môi trường:"
-        echo "POSTGRESQL_DB_HOST=$POSTGRESQL_DB_HOST"
-        echo "POSTGRESQL_DB_PORT=$POSTGRESQL_DB_PORT"
-        echo "POSTGRESQL_DB_NAME=$POSTGRESQL_DB_NAME"
-        echo "POSTGRESQL_DB_USERNAME=$POSTGRESQL_DB_USERNAME"
+        echo "POSTGRESQL_DB_HOST=${POSTGRESQL_DB_HOST}"
+        echo "POSTGRESQL_DB_PORT=${POSTGRESQL_DB_PORT}"
+        echo "POSTGRESQL_DB_NAME=${POSTGRESQL_DB_NAME}"
+        echo "POSTGRESQL_DB_USERNAME=${POSTGRESQL_DB_USERNAME}"
         echo "POSTGRESQL_DB_PASSWORD=********"  # Ẩn mật khẩu khi log ra
         
     - name: Generate application.properties
