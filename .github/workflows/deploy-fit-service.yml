@@ -28,28 +28,23 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
-        
+              
+    - name: Setup environment variables
+      run: |
+        cat > .env << EOF
+        POSTGRESQL_DB_HOST=${{ secrets.FITNESS_SERVICE_POSTGRESQL_DB_HOST }}
+        POSTGRESQL_DB_PORT=${{ secrets.FITNESS_SERVICE_POSTGRESQL_DB_PORT }}
+        POSTGRESQL_DB_NAME=${{ secrets.FITNESS_SERVICE_POSTGRESQL_DB_NAME }}
+        POSTGRESQL_DB_USERNAME=${{ secrets.FITNESS_SERVICE_POSTGRESQL_DB_USERNAME }}
+        POSTGRESQL_DB_PASSWORD=${{ secrets.FITNESS_SERVICE_POSTGRESQL_DB_PASSWORD }}
+        EOF
+
+        export $(grep -v '^#' .env | xargs)
+
     - name: Setup environment variables
       run: |
         echo "${{ secrets.FITNESS_DATABASE_CONFIG }}" > .env
-        
-        # ✅ Cách load biến an toàn hơn
-        set -o allexport
-        source .env
-        set +o allexport
-
-    - name: 🔍 Check Environment Variables
-      run: |
-        echo "📌 Kiểm tra nội dung file .env:"
-        cat .env
-
-        echo "📌 Kiểm tra giá trị biến môi trường:"
-        echo "POSTGRESQL_DB_HOST=${POSTGRESQL_DB_HOST}"
-        echo "POSTGRESQL_DB_PORT=${POSTGRESQL_DB_PORT}"
-        echo "POSTGRESQL_DB_NAME=${POSTGRESQL_DB_NAME}"
-        echo "POSTGRESQL_DB_USERNAME=${POSTGRESQL_DB_USERNAME}"
-        echo "POSTGRESQL_DB_PASSWORD=********"  # Ẩn mật khẩu khi log ra
-        
+      
     - name: Generate application.properties
       run: |
         cat <<EOF > Team_03/02_Source/01_Source_Code/BE/services/fit-service/src/main/resources/application.properties
@@ -57,6 +52,14 @@ jobs:
         spring.datasource.username=${POSTGRESQL_DB_USERNAME}
         spring.datasource.password=${POSTGRESQL_DB_PASSWORD}
         EOF
+                
+    - name: Check Environment Variables
+      run: |
+        echo "📌 Kiểm tra nội dung file .env:"
+        cat .env
+
+        echo "📌 Kiểm tra giá trị biến môi trường:"
+        echo "POSTGRESQL_DB_HOST=${POSTGRESQL_DB_HOST}"
 
     - name: Build fit-service with Maven
       run: mvn -B clean package --file Team_03/02_Source/01_Source_Code/BE/services/fit-service/pom.xml
