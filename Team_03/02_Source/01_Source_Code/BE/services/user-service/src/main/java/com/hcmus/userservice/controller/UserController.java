@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/user")
 public class UserController {
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<?> testServer() {
         return ResponseEntity.ok("User service");
     }
