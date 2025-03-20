@@ -39,24 +39,23 @@ jobs:
         POSTGRESQL_DB_PASSWORD=${{ secrets.FITNESS_SERVICE_POSTGRESQL_DB_PASSWORD }}
         EOF
 
-        export $(grep -v '^#' .env | xargs)
+    - name: Export environment variables
+      run: |
+        export $(grep -v '^#' .env | xargs) 
+        echo "POSTGRESQL_DB_HOST=$POSTGRESQL_DB_HOST" >> $GITHUB_ENV
+        echo "POSTGRESQL_DB_PORT=$POSTGRESQL_DB_PORT" >> $GITHUB_ENV
+        echo "POSTGRESQL_DB_NAME=$POSTGRESQL_DB_NAME" >> $GITHUB_ENV
+        echo "POSTGRESQL_DB_USERNAME=$POSTGRESQL_DB_USERNAME" >> $GITHUB_ENV
+        echo "POSTGRESQL_DB_PASSWORD=$POSTGRESQL_DB_PASSWORD" >> $GITHUB_ENV
 
     - name: Generate application.properties
       run: |
         cat <<EOF > Team_03/02_Source/01_Source_Code/BE/services/fit-service/src/main/resources/application.properties
-        spring.datasource.url=jdbc:postgresql://${POSTGRESQL_DB_HOST}/${POSTGRESQL_DB_NAME}?sslmode=require
-        spring.datasource.username=${POSTGRESQL_DB_USERNAME}
-        spring.datasource.password=${POSTGRESQL_DB_PASSWORD}
+        spring.datasource.url=jdbc:postgresql://${{ env.POSTGRESQL_DB_HOST }}:${{ env.POSTGRESQL_DB_PORT }}/${{ env.POSTGRESQL_DB_NAME }}?sslmode=require
+        spring.datasource.username=${{ env.POSTGRESQL_DB_USERNAME }}
+        spring.datasource.password=${{ env.POSTGRESQL_DB_PASSWORD }}
         EOF
-                
-    - name: Check Environment Variables
-      run: |
-        echo "📌 Kiểm tra nội dung file .env:"
-        cat .env
-
-        echo "📌 Kiểm tra giá trị biến môi trường:"
-        echo "POSTGRESQL_DB_HOST=${POSTGRESQL_DB_HOST}"
-
+      
     - name: Build fit-service with Maven
       run: mvn -B clean package --file Team_03/02_Source/01_Source_Code/BE/services/fit-service/pom.xml
 
