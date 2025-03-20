@@ -9,5 +9,4 @@ public class FitServiceApplication {
     public static void main(String[] args) {
         SpringApplication.run(FitServiceApplication.class, args);
     }
-
 }
