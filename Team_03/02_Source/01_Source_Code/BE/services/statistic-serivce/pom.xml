@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.hcmus</groupId>
-    <artifactId>statistic-serivce</artifactId>
+    <artifactId>statistic-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>statistic-serivce</name>
     <description>statistic-serivce</description>
