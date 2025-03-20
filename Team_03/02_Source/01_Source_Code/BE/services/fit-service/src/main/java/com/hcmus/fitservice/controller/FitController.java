@@ -22,6 +22,6 @@ public class FitController {
 
     @GetMapping("/test")
     public ResponseEntity<?> testServer02() {
-        return ResponseEntity.ok("Fitness Service");  // 
+        return ResponseEntity.ok("Fitness Service");  
     }
 }
