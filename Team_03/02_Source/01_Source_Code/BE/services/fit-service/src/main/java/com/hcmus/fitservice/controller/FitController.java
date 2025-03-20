@@ -11,6 +11,6 @@ public class FitController {
 
     @GetMapping("test")
     public String testServer() {
-        return "Test";
+        return "Test Test";
     }
 }
