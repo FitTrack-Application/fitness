@@ -15,8 +15,13 @@ public class FitController {
 
     private final TestService testService;
 
-    @GetMapping("/")
-    public ResponseEntity<TestDto> testServer() {
+    @GetMapping
+    public ResponseEntity<TestDto> testServer01() {
         return ResponseEntity.ok(testService.testServer());  // demo
+    }
+
+    @GetMapping("/test")
+    public ResponseEntity<?> testServer02() {
+        return ResponseEntity.ok("Fitness Service");  // demo
     }
 }
