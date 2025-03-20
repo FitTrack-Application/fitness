@@ -1,4 +1,4 @@
-name: Deploy User Service
+name: Deploy Statistic Service
 
 on:
   push:
