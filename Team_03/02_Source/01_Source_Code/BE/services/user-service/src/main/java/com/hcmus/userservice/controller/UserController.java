@@ -13,6 +13,6 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<?> testServer() {
-        return ResponseEntity.ok("User service");
+        return ResponseEntity.ok("User service"); // demo
     }
 }
