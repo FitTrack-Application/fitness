@@ -15,9 +15,9 @@ public class FitController {
 
     private final TestService testService;
 
-    @GetMapping
+    @GetMapping("/")
     public ResponseEntity<TestDto> testServer01() {
-        return ResponseEntity.ok(testService.testServer()); 
+        return ResponseEntity.ok(testService.testServer());
     }
 
     @GetMapping("/test")

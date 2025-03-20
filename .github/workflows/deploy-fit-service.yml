@@ -72,5 +72,4 @@ jobs:
 
     - name: Deploy to Render
       run: |
-        curl -X POST "https://api.render.com/deploy/srv-0000000?key=${{ secrets.FITNESS_RENDER_DEPLOY_KEY }}"
-    
+        curl -X POST "https://api.render.com/deploy/srv-cvdi6ndds78s73b6h7kg?key=${{ secrets.FITNESS_RENDER_DEPLOY_KEY }}"
