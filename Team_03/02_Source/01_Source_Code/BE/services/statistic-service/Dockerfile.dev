@@ -1,0 +1,17 @@
+FROM openjdk:17-jdk-slim
+
+WORKDIR /app
+
+# Cài đặt các công cụ cần thiết
+RUN apt-get update && apt-get install -y \
+    postgresql-client \
+    maven \
+    && apt-get clean
+
+# Không cần sao chép pom.xml vì thư mục sẽ được mount
+# Không cần chép source code vì sẽ được mount từ máy host
+
+EXPOSE 8081
+
+# Đổi lệnh chạy để không tìm file app.jar mà sử dụng Maven
+CMD ["sh", "-c", "cd /app && mvn spring-boot:run"] 

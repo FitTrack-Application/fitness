@@ -1,4 +1,4 @@
-package com.hcmus.fitservice.exception;
+package com.hcmus.statisticserivce.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

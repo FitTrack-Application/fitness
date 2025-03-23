@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: fitness-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-yourpassword}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_DB: postgres
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - fitness-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  fit-service:
+    build: ./fit-service
+    container_name: fit-service
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    env_file:
+      - ./fit-service/.env
+    environment:
+      - POSTGRESQL_DB_HOST=postgres
+    networks:
+      - fitness-network
+
+  statistic-service:
+    build: ./statistic-service
+    container_name: statistic-service
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8081:8081"
+    env_file:
+      - ./statistic-service/.env
+    environment:
+      - POSTGRESQL_DB_HOST=postgres
+    networks:
+      - fitness-network
+
+networks:
+  fitness-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
