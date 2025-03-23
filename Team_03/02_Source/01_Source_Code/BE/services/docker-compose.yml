@@ -67,6 +67,28 @@ services:
       - maven-repo:/root/.m2
     restart: unless-stopped
 
+  user-service:
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile.dev
+    container_name: user-service
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8082:8082"
+    env_file:
+      - .env
+      - ./user-service/.env
+    environment:
+      - POSTGRESQL_DB_HOST=postgres
+      - POSTGRESQL_DB_NAME=user_service_db
+    networks:
+      - fitness-network
+    volumes:
+      - ./user-service:/app
+      - maven-repo:/root/.m2
+    restart: unless-stopped
 networks:
   fitness-network:
     driver: bridge
