@@ -26,7 +26,7 @@ public class AuthService {
 
     public AuthResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new IllegalArgumentException("Email đã tồn tại");
+            throw new IllegalArgumentException("Email already exists");
         }
 
         User user = new User();
@@ -60,7 +60,7 @@ public class AuthService {
 
             return buildAuthResponse(user, token);
         } catch (AuthenticationException e) {
-            throw new IllegalArgumentException("Email hoặc mật khẩu không đúng");
+            throw new IllegalArgumentException("Incorrect email or password");
         }
     }
 

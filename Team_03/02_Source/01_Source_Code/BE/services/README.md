@@ -6,7 +6,7 @@ Dự án quản lý các microservice của ứng dụng Fitness.
 
 - `fit-service`: Quản lý thông tin liên quan đến fitness
 - `statistic-service`: Quản lý thống kê dữ liệu
-- `user-service`: Quản lý người dùng (hiện chưa hoạt động)
+- `user-service`: Quản lý người dùng 
 
 ## Cài đặt và Chạy
 
@@ -59,7 +59,7 @@ Bạn có thể kết nối đến database từ các công cụ như DBeaver v�
 
 - **Host**: localhost
 - **Port**: 5432 (hoặc giá trị của POSTGRES_PORT trong file .env)
-- **Database**: fit_service_db hoặc statistic_service_db
+- **Database**: fit_service_db hoặc statistic_service_db hoặc user_service_db
 - **Username**: postgres (hoặc giá trị của POSTGRES_USER trong file .env)
 - **Password**: mật khẩu được cấu hình trong file .env
 
@@ -67,6 +67,7 @@ Bạn có thể kết nối đến database từ các công cụ như DBeaver v�
 
 - Fit Service: http://localhost:8080 (hoặc giá trị port được cấu hình trong file .env)
 - Statistic Service: http://localhost:8081 (hoặc giá trị port được cấu hình trong file .env)
+- User Service: - User Service: URL_ADDRESS:8082 (hoặc giá trị port được cấu hình trong file.env)
 
 ### Dừng các service
 
@@ -87,5 +88,5 @@ docker-compose down -v
 
 ## Thông tin thêm
 
-- Cả hai service đều sử dụng cùng một PostgreSQL database, nhưng với các schema khác nhau
+- Cả ba service đều sử dụng cùng một PostgreSQL database, nhưng với các schema khác nhau
 - Mỗi service có file cấu hình riêng trong thư mục của nó 
