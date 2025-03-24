@@ -40,6 +40,12 @@ cd <project-folder>
 
 2. Chạy tất cả các service bằng Docker Compose:
 ```
+Nếu chạy lần đầu
+docker-compose up -d --build
+
+```
+
+```
 docker-compose up -d
 ```
 
