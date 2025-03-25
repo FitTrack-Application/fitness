@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/constants/app_color.dart';
-import 'package:mobile/views/select_box.dart';
-import 'package:mobile/api_service.dart';
-import 'package:mobile/models/user_info.dart';
+import 'package:mobile/cores/constants/app_color.dart';
+import 'package:mobile/features/auth/models/user_info.dart';
+import 'package:mobile/features/auth/services/api_service.dart';
+import 'package:mobile/features/auth/views/select_box.dart';
 
 class UserSurvey extends StatefulWidget {
   const UserSurvey({super.key});

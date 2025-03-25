@@ -1,38 +1,39 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/views/user_register.dart';
-import 'package:mobile/views/user_login.dart';
-import 'package:mobile/views/user_survey.dart';
-import 'package:mobile/constants/app_routes.dart';
-import 'package:mobile/constants/app_color.dart';
+import 'package:go_router/go_router.dart';
+import 'package:mobile/common/widgets/bottom_nav_bar/bottom_nav_provider.dart';
+import 'package:mobile/cores/constants/routes.dart';
+import 'package:mobile/cores/theme/theme.dart';
+import 'package:mobile/features/auth/views/profile/profile_screen.dart';
+import 'package:mobile/features/auth/views/splash/splash_screen.dart';
+import 'package:mobile/features/fitness/view/diary/diary_screen.dart';
+import 'package:mobile/features/statistic/view/dashboard/dashboard_screen.dart';
+import 'package:provider/provider.dart';
 
 
 void main() {
-  runApp(const MyApp());
+    runApp(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => BottomNavProvider()),
+          //ChangeNotifierProvider(create: (_) => DashboardScreen()),
+        ],
+        child: MyApp(),
+      ),
+    );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  //const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primaryColor: AppColors.primaryColor,
-        scaffoldBackgroundColor: AppColors.backgroundColor1,
-        textTheme: const TextTheme(
-          bodyLarge: TextStyle(color: AppColors.inverseTextColor),
-          bodyMedium: TextStyle(color: AppColors.defaultTextColor),
-        ),
-      ),
-      // Start with the RegisterPage
-      initialRoute: AppRoutes.register,
+    return MaterialApp.router(
+      title: 'FitTrack',
+      theme: TAppTheme.lightTheme,
+      darkTheme: TAppTheme.darkTheme,
+      themeMode: ThemeMode.system,
       debugShowCheckedModeBanner: false,
-      routes: {
-        AppRoutes.register: (_) => const UserRegister(),
-        AppRoutes.login: (_) => const UserLogin(),
-        AppRoutes.survey  : (_) => const UserSurvey(),
-      },
+      routerConfig: appRouter,
     );
   }
 }
