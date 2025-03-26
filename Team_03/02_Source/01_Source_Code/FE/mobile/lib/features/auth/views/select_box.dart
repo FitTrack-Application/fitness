@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/cores/constants/app_color.dart';
-
+import 'package:mobile/cores/constants/colors.dart';
 class SelectBox<T> extends StatelessWidget {
   final String title;
   final T value;
@@ -22,14 +21,19 @@ class SelectBox<T> extends StatelessWidget {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: value == groupValue ? AppColors.backgroundColor2 : Colors.transparent,
+          color: value == groupValue ? tPrimaryColor : Colors.transparent ,
           border: Border.all(
-            color: value == groupValue ? AppColors.primaryColor : Colors.transparent,
+            color: value == groupValue ? Colors.transparent : tTextFieldColor,
           ),
           borderRadius: BorderRadius.circular(12.0),
         ),
         child: ListTile(
-          title: Text(title),
+            title: Text(
+              title,
+              style: TextStyle(
+                color: value == groupValue ? tDarkColor : tWhiteColor, // Change text color
+              ),
+            ),
           leading: Radio<T>(
             value: value,
             groupValue: groupValue,

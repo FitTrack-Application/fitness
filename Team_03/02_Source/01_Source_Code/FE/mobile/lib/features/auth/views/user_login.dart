@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/cores/constants/app_routes.dart';
+import 'package:go_router/go_router.dart';
 
 class UserLogin extends StatelessWidget {
   const UserLogin({super.key});
@@ -14,7 +14,6 @@ class UserLogin extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: <Widget>[
-
             TextFormField(
               decoration: const InputDecoration(labelText: 'Email'),
             ),
@@ -25,7 +24,7 @@ class UserLogin extends StatelessWidget {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                Navigator.pushNamed(context, AppRoutes.survey);
+                context.go('/survey'); // Use GoRouter for navigation
               },
               child: const Text('Login'),
             ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/cores/constants/app_routes.dart';
+import 'package:go_router/go_router.dart';
 
 class UserRegister extends StatelessWidget {
   const UserRegister({super.key});
@@ -27,7 +27,7 @@ class UserRegister extends StatelessWidget {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                Navigator.pushNamed(context, AppRoutes.login);
+                context.go('/auth/login'); // Use GoRouter for navigation
               },
               child: const Text('Register'),
             ),

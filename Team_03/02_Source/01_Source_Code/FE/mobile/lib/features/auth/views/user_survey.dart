@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/cores/constants/app_color.dart';
-import 'package:mobile/features/auth/models/user_info.dart';
-import 'package:mobile/features/auth/services/api_service.dart';
+import 'package:mobile/cores/constants/colors.dart';
 import 'package:mobile/features/auth/views/select_box.dart';
-
+import 'package:mobile/common/widgets/elevated_button/elevated_button.dart';
 class UserSurvey extends StatefulWidget {
   const UserSurvey({super.key});
 
@@ -36,6 +34,9 @@ class _UserSurveyState extends State<UserSurvey> {
     setState(() {
       if (_currentStep < 5) {
         _currentStep++;
+      } else {
+        // Navigate to /dashboard when the last step is completed
+        Navigator.pushReplacementNamed(context, '/dashboard');
       }
     });
   }
@@ -118,17 +119,15 @@ class _UserSurveyState extends State<UserSurvey> {
                   style: ElevatedButton.styleFrom(
                     shape: const CircleBorder(),
                     padding: const EdgeInsets.all(16),
-                    backgroundColor: AppColors.secondaryColor,
+                    backgroundColor: tSecondaryColor,
                   ),
-                  child: const Icon(Icons.arrow_back, color: AppColors.primaryColor),
+                  child: const Icon(Icons.arrow_back, color: tWhiteColor),
                 ),
+                const SizedBox(width: 10),
                 Expanded(
-                  child: ElevatedButton(
+                  child: ElevatedButtonCustom(
+                    text: 'Next',
                     onPressed: _nextStep,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primaryColor,
-                    ),
-                    child: const Text('Next', style: TextStyle(color: AppColors.inverseTextColor)),
                   ),
                 ),
               ],
@@ -159,7 +158,7 @@ class StepOne extends StatelessWidget {
               border: OutlineInputBorder(),
               labelText: 'Enter your name',
             ),
-            style: const TextStyle(color: AppColors.defaultTextColor),
+  
           ),
         ),
       ],
@@ -185,6 +184,14 @@ class StepTwo extends StatelessWidget {
           groupValue: selectedGoal,
           onChanged: onGoalSelected,
         ),
+        const SizedBox(height: 10),
+        SelectBox<String>(
+          title: 'Maintain Weight',
+          value: 'Maintain Weight',
+          groupValue: selectedGoal,
+          onChanged: onGoalSelected,
+        ),
+        const SizedBox(height: 10),
         SelectBox<String>(
           title: 'Lose Weight',
           value: 'Lose Weight',
@@ -247,7 +254,6 @@ class StepThree extends StatelessWidget {
               labelText: 'Enter your age',
             ),
             keyboardType: TextInputType.number,
-            style: const TextStyle(color: AppColors.defaultTextColor),
           ),
         ),
         Padding(
@@ -259,7 +265,6 @@ class StepThree extends StatelessWidget {
               labelText: 'Enter your height (cm)',
             ),
             keyboardType: TextInputType.number,
-            style: const TextStyle(color: AppColors.defaultTextColor),
           ),
         ),
         Padding(
@@ -271,7 +276,6 @@ class StepThree extends StatelessWidget {
               labelText: 'Enter your weight (kg)',
             ),
             keyboardType: TextInputType.number,
-            style: const TextStyle(color: AppColors.defaultTextColor),
           ),
         ),
       ],
@@ -305,7 +309,7 @@ class StepFour extends StatelessWidget {
               labelText: 'Enter your weight goal (kg)',
             ),
             keyboardType: TextInputType.number,
-            style: const TextStyle(color: AppColors.defaultTextColor),
+
           ),
         ),
         SelectBox<double>(
@@ -314,6 +318,7 @@ class StepFour extends StatelessWidget {
           groupValue: goalPerWeek,
           onChanged: onGoalPerWeekSelected,
         ),
+        const SizedBox(height: 10),
         SelectBox<double>(
           title: '0.5 kg per week',
           value: 0.5,
@@ -341,31 +346,35 @@ class StepFive extends StatelessWidget {
       children: <Widget>[
         const Text('Step 5: Select your activity level'),
         SelectBox<String>(
-          title: 'Sedentary (little or no exercise): BMR × 1.2',
+          title: 'Sedentary ',
           value: 'Sedentary',
           groupValue: selectedActivityLevel,
           onChanged: onActivityLevelSelected,
         ),
+        const SizedBox(height: 10),
         SelectBox<String>(
-          title: 'Lightly active (light exercise/sports 1-3 days/week): BMR × 1.375',
+          title: 'Lightly active',
           value: 'Lightly active',
           groupValue: selectedActivityLevel,
           onChanged: onActivityLevelSelected,
         ),
+        const SizedBox(height: 10),
         SelectBox<String>(
-          title: 'Moderately active (moderate exercise/sports 3-5 days/week): BMR × 1.55',
+          title: 'Moderately active',
           value: 'Moderately active',
           groupValue: selectedActivityLevel,
           onChanged: onActivityLevelSelected,
         ),
+        const SizedBox(height: 10),
         SelectBox<String>(
-          title: 'Very active (hard exercise/sports 6-7 days a week): BMR × 1.725',
+          title: 'Very active ',
           value: 'Very active',
           groupValue: selectedActivityLevel,
           onChanged: onActivityLevelSelected,
         ),
+        const SizedBox(height: 10),
         SelectBox<String>(
-          title: 'Extra active (very hard exercise/sports & physical job or 2x training): BMR × 1.9',
+          title: 'Extra active',
           value: 'Extra active',
           groupValue: selectedActivityLevel,
           onChanged: onActivityLevelSelected,
@@ -434,39 +443,9 @@ class Summary extends StatelessWidget {
     return bmr * activityFactor;
   }
 
-  void sendUserInfoToApi(BuildContext context) async {
-    final apiService = ApiService();
-    double bmr = calculateBMR();
-
-    UserInfo userInfo = UserInfo(
-      name: name,
-      goal: goal,
-      gender: gender,
-      age: int.parse(age),
-      height: double.parse(height),
-      weight: double.parse(weight),
-      weightGoal: double.parse(weightGoal),
-      goalPerWeek: goalPerWeek,
-      activityLevel: activityLevel,
-      bmr: bmr,
-    );
-
-    try {
-      await apiService.createUser(userInfo);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Data saved successfully!')),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to save data: $e')),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     double bmr = calculateBMR();
-    sendUserInfoToApi(context);
 
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -476,84 +455,84 @@ class Summary extends StatelessWidget {
           const Text('Summary', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
           const SizedBox(height: 10),
           Row(children: [
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.all(8.0),
-                decoration: BoxDecoration(
-                  color: AppColors.backgroundColor2,
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text('Name: $name', style: const TextStyle(fontSize: 18)),
-                    Text('Gender: $gender', style: const TextStyle(fontSize: 18)),
-                    Text('Age: $age', style: const TextStyle(fontSize: 18)),
-                  ],
-                ),
-              ),
+        Expanded(
+          child: Container(
+            padding: const EdgeInsets.all(8.0),
+            decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8.0),
+          border: Border.all(color: tWhiteColor), // Added border with tWhiteColor
             ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.all(8.0),
-                decoration: BoxDecoration(
-                  color: AppColors.backgroundColor2,
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text('Height: $height cm', style: const TextStyle(fontSize: 18)),
-                    Text('Weight: $weight kg', style: const TextStyle(fontSize: 18)),
-                    Text('Activity Level: $activityLevel', style: const TextStyle(fontSize: 18)),
-                  ],
-                ),
-              ),
+            child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text('Name: $name', style: const TextStyle(fontSize: 18)),
+            Text('Gender: $gender', style: const TextStyle(fontSize: 18)),
+            Text('Age: $age', style: const TextStyle(fontSize: 18)),
+          ],
             ),
+          ),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Container(
+            padding: const EdgeInsets.all(8.0),
+            decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8.0),
+          border: Border.all(color: tWhiteColor), // Added border with tWhiteColor
+            ),
+            child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text('Height: $height cm', style: const TextStyle(fontSize: 18)),
+            Text('Weight: $weight kg', style: const TextStyle(fontSize: 18)),
+            Text('Activity Level: $activityLevel', style: const TextStyle(fontSize: 18)),
+          ],
+            ),
+          ),
+        ),
           ],),
           const SizedBox(height: 10),         
-            Row(
-              children: [
-              Expanded(
-                child: Container(
-                padding: const EdgeInsets.all(8.0),
-                decoration: BoxDecoration(
-                  color: AppColors.backgroundColor2,
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                  Text('Goal: $goal', style: const TextStyle(fontSize: 18)),
-                  Text('Weight Goal: $weightGoal kg', style: const TextStyle(fontSize: 18)),
-                  Text('Goal per Week: ${goalPerWeek.toString()} kg', style: const TextStyle(fontSize: 18)),
-                  ],
-                ),
-                ),
-              ),
-              ],
+        Row(
+          children: [
+          Expanded(
+            child: Container(
+            padding: const EdgeInsets.all(8.0),
+            decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8.0),
+          border: Border.all(color: tWhiteColor), // Added border with tWhiteColor
             ),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-              Expanded(
-                child: Container(
-                padding: const EdgeInsets.all(8.0),
-                decoration: BoxDecoration(
-                  color: AppColors.secondaryColor,
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text('BMR: ${bmr.toStringAsFixed(2)} kcal/day', style: const TextStyle(fontSize: 36, color: AppColors.inverseTextColor)),
-                  ],
-                ),
-                ),
-              ),
-              ],
+            child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+          Text('Goal: $goal', style: const TextStyle(fontSize: 18)),
+          Text('Weight Goal: $weightGoal kg', style: const TextStyle(fontSize: 18)),
+          Text('Goal per Week: ${goalPerWeek.toString()} kg', style: const TextStyle(fontSize: 18)),
+          ],
             ),
+            ),
+          ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        Row(
+          children: [
+          Expanded(
+            child: Container(
+            padding: const EdgeInsets.all(8.0),
+            decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8.0),
+          border: Border.all(color: tWhiteColor), // Added border with tWhiteColor
+            ),
+            child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text('BMR: ${bmr.toStringAsFixed(2)} kcal/day', style: const TextStyle(fontSize: 36)),
+          ],
+            ),
+            ),
+          ),
+          ],
+        ),
           
         ],
       ),
