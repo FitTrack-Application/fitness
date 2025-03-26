@@ -9,6 +9,8 @@ import 'package:mobile/features/auth/views/survey/user_survey.dart';
 import 'package:mobile/features/auth/views/authentication/user_register.dart';
 import 'package:mobile/features/auth/views/authentication/user_login.dart';
 import 'package:mobile/features/auth/views/profile/user_goal.dart';
+
+import '../../features/fitness/view/search_food/search_food_screen.dart';
 final GoRouter appRouter = GoRouter(
   initialLocation: '/survey',
   routes: [
@@ -38,7 +40,8 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/survey',
-      builder: (context, state) => MainScreen(child: UserSurvey()),
+      // builder: (context, state) => MainScreen(child: UserSurvey()),
+      builder: (context, state) => const SearchFoodScreen(),
     ),
     GoRoute(
       path: '/goal',
