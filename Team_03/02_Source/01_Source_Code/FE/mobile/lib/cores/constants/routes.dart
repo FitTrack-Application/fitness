@@ -5,10 +5,10 @@ import 'package:mobile/features/auth/views/splash/splash_screen.dart';
 import 'package:mobile/features/fitness/view/diary/diary_screen.dart';
 import 'package:mobile/features/statistic/view/dashboard/dashboard_screen.dart';
 import 'package:mobile/common/widgets/bottom_nav_bar/main_screen.dart';
-import 'package:mobile/features/auth/views/user_survey.dart';
-import 'package:mobile/features/auth/views/user_register.dart';
-import 'package:mobile/features/auth/views/user_login.dart';
-
+import 'package:mobile/features/auth/views/survey/user_survey.dart';
+import 'package:mobile/features/auth/views/authentication/user_register.dart';
+import 'package:mobile/features/auth/views/authentication/user_login.dart';
+import 'package:mobile/features/auth/views/profile/user_goal.dart';
 final GoRouter appRouter = GoRouter(
   initialLocation: '/survey',
   routes: [
@@ -39,6 +39,10 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/survey',
       builder: (context, state) => MainScreen(child: UserSurvey()),
+    ),
+    GoRoute(
+      path: '/goal',
+      builder: (context, state) => MainScreen(child: GoalPage()), // Add GoalPage route
     ),
   ],
 );

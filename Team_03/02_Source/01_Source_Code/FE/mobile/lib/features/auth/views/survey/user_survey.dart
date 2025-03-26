@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/cores/constants/colors.dart';
-import 'package:mobile/features/auth/views/select_box.dart';
+import 'package:mobile/common/widgets/select_box/select_box.dart';
 import 'package:mobile/common/widgets/elevated_button/elevated_button.dart';
 class UserSurvey extends StatefulWidget {
   const UserSurvey({super.key});

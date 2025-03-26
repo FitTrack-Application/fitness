@@ -9,4 +9,6 @@ const tAccentColor = Color(0xFF001BFF);
 const tCardBgColor = Color(0xFFF7F6F1);
 const tWhiteColor = Color(0xFFFFFFFF);
 const tDarkColor = Color(0xFF000000);
+const tLightDarkColor = Color.fromARGB(255, 59, 59, 59);
 const tTextFieldColor = Color(0xFFE5ECF3);
+const tGrayColor = Color(0xFFB0B0B0);
