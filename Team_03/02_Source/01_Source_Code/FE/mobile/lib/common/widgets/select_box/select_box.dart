@@ -21,7 +21,7 @@ class SelectBox<T> extends StatelessWidget {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: value == groupValue ? tPrimaryColor : Colors.transparent ,
+          color: value == groupValue ? tLightDarkColor : Colors.transparent ,
           border: Border.all(
             color: value == groupValue ? Colors.transparent : tTextFieldColor,
           ),
@@ -29,10 +29,7 @@ class SelectBox<T> extends StatelessWidget {
         ),
         child: ListTile(
             title: Text(
-              title,
-              style: TextStyle(
-                color: value == groupValue ? tDarkColor : tWhiteColor, // Change text color
-              ),
+              title,            
             ),
           leading: Radio<T>(
             value: value,

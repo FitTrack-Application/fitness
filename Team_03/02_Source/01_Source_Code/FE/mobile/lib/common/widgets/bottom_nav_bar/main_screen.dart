@@ -8,9 +8,20 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final String currentRoute = ModalRoute.of(context)?.settings.name ?? '';
+
+    // Only show navbar on Dashboard, Diary, and Profile screens
+    const List<String> routesWithBottomNavBar = [
+      '/dashboard',
+      '/diary',
+      '/profile',
+    ];
+
     return Scaffold(
-      body: child, // Hiển thị màn hình hiện tại
-      bottomNavigationBar: BottomNavBar(), // BottomNav luôn giữ nguyên
+      body: child, 
+      bottomNavigationBar: routesWithBottomNavBar.contains(currentRoute)
+          ? BottomNavBar() 
+          : null,
     );
   }
 }

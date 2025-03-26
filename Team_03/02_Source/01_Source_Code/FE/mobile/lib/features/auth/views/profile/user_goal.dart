@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/cores/constants/colors.dart';
+import 'package:go_router/go_router.dart';
 class GoalPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Goal"),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            context.go('/profile'); // Navigate back to the previous screen
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
