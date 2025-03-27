@@ -1,6 +1,5 @@
 package com.hcmus.userservice.dto;
 
-import com.hcmus.userservice.model.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -1,5 +1,7 @@
 package com.hcmus.userservice.dto;
 
+import java.time.LocalDate;
+
 import com.hcmus.userservice.model.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -36,4 +38,9 @@ public class SurveyRequest {
     private String imageUrl;
 
     private Role role;
+
+    private String goalType;
+    private Double target;
+    private Double goalPerWeek;
+    private LocalDate startingDay;
 }
