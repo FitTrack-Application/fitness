@@ -68,7 +68,7 @@ class FoodDetailScreen extends StatelessWidget {
                     const CustomDivider(),
                     FoodInfoSection(
                       label: 'Serving Size',
-                      value: "${food.servingSize} gram",
+                      value: "${food.servingSize} ${food.unit}",
                       onTap: () {},
                     ),
                     const CustomDivider(),

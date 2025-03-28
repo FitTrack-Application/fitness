@@ -6,6 +6,7 @@ class Food {
   final int carbs;
   final int fat;
   final int protein;
+  final String unit;
 
   Food({
     required this.id,
@@ -15,5 +16,6 @@ class Food {
     required this.carbs,
     required this.fat,
     required this.protein,
+    required this.unit,
   });
 }

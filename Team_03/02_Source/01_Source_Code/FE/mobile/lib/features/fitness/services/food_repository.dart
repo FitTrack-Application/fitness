@@ -13,6 +13,7 @@ class FoodRepository {
         carbs: 50,
         fat: 10,
         protein: 20,
+            unit: 'g',
       ),
     );
   }
@@ -27,6 +28,7 @@ class FoodRepository {
       carbs: 28,
       fat: 16,
       protein: 20,
+      unit: 'g',
     );
   }
 }
