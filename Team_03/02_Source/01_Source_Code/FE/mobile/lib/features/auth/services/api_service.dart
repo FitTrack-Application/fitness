@@ -4,7 +4,6 @@ import '../models/user_info.dart';
 
 class ApiService {
   static const String baseUrl = "http://localhost:8080/api/user-info";
-
   
   Future<List<UserInfo>> fetchUsers() async {
     final response = await http.get(Uri.parse(baseUrl));

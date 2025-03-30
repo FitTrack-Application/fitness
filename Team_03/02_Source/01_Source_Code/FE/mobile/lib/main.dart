@@ -14,7 +14,7 @@ void main() {
         providers: [
           // ChangeNotifierProvider(create: (_) => BottomNavProvider()),
           //ChangeNotifierProvider(create: (_) => DashboardScreen()),
-          ChangeNotifierProvider(create: (_) => SearchFoodViewModel()..loadFoods()),
+          ChangeNotifierProvider(create: (_) => SearchFoodViewModel()..searchFoods()),
         ],
         child: MyApp(),
         // child: const MaterialApp(
