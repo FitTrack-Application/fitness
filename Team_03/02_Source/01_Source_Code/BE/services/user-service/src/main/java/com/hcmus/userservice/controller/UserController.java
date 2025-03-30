@@ -1,10 +1,16 @@
 package com.hcmus.userservice.controller;
 
 import lombok.AllArgsConstructor;
-import main.java.com.hcmus.userservice.service.UpdateInforUserService;
+import com.hcmus.userservice.service.UpdateInforUserService;
+import com.hcmus.userservice.dto.UserUpdateRequest;
+import java.util.UUID;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,10 +28,17 @@ public class UserController {
         return ResponseEntity.ok("User service"); // demo
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<?> updateUserProfile(@RequestBody UserUpdateRequest userUpdateRequest, @RequestHeader("Authorization") String token) {
-        UUID userId = jwtUtil.extractUserId(token);
+    @PutMapping("/me")
+    public ResponseEntity<?> updateUserProfile(@RequestBody UserUpdateRequest userUpdateRequest, 
+                                                @RequestHeader("Authorization") String token)
+    {
+        String userIdStr = jwtUtil.extractUserId(token.replace("Bearer ", ""));
+        UUID userId = UUID.fromString(userIdStr);
+
         updateInforUserService.updateUserProfile(userUpdateRequest, userId);
-        return ResponseEntity.ok().body(new ApiResponse("succcess", "Hồ sơ người dùng đã được cập nhật."));
+
+        return ResponseEntity.ok(Map.of("status", "success", "data",
+                Map.of("message", "Hồ sơ người dùng đã được cập nhật.")));
+
     }
 }

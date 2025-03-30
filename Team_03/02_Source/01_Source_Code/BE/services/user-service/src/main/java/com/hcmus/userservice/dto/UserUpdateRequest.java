@@ -1,4 +1,4 @@
-package main.java.com.hcmus.userservice.dto;
+package com.hcmus.userservice.dto;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
