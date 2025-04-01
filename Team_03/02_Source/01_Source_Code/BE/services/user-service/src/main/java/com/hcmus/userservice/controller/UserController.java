@@ -25,7 +25,7 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<?> testServer() {
-        return ResponseEntity.ok("User service"); // demo
+        return ResponseEntity.ok("User service");
     }
 
     @PutMapping("/me")
