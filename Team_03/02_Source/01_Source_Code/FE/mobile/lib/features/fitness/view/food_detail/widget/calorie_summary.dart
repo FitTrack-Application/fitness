@@ -3,10 +3,13 @@ import 'package:mobile/cores/theme/widget_themes/calorie_summary_theme.dart';
 
 class CalorieSummary extends StatelessWidget {
   final int calories;
+  final int carbs;
+  final int fat;
+  final int protein;
 
   const CalorieSummary({
     super.key,
-    required this.calories,
+    required this.calories, required this.carbs, required this.fat, required this.protein,
   });
 
   static const Color _colorCarbs = Colors.blue;
@@ -29,9 +32,9 @@ class CalorieSummary extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    _buildCalorieIndicator(context, "Carbs", "33%", _colorCarbs),
-                    _buildCalorieIndicator(context, "Fat", "43%", _colorFat),
-                    _buildCalorieIndicator(context, "Protein", "24%", _colorProtein),
+                    _buildCalorieIndicator(context, "Carbs", _calculatePercentage(carbs), _colorCarbs),
+                    _buildCalorieIndicator(context, "Fat", _calculatePercentage(fat), _colorFat),
+                    _buildCalorieIndicator(context, "Protein", _calculatePercentage(protein), _colorProtein),
                   ],
                 ),
               ],
@@ -40,6 +43,13 @@ class CalorieSummary extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  // Tính phần trăm dựa trên calo tổng cộng
+  String _calculatePercentage(int nutrientValue) {
+    if (calories == 0) return "0%"; // Tránh chia cho 0
+    double percentage = (nutrientValue / calories) * 100;
+    return "${percentage.toStringAsFixed(1)}%"; // Chuyển đổi thành chuỗi với 1 chữ số thập phân
   }
 
   Widget _buildCalorieIndicator(BuildContext context, String label, String percent, Color color) {

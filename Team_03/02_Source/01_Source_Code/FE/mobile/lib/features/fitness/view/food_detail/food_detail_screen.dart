@@ -19,7 +19,7 @@ class FoodDetailScreen extends StatelessWidget {
 
     return ChangeNotifierProvider(
       create: (context) =>
-      FoodDetailViewModel(FoodRepository())..loadFood(foodId),
+          FoodDetailViewModel(FoodRepository())..loadFood(foodId),
       child: Builder(
         builder: (context) => Scaffold(
           appBar: AppBar(
@@ -173,7 +173,7 @@ class FoodDetailScreen extends StatelessWidget {
           FoodInfoSection(
             label: 'Date & Time',
             value:
-            "${viewModel.selectedDate.day}/${viewModel.selectedDate.month}/${viewModel.selectedDate.year} - ${viewModel.selectedDate.hour}:${viewModel.selectedDate.minute.toString().padLeft(2, '0')}",
+                "${viewModel.selectedDate.day}/${viewModel.selectedDate.month}/${viewModel.selectedDate.year} - ${viewModel.selectedDate.hour}:${viewModel.selectedDate.minute.toString().padLeft(2, '0')}",
             onTap: () => _selectDateTime(context, viewModel),
           ),
           const CustomDivider(),
@@ -182,6 +182,9 @@ class FoodDetailScreen extends StatelessWidget {
             children: [
               CalorieSummary(
                 calories: food.calories * viewModel.servings,
+                carbs: food.carbs,
+                fat: food.fat,
+                protein: food.protein,
               ),
             ],
           ),
@@ -193,7 +196,7 @@ class FoodDetailScreen extends StatelessWidget {
   Future<void> _editServings(
       BuildContext context, FoodDetailViewModel viewModel) async {
     TextEditingController controller =
-    TextEditingController(text: viewModel.servings.toString());
+        TextEditingController(text: viewModel.servings.toString());
 
     await showDialog(
       context: context,
@@ -207,7 +210,7 @@ class FoodDetailScreen extends StatelessWidget {
             LengthLimitingTextInputFormatter(4),
           ],
           decoration:
-          const InputDecoration(hintText: 'Enter number of servings'),
+              const InputDecoration(hintText: 'Enter number of servings'),
         ),
         actions: [
           TextButton(
