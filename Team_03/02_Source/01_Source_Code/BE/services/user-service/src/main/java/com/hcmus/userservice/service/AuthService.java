@@ -8,12 +8,14 @@ import com.hcmus.userservice.model.User;
 import com.hcmus.userservice.repository.UserRepository;
 import com.hcmus.userservice.utility.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +28,7 @@ public class AuthService {
 
     public AuthResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new IllegalArgumentException("Email already exists");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already exists");
         }
 
         User user = new User();
