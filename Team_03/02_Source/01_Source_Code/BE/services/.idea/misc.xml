@@ -4,6 +4,7 @@
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>
+<<<<<<< HEAD
         <option value="$PROJECT_DIR$/eureka-service/pom.xml" />
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/gateway-service/pom.xml" />
@@ -11,6 +12,15 @@
     </option>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_19" default="true" project-jdk-name="19" project-jdk-type="JavaSDK">
+=======
+        <option value="$PROJECT_DIR$/fit-service/pom.xml" />
+        <option value="$PROJECT_DIR$/statistic-service/pom.xml" />
+        <option value="$PROJECT_DIR$/user-service/pom.xml" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_23" default="true" project-jdk-name="23" project-jdk-type="JavaSDK">
+>>>>>>> origin/Tu
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>
