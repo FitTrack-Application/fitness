@@ -3,13 +3,13 @@ on:
   push:
     branches:
       - 'main'
-      - 'develop'
+      - 'dev'
     paths: 
       - 'Team_03/02_Source/01_Source_Code/FE/mobile/**'
   pull_request:
     branches:
       - 'main'
-      - 'develop'
+      - 'dev'
     paths: 
       - 'Team_03/02_Source/01_Source_Code/FE/mobile/**'
   workflow_dispatch:

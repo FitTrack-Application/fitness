@@ -1,11 +1,13 @@
 package com.hcmus.userservice.security;
 
+import com.hcmus.userservice.dto.response.ApiResponse;
 import com.hcmus.userservice.utility.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,6 +18,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -54,10 +58,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
         } catch (Exception e) {
-            // Invalid JWT token
+            sendErrorResponse(request, response, "Invalid token!");
             logger.error("Invalid JWT token", e);
         }
 
         filterChain.doFilter(request, response);
+    }
+
+
+    private void sendErrorResponse(HttpServletRequest request, HttpServletResponse response, String message) throws IOException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json");
+
+        ApiResponse<?> apiErrorResponse = ApiResponse.builder()
+                .status(HttpStatus.UNAUTHORIZED.value())
+                .generalMessage("Unauthorized at " + request.getRequestURI())
+                .errorDetails(List.of(message))
+                .timestamp(LocalDateTime.now())
+                .build();
+        response.getWriter().write(apiErrorResponse.toJson());
     }
 }

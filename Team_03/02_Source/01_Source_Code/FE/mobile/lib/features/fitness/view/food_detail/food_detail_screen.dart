@@ -1,0 +1,166 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:mobile/features/fitness/view/food_detail/widget/calorie_summary.dart';
+import 'package:mobile/features/fitness/view/food_detail/widget/custom_divider.dart';
+import 'package:mobile/features/fitness/view/food_detail/widget/food_info_section.dart';
+import 'package:provider/provider.dart';
+
+import '../../services/food_repository.dart';
+import '../../viewmodels/food_detail_viewmodel.dart';
+
+class FoodDetailScreen extends StatelessWidget {
+  final int foodId;
+
+  const FoodDetailScreen({super.key, required this.foodId});
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
+    return ChangeNotifierProvider(
+      create: (context) =>
+          FoodDetailViewModel(FoodRepository())..loadFood(foodId),
+      child: Builder(
+        builder: (context) => Scaffold(
+          appBar: AppBar(
+            title: const Text('Add Food'),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.check),
+                onPressed: () {
+                  final viewModel = context.read<FoodDetailViewModel>();
+                  final food = viewModel.food;
+                  if (food != null) {
+                    print("Food ID: ${food.id}");
+                    print("Servings: ${viewModel.servings}");
+                    print("Selected Date: ${viewModel.selectedDate}");
+                    print(
+                        "Total Calories: ${food.calories * viewModel.servings}");
+                  }
+                },
+              ),
+            ],
+          ),
+          body: Consumer<FoodDetailViewModel>(
+            builder: (context, viewModel, child) {
+              final food = viewModel.food;
+              if (food == null) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              return SingleChildScrollView(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      food.name,
+                      style: textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    const CustomDivider(),
+                    FoodInfoSection(
+                      label: 'Number of Servings',
+                      value: viewModel.servings.toString(),
+                      onTap: () => _editServings(context, viewModel),
+                    ),
+                    const CustomDivider(),
+                    FoodInfoSection(
+                      label: 'Serving Size',
+                      value: "${food.servingSize} ${food.unit}",
+                      onTap: () {},
+                    ),
+                    const CustomDivider(),
+                    FoodInfoSection(
+                      label: 'Date & Time',
+                      value:
+                          "${viewModel.selectedDate.day}/${viewModel.selectedDate.month}/${viewModel.selectedDate.year} - ${viewModel.selectedDate.hour}:${viewModel.selectedDate.minute.toString().padLeft(2, '0')}",
+                      onTap: () => _selectDateTime(context, viewModel),
+                    ),
+                    const CustomDivider(),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        CalorieSummary(
+                          calories: food.calories * viewModel.servings,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _editServings(
+      BuildContext context, FoodDetailViewModel viewModel) async {
+    TextEditingController controller =
+        TextEditingController(text: viewModel.servings.toString());
+
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Edit Servings'),
+        content: TextField(
+          controller: controller,
+          keyboardType: TextInputType.number,
+          inputFormatters: [
+            FilteringTextInputFormatter.digitsOnly,
+            LengthLimitingTextInputFormatter(4),
+          ],
+          decoration:
+              const InputDecoration(hintText: 'Enter number of servings'),
+        ),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel')),
+          TextButton(
+            onPressed: () {
+              int? newServings = int.tryParse(controller.text);
+              if (newServings != null && newServings >= 1) {
+                viewModel.updateServings(newServings);
+                Navigator.pop(context);
+              }
+            },
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _selectDateTime(
+      BuildContext context, FoodDetailViewModel viewModel) async {
+    DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: viewModel.selectedDate,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+    );
+
+    if (pickedDate != null) {
+      if (!context.mounted) {
+        return;
+      }
+
+      TimeOfDay? pickedTime = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.fromDateTime(viewModel.selectedDate),
+      );
+
+      viewModel.updateSelectedDate(DateTime(
+        pickedDate.year,
+        pickedDate.month,
+        pickedDate.day,
+        pickedTime?.hour ?? viewModel.selectedDate.hour,
+        pickedTime?.minute ?? viewModel.selectedDate.minute,
+      ));
+    }
+  }
+}
