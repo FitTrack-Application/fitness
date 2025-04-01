@@ -6,11 +6,15 @@ import com.hcmus.userservice.dto.RegisterRequest;
 import com.hcmus.userservice.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -20,12 +24,25 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@RequestBody @Valid RegisterRequest request) {
-        return ResponseEntity.ok(authService.register(request));
+    public ResponseEntity<?> register(@RequestBody @Valid RegisterRequest request) {
+        try {
+            return ResponseEntity.ok(authService.register(request));
+        } catch (ResponseStatusException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                    Map.of("status", "error", "message", "Email is already exist or invalid information"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    Map.of("status", "error", "message", e.getMessage()));
+        }
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody @Valid AuthRequest request) {
-        return ResponseEntity.ok(authService.authenticate(request));
+    public ResponseEntity<?> login(@RequestBody @Valid AuthRequest request) {
+        try {
+            return ResponseEntity.ok(authService.authenticate(request));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                    Map.of("status", "error", "message", e.getMessage()));
+        }
     }
 }
