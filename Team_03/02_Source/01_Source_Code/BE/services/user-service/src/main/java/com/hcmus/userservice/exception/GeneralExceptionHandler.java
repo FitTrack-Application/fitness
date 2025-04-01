@@ -31,7 +31,8 @@ public class GeneralExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse<?>> handleValidationErrors(MethodArgumentNotValidException ex) {
-        List<String> errors = ex.getBindingResult().getFieldErrors().stream().map(FieldError::getDefaultMessage).toList();
+        List<String> errors = ex.getBindingResult().getFieldErrors().stream().map(FieldError::getDefaultMessage)
+                .toList();
         final ApiResponse<?> response = ApiResponse.builder()
                 .status(HttpStatus.BAD_REQUEST.value())
                 .generalMessage("Validation error!")
@@ -42,7 +43,8 @@ public class GeneralExceptionHandler {
     }
 
     @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<ApiResponse<?>> handleAuthenticationException(AuthenticationException ex, WebRequest request) {
+    public ResponseEntity<ApiResponse<?>> handleAuthenticationException(AuthenticationException ex,
+            WebRequest request) {
         final ApiResponse<?> response = ApiResponse.builder()
                 .status(HttpStatus.UNAUTHORIZED.value())
                 .generalMessage("Authentication failed!")
@@ -97,7 +99,8 @@ public class GeneralExceptionHandler {
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ApiResponse<?>> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex, WebRequest request) {
+    public ResponseEntity<ApiResponse<?>> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex,
+            WebRequest request) {
         final ApiResponse<?> apiErrorResponse = ApiResponse.builder()
                 .status(HttpStatus.BAD_REQUEST.value())
                 .generalMessage("Request body is missing or malformed!")
@@ -108,7 +111,8 @@ public class GeneralExceptionHandler {
     }
 
     @ExceptionHandler(ConfigDataResourceNotFoundException.class)
-    public ResponseEntity<ApiResponse<?>> handleResourceNotFoundException(ConfigDataResourceNotFoundException ex, WebRequest request) {
+    public ResponseEntity<ApiResponse<?>> handleResourceNotFoundException(ConfigDataResourceNotFoundException ex,
+            WebRequest request) {
         final ApiResponse<?> response = ApiResponse.builder()
                 .status(HttpStatus.NOT_FOUND.value())
                 .generalMessage("Resource not found!")
@@ -119,7 +123,8 @@ public class GeneralExceptionHandler {
     }
 
     @ExceptionHandler(NoResourceFoundException.class)
-    public ResponseEntity<ApiResponse<?>> handleNoResourceFoundException(NoResourceFoundException ex, WebRequest request) {
+    public ResponseEntity<ApiResponse<?>> handleNoResourceFoundException(NoResourceFoundException ex,
+            WebRequest request) {
         final ApiResponse<?> response = ApiResponse.builder()
                 .status(HttpStatus.NOT_FOUND.value())
                 .generalMessage("Resource not found!")
@@ -130,7 +135,8 @@ public class GeneralExceptionHandler {
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ApiResponse<?>> handleIllegalArgumentException(IllegalArgumentException ex, WebRequest request) {
+    public ResponseEntity<ApiResponse<?>> handleIllegalArgumentException(IllegalArgumentException ex,
+            WebRequest request) {
         final ApiResponse<?> response = ApiResponse.builder()
                 .status(HttpStatus.BAD_REQUEST.value())
                 .generalMessage("Incorrect email or password!")
@@ -141,7 +147,8 @@ public class GeneralExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<ApiResponse<?>> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex, WebRequest request) {
+    public ResponseEntity<ApiResponse<?>> handleMethodArgumentTypeMismatchException(
+            MethodArgumentTypeMismatchException ex, WebRequest request) {
         final ApiResponse<?> response = ApiResponse.builder()
                 .status(HttpStatus.BAD_REQUEST.value())
                 .generalMessage("Invalid argument type!")
@@ -152,7 +159,8 @@ public class GeneralExceptionHandler {
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ResponseEntity<ApiResponse<?>> handleMethodNotSupported(HttpRequestMethodNotSupportedException ex, WebRequest request) {
+    public ResponseEntity<ApiResponse<?>> handleMethodNotSupported(HttpRequestMethodNotSupportedException ex,
+            WebRequest request) {
         final ApiResponse<?> response = ApiResponse.builder()
                 .status(HttpStatus.METHOD_NOT_ALLOWED.value())
                 .generalMessage("HTTP method " + ex.getMethod() + " is not supported for this endpoint.")
