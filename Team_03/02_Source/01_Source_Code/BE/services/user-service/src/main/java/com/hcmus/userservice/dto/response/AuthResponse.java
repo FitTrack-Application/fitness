@@ -1,4 +1,4 @@
-package com.hcmus.userservice.dto;
+package com.hcmus.userservice.dto.response;
 
 import com.hcmus.userservice.model.Role;
 import lombok.AllArgsConstructor;
@@ -13,9 +13,14 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AuthResponse {
+
     private String token;
+
     private UUID userId;
+
     private String email;
+
     private String name;
+
     private Role role;
 }

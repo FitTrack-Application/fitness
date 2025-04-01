@@ -1,8 +1,10 @@
 package com.hcmus.userservice.controller;
 
-import com.hcmus.userservice.dto.AuthRequest;
-import com.hcmus.userservice.dto.AuthResponse;
-import com.hcmus.userservice.dto.RegisterRequest;
+import com.hcmus.userservice.dto.request.LoginRequest;
+import com.hcmus.userservice.dto.response.ApiResponse;
+import com.hcmus.userservice.dto.response.AuthResponse;
+import com.hcmus.userservice.dto.request.RegisterRequest;
+import com.hcmus.userservice.dto.response.LoginResponse;
 import com.hcmus.userservice.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +27,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody @Valid AuthRequest request) {
-        return ResponseEntity.ok(authService.authenticate(request));
+    public ResponseEntity<ApiResponse<LoginResponse>> login(@RequestBody @Valid LoginRequest request) {
+        return ResponseEntity.ok(authService.login(request));
     }
 }

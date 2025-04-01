@@ -1,15 +1,15 @@
-package com.hcmus.userservice;
+package com.hcmus.gatewayservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
-@EnableDiscoveryClient
 @SpringBootApplication
-public class UserServiceApplication {
+@EnableDiscoveryClient
+public class GatewayServiceApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(UserServiceApplication.class, args);
+        SpringApplication.run(GatewayServiceApplication.class, args);
     }
 
 }
