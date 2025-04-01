@@ -18,7 +18,7 @@ import com.hcmus.userservice.utility.JwtUtil;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/users")
 public class UserController {
     private final UpdateInforUserService updateInforUserService;
     private final JwtUtil jwtUtil;
@@ -29,9 +29,8 @@ public class UserController {
     }
 
     @PutMapping("/me")
-    public ResponseEntity<?> updateUserProfile(@RequestBody UserUpdateRequest userUpdateRequest, 
-                                                @RequestHeader("Authorization") String token)
-    {
+    public ResponseEntity<?> updateUserProfile(@RequestBody UserUpdateRequest userUpdateRequest,
+            @RequestHeader("Authorization") String token) {
         String userIdStr = jwtUtil.extractUserId(token.replace("Bearer ", ""));
         UUID userId = UUID.fromString(userIdStr);
 
