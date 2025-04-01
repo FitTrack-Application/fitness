@@ -13,8 +13,8 @@ public class FoodDto {
     private UUID id;
     private String name;
     private int caloriesPer100g;
-    private int proteinPer100g;
-    private int carbsPer100g;
-    private int fatPer100g;
+    private double proteinPer100g;
+    private double carbsPer100g;
+    private double fatPer100g;
     private String imageUrl;
 }

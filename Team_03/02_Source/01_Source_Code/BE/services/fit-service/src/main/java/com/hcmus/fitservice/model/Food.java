@@ -27,13 +27,13 @@ public class Food {
     private int caloriesPer100g;
 
     @Column(name = "protein_per_100g")
-    private int proteinPer100g;
+    private double proteinPer100g;
 
     @Column(name = "carbs_per_100g")
-    private int carbsPer100g;
+    private double carbsPer100g;
 
     @Column(name = "fat_per_100g")
-    private int fatPer100g;
+    private double fatPer100g;
 
     private String imageUrl;
 
