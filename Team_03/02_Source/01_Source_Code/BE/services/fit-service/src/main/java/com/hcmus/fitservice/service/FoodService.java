@@ -8,13 +8,5 @@ import java.util.UUID;
 public interface FoodService {
     List<FoodDto> getAllFoods();
 
-    FoodDto getFoodById(UUID id);
-
-    List<FoodDto> searchFoodsByName(String name);
-
-    FoodDto createFood(FoodDto foodDto);
-
-    FoodDto updateFood(UUID id, FoodDto foodDto);
-
-    void deleteFood(UUID id);
+    FoodDto getFoodById(UUID foodId);
 }
