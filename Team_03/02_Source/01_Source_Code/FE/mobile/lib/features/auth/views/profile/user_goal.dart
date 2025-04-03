@@ -22,7 +22,7 @@ class GoalPage extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
-              color: tLightDarkColor,
+              color: NeutralColors.dark400,
               borderRadius: BorderRadius.circular(8.0),
               boxShadow: [
                 BoxShadow(

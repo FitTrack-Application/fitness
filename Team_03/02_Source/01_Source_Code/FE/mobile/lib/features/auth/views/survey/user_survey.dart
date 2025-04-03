@@ -157,9 +157,9 @@ class _UserSurveyState extends State<UserSurvey> {
                   style: ElevatedButton.styleFrom(
                     shape: const CircleBorder(),
                     padding: const EdgeInsets.all(16),
-                    backgroundColor: tSecondaryColor,
+                    //backgroundColor: tSecondaryColor,
                   ),
-                  child: const Icon(Icons.arrow_back, color: tWhiteColor),
+                  child: const Icon(Icons.arrow_back, color: NeutralColors.light100),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
@@ -253,7 +253,7 @@ class Summary extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8.0),
-          border: Border.all(color: tWhiteColor), // Added border with tWhiteColor
+          border: Border.all(color: NeutralColors.light100), // Added border with NeutralColors.light100
             ),
             child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -271,7 +271,7 @@ class Summary extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8.0),
-          border: Border.all(color: tWhiteColor), // Added border with tWhiteColor
+          border: Border.all(color: NeutralColors.light100), // Added border with NeutralColors.light100
             ),
             child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -292,7 +292,7 @@ class Summary extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8.0),
-          border: Border.all(color: tWhiteColor), // Added border with tWhiteColor
+          border: Border.all(color: NeutralColors.light100), // Added border with NeutralColors.light100
             ),
             child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -314,7 +314,7 @@ class Summary extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8.0),
-          border: Border.all(color: tWhiteColor), // Added border with tWhiteColor
+          border: Border.all(color: NeutralColors.light100), // Added border with NeutralColors.light100
             ),
             child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

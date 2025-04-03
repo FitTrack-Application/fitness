@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobile/features/auth/views/authentication/welcome_screen.dart';
 import 'package:mobile/features/auth/views/profile/profile_screen.dart';
 import 'package:mobile/features/auth/views/splash/splash_screen.dart';
 import 'package:mobile/features/fitness/view/diary/diary_screen.dart';
@@ -12,11 +13,15 @@ import 'package:mobile/features/auth/views/profile/user_goal.dart';
 
 import '../../features/fitness/view/search_food/search_food_screen.dart';
 final GoRouter appRouter = GoRouter(
-  initialLocation: '/survey',
+  initialLocation: '/welcome',
   routes: [
     GoRoute(
       path: '/',
       builder: (context, state) => SplashScreen(),
+    ),
+    GoRoute(
+      path: '/welcome',
+      builder: (context, state) => WelcomeScreen(),
     ),
     GoRoute(
       path: '/dashboard',
@@ -31,12 +36,12 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => MainScreen(child: ProfileScreen()),
     ),
     GoRoute(
-      path: '/auth/register',
-      builder: (context, state) => MainScreen(child: UserRegister()),
+      path: '/auth/signup',
+      builder: (context, state) => UserRegister(),
     ),
     GoRoute(
       path: '/auth/login',
-      builder: (context, state) => MainScreen(child: UserLogin()),
+      builder: (context, state) => UserLogin(),
     ),
     GoRoute(
       path: '/survey',
@@ -48,7 +53,7 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/goal',
-      builder: (context, state) => MainScreen(child: GoalPage()), // Add GoalPage route
+      builder: (context, state) => MainScreen(child: GoalPage()), 
     ),
   ],
 );
