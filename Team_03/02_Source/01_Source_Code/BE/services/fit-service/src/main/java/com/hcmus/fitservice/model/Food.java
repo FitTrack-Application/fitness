@@ -3,6 +3,7 @@ package com.hcmus.fitservice.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.Cleanup;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UuidGenerator;
@@ -18,6 +19,7 @@ public class Food {
     @Id
     @GeneratedValue
     @UuidGenerator
+    @Column(name = "food_id")
     private UUID foodId;
 
     @NotNull(message = "Food name cannot be null")
@@ -25,19 +27,19 @@ public class Food {
     private String foodName;
 
     @NotNull(message = "Calories cannot be null")
-    @Column(nullable = false)
+    @Column(name = "calories_per_100g", nullable = false)
     private Integer caloriesPer100g;
 
     @NotNull(message = "Protein cannot be null")
-    @Column(nullable = false)
+    @Column(name = "protein_per_100g", nullable = false)
     private Double proteinPer100g;
 
     @NotNull(message = "Carbs cannot be null")
-    @Column(nullable = false)
+    @Column(name = "carbs_per_100g", nullable = false)
     private Double carbsPer100g;
 
     @NotNull(message = "Fat cannot be null")
-    @Column(nullable = false)
+    @Column(name = "fat_per_100g", nullable = false)
     private Double fatPer100g;
 
     @NotNull(message = "Image url cannot be null")

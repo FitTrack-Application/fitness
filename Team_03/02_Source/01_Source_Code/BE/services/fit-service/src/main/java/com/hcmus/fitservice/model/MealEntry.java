@@ -18,6 +18,7 @@ public class MealEntry {
     @Id
     @GeneratedValue
     @UuidGenerator
+    @Column(name = "meal_entry_id")
     private UUID mealEntryId;
 
     @ManyToOne

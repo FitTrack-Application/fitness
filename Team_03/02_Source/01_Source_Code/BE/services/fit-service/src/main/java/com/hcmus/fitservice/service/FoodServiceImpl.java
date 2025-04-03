@@ -4,6 +4,8 @@ import com.hcmus.fitservice.dto.FoodDto;
 import com.hcmus.fitservice.model.Food;
 import com.hcmus.fitservice.repository.FoodRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,6 +31,13 @@ public class FoodServiceImpl implements FoodService {
         return foodRepository.findById(foodId)
                 .map(this::convertToDto)
                 .orElse(null);
+    }
+
+    @Override
+    public Page<FoodDto> searchFoodsByName(String query, Pageable pageable) {
+        Page<Food> foodPage = foodRepository.findByFoodNameContainingIgnoreCase(query, pageable);
+
+        return foodPage.map(this::convertToDto);
     }
 
     // Convert Food entity to FoodDto

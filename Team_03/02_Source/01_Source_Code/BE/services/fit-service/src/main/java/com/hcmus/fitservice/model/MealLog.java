@@ -18,6 +18,7 @@ public class MealLog {
     @Id
     @GeneratedValue
     @UuidGenerator
+    @Column(name = "meal_log_id")
     private UUID mealLogId;
 
     @Temporal(TemporalType.DATE)

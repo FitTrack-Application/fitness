@@ -19,7 +19,7 @@ public class FoodDto {
 
     @NotNull(message = "Food name cannot be empty")
     @Size(max = 255, message = "Food name cannot exceed 255 characters")
-    private String foodName;
+    private String name;
 
     @NotNull(message = "Calories cannot be empty")
     @Positive(message = "Calories must be a positive number")

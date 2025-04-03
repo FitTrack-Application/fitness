@@ -20,7 +20,7 @@ public class ApiResponse<T> {
 
     private T data;
 
-    private Map<String, String> metadata;
+    private Map<String, Object> metadata;
 
     private List<String> errorDetails;
 
