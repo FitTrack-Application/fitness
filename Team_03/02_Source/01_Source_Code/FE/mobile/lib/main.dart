@@ -12,8 +12,8 @@ void main() {
     runApp(
       MultiProvider(
         providers: [
-          // ChangeNotifierProvider(create: (_) => BottomNavProvider()),
-          //ChangeNotifierProvider(create: (_) => DashboardScreen()),
+          ChangeNotifierProvider(create: (_) => BottomNavProvider()),
+          // ChangeNotifierProvider(create: (_) => DashboardScreen()),
           ChangeNotifierProvider(create: (_) => SearchFoodViewModel()..searchFoods()),
         ],
         child: MyApp(),

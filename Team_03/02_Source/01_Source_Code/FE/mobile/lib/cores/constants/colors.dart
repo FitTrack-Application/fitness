@@ -1,14 +1,47 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 
-const tPrimaryColor = Color(0xFF89CFF0);
-const tSecondaryColor = Color(0xFF272727);
-const tAccentColor = Color(0xFF001BFF);
 
-const tCardBgColor = Color(0xFFF7F6F1);
-const tWhiteColor = Color(0xFFFFFFFF);
-const tDarkColor = Color(0xFF000000);
-const tLightDarkColor = Color.fromARGB(255, 59, 59, 59);
-const tTextFieldColor = Color(0xFFE5ECF3);
-const tGrayColor = Color(0xFFB0B0B0);
+// Highlight Colors (Xanh dương)
+class HighlightColors {
+  static const Color highlight500 = Color(0xFF006FFD); // Màu chính
+  static const Color highlight400 = Color(0xFF2897FF); // Nhạt hơn
+  static const Color highlight300 = Color(0xFF6FBAFF); // Nhạt hơn nữa
+  static const Color highlight200 = Color(0xFFB4DBFF); // Rất nhạt
+  static const Color highlight100 = Color(0xFFEAF2FF); // Gần trắng
+}
+
+// Neutral Colors (Các màu trung tính)
+class NeutralColors {
+  // Light
+  static const Color light500 = Color(0xFFC5C6CC); // Xám trung bình
+  static const Color light400 = Color(0xFFD4D6DD); // Nhạt hơn
+  static const Color light300 = Color(0xFFE8E9F1); // Nhạt hơn nữa
+  static const Color light200 = Color(0xFFF8F9FE); // Rất nhạt
+  static const Color light100 = Color(0xFFFFFFFF); // Trắng
+
+  // Dart
+  static const Color dark500 = Color(0xFF1A2130); // Đậm nhất
+  static const Color dark400 = Color(0xFF1F2735); // Đậm vừa
+  static const Color dark300 = Color(0xFF353F54); // Trung bình
+  static const Color dark200 = Color(0xFF60647A); // Nhạt hơn
+  static const Color dark100 = Color(0xFF83869F); // Nhạt nhất
+}
+
+// Support Colors (Màu hỗ trợ thêm)
+class SupportColors {
+  // Success
+  static const Color success300 = Color(0xFF298267); // Đậm nhất
+  static const Color success200 = Color(0xFF3AC0A0); // Trung bình
+  static const Color success100 = Color(0xFFE7F4E8); // Nhạt nhất
+
+  // Warning
+  static const Color warning300 = Color(0xFFE86339); // Đậm nhất
+  static const Color warning200 = Color(0xFFFFB37C); // Trung bình
+  static const Color warning100 = Color(0xFFFFF4E4); // Nhạt nhất
+
+  // Error
+  static const Color error300 = Color(0xFFED3241); // Đậm nhất
+  static const Color error200 = Color(0xFFFF616D); // Trung bình
+  static const Color error100 = Color(0xFFFFE2E5); // Nhạt nhất
+}

@@ -6,7 +6,7 @@ class CalorieSummaryTheme {
   static BoxDecoration containerDecoration(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return BoxDecoration(
-      color: isDarkMode ? tLightDarkColor : tWhiteColor,
+      color: isDarkMode ? NeutralColors.dark400 : NeutralColors.light100,
       borderRadius: BorderRadius.circular(12),
       boxShadow: isDarkMode
           ? []
@@ -32,7 +32,7 @@ class CalorieSummaryTheme {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return TextStyle(
       fontSize: 14,
-      color: isDarkMode ? tGrayColor : Colors.grey,
+      color: isDarkMode ? NeutralColors.light500 : Colors.grey,
     );
   }
 
@@ -40,7 +40,7 @@ class CalorieSummaryTheme {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return TextStyle(
       fontSize: 12,
-      color: isDarkMode ? tWhiteColor : tDarkColor,
+      color: isDarkMode ? NeutralColors.light100 : NeutralColors.dark500,
     );
   }
 }

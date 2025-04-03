@@ -21,9 +21,9 @@ class SelectBox<T> extends StatelessWidget {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: value == groupValue ? tLightDarkColor : Colors.transparent ,
+          color: value == groupValue ? HighlightColors.highlight200 : HighlightColors.highlight100 ,
           border: Border.all(
-            color: value == groupValue ? Colors.transparent : tTextFieldColor,
+            color: value == groupValue ? Colors.transparent : HighlightColors.highlight200,
           ),
           borderRadius: BorderRadius.circular(12.0),
         ),
