@@ -40,7 +40,10 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/survey',
-      // builder: (context, state) => MainScreen(child: UserSurvey()),
+       builder: (context, state) => MainScreen(child: UserSurvey()),
+    ),
+    GoRoute(
+      path: '/search',
       builder: (context, state) => const SearchFoodScreen(),
     ),
     GoRoute(
