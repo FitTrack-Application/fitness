@@ -1,8 +1,10 @@
 package com.hcmus.userservice.controller;
 
-import com.hcmus.userservice.dto.AuthRequest;
-import com.hcmus.userservice.dto.AuthResponse;
-import com.hcmus.userservice.dto.RegisterRequest;
+import com.hcmus.userservice.dto.request.LoginRequest;
+import com.hcmus.userservice.dto.response.ApiResponse;
+import com.hcmus.userservice.dto.response.AuthResponse;
+import com.hcmus.userservice.dto.request.RegisterRequest;
+import com.hcmus.userservice.dto.response.LoginResponse;
 import com.hcmus.userservice.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -37,9 +39,9 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody @Valid AuthRequest request) {
+    public ResponseEntity<?> login(@RequestBody @Valid LoginRequest request) {
         try {
-            return ResponseEntity.ok(authService.authenticate(request));
+            return ResponseEntity.ok(authService.login(request));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
                     Map.of("status", "error", "message", e.getMessage()));
