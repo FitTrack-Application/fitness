@@ -4,7 +4,7 @@ import '../../constants/colors.dart';
 class TColorSchemeTheme {
   TColorSchemeTheme._();
 
-  static final lightColorSchemeTheme = ColorScheme.light(
+  static const lightColorSchemeTheme = ColorScheme.light(
     primary: HighlightColors.highlight500,
     onPrimary: NeutralColors.light100,
     background: NeutralColors.light100,
@@ -13,7 +13,7 @@ class TColorSchemeTheme {
     onError: NeutralColors.light100
   );
 
-  static final darkColorSchemeTheme = ColorScheme.dark(
+  static const darkColorSchemeTheme = ColorScheme.dark(
       primary: HighlightColors.highlight500,
       onPrimary: NeutralColors.dark500,
       background: NeutralColors.dark500,

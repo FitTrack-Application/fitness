@@ -11,6 +11,17 @@ class HighlightColors {
   static const Color highlight100 = Color(0xFFEAF2FF); // Gần trắng
 }
 
+class TonalButtonColors {
+  static const Color primary = Color(0x22006FFD); // Màu chính
+  static const Color onPrimary = Color(0xFF006FFD);
+}
+
+class NutritionColor{
+  static const Color cabs = Color(0xFF14B8A6);
+  static const Color fat = Color(0xFFD8325D);
+  static const Color protein = Color(0xFFFFB02A);
+}
+
 // Neutral Colors (Các màu trung tính)
 class NeutralColors {
   // Light
@@ -21,7 +32,7 @@ class NeutralColors {
   static const Color light100 = Color(0xFFFFFFFF); // Trắng
 
   // Dart
-  static const Color dark500 = Color(0xFF1A2130); // Đậm nhất
+  static const Color dark500 = Color(0xFF121620); // Đậm nhất
   static const Color dark400 = Color(0xFF1F2735); // Đậm vừa
   static const Color dark300 = Color(0xFF353F54); // Trung bình
   static const Color dark200 = Color(0xFF60647A); // Nhạt hơn

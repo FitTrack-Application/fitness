@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/common/widgets/tonal_button/tonal_button.dart';
 import 'package:mobile/cores/constants/colors.dart';
 import 'package:mobile/common/widgets/select_box/select_box.dart';
 import 'package:mobile/common/widgets/elevated_button/elevated_button.dart';
@@ -115,20 +116,16 @@ class _UserSurveyState extends State<UserSurvey> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                ElevatedButton(
+                TonalButton(
                   onPressed: _previousStep,
-                  style: ElevatedButton.styleFrom(
-                    shape: const CircleBorder(),
-                    padding: const EdgeInsets.all(16),
-                    //backgroundColor: tSecondaryColor,
-                  ),
-                  child: const Icon(Icons.arrow_back, color: NeutralColors.light100),
+                  //icon: const Icon(Icons.arrow_back, color: NeutralColors.light100),
+                  icon: Icons.arrow_back,
                 ),
                 const SizedBox(width: 10),
                 Expanded(
-                  child: ElevatedButtonCustom(
-                    text: 'Next',
+                  child: ElevatedButton(
                     onPressed: _nextStep,
+                    child: const Text('Next'),
                   ),
                 ),
               ],
@@ -248,7 +245,6 @@ class StepThree extends StatelessWidget {
           child: TextField(
             controller: ageController,
             decoration: const InputDecoration(
-              border: OutlineInputBorder(),
               labelText: 'Enter your age',
             ),
             keyboardType: TextInputType.number,
@@ -259,7 +255,6 @@ class StepThree extends StatelessWidget {
           child: TextField(
             controller: heightController,
             decoration: const InputDecoration(
-              border: OutlineInputBorder(),
               labelText: 'Enter your height (cm)',
             ),
             keyboardType: TextInputType.number,
@@ -270,7 +265,6 @@ class StepThree extends StatelessWidget {
           child: TextField(
             controller: weightController,
             decoration: const InputDecoration(
-              border: OutlineInputBorder(),
               labelText: 'Enter your weight (kg)',
             ),
             keyboardType: TextInputType.number,

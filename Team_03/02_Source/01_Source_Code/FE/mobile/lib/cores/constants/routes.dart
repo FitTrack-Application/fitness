@@ -32,6 +32,10 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => MainScreen(child: DiaryScreen()),
     ),
     GoRoute(
+      path: '/search',
+      builder: (context, state) => const SearchFoodScreen(),
+    ),
+    GoRoute(
       path: '/profile',
       builder: (context, state) => MainScreen(child: ProfileScreen()),
     ),
