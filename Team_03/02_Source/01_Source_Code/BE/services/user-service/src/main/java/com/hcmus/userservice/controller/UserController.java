@@ -1,5 +1,10 @@
 package com.hcmus.userservice.controller;
 
+import com.hcmus.userservice.dto.SurveyResponse;
+import com.hcmus.userservice.dto.SurveyRequest;
+import com.hcmus.userservice.service.SurveyService;
+import com.hcmus.userservice.utility.JwtUtil;
+
 import lombok.AllArgsConstructor;
 import com.hcmus.userservice.service.UpdateInforUserService;
 import com.hcmus.userservice.dto.UserUpdateRequest;
@@ -21,6 +26,7 @@ import com.hcmus.userservice.utility.JwtUtil;
 @RequestMapping("/api/users")
 public class UserController {
     private final UpdateInforUserService updateInforUserService;
+    private final SurveyService surveyService;
     private final JwtUtil jwtUtil;
 
     @GetMapping
@@ -40,4 +46,13 @@ public class UserController {
                 Map.of("message", "Hồ sơ người dùng đã được cập nhật.")));
 
     }
+
+    @PostMapping("/survey")
+    public ResponseEntity<SurveyResponse> survey(@RequestBody SurveyRequest request, @RequestHeader("Authorization") String token) {
+        String userIdStr = jwtUtil.extractUserId(token.replace("Bearer ", ""));
+        UUID userId = UUID.fromString(userIdStr);
+        return ResponseEntity.ok(surveyService.survey(request, userId));
+    }
+
 }
+
