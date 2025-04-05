@@ -151,7 +151,7 @@ class _UserSurveyState extends State<UserSurvey> {
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
+              children: [
                 ElevatedButton(
                   onPressed: _previousStep,
                   style: ElevatedButton.styleFrom(
@@ -278,7 +278,7 @@ class Summary extends StatelessWidget {
           children: <Widget>[
             Text('Height: $height cm', style: const TextStyle(fontSize: 18)),
             Text('Weight: $weight kg', style: const TextStyle(fontSize: 18)),
-            Text('Activity Level: $activityLevel', style: const TextStyle(fontSize: 18)),
+            Text('$activityLevel', style: const TextStyle(fontSize: 18)),
           ],
             ),
           ),

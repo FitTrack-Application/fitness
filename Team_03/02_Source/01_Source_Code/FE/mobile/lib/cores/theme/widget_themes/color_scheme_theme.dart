@@ -10,7 +10,8 @@ class TColorSchemeTheme {
     background: NeutralColors.light100,
     surface: NeutralColors.light200,
     error: SupportColors.error300,
-    onError: NeutralColors.light100
+    onError: NeutralColors.light100,
+
   );
 
   static final darkColorSchemeTheme = ColorScheme.dark(
