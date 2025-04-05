@@ -1,10 +1,11 @@
 package com.hcmus.fitservice.service;
 
 import com.hcmus.fitservice.dto.FoodDto;
-import com.hcmus.fitservice.exception.ResourceNotFoundException;
 import com.hcmus.fitservice.model.Food;
 import com.hcmus.fitservice.repository.FoodRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,19 +23,31 @@ public class FoodServiceImpl implements FoodService {
 
     @Override
     public List<FoodDto> getAllFoods() {
-        return foodRepository.findAll().stream().map(food -> new FoodDto(food.getId(),
-                        food.getName(), food.getCaloriesPer100g(), food.getProteinPer100g(),
-                        food.getCarbsPer100g(), food.getFatPer100g(), food.getImageUrl()))
-                .collect(Collectors.toList());
+        return foodRepository.findAll().stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
     @Override
-    public FoodDto getFoodById(String foodId) {
-        Food food = foodRepository.findById(UUID.fromString(foodId))
-                .orElseThrow(() -> new ResourceNotFoundException("Food not found with id: " + foodId));
+    public FoodDto getFoodById(UUID foodId) {
+        return foodRepository.findById(foodId)
+                .map(this::convertToDto)
+                .orElse(null);
+    }
 
-        return new FoodDto(food.getId(), food.getName(), food.getCaloriesPer100g(),
-                food.getProteinPer100g(), food.getCarbsPer100g(),
-                food.getFatPer100g(), food.getImageUrl());
+    @Override
+    public Page<FoodDto> searchFoodsByName(String query, Pageable pageable) {
+        Page<Food> foodPage = foodRepository.findByFoodNameContainingIgnoreCase(query, pageable);
+
+        return foodPage.map(this::convertToDto);
+    }
+
+    // Convert Food entity to FoodDto
+    private FoodDto convertToDto(Food food) {
+        return new FoodDto(
+                food.getFoodId(),
+                food.getFoodName(),
+                food.getCaloriesPer100g(),
+                food.getProteinPer100g(),
+                food.getCarbsPer100g(),
+                food.getFatPer100g());
     }
 }
