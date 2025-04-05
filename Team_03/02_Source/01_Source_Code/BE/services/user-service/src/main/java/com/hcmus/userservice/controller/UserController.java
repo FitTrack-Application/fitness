@@ -6,10 +6,15 @@ import com.hcmus.userservice.service.SurveyService;
 import com.hcmus.userservice.utility.JwtUtil;
 
 import lombok.AllArgsConstructor;
+
+import com.hcmus.userservice.dto.request.UserUpdateRequest;
+import com.hcmus.userservice.dto.response.ApiResponse;
+import com.hcmus.userservice.exception.UserNotFoundException;
 import com.hcmus.userservice.service.UpdateInforUserService;
-import com.hcmus.userservice.dto.UserUpdateRequest;
+
 import java.util.UUID;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -19,6 +24,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
 
 import com.hcmus.userservice.utility.JwtUtil;
 
@@ -38,13 +44,21 @@ public class UserController {
     @PutMapping("/me")
     public ResponseEntity<?> updateUserProfile(@RequestBody UserUpdateRequest userUpdateRequest,
             @RequestHeader("Authorization") String token) {
-        String userIdStr = jwtUtil.extractUserId(token.replace("Bearer ", ""));
-        UUID userId = UUID.fromString(userIdStr);
-
-        updateInforUserService.updateUserProfile(userUpdateRequest, userId);
-
-        return ResponseEntity.ok(Map.of("status", "success", "data",
-                Map.of("message", "Hồ sơ người dùng đã được cập nhật.")));
+        try{
+            String userIdStr = jwtUtil.extractUserId(token.replace("Bearer ", ""));
+            UUID userId = UUID.fromString(userIdStr);
+            ApiResponse<?> response = updateInforUserService.updateUserProfile(userUpdateRequest, userId);
+            return ResponseEntity.ok(response);
+                
+        } catch (UserNotFoundException e) {
+            ApiResponse<?> errorResponse = ApiResponse.builder()
+                    .status(HttpStatus.NOT_FOUND.value())
+                    .generalMessage("Không tìm thấy người dùng")
+                    .errorDetails(List.of(e.getMessage()))
+                    .timestamp(LocalDateTime.now())
+                    .build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+        }
 
     }
 
