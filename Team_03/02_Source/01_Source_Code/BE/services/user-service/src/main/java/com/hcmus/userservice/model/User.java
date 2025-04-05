@@ -53,7 +53,7 @@ public class User implements UserDetails {
 
     private String imageUrl;
 
-    @Column(name = "goalid")
+    @Column(name = "goalId")
     private UUID goalId;
 
     @Enumerated(EnumType.STRING)
