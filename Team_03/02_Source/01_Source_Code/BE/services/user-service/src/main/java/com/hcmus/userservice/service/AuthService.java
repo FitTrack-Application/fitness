@@ -23,6 +23,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Map;
+import java.util.HashMap;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -35,7 +38,7 @@ public class AuthService {
 
     private final AuthenticationManager authenticationManager;
 
-    public AuthResponse register(RegisterRequest request) {
+    public ApiResponse<AuthResponse> register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already exists");
         }
@@ -56,7 +59,14 @@ public class AuthService {
         userRepository.save(user);
         String token = jwtUtil.generateToken(user);
 
-        return buildAuthResponse(user, token);
+        AuthResponse authResponse = buildAuthResponse(user, token);
+
+        return ApiResponse.<AuthResponse>builder()
+                .status(HttpStatus.OK.value())
+                .generalMessage("Register successfully!")
+                .data(authResponse)
+                .timestamp(LocalDateTime.now())
+                .build();
     }
 
     public ApiResponse<LoginResponse> login(LoginRequest request) {
@@ -67,10 +77,11 @@ public class AuthService {
 
         User user = (User) authentication.getPrincipal();
         String accessToken = jwtUtil.generateToken(user);
+        String refreshToken = jwtUtil.generateRefreshToken(user);
 
         LoginResponse loginResponse = LoginResponse.builder()
                 .accessToken(accessToken)
-                .refreshToken("")
+                .refreshToken(refreshToken)
                 .build();
         return ApiResponse.<LoginResponse>builder()
                 .status(HttpStatus.OK.value())
@@ -88,5 +99,48 @@ public class AuthService {
                 .name(user.getName())
                 .role(user.getRole())
                 .build();
+    }
+
+    public ApiResponse<Map<String, Object>> verifyToken(String token) {
+        try {
+            // Verify token and extract claims
+            Map<String, Object> claims = jwtUtil.validateTokenAndGetClaims(token);
+
+            return ApiResponse.<Map<String, Object>>builder()
+                    .status(HttpStatus.OK.value())
+                    .generalMessage("Token is valid")
+                    .data(claims)
+                    .timestamp(LocalDateTime.now())
+                    .build();
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid token: " + e.getMessage());
+        }
+    }
+
+    public ApiResponse<Map<String, String>> refreshToken(String refreshToken) {
+        try {
+            // Validate refresh token
+            Map<String, Object> claims = jwtUtil.validateRefreshTokenAndGetClaims(refreshToken);
+
+            // Get user from the database
+            String email = (String) claims.get("sub");
+            User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+            // Generate new access token
+            String newAccessToken = jwtUtil.generateToken(user);
+
+            Map<String, String> tokens = new HashMap<>();
+            tokens.put("accessToken", newAccessToken);
+
+            return ApiResponse.<Map<String, String>>builder()
+                    .status(HttpStatus.OK.value())
+                    .generalMessage("Token refreshed successfully")
+                    .data(tokens)
+                    .timestamp(LocalDateTime.now())
+                    .build();
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid refresh token: " + e.getMessage());
+        }
     }
 }
