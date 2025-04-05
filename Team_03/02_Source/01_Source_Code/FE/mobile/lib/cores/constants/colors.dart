@@ -11,6 +11,16 @@ class HighlightColors {
   static const Color highlight100 = Color(0xFFEAF2FF); // Gần trắng
 }
 
+class AccentColors {
+  static const Color red300 = Color(0xFFED3861);
+  static const Color red200 = Color(0xFFFD7695);
+  static const Color red100 = Color(0xFFFFBED7);
+
+  static const Color yellow300 = Color(0xFFF5A524);
+  static const Color yellow200 = Color(0xFFFFCD79);
+  static const Color yellow100 = Color(0xFFFFE7C3);
+}
+
 class TonalButtonColors {
   static const Color primary = Color(0x22006FFD); // Màu chính
   static const Color onPrimary = Color(0xFF006FFD);
