@@ -11,9 +11,10 @@ import 'package:mobile/features/auth/views/authentication/user_register.dart';
 import 'package:mobile/features/auth/views/authentication/user_login.dart';
 import 'package:mobile/features/auth/views/profile/user_goal.dart';
 
+import '../../features/fitness/view/food_detail/food_detail_screen.dart';
 import '../../features/fitness/view/search_food/search_food_screen.dart';
 final GoRouter appRouter = GoRouter(
-  initialLocation: '/welcome',
+  initialLocation: '/search',
   routes: [
     GoRoute(
       path: '/',
@@ -30,6 +31,17 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/diary',
       builder: (context, state) => MainScreen(child: DiaryScreen()),
+    ),
+    GoRoute(
+      path: '/search',
+      builder: (context, state) => const SearchFoodScreen(),
+    ),
+    GoRoute(
+      path: '/food/:id',
+      builder: (context, state) {
+        final foodId = state.pathParameters['id']!;
+        return FoodDetailScreen(foodId: foodId);
+      },
     ),
     GoRoute(
       path: '/profile',

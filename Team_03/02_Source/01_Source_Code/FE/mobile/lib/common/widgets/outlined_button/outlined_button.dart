@@ -26,7 +26,7 @@ class OutlinedButtonCustom extends StatelessWidget {
         ),
         foregroundColor: NeutralColors.dark400,
         backgroundColor: NeutralColors.light200,
-        //side: BorderSide(color: tSecondaryColor),
+        side: const BorderSide(color: NeutralColors.dark500),
         padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 24.0), // Optional: Add padding
       ),
       onPressed: onPressed,

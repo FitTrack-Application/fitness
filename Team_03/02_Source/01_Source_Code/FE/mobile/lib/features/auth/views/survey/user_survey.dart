@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/common/widgets/tonal_button/tonal_button.dart';
 import 'package:mobile/cores/constants/colors.dart';
 import 'package:mobile/common/widgets/elevated_button/elevated_button.dart';
 import 'package:go_router/go_router.dart';  
@@ -152,20 +153,16 @@ class _UserSurveyState extends State<UserSurvey> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                ElevatedButton(
+                TonalButton(
                   onPressed: _previousStep,
-                  style: ElevatedButton.styleFrom(
-                    shape: const CircleBorder(),
-                    padding: const EdgeInsets.all(16),
-                    //backgroundColor: tSecondaryColor,
-                  ),
-                  child: const Icon(Icons.arrow_back, color: NeutralColors.light100),
+                  //icon: const Icon(Icons.arrow_back, color: NeutralColors.light100),
+                  icon: Icons.arrow_back,
                 ),
                 const SizedBox(width: 10),
                 Expanded(
-                  child: ElevatedButtonCustom(
-                    text: 'Next',
+                  child: ElevatedButton(
                     onPressed: _nextStep,
+                    child: const Text('Next'),
                   ),
                 ),
               ],
@@ -173,6 +170,248 @@ class _UserSurveyState extends State<UserSurvey> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class StepOne extends StatelessWidget {
+  final TextEditingController nameController;
+
+  const StepOne({super.key, required this.nameController});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        const Text('First, What can we call you?'),
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: TextField(
+            controller: nameController,
+            decoration: const InputDecoration(labelText: 'Enter your name'),
+  
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class StepTwo extends StatelessWidget {
+  final String selectedGoal;
+  final ValueChanged<String> onGoalSelected;
+
+  const StepTwo({super.key, required this.selectedGoal, required this.onGoalSelected});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        const Text('Step 2: What is your goal?'),
+        SelectBox<String>(
+          title: 'Gain Weight',
+          value: 'Gain Weight',
+          groupValue: selectedGoal,
+          onChanged: onGoalSelected,
+        ),
+        const SizedBox(height: 10),
+        SelectBox<String>(
+          title: 'Maintain Weight',
+          value: 'Maintain Weight',
+          groupValue: selectedGoal,
+          onChanged: onGoalSelected,
+        ),
+        const SizedBox(height: 10),
+        SelectBox<String>(
+          title: 'Lose Weight',
+          value: 'Lose Weight',
+          groupValue: selectedGoal,
+          onChanged: onGoalSelected,
+        ),
+      ],
+    );
+  }
+}
+
+class StepThree extends StatelessWidget {
+  final String selectedGender;
+  final ValueChanged<String> onGenderSelected;
+  final TextEditingController ageController;
+  final TextEditingController heightController;
+  final TextEditingController weightController;
+
+  const StepThree({super.key, 
+    required this.selectedGender,
+    required this.onGenderSelected,
+    required this.ageController,
+    required this.heightController,
+    required this.weightController,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        const Text('Step 3: Tell us more about you'),
+        Row(
+          children: <Widget>[
+            Expanded(
+              child: SelectBox<String>(
+                title: 'Male',
+                value: 'Male',
+                groupValue: selectedGender,
+                onChanged: onGenderSelected,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: SelectBox<String>(
+                title: 'Female',
+                value: 'Female',
+                groupValue: selectedGender,
+                onChanged: onGenderSelected,
+              ),
+            ),
+          ],
+        ),
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: TextField(
+            controller: ageController,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              labelText: 'Enter your age',
+            ),
+            keyboardType: TextInputType.number,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: TextField(
+            controller: heightController,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              labelText: 'Enter your height (cm)',
+            ),
+            keyboardType: TextInputType.number,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: TextField(
+            controller: weightController,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              labelText: 'Enter your weight (kg)',
+            ),
+            keyboardType: TextInputType.number,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class StepFour extends StatelessWidget {
+  final TextEditingController weightGoalController;
+  final double goalPerWeek;
+  final ValueChanged<double> onGoalPerWeekSelected;
+
+  const StepFour({super.key, 
+    required this.weightGoalController,
+    required this.goalPerWeek,
+    required this.onGoalPerWeekSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        const Text('Step 4: Enter your weight goal and goal per week'),
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: TextField(
+            controller: weightGoalController,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              labelText: 'Enter your weight goal (kg)',
+            ),
+            keyboardType: TextInputType.number,
+
+          ),
+        ),
+        SelectBox<double>(
+          title: '0.2 kg per week',
+          value: 0.2,
+          groupValue: goalPerWeek,
+          onChanged: onGoalPerWeekSelected,
+        ),
+        const SizedBox(height: 10),
+        SelectBox<double>(
+          title: '0.5 kg per week',
+          value: 0.5,
+          groupValue: goalPerWeek,
+          onChanged: onGoalPerWeekSelected,
+        ),
+      ],
+    );
+  }
+}
+
+class StepFive extends StatelessWidget {
+  final String selectedActivityLevel;
+  final ValueChanged<String> onActivityLevelSelected;
+
+  const StepFive({super.key, 
+    required this.selectedActivityLevel,
+    required this.onActivityLevelSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        const Text('Step 5: Select your activity level'),
+        SelectBox<String>(
+          title: 'Sedentary ',
+          value: 'Sedentary',
+          groupValue: selectedActivityLevel,
+          onChanged: onActivityLevelSelected,
+        ),
+        const SizedBox(height: 10),
+        SelectBox<String>(
+          title: 'Lightly active',
+          value: 'Lightly active',
+          groupValue: selectedActivityLevel,
+          onChanged: onActivityLevelSelected,
+        ),
+        const SizedBox(height: 10),
+        SelectBox<String>(
+          title: 'Moderately active',
+          value: 'Moderately active',
+          groupValue: selectedActivityLevel,
+          onChanged: onActivityLevelSelected,
+        ),
+        const SizedBox(height: 10),
+        SelectBox<String>(
+          title: 'Very active ',
+          value: 'Very active',
+          groupValue: selectedActivityLevel,
+          onChanged: onActivityLevelSelected,
+        ),
+        const SizedBox(height: 10),
+        SelectBox<String>(
+          title: 'Extra active',
+          value: 'Extra active',
+          groupValue: selectedActivityLevel,
+          onChanged: onActivityLevelSelected,
+        ),
+      ],
     );
   }
 }

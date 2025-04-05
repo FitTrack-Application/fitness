@@ -1,9 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mobile/features/fitness/view/search_food/widget/error_display.dart';
 import 'package:provider/provider.dart';
-import 'dart:async';
+
 import '../../viewmodels/search_food_viewmodel.dart';
-import '../food_detail/food_detail_screen.dart';
 import 'widget/food_item.dart';
 
 class SearchFoodScreen extends StatefulWidget {
@@ -16,39 +18,27 @@ class SearchFoodScreen extends StatefulWidget {
 class _SearchFoodScreenState extends State<SearchFoodScreen> {
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _searchController = TextEditingController();
-  bool _isSearching = false;
+  Timer? _debounceTimer;
 
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_scrollListener);
 
-    // Tự động tải danh sách foods khi màn hình được mở
+    // Automatically load foods list when screen opens
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<SearchFoodViewModel>().searchFoods(query: '');
     });
 
-    // Sử dụng debounce để tránh gọi API quá nhiều lần khi người dùng đang gõ
-    _searchController.addListener(() {
-      _debounceSearch();
-    });
+    // Use debounce to avoid calling API too many times when user is typing
+    _searchController.addListener(_debounceSearch);
   }
-
-  // Biến cho debounce
-  Timer? _debounceTimer;
 
   void _debounceSearch() {
     if (_debounceTimer?.isActive ?? false) _debounceTimer!.cancel();
 
-    setState(() {
-      _isSearching = true;
-    });
-
     _debounceTimer = Timer(const Duration(milliseconds: 500), () {
       context.read<SearchFoodViewModel>().searchFoods(query: _searchController.text);
-      setState(() {
-        _isSearching = false;
-      });
     });
   }
 
@@ -62,10 +52,10 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> {
 
   void _scrollListener() {
     final viewModel = context.read<SearchFoodViewModel>();
-    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200 && // Tải trước khi đến cuối
+    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200 && // Load before reaching the end
         !viewModel.isFetchingMore &&
         viewModel.hasMoreData) {
-      viewModel.loadMoreFoods(10);
+      viewModel.loadMoreFoods();
     }
   }
 
@@ -106,7 +96,7 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> {
                   hintStyle: textTheme.bodyMedium?.copyWith(
                     color: colorScheme.onSurfaceVariant,
                   ),
-                  prefixIcon: _isSearching
+                  prefixIcon: viewModel.isLoading
                       ? SizedBox(
                     width: 24,
                     height: 24,
@@ -131,7 +121,7 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> {
                     icon: const Icon(Icons.clear),
                     onPressed: () {
                       _searchController.clear();
-                      // Khi xóa text, vẫn tìm kiếm với query rỗng thay vì xóa kết quả
+                      // When clearing text, still search with empty query rather than clearing results
                       viewModel.searchFoods(query: '');
                     },
                   )
@@ -165,8 +155,8 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> {
       );
     }
 
-    if (viewModel.filteredFoods.isEmpty) {
-      // Thay đổi thông báo khi không có kết quả nào
+    if (viewModel.foods.isEmpty) {
+      // Change message when no results
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -186,15 +176,15 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> {
 
     return ListView.builder(
       controller: _scrollController,
-      itemCount: viewModel.filteredFoods.length + (viewModel.isFetchingMore ? 1 : 0),
+      itemCount: viewModel.foods.length + (viewModel.isFetchingMore ? 1 : 0),
       itemBuilder: (context, index) {
-        if (index == viewModel.filteredFoods.length) {
+        if (index == viewModel.foods.length) {
           if (viewModel.loadMoreError.isNotEmpty) {
             return Padding(
               padding: const EdgeInsets.all(16.0),
               child: ErrorDisplay(
                 message: viewModel.loadMoreError,
-                onRetry: () => viewModel.loadMoreFoods(10),
+                onRetry: () => viewModel.loadMoreFoods(),
                 compact: true,
               ),
             );
@@ -205,16 +195,11 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> {
           );
         }
 
-        final food = viewModel.filteredFoods[index];
+        final food = viewModel.foods[index];
         return FoodItemWidget(
           food: food,
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => FoodDetailScreen(foodId: food.id),
-              ),
-            );
+            context.push('/food/${food.id}');
           },
         );
       },

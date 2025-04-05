@@ -56,15 +56,16 @@ class UserLogin extends StatelessWidget {
             // Nút Log In
             SizedBox(
               width: 280,
-              child: ElevatedButtonCustom(
+              child: ElevatedButton(
                 onPressed: () {
                   // Logic xử lý đăng nhập (gọi API, kiểm tra, v.v.)
                   print('Log In pressed');
                   // Ví dụ: Điều hướng tới Dashboard sau khi đăng nhập thành công
                   GoRouter.of(context).go('/dashboard');
                 },
-                text: 'Log In',
-                textStyle: Theme.of(context).textTheme.labelLarge,
+                child: Text('Log In'),
+                // text: 'Log In',
+                // textStyle: Theme.of(context).textTheme.labelLarge,
               ),
             ),
             const SizedBox(height: 20),
@@ -121,8 +122,8 @@ class UserLogin extends StatelessWidget {
             const SizedBox(height: 24),
 
             // Text "We will never post anything without your permission."
-            SizedBox(
-              width: 200,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: Text(
                 'We will never post anything without your permission.',
                 style: Theme.of(context).textTheme.bodyMedium,

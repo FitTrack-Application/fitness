@@ -2,11 +2,12 @@ class Food {
   final String id;
   final String name;
   final double servingSize;
-  final int calories;
-  final int carbs;
-  final int fat;
-  final int protein;
+  final double calories;
+  final double carbs;
+  final double fat;
+  final double protein;
   final String unit;
+  final String description;
 
   Food({
     required this.id,
@@ -17,5 +18,6 @@ class Food {
     required this.fat,
     required this.protein,
     required this.unit,
+    required this.description,
   });
 }

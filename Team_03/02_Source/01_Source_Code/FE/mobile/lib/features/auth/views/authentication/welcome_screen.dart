@@ -27,7 +27,7 @@ class WelcomeScreen extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(16),
                 child: Image.asset(
-                  'assets/images/welcome_image.jpg', // Đường dẫn tới hình ảnh trong assets
+                  'assets/images/welcome3_image.pjpeg', // Đường dẫn tới hình ảnh trong assets
                   width: 300,
                   height: 370,
                   fit: BoxFit.cover,
@@ -38,19 +38,20 @@ class WelcomeScreen extends StatelessWidget {
                 width: 300,
                 child: Text(
                   'Ready for some wins? Start tracking, it\'s easy!',
-                  style: Theme.of(context).textTheme.headlineSmall,
+                  style: Theme.of(context).textTheme.titleSmall,
                   textAlign: TextAlign.center,
                 ),
               ),
               const SizedBox(height: 32),
               SizedBox(
                 width: 330,
-                child: ElevatedButtonCustom(
+                child: ElevatedButton(
                   onPressed: () {
                     GoRouter.of(context).push('/survey');
                   },
-                  text: 'Sign Up For Free',
-                  textStyle: Theme.of(context).textTheme.labelLarge,
+                  child: const Text('Sign Up For Free'),
+                  // text: 'Sign Up For Free',
+                  // textStyle: Theme.of(context).textTheme.labelLarge,
                 ),
 
               ),

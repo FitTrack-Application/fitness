@@ -6,21 +6,20 @@ import '../services/repository/food_repository.dart';
 class SearchFoodViewModel extends ChangeNotifier {
   final FoodRepository _repository;
   final List<Food> _foods = [];
-  List<Food> _filteredFoods = [];
 
-  // Thêm timeout cho API calls
+  // Timeout for API calls
   final Duration _timeout = const Duration(seconds: 15);
 
   SearchFoodViewModel({FoodRepository? repository})
       : _repository = repository ?? FoodRepository();
 
   List<Food> get foods => _foods;
-  List<Food> get filteredFoods => _filteredFoods;
 
   bool isLoading = false;
   bool isFetchingMore = false;
   String _searchQuery = '';
   int _currentPage = 1;
+  int _totalPages = 1;
   bool _hasMoreData = true;
   String _errorMessage = '';
   String _loadMoreError = '';
@@ -29,7 +28,7 @@ class SearchFoodViewModel extends ChangeNotifier {
   String get errorMessage => _errorMessage;
   String get loadMoreError => _loadMoreError;
 
-  Future<void> searchFoods({String query = '', int page = 1, int size = 10}) async {
+  Future<void> searchFoods({String query = ''}) async {
     if (isLoading) return;
 
     // Reset error message
@@ -42,18 +41,18 @@ class SearchFoodViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      // Thêm timeout cho request
-      final newFoodsResult = await _fetchWithTimeout(
-              () => _repository.searchFoods(query, page: page, size: size)
+      // Add timeout for request
+      final paginatedResponse = await _fetchWithTimeout(
+              () => _repository.searchFoods(query, page: _currentPage, size: 10)
       );
 
       _foods.clear();
-      _foods.addAll(newFoodsResult);
-      _filteredFoods = List.from(_foods);
+      _foods.addAll(paginatedResponse.data);
 
-      if (newFoodsResult.length < size) {
-        _hasMoreData = false;
-      }
+      // Update pagination info from response
+      _currentPage = paginatedResponse.pagination.currentPage;
+      _totalPages = paginatedResponse.pagination.totalPages;
+      _hasMoreData = _currentPage < _totalPages;
     } catch (e) {
       _errorMessage = _getErrorMessage(e);
       debugPrint('Error fetching foods: $e');
@@ -63,7 +62,7 @@ class SearchFoodViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> loadMoreFoods(int size) async {
+  Future<void> loadMoreFoods({int size = 10}) async {
     if (isFetchingMore || !_hasMoreData) return;
 
     // Reset load more error
@@ -74,16 +73,19 @@ class SearchFoodViewModel extends ChangeNotifier {
 
     try {
       _currentPage++;
-      final newFoodsResult = await _fetchWithTimeout(
+      final paginatedResponse = await _fetchWithTimeout(
               () => _repository.searchFoods(_searchQuery, page: _currentPage, size: size)
       );
 
-      if (newFoodsResult.isEmpty) {
+      if (paginatedResponse.data.isEmpty) {
         _hasMoreData = false;
       } else {
-        _foods.addAll(newFoodsResult);
-        _filteredFoods = List.from(_foods);
-      }
+        _foods.addAll(paginatedResponse.data);
+
+        // Update pagination info from response
+        _totalPages = paginatedResponse.pagination.totalPages;
+        _hasMoreData = _currentPage < _totalPages;
+            }
     } catch (e) {
       _loadMoreError = _getErrorMessage(e);
       _currentPage--; // Rollback page increment on error
@@ -115,13 +117,5 @@ class SearchFoodViewModel extends ChangeNotifier {
     } else {
       return 'An unexpected error occurred. Please try again.';
     }
-  }
-
-  void filterFoods({String query = ''}) {
-    _searchQuery = query;
-    _filteredFoods = _foods
-        .where((food) => food.name.toLowerCase().contains(_searchQuery.toLowerCase()))
-        .toList();
-    notifyListeners();
   }
 }
