@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/cores/constants/colors.dart';
+import 'package:mobile/cores/theme/widget_themes/select_box_theme.dart';
 class SelectBox<T> extends StatelessWidget {
   final String title;
   final T value;
   final T groupValue;
   final ValueChanged<T> onChanged;
 
-  const SelectBox({super.key, 
+  const SelectBox({
+    super.key, 
     required this.title,
     required this.value,
     required this.groupValue,
@@ -15,21 +17,21 @@ class SelectBox<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isSelected = value == groupValue;
+    
     return GestureDetector(
       onTap: () {
         onChanged(value);
       },
       child: Container(
-        decoration: BoxDecoration(
-          color: value == groupValue ? HighlightColors.highlight200 : HighlightColors.highlight100 ,
-          border: Border.all(
-            color: value == groupValue ? Colors.transparent : HighlightColors.highlight200,
-          ),
-          borderRadius: BorderRadius.circular(12.0),
+        decoration: SelectBoxTheme.containerDecoration(
+          context,
+          isSelected,
         ),
         child: ListTile(
             title: Text(
-              title,            
+              title,
+              style: SelectBoxTheme.labelTextBoxStyle(context),
             ),
           leading: Radio<T>(
             value: value,

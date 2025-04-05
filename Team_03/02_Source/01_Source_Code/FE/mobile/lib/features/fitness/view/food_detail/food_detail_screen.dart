@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mobile/features/fitness/view/food_detail/widget/calorie_summary.dart';
 import 'package:mobile/features/fitness/view/food_detail/widget/custom_divider.dart';
 import 'package:mobile/features/fitness/view/food_detail/widget/food_info_section.dart';
@@ -19,15 +20,18 @@ class FoodDetailScreen extends StatelessWidget {
 
     return ChangeNotifierProvider(
       create: (context) =>
-          FoodDetailViewModel(FoodRepository())..loadFood(foodId),
+      FoodDetailViewModel(FoodRepository())..loadFood(foodId),
       child: Builder(
         builder: (context) => Scaffold(
           appBar: AppBar(
             title: const Text('Add Food'),
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () => GoRouter.of(context).pop(),
+            ),
             actions: [
               Consumer<FoodDetailViewModel>(
                 builder: (context, viewModel, child) {
-                  // Only show check button if food is loaded successfully
                   if (viewModel.loadState == LoadState.loaded) {
                     return IconButton(
                       icon: const Icon(Icons.check),
@@ -156,6 +160,12 @@ class FoodDetailScreen extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
+          const SizedBox(height: 8),
+          if (food.description.isNotEmpty)
+            Text(
+              food.description,
+              style: textTheme.bodyMedium?.copyWith(color: Colors.grey[700]),
+            ),
           const SizedBox(height: 16),
           const CustomDivider(),
           FoodInfoSection(
@@ -173,7 +183,7 @@ class FoodDetailScreen extends StatelessWidget {
           FoodInfoSection(
             label: 'Date & Time',
             value:
-                "${viewModel.selectedDate.day}/${viewModel.selectedDate.month}/${viewModel.selectedDate.year} - ${viewModel.selectedDate.hour}:${viewModel.selectedDate.minute.toString().padLeft(2, '0')}",
+            "${viewModel.selectedDate.day}/${viewModel.selectedDate.month}/${viewModel.selectedDate.year} - ${viewModel.selectedDate.hour}:${viewModel.selectedDate.minute.toString().padLeft(2, '0')}",
             onTap: () => _selectDateTime(context, viewModel),
           ),
           const CustomDivider(),
@@ -196,7 +206,7 @@ class FoodDetailScreen extends StatelessWidget {
   Future<void> _editServings(
       BuildContext context, FoodDetailViewModel viewModel) async {
     TextEditingController controller =
-        TextEditingController(text: viewModel.servings.toString());
+    TextEditingController(text: viewModel.servings.toString());
 
     await showDialog(
       context: context,
@@ -210,7 +220,7 @@ class FoodDetailScreen extends StatelessWidget {
             LengthLimitingTextInputFormatter(4),
           ],
           decoration:
-              const InputDecoration(hintText: 'Enter number of servings'),
+          const InputDecoration(hintText: 'Enter number of servings'),
         ),
         actions: [
           TextButton(

@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/common/widgets/tonal_button/tonal_button.dart';
 import 'package:mobile/cores/constants/colors.dart';
-import 'package:mobile/common/widgets/select_box/select_box.dart';
 import 'package:mobile/common/widgets/elevated_button/elevated_button.dart';
 import 'package:go_router/go_router.dart';  
+import 'step_one.dart';
+import 'step_two.dart';
+import 'step_three.dart';
+import 'step_four.dart';
+import 'step_five.dart';
 class UserSurvey extends StatefulWidget {
   const UserSurvey({super.key});
 
@@ -21,6 +25,10 @@ class _UserSurveyState extends State<UserSurvey> {
   final TextEditingController _heightController = TextEditingController();
   final TextEditingController _weightController = TextEditingController();
   final TextEditingController _weightGoalController = TextEditingController();
+  final GlobalKey<FormState> _stepOneKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _stepTwoKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _stepThreeKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _stepFourKey = GlobalKey<FormState>();
   double _goalPerWeek = 0.2;
   String _selectedActivityLevel = '';
 
@@ -34,6 +42,30 @@ class _UserSurveyState extends State<UserSurvey> {
 
   void _nextStep() {
     setState(() {
+      if (_currentStep == 0) {
+        if (!(_stepOneKey.currentState?.validate() ?? false)) {
+          return; 
+        }
+      }
+      if (_currentStep == 1) {
+        // Validate StepTwo before moving to the next step
+        if (!(_stepTwoKey.currentState?.validate() ?? false)) {
+          return; // Prevent moving to the next step if validation fails
+        }
+      }
+      if (_currentStep == 2) {
+        // Validate StepThree before moving to the next step
+        if (!(_stepThreeKey.currentState?.validate() ?? false)) {
+          return; // Prevent moving to the next step if validation fails
+        }
+      }
+      if (_currentStep == 3) {
+        // Validate StepFour before moving to the next step
+        if (!(_stepFourKey.currentState?.validate() ?? false)) {
+          return; // Prevent moving to the next step if validation fails
+        }
+      }
+
       if (_currentStep < 5) {
         _currentStep++;
       } else {
@@ -60,9 +92,10 @@ class _UserSurveyState extends State<UserSurvey> {
             const SizedBox(height: 20),
             Expanded(
               child: _currentStep == 0
-                  ? StepOne(nameController: _nameController)
+                  ? StepOne(nameController: _nameController, formKey: _stepOneKey,)
                   : _currentStep == 1
                       ? StepTwo(
+                          formKey: _stepTwoKey,
                           selectedGoal: _selectedGoal,
                           onGoalSelected: (goal) {
                             setState(() {
@@ -72,6 +105,7 @@ class _UserSurveyState extends State<UserSurvey> {
                         )
                       : _currentStep == 2
                           ? StepThree(
+                              formKey: _stepThreeKey,
                               selectedGender: _selectedGender,
                               onGenderSelected: (gender) {
                                 setState(() {
@@ -84,6 +118,9 @@ class _UserSurveyState extends State<UserSurvey> {
                             )
                           : _currentStep == 3
                               ? StepFour(
+                                  formKey: _stepFourKey,
+                                  weightController: _weightController, // Pass current weight
+                                  goal: _selectedGoal,
                                   weightGoalController: _weightGoalController,
                                   goalPerWeek: _goalPerWeek,
                                   onGoalPerWeekSelected: (goal) {
@@ -115,7 +152,7 @@ class _UserSurveyState extends State<UserSurvey> {
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
+              children: [
                 TonalButton(
                   onPressed: _previousStep,
                   //icon: const Icon(Icons.arrow_back, color: NeutralColors.light100),
@@ -245,6 +282,7 @@ class StepThree extends StatelessWidget {
           child: TextField(
             controller: ageController,
             decoration: const InputDecoration(
+              border: OutlineInputBorder(),
               labelText: 'Enter your age',
             ),
             keyboardType: TextInputType.number,
@@ -255,6 +293,7 @@ class StepThree extends StatelessWidget {
           child: TextField(
             controller: heightController,
             decoration: const InputDecoration(
+              border: OutlineInputBorder(),
               labelText: 'Enter your height (cm)',
             ),
             keyboardType: TextInputType.number,
@@ -265,6 +304,7 @@ class StepThree extends StatelessWidget {
           child: TextField(
             controller: weightController,
             decoration: const InputDecoration(
+              border: OutlineInputBorder(),
               labelText: 'Enter your weight (kg)',
             ),
             keyboardType: TextInputType.number,
@@ -477,7 +517,7 @@ class Summary extends StatelessWidget {
           children: <Widget>[
             Text('Height: $height cm', style: const TextStyle(fontSize: 18)),
             Text('Weight: $weight kg', style: const TextStyle(fontSize: 18)),
-            Text('Activity Level: $activityLevel', style: const TextStyle(fontSize: 18)),
+            Text('$activityLevel', style: const TextStyle(fontSize: 18)),
           ],
             ),
           ),
