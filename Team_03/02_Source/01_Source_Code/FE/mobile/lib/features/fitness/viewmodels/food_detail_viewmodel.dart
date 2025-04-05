@@ -33,7 +33,6 @@ class FoodDetailViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      // Create a timeout for the API call
       final result = await _repository.getFoodById(id)
           .timeout(_timeoutDuration, onTimeout: () {
         throw TimeoutException('Connection timed out. Please try again.');
