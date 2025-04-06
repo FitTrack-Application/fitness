@@ -28,4 +28,19 @@ class ApiService {
       throw Exception('Failed to create user');
     }
   }
+
+  Future<void> userSurvey(UserInfo user) async {
+    final response = await http.post(
+      Uri.parse("http://localhost:8080/api/users/survey"),
+      headers: {"Content-Type": "application/json"},
+      body: json.encode(user.toJson()),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to submit survey');
+    }
+  }
+
+    
+
 }

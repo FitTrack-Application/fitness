@@ -15,7 +15,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.bind.annotation.RequestHeader;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 @RestController
@@ -30,11 +34,29 @@ public class AuthController {
         try {
             return ResponseEntity.ok(authService.register(request));
         } catch (ResponseStatusException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(
-                    Map.of("status", "error", "message", "Email is already exist or invalid information"));
+            List<String> errorDetails = new ArrayList<>();
+            errorDetails.add("Email is already exist or invalid information");
+
+            ApiResponse<Object> errorResponse = ApiResponse.builder()
+                    .status(HttpStatus.CONFLICT.value())
+                    .generalMessage("Registration failed")
+                    .errorDetails(errorDetails)
+                    .timestamp(LocalDateTime.now())
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                    Map.of("status", "error", "message", e.getMessage()));
+            List<String> errorDetails = new ArrayList<>();
+            errorDetails.add(e.getMessage());
+
+            ApiResponse<Object> errorResponse = ApiResponse.builder()
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .generalMessage("Registration failed")
+                    .errorDetails(errorDetails)
+                    .timestamp(LocalDateTime.now())
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
     }
 
@@ -43,8 +65,67 @@ public class AuthController {
         try {
             return ResponseEntity.ok(authService.login(request));
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
-                    Map.of("status", "error", "message", e.getMessage()));
+            List<String> errorDetails = new ArrayList<>();
+            errorDetails.add(e.getMessage());
+
+            ApiResponse<Object> errorResponse = ApiResponse.builder()
+                    .status(HttpStatus.UNAUTHORIZED.value())
+                    .generalMessage("Authentication failed")
+                    .errorDetails(errorDetails)
+                    .timestamp(LocalDateTime.now())
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+        }
+    }
+
+    @PostMapping("/verify")
+    public ResponseEntity<?> verifyToken(@RequestHeader("Authorization") String token) {
+        try {
+            // Remove "Bearer " prefix if present
+            if (token.startsWith("Bearer ")) {
+                token = token.substring(7);
+            }
+
+            ApiResponse<Map<String, Object>> response = authService.verifyToken(token);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            List<String> errorDetails = new ArrayList<>();
+            errorDetails.add(e.getMessage());
+
+            ApiResponse<Object> errorResponse = ApiResponse.builder()
+                    .status(HttpStatus.UNAUTHORIZED.value())
+                    .generalMessage("Token verification failed")
+                    .errorDetails(errorDetails)
+                    .timestamp(LocalDateTime.now())
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+        }
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refreshToken(@RequestHeader("Authorization") String refreshToken) {
+        try {
+            // Remove "Bearer " prefix if present
+            if (refreshToken.startsWith("Bearer ")) {
+                refreshToken = refreshToken.substring(7);
+            }
+
+            ApiResponse<Map<String, String>> response = authService.refreshToken(refreshToken);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            List<String> errorDetails = new ArrayList<>();
+            errorDetails.add(e.getMessage());
+
+            ApiResponse<Object> errorResponse = ApiResponse.builder()
+                    .status(HttpStatus.UNAUTHORIZED.value())
+                    .generalMessage("Token refresh failed")
+                    .errorDetails(errorDetails)
+                    .timestamp(LocalDateTime.now())
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
         }
     }
 }

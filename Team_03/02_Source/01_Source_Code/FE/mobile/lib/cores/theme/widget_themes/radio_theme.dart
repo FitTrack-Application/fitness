@@ -16,9 +16,9 @@ class TRadioTheme {
   static final darkRadioTheme = RadioThemeData(
     fillColor: MaterialStateProperty.resolveWith((states) {
       if (states.contains(MaterialState.selected)) {
-        return HighlightColors.highlight500;
+        return NeutralColors.light500;
       }
-      return HighlightColors.highlight500;
+      return NeutralColors.light500;
     }),
   );
 }

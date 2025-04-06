@@ -25,6 +25,9 @@ public class JwtUtil {
     @Value("${jwt.expiration}")
     private long jwtExpiration;
 
+    @Value("${jwt.refresh-expiration:604800000}") // Default 7 days in milliseconds
+    private long refreshTokenExpiration;
+
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
@@ -50,6 +53,21 @@ public class JwtUtil {
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
+                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    public String generateRefreshToken(UserDetails userDetails) {
+        Map<String, Object> claims = new HashMap<>();
+        if (userDetails instanceof User user) {
+            claims.put("userId", user.getUserId().toString());
+            claims.put("tokenType", "refresh");
+        }
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(userDetails.getUsername())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpiration))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -82,4 +100,50 @@ public class JwtUtil {
     public String extractUserId(String token) {
         return extractClaim(token, claims -> claims.get("userId", String.class));
     }
+
+    public Map<String, Object> validateTokenAndGetClaims(String token) {
+        try {
+            Claims claims = extractAllClaims(token);
+            
+            // Check if token is expired
+            if (isTokenExpired(token)) {
+                throw new IllegalArgumentException("Token has expired");
+            }
+            
+            // Extract relevant claims into a map
+            Map<String, Object> claimsMap = new HashMap<>();
+            claimsMap.put("userId", claims.get("userId", String.class));
+            claimsMap.put("name", claims.get("name", String.class));
+            claimsMap.put("role", claims.get("role", String.class));
+            claimsMap.put("email", claims.getSubject());
+            claimsMap.put("exp", claims.getExpiration().getTime());
+            claimsMap.put("iat", claims.getIssuedAt().getTime());
+            
+            return claimsMap;
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Failed to parse token: " + e.getMessage());
+        }
+    }
+
+    public Map<String, Object> validateRefreshTokenAndGetClaims(String token) {
+        try {
+            Claims claims = extractAllClaims(token);
+            
+            // Check if token is expired
+            if (isTokenExpired(token)) {
+                throw new IllegalArgumentException("Refresh token has expired");
+            }
+            
+            // Verify this is a refresh token
+            String tokenType = claims.get("tokenType", String.class);
+            if (!"refresh".equals(tokenType)) {
+                throw new IllegalArgumentException("Not a refresh token");
+            }
+            
+            return claims;
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Failed to parse refresh token: " + e.getMessage());
+        }
+    }
+
 }

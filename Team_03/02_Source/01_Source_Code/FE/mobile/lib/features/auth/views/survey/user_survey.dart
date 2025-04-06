@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/common/widgets/tonal_button/tonal_button.dart';
 import 'package:mobile/cores/constants/colors.dart';
-import 'package:mobile/common/widgets/select_box/select_box.dart';
-import 'package:mobile/common/widgets/elevated_button/elevated_button.dart';
-import 'package:go_router/go_router.dart';  
+import 'package:go_router/go_router.dart';
+import 'package:mobile/features/auth/models/user_info.dart';  
+import 'package:mobile/features/auth/services/api_service.dart';  
+import 'step_one.dart';
+import 'step_two.dart';
+import 'step_three.dart';
+import 'step_four.dart';
+import 'step_five.dart';
 class UserSurvey extends StatefulWidget {
   const UserSurvey({super.key});
 
@@ -11,6 +16,7 @@ class UserSurvey extends StatefulWidget {
   // ignore: library_private_types_in_public_api
   _UserSurveyState createState() => _UserSurveyState();
 }
+
 
 class _UserSurveyState extends State<UserSurvey> {
   int _currentStep = 0;
@@ -21,9 +27,14 @@ class _UserSurveyState extends State<UserSurvey> {
   final TextEditingController _heightController = TextEditingController();
   final TextEditingController _weightController = TextEditingController();
   final TextEditingController _weightGoalController = TextEditingController();
+  final GlobalKey<FormState> _stepOneKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _stepTwoKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _stepThreeKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _stepFourKey = GlobalKey<FormState>();
   double _goalPerWeek = 0.2;
   String _selectedActivityLevel = '';
-
+  final double _calorieGoal = 0.0; 
+  final apiService = ApiService();
   void _previousStep() {
     setState(() {
       if (_currentStep > 0) {
@@ -34,15 +45,75 @@ class _UserSurveyState extends State<UserSurvey> {
 
   void _nextStep() {
     setState(() {
+      if (_currentStep == 0) {
+        if (!(_stepOneKey.currentState?.validate() ?? false)) {
+          return; 
+        }
+      }
+      if (_currentStep == 1) {
+        // Validate StepTwo before moving to the next step
+        if (!(_stepTwoKey.currentState?.validate() ?? false)) {
+          return; // Prevent moving to the next step if validation fails
+        }
+      }
+      if (_currentStep == 2) {
+        // Validate StepThree before moving to the next step
+        if (!(_stepThreeKey.currentState?.validate() ?? false)) {
+          return; // Prevent moving to the next step if validation fails
+        }
+      }
+      if (_currentStep == 3) {
+        // Validate StepFour before moving to the next step
+        if (!(_stepFourKey.currentState?.validate() ?? false)) {
+          return; // Prevent moving to the next step if validation fails
+        }
+      }
+
       if (_currentStep < 5) {
         _currentStep++;
       } else {
         // Navigate to /dashboard when the last step is completed
+        sendSurveyData(); 
         context.go('/dashboard');
       }
     });
   }
+  void sendSurveyData() async {
+    final String name = _nameController.text.trim();
+    final int age = int.tryParse(_ageController.text.trim()) ?? 0;
+    final String gender = _selectedGender;
+    final double height = double.tryParse(_heightController.text.trim()) ?? 0.0;
+    final double weight = double.tryParse(_weightController.text.trim()) ?? 0.0;
+    final double weightGoal = double.tryParse(_weightGoalController.text.trim()) ?? 0.0;
+    final String goal = _selectedGoal;
+    final String activityLevel = _selectedActivityLevel;
+    final double calorieGoal = _calorieGoal;
+    final userInfo = UserInfo(
+      userID: "12345", 
+      name: name,
+      age: age,
+      gender: gender,
+      height: height,
+      weight: weight,
+      goalType: goal,
+      target: weightGoal,
+      goalPerWeek: _goalPerWeek,
+      activityLevel: activityLevel,
+      calorieGoal: calorieGoal,
+      imageURL: "https://example.com/avatar.jpg", // Optional field
+    );
 
+    try {
+      await apiService.userSurvey(userInfo);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Survey data submitted successfully!")),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error submitting survey: $e")),
+      );
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,7 +123,7 @@ class _UserSurveyState extends State<UserSurvey> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          children: <Widget>[
+          children: [
             LinearProgressIndicator(
               value: (_currentStep + 1) / 6,
               color: Colors.green,
@@ -60,9 +131,10 @@ class _UserSurveyState extends State<UserSurvey> {
             const SizedBox(height: 20),
             Expanded(
               child: _currentStep == 0
-                  ? StepOne(nameController: _nameController)
+                  ? StepOne(nameController: _nameController, formKey: _stepOneKey,)
                   : _currentStep == 1
                       ? StepTwo(
+                          formKey: _stepTwoKey,
                           selectedGoal: _selectedGoal,
                           onGoalSelected: (goal) {
                             setState(() {
@@ -72,6 +144,7 @@ class _UserSurveyState extends State<UserSurvey> {
                         )
                       : _currentStep == 2
                           ? StepThree(
+                              formKey: _stepThreeKey,
                               selectedGender: _selectedGender,
                               onGenderSelected: (gender) {
                                 setState(() {
@@ -84,6 +157,9 @@ class _UserSurveyState extends State<UserSurvey> {
                             )
                           : _currentStep == 3
                               ? StepFour(
+                                  formKey: _stepFourKey,
+                                  weightController: _weightController, // Pass current weight
+                                  goal: _selectedGoal,
                                   weightGoalController: _weightGoalController,
                                   goalPerWeek: _goalPerWeek,
                                   onGoalPerWeekSelected: (goal) {
@@ -115,10 +191,10 @@ class _UserSurveyState extends State<UserSurvey> {
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
+              children: [
                 TonalButton(
                   onPressed: _previousStep,
-                  //icon: const Icon(Icons.arrow_back, color: NeutralColors.light100),
+                  //icon: const Icon(Icons.arrow_back, color: HighlightColors.highlight500),
                   icon: Icons.arrow_back,
                 ),
                 const SizedBox(width: 10),
@@ -137,245 +213,6 @@ class _UserSurveyState extends State<UserSurvey> {
   }
 }
 
-class StepOne extends StatelessWidget {
-  final TextEditingController nameController;
-
-  const StepOne({super.key, required this.nameController});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        const Text('First, What can we call you?'),
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: TextField(
-            controller: nameController,
-            decoration: const InputDecoration(labelText: 'Enter your name'),
-  
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class StepTwo extends StatelessWidget {
-  final String selectedGoal;
-  final ValueChanged<String> onGoalSelected;
-
-  const StepTwo({super.key, required this.selectedGoal, required this.onGoalSelected});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        const Text('Step 2: What is your goal?'),
-        SelectBox<String>(
-          title: 'Gain Weight',
-          value: 'Gain Weight',
-          groupValue: selectedGoal,
-          onChanged: onGoalSelected,
-        ),
-        const SizedBox(height: 10),
-        SelectBox<String>(
-          title: 'Maintain Weight',
-          value: 'Maintain Weight',
-          groupValue: selectedGoal,
-          onChanged: onGoalSelected,
-        ),
-        const SizedBox(height: 10),
-        SelectBox<String>(
-          title: 'Lose Weight',
-          value: 'Lose Weight',
-          groupValue: selectedGoal,
-          onChanged: onGoalSelected,
-        ),
-      ],
-    );
-  }
-}
-
-class StepThree extends StatelessWidget {
-  final String selectedGender;
-  final ValueChanged<String> onGenderSelected;
-  final TextEditingController ageController;
-  final TextEditingController heightController;
-  final TextEditingController weightController;
-
-  const StepThree({super.key, 
-    required this.selectedGender,
-    required this.onGenderSelected,
-    required this.ageController,
-    required this.heightController,
-    required this.weightController,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        const Text('Step 3: Tell us more about you'),
-        Row(
-          children: <Widget>[
-            Expanded(
-              child: SelectBox<String>(
-                title: 'Male',
-                value: 'Male',
-                groupValue: selectedGender,
-                onChanged: onGenderSelected,
-              ),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: SelectBox<String>(
-                title: 'Female',
-                value: 'Female',
-                groupValue: selectedGender,
-                onChanged: onGenderSelected,
-              ),
-            ),
-          ],
-        ),
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: TextField(
-            controller: ageController,
-            decoration: const InputDecoration(
-              labelText: 'Enter your age',
-            ),
-            keyboardType: TextInputType.number,
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: TextField(
-            controller: heightController,
-            decoration: const InputDecoration(
-              labelText: 'Enter your height (cm)',
-            ),
-            keyboardType: TextInputType.number,
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: TextField(
-            controller: weightController,
-            decoration: const InputDecoration(
-              labelText: 'Enter your weight (kg)',
-            ),
-            keyboardType: TextInputType.number,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class StepFour extends StatelessWidget {
-  final TextEditingController weightGoalController;
-  final double goalPerWeek;
-  final ValueChanged<double> onGoalPerWeekSelected;
-
-  const StepFour({super.key, 
-    required this.weightGoalController,
-    required this.goalPerWeek,
-    required this.onGoalPerWeekSelected,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        const Text('Step 4: Enter your weight goal and goal per week'),
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: TextField(
-            controller: weightGoalController,
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: 'Enter your weight goal (kg)',
-            ),
-            keyboardType: TextInputType.number,
-
-          ),
-        ),
-        SelectBox<double>(
-          title: '0.2 kg per week',
-          value: 0.2,
-          groupValue: goalPerWeek,
-          onChanged: onGoalPerWeekSelected,
-        ),
-        const SizedBox(height: 10),
-        SelectBox<double>(
-          title: '0.5 kg per week',
-          value: 0.5,
-          groupValue: goalPerWeek,
-          onChanged: onGoalPerWeekSelected,
-        ),
-      ],
-    );
-  }
-}
-
-class StepFive extends StatelessWidget {
-  final String selectedActivityLevel;
-  final ValueChanged<String> onActivityLevelSelected;
-
-  const StepFive({super.key, 
-    required this.selectedActivityLevel,
-    required this.onActivityLevelSelected,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        const Text('Step 5: Select your activity level'),
-        SelectBox<String>(
-          title: 'Sedentary ',
-          value: 'Sedentary',
-          groupValue: selectedActivityLevel,
-          onChanged: onActivityLevelSelected,
-        ),
-        const SizedBox(height: 10),
-        SelectBox<String>(
-          title: 'Lightly active',
-          value: 'Lightly active',
-          groupValue: selectedActivityLevel,
-          onChanged: onActivityLevelSelected,
-        ),
-        const SizedBox(height: 10),
-        SelectBox<String>(
-          title: 'Moderately active',
-          value: 'Moderately active',
-          groupValue: selectedActivityLevel,
-          onChanged: onActivityLevelSelected,
-        ),
-        const SizedBox(height: 10),
-        SelectBox<String>(
-          title: 'Very active ',
-          value: 'Very active',
-          groupValue: selectedActivityLevel,
-          onChanged: onActivityLevelSelected,
-        ),
-        const SizedBox(height: 10),
-        SelectBox<String>(
-          title: 'Extra active',
-          value: 'Extra active',
-          groupValue: selectedActivityLevel,
-          onChanged: onActivityLevelSelected,
-        ),
-      ],
-    );
-  }
-}
-
 class Summary extends StatelessWidget {
   final String name;
   final String goal;
@@ -387,7 +224,7 @@ class Summary extends StatelessWidget {
   final double goalPerWeek;
   final String activityLevel;
 
-  const Summary({super.key, 
+  const Summary({super.key,
     required this.name,
     required this.goal,
     required this.gender,
@@ -399,16 +236,16 @@ class Summary extends StatelessWidget {
     required this.activityLevel,
   });
 
-  double calculateBMR() {
+  double calculateGoal() {
     double weight = double.parse(this.weight);
     double height = double.parse(this.height);
     int age = int.parse(this.age);
-    double bmr;
+    double calorieGoal;
 
     if (gender == 'Male') {
-      bmr = (10 * weight) + (6.25 * height) - (5 * age) + 5;
+      calorieGoal = (10 * weight) + (6.25 * height) - (5 * age) + 5;
     } else {
-      bmr = (10 * weight) + (6.25 * height) - (5 * age) - 161;
+      calorieGoal = (10 * weight) + (6.25 * height) - (5 * age) - 161;
     }
 
     double activityFactor;
@@ -431,101 +268,113 @@ class Summary extends StatelessWidget {
       default:
         activityFactor = 1.0;
     }
-
-    return bmr * activityFactor;
+    calorieGoal = calorieGoal * activityFactor;
+    switch (goal) {
+      case 'Lose weight':
+        calorieGoal -= goalPerWeek; // Subtract 500 calories for weight loss
+        break;
+      case 'Gain weight':
+        calorieGoal += goalPerWeek; // Add 500 calories for weight gain
+        break;
+      case 'Maintain weight':
+        break; // No change for maintenance
+      default:
+        break;
+    }
+    return calorieGoal;
   }
 
   @override
   Widget build(BuildContext context) {
-    double bmr = calculateBMR();
+    double calorieGoal = calculateGoal();
 
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
+        children: [
           const Text('Summary', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
           const SizedBox(height: 10),
           Row(children: [
-        Expanded(
-          child: Container(
-            padding: const EdgeInsets.all(8.0),
-            decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8.0),
-          border: Border.all(color: NeutralColors.light100), // Added border with NeutralColors.light100
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.all(8.0),
+                decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8.0),
+              border: Border.all(color: HighlightColors.highlight500), // Added border with HighlightColors.highlight500
+                ),
+                child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Name: $name', style: Theme.of(context).textTheme.bodyMedium),
+                Text('Gender: $gender', style: Theme.of(context).textTheme.bodyMedium),
+                Text('Age: $age', style: Theme.of(context).textTheme.bodyMedium),
+              ],
+                ),
+              ),
             ),
-            child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text('Name: $name', style: const TextStyle(fontSize: 18)),
-            Text('Gender: $gender', style: const TextStyle(fontSize: 18)),
-            Text('Age: $age', style: const TextStyle(fontSize: 18)),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.all(8.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8.0),
+                  border: Border.all(color: HighlightColors.highlight500), // Added border with HighlightColors.highlight500
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Height: $height cm', style: Theme.of(context).textTheme.bodyMedium),
+                    Text('Weight: $weight kg', style: Theme.of(context).textTheme.bodyMedium),
+                    Text('$activityLevel', style: Theme.of(context).textTheme.bodyMedium),
+                  ],
+                ),
+              ),
+            ),
           ],
-            ),
           ),
-        ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: Container(
-            padding: const EdgeInsets.all(8.0),
-            decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8.0),
-          border: Border.all(color: NeutralColors.light100), // Added border with NeutralColors.light100
+          const SizedBox(height: 10),
+          Row(
+            children: [
+            Expanded(
+              child: Container(
+              padding: const EdgeInsets.all(8.0),
+              decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8.0),
+            border: Border.all(color: HighlightColors.highlight500), // Added border with HighlightColors.highlight500
+              ),
+              child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Goal: $goal', style: Theme.of(context).textTheme.bodyMedium),
+              Text('Weight Goal: $weightGoal kg', style: Theme.of(context).textTheme.bodyMedium),
+              Text('Goal per Week: ${goalPerWeek.toString()} kg', style: Theme.of(context).textTheme.bodyMedium),
+            ],
+              ),
+              ),
             ),
-            child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text('Height: $height cm', style: const TextStyle(fontSize: 18)),
-            Text('Weight: $weight kg', style: const TextStyle(fontSize: 18)),
-            Text('Activity Level: $activityLevel', style: const TextStyle(fontSize: 18)),
-          ],
-            ),
+            ],
           ),
-        ),
-          ],),
-          const SizedBox(height: 10),         
-        Row(
-          children: [
-          Expanded(
-            child: Container(
-            padding: const EdgeInsets.all(8.0),
-            decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8.0),
-          border: Border.all(color: NeutralColors.light100), // Added border with NeutralColors.light100
+          const SizedBox(height: 10),
+          Row(
+            children: [
+            Expanded(
+              child: Container(
+              padding: const EdgeInsets.all(8.0),
+              decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8.0),
+            border: Border.all(color: HighlightColors.highlight500), // Added border with HighlightColors.highlight500
+              ),
+              child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Calorie Goal per day (Remaining =  Goal - Food + Exercise): ${calorieGoal.toStringAsFixed(2)} kcal', style: Theme.of(context).textTheme.displayLarge), 
+            ],
+              ),
+              ),
             ),
-            child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-          Text('Goal: $goal', style: const TextStyle(fontSize: 18)),
-          Text('Weight Goal: $weightGoal kg', style: const TextStyle(fontSize: 18)),
-          Text('Goal per Week: ${goalPerWeek.toString()} kg', style: const TextStyle(fontSize: 18)),
-          ],
-            ),
-            ),
+            ],
           ),
-          ],
-        ),
-        const SizedBox(height: 10),
-        Row(
-          children: [
-          Expanded(
-            child: Container(
-            padding: const EdgeInsets.all(8.0),
-            decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8.0),
-          border: Border.all(color: NeutralColors.light100), // Added border with NeutralColors.light100
-            ),
-            child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text('BMR: ${bmr.toStringAsFixed(2)} kcal/day', style: const TextStyle(fontSize: 36)),
-          ],
-            ),
-            ),
-          ),
-          ],
-        ),
-          
         ],
       ),
     );

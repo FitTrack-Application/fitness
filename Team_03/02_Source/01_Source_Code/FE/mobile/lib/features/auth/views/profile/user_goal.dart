@@ -10,7 +10,7 @@ class GoalPage extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            context.go('/profile'); // Navigate back to the previous screen
+            context.go('/profile');
           },
         ),
       ),
@@ -20,90 +20,96 @@ class GoalPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              padding: const EdgeInsets.all(16.0),
-              decoration: BoxDecoration(
-              color: NeutralColors.dark400,
-              borderRadius: BorderRadius.circular(8.0),
-              boxShadow: [
-                BoxShadow(
-                color: Colors.grey.withOpacity(0.2),
-                spreadRadius: 2,
-                blurRadius: 5,
-                offset: const Offset(0, 3),
-                ),
-              ],
+                padding: const EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                color: NeutralColors.dark400,
+                borderRadius: BorderRadius.circular(8.0),
               ),
               child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
+                children: [
                   Text(
                   "Starting Weight",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  style: Theme.of(context).textTheme.bodyLarge,
                   ),
                   Text(
-                  "70 kg (26/03/2025)", // Example placeholder text
-                  style: TextStyle(fontSize: 14, color: Colors.grey),
+                  "70 kg (26/03/2025)", 
+                  style: Theme.of(context).textTheme.displaySmall,
                   ),
                 ],
                 ),
                 const SizedBox(height: 16),
                 Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
+                children: [
                   Text(
                   "Current Weight",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  style: Theme.of(context).textTheme.bodyLarge,
                   ),
                   Text(
-                  "68 kg (26/04/2025)", // Example placeholder text
-                  style: TextStyle(fontSize: 14, color: Colors.grey),
+                  "68 kg", 
+                  style: Theme.of(context).textTheme.displaySmall,
                   ),
                 ],
                 ),
                 const SizedBox(height: 16),
                 Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
+                children: [
                   Text(
                   "Goal Weight",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  style: Theme.of(context).textTheme.bodyLarge,
                   ),
                   Text(
-                  "65 kg (26/06/2025)", // Example placeholder text
-                  style: TextStyle(fontSize: 14, color: Colors.grey),
+                  "65 kg",
+                  style: Theme.of(context).textTheme.displaySmall,
                   ),
                 ],
                 ),
                 const SizedBox(height: 16),
                 Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
+                children: [
                   Text(
                   "Weekly Goal",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  style: Theme.of(context).textTheme.bodyLarge,
                   ),
                   Text(
-                  "Lose 0.5 kg per week", // Example placeholder text
-                  style: TextStyle(fontSize: 14, color: Colors.grey),
+                  "Lose 0.5 kg per week", 
+                  style: Theme.of(context).textTheme.displaySmall,
                   ),
                 ],
                 ),
                 const SizedBox(height: 16),
                 Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
+                children: [
                   Text(
                   "Activity Level",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  style: Theme.of(context).textTheme.bodyLarge,
                   ),
                   Text(
                   "Moderate Activity", // Example placeholder text
-                  style: TextStyle(fontSize: 14, color: Colors.grey),
+                  style: Theme.of(context).textTheme.displaySmall,
                   ),
                 ],
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                    "Calorie goal",
+                    style: Theme.of(context).textTheme.bodyLarge,
+                    ),
+                    Text(
+                    "2400", 
+                    style: Theme.of(context).textTheme.displaySmall,
+                    ),
+                  ],
                 ),
               ],
               ),
