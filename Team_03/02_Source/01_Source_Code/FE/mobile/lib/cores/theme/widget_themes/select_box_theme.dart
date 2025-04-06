@@ -10,7 +10,7 @@ class SelectBoxTheme {
        
       border: Border.all(
         color: isSelected
-          ? (isDarkMode ? NeutralColors.light300 : HighlightColors.highlight500)
+          ? (isDarkMode ? HighlightColors.highlight500 : HighlightColors.highlight500)
           : Colors.transparent,
       ),
       borderRadius: BorderRadius.circular(14.0),

@@ -10,9 +10,10 @@ import 'package:mobile/features/auth/views/survey/user_survey.dart';
 import 'package:mobile/features/auth/views/authentication/user_register.dart';
 import 'package:mobile/features/auth/views/authentication/user_login.dart';
 import 'package:mobile/features/auth/views/profile/user_goal.dart';
-
+import 'package:mobile/features/auth/views/profile/edit_profile.dart';
 import '../../features/fitness/view/food_detail/food_detail_screen.dart';
 import '../../features/fitness/view/search_food/search_food_screen.dart';
+import '';
 final GoRouter appRouter = GoRouter(
   initialLocation: '/search',
   routes: [
@@ -57,7 +58,7 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/survey',
-       builder: (context, state) => MainScreen(child: UserSurvey()),
+       builder: (context, state) =>  UserSurvey(),
     ),
     GoRoute(
       path: '/search',
@@ -65,7 +66,11 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/goal',
-      builder: (context, state) => MainScreen(child: GoalPage()), 
+      builder: (context, state) => GoalPage(), 
+    ),
+    GoRoute(
+      path: '/profile/edit',
+      builder: (context, state) => EditProfile(), 
     ),
   ],
 );

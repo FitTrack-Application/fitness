@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/cores/constants/colors.dart';
 import 'package:mobile/cores/theme/widget_themes/select_box_theme.dart';
 class SelectBox<T> extends StatelessWidget {
   final String title;

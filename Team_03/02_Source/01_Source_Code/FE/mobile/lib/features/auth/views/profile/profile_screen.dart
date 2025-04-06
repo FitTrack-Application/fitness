@@ -9,30 +9,35 @@ class ProfileScreen extends StatelessWidget {
       appBar: AppBar(title: Text("Profile")),
       body: Column(
         children: [
-          Center(
+            Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                CircleAvatar(
-                  radius: 50,
-                  backgroundColor: Colors.grey[300],
-                  child: Icon(
-                    Icons.person,
-                    size: 50,
-                    color: Colors.grey[700],
-                  ),
+              GestureDetector(
+                onTap: () {
+                context.go('/profile/edit');
+                },
+                child: CircleAvatar(
+                radius: 50,
+                backgroundColor: Colors.grey[300],
+                child: Icon(
+                  Icons.person,
+                  size: 50,
+                  color: Colors.grey[700],
                 ),
-                const SizedBox(height: 5),
-                const Text(
-                  "user@example.com",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                  ),
                 ),
+              ),
+              const SizedBox(height: 5),
+              const Text(
+                "user@example.com",
+                style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+                ),
+              ),
               ],
             ),
-          ),
+            ),
           const SizedBox(height: 20),
           Expanded(
             child: ListView(
