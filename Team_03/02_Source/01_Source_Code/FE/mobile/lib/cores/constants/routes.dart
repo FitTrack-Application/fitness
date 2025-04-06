@@ -14,7 +14,7 @@ import 'package:mobile/features/auth/views/profile/user_goal.dart';
 import '../../features/fitness/view/food_detail/food_detail_screen.dart';
 import '../../features/fitness/view/search_food/search_food_screen.dart';
 final GoRouter appRouter = GoRouter(
-  initialLocation: '/search',
+  initialLocation: '/diary',
   routes: [
     GoRoute(
       path: '/',
