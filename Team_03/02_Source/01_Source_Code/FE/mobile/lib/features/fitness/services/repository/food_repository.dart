@@ -2,7 +2,6 @@ import '../../../../common/model/oagination.dart';
 import '../../models/food.dart';
 import '../api_client.dart';
 
-// Cập nhật FoodRepository để sử dụng class mới
 class FoodRepository {
   final ApiClient _apiClient;
 
@@ -16,10 +15,10 @@ class FoodRepository {
       id: data['foodId'],
       name: data['foodName'],
       servingSize: (data['servingSize'] as num).toDouble(),
-      calories: (data['calories'] as num).toDouble(),
-      protein: (data['protein'] as num).toDouble(),
-      carbs: (data['carbs'] as num).toDouble(),
-      fat: (data['fat'] as num).toDouble(),
+      calories: (data['calories'] as num).toInt(),
+      protein: (data['protein'] as num).toInt(),
+      carbs: (data['carbs'] as num).toInt(),
+      fat: (data['fat'] as num).toInt(),
       unit: data['unit'] ?? 'g',
       description: data['description'] ?? '',
     );

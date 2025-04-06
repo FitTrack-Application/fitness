@@ -1,19 +1,18 @@
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobile/common/widgets/bottom_nav_bar/main_screen.dart';
+import 'package:mobile/features/auth/views/authentication/user_login.dart';
+import 'package:mobile/features/auth/views/authentication/user_register.dart';
 import 'package:mobile/features/auth/views/authentication/welcome_screen.dart';
+import 'package:mobile/features/auth/views/profile/edit_profile.dart';
 import 'package:mobile/features/auth/views/profile/profile_screen.dart';
+import 'package:mobile/features/auth/views/profile/user_goal.dart';
 import 'package:mobile/features/auth/views/splash/splash_screen.dart';
+import 'package:mobile/features/auth/views/survey/user_survey.dart';
 import 'package:mobile/features/fitness/view/diary/diary_screen.dart';
 import 'package:mobile/features/statistic/view/dashboard/dashboard_screen.dart';
-import 'package:mobile/common/widgets/bottom_nav_bar/main_screen.dart';
-import 'package:mobile/features/auth/views/survey/user_survey.dart';
-import 'package:mobile/features/auth/views/authentication/user_register.dart';
-import 'package:mobile/features/auth/views/authentication/user_login.dart';
-import 'package:mobile/features/auth/views/profile/user_goal.dart';
-import 'package:mobile/features/auth/views/profile/edit_profile.dart';
+
 import '../../features/fitness/view/food_detail/food_detail_screen.dart';
 import '../../features/fitness/view/search_food/search_food_screen.dart';
-import '';
 final GoRouter appRouter = GoRouter(
   initialLocation: '/diary',
   routes: [
@@ -34,14 +33,29 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => MainScreen(child: DiaryScreen()),
     ),
     GoRoute(
-      path: '/search',
-      builder: (context, state) => const SearchFoodScreen(),
+      path: '/search/:diaryId',
+      builder: (context, state) {
+        final diaryIdStr = state.pathParameters['diaryId']!;
+        final diaryId = int.tryParse(diaryIdStr) ?? 0;
+
+        return SearchFoodScreen(diaryId: diaryId);
+      },
     ),
     GoRoute(
-      path: '/food/:id',
+      path: '/food/:diaryId/:foodId/:mode',
       builder: (context, state) {
-        final foodId = state.pathParameters['id']!;
-        return FoodDetailScreen(foodId: foodId);
+        final diaryIdStr = state.pathParameters['diaryId'] ?? '';
+        final foodId = state.pathParameters['foodId'] ?? '';
+        final mode = state.pathParameters['mode'];
+
+        final diaryId = int.tryParse(diaryIdStr) ?? 0;
+        final isEdit = (mode == 'edit');
+
+        return FoodDetailScreen(
+          foodId: foodId,
+          diaryId: diaryId,
+          isEdit: isEdit,
+        );
       },
     ),
     GoRoute(
@@ -59,10 +73,6 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/survey',
        builder: (context, state) =>  UserSurvey(),
-    ),
-    GoRoute(
-      path: '/search',
-      builder: (context, state) => const SearchFoodScreen(),
     ),
     GoRoute(
       path: '/goal',

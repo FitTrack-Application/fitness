@@ -7,12 +7,19 @@ import 'package:mobile/features/fitness/view/food_detail/widget/food_info_sectio
 import 'package:provider/provider.dart';
 
 import '../../services/repository/food_repository.dart';
+import '../../viewmodels/diary_viewmodel.dart';
 import '../../viewmodels/food_detail_viewmodel.dart';
 
 class FoodDetailScreen extends StatelessWidget {
   final String foodId;
+  final int diaryId;
+  final bool isEdit;
 
-  const FoodDetailScreen({super.key, required this.foodId});
+  const FoodDetailScreen(
+      {super.key,
+      required this.foodId,
+      required this.diaryId,
+      required this.isEdit});
 
   @override
   Widget build(BuildContext context) {
@@ -20,34 +27,46 @@ class FoodDetailScreen extends StatelessWidget {
 
     return ChangeNotifierProvider(
       create: (context) =>
-      FoodDetailViewModel(FoodRepository())..loadFood(foodId),
+          FoodDetailViewModel(FoodRepository())..loadFood(foodId),
       child: Builder(
         builder: (context) => Scaffold(
           appBar: AppBar(
-            title: const Text('Add Food'),
+            title: isEdit ? const Text('Edit Food') : const Text('Add Food'),
             leading: IconButton(
               icon: const Icon(Icons.arrow_back),
               onPressed: () => GoRouter.of(context).pop(),
             ),
             actions: [
-              Consumer<FoodDetailViewModel>(
-                builder: (context, viewModel, child) {
-                  if (viewModel.loadState == LoadState.loaded) {
-                    return IconButton(
-                      icon: const Icon(Icons.check),
-                      onPressed: () {
-                        final food = viewModel.food;
-                        if (food != null) {
-                          print("Food ID: ${food.id}");
-                          print("Servings: ${viewModel.servings}");
-                          print("Selected Date: ${viewModel.selectedDate}");
-                          print(
-                              "Total Calories: ${food.calories * viewModel.servings}");
-                        }
-                      },
-                    );
+              Consumer2<FoodDetailViewModel, DiaryViewModel>(
+                builder: (context, foodVM, diaryVM, child) {
+                  final food = foodVM.food;
+
+                  if (foodVM.loadState != LoadState.loaded || food == null) {
+                    return const SizedBox.shrink();
                   }
-                  return const SizedBox.shrink();
+
+                  final isAdding = diaryVM.isAddingFood(food.id);
+
+                  return IconButton(
+                    icon: isAdding
+                        ? const SizedBox(
+                            height: 24,
+                            width: 24,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                            ),
+                          )
+                        : const Icon(Icons.check),
+                    onPressed: isAdding
+                        ? null // Không cho bấm khi đang thêm
+                        : () {
+                            diaryVM.addFoodToDiary(
+                              food,
+                              foodVM.servings,
+                              foodVM.selectedDate,
+                            );
+                          },
+                  );
                 },
               ),
             ],
@@ -183,7 +202,7 @@ class FoodDetailScreen extends StatelessWidget {
           FoodInfoSection(
             label: 'Date & Time',
             value:
-            "${viewModel.selectedDate.day}/${viewModel.selectedDate.month}/${viewModel.selectedDate.year} - ${viewModel.selectedDate.hour}:${viewModel.selectedDate.minute.toString().padLeft(2, '0')}",
+                "${viewModel.selectedDate.day}/${viewModel.selectedDate.month}/${viewModel.selectedDate.year} - ${viewModel.selectedDate.hour}:${viewModel.selectedDate.minute.toString().padLeft(2, '0')}",
             onTap: () => _selectDateTime(context, viewModel),
           ),
           const CustomDivider(),
@@ -206,7 +225,7 @@ class FoodDetailScreen extends StatelessWidget {
   Future<void> _editServings(
       BuildContext context, FoodDetailViewModel viewModel) async {
     TextEditingController controller =
-    TextEditingController(text: viewModel.servings.toString());
+        TextEditingController(text: viewModel.servings.toString());
 
     await showDialog(
       context: context,
@@ -220,7 +239,7 @@ class FoodDetailScreen extends StatelessWidget {
             LengthLimitingTextInputFormatter(4),
           ],
           decoration:
-          const InputDecoration(hintText: 'Enter number of servings'),
+              const InputDecoration(hintText: 'Enter number of servings'),
         ),
         actions: [
           TextButton(

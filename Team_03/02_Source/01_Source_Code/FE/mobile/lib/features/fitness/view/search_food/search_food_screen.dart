@@ -9,7 +9,9 @@ import '../../viewmodels/search_food_viewmodel.dart';
 import 'widget/food_item.dart';
 
 class SearchFoodScreen extends StatefulWidget {
-  const SearchFoodScreen({super.key});
+  final int diaryId;
+
+  const SearchFoodScreen({super.key, required this.diaryId});
 
   @override
   State<SearchFoodScreen> createState() => _SearchFoodScreenState();
@@ -199,7 +201,7 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> {
         return FoodItemWidget(
           food: food,
           onTap: () {
-            context.push('/food/${food.id}');
+            context.push('/food/${widget.diaryId}/${food.id}/add');
           },
         );
       },

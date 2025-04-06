@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../models/food.dart';
+import '../../../viewmodels/diary_viewmodel.dart';
 
 class FoodItemWidget extends StatelessWidget {
   final Food food;
@@ -12,6 +14,8 @@ class FoodItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
+    final diaryViewModel = context.watch<DiaryViewModel>();
+    final isAddingThisFood = diaryViewModel.isAddingFood(food.id);
 
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
@@ -26,7 +30,8 @@ class FoodItemWidget extends StatelessWidget {
               onTap: onTap,
               borderRadius: BorderRadius.circular(12),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -53,10 +58,23 @@ class FoodItemWidget extends StatelessWidget {
             ),
             child: InkWell(
               borderRadius: BorderRadius.circular(20),
-              onTap: () {},
+              onTap: isAddingThisFood
+                  ? null // Vô hiệu hóa chỉ khi đang thêm food này
+                  : () {
+                      diaryViewModel.addFoodToDiary(food, 1, DateTime.now());
+                    },
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Icon(Icons.add, color: colorScheme.primary),
+                child: isAddingThisFood
+                    ? const SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.5,
+                          color: Colors.black,
+                        ),
+                      )
+                    : const Icon(Icons.add, color: Colors.black),
               ),
             ),
           ),

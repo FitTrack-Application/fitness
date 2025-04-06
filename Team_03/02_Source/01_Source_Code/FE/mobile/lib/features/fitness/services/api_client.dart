@@ -88,5 +88,46 @@ class ApiClient {
     throw Exception('$message (Status code: ${response.statusCode})');
   }
 
-// Add additional methods as needed (post, put, delete)
+  Future<dynamic> post(String endpoint, {Map<String, dynamic>? body, Map<String, String>? headers}) async {
+    final uri = Uri.parse('$baseUrl/$endpoint');
+    final requestHeaders = {
+      'Content-Type': 'application/json',
+      ...?headers,
+    };
+
+    try {
+      final response = await http.post(
+        uri,
+        headers: requestHeaders,
+        body: body != null ? json.encode(body) : null,
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        // Check if response body is not empty before parsing
+        if (response.body.isNotEmpty) {
+          try {
+            return json.decode(response.body);
+          } on FormatException {
+            // Some successful requests might not return JSON
+            return {'success': true};
+          }
+        } else {
+          return {'success': true};
+        }
+      } else {
+        _handleHttpError(response);
+      }
+    } on SocketException {
+      throw Exception('No internet connection. Please check your network.');
+    } on HttpException {
+      throw Exception('Could not find the requested resource.');
+    } on TimeoutException {
+      throw Exception('Connection timed out. Please try again later.');
+    } catch (e) {
+      if (e is Exception) {
+        rethrow;
+      }
+      throw Exception('An unexpected error occurred: ${e.toString()}');
+    }
+  }
 }
