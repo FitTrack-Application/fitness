@@ -30,7 +30,12 @@ public class SurveyRequest {
     private String imageUrl;
 
     private String goalType;
-    private Double target;
+
+    private Double weightGoal;
+    
     private Double goalPerWeek;
-    private LocalDate startingDay;
+
+    private String activityLevel;
+
+    private Double caloriesGoal;
 }

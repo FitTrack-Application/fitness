@@ -25,7 +25,8 @@ public class Goal {
     private User user;
 
     private String goalType;
-    private Double target;
+    private Double weightGoal;
     private Double goalPerWeek;
-    private LocalDate startingDay;
+    private String activityLevel;
+    private Double caloriesGoal;
 }
