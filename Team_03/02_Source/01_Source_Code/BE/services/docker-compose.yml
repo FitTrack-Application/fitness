@@ -35,7 +35,7 @@ services:
       - .env
       - ./fit-service/.env
     environment:
-      - POSTGRESQL_DB_HOST=postgres
+      - POSTGRESQL_DB_HOST=ep-tight-flower-a1w3np3d-pooler.ap-southeast-1.aws.neon.tech
       - POSTGRESQL_DB_NAME=${FIT_DB_NAME}
     networks:
       - fitness-network
@@ -58,7 +58,7 @@ services:
       - .env
       - ./statistic-service/.env
     environment:
-      - POSTGRESQL_DB_HOST=postgres
+      - POSTGRESQL_DB_HOST=ep-tight-flower-a1w3np3d-pooler.ap-southeast-1.aws.neon.tech
       - POSTGRESQL_DB_NAME=${STATISTIC_DB_NAME}
     networks:
       - fitness-network
@@ -81,8 +81,8 @@ services:
       - .env
       - ./user-service/.env
     environment:
-      - POSTGRESQL_DB_HOST=postgres
-      - POSTGRESQL_DB_NAME=user_service_db
+      - POSTGRESQL_DB_HOST=ep-tight-flower-a1w3np3d-pooler.ap-southeast-1.aws.neon.tech
+      - POSTGRESQL_DB_NAME=${USER_DB_NAME}
     networks:
       - fitness-network
     volumes:

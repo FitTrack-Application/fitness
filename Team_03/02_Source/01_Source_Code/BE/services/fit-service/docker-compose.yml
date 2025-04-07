@@ -9,7 +9,7 @@ services:
     environment:
       POSTGRES_PASSWORD: ${POSTGRESQL_DB_PASSWORD}
       POSTGRES_USER: ${POSTGRESQL_DB_USERNAME}
-      POSTGRES_DB: fit_service_db
+      POSTGRES_DB: fitnessdb
     volumes:
       - postgres-data:/var/lib/postgresql/data
     networks:
@@ -31,7 +31,7 @@ services:
     env_file:
       - .env
     environment:
-      - POSTGRESQL_DB_HOST=postgres
+      - POSTGRESQL_DB_HOST=ep-tight-flower-a1w3np3d-pooler.ap-southeast-1.aws.neon.tech
     networks:
       - fit-network
 
