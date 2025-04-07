@@ -21,6 +21,12 @@ class DiaryScreen extends StatelessWidget {
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text('Diary'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: () => viewModel.fetchDiaryForSelectedDate(),
+          ),
+        ],
       ),
       body: AnimatedBuilder(
         animation: viewModel,
@@ -40,14 +46,20 @@ class DiaryScreen extends StatelessWidget {
   }
 
   Widget _buildDiaryContent(DiaryViewModel viewModel, BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          _buildDateSelector(viewModel),
-          _buildCaloriesCard(viewModel),
-          _buildFoodList(viewModel, context),
-          _buildExerciseList(viewModel),
-        ],
+    return RefreshIndicator(
+      onRefresh: () async {
+        await viewModel.fetchDiaryForSelectedDate();
+      },
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: Column(
+          children: [
+            _buildDateSelector(viewModel),
+            _buildCaloriesCard(viewModel),
+            _buildFoodList(viewModel, context),
+            _buildExerciseList(viewModel),
+          ],
+        ),
       ),
     );
   }
