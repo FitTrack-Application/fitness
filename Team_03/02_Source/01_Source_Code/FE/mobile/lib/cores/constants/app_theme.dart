@@ -51,8 +51,6 @@ class AppThemeData {
     onSecondary: Color(0xFF322942),
     onSurface: Color(0xFF241E30),
     brightness: Brightness.light,
-    background: Color(0xFFEFF3F3),
-    onBackground: Color(0xFFEFF3F3),
   );
 
   static const ColorScheme darkColorScheme = ColorScheme(
@@ -67,8 +65,7 @@ class AppThemeData {
     onPrimary: _darkFillColor,
     onSecondary: _darkFillColor,
     onSurface: _darkFillColor,
-    brightness: Brightness.dark, background: Color(0xFFEFF3F3),
-    onBackground: Color(0xFFEFF3F3),
+    brightness: Brightness.dark,
   );
 
   static const _regular = FontWeight.w400;

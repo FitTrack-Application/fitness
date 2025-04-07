@@ -6,11 +6,11 @@ class ListItem extends StatelessWidget {
   final VoidCallback onTap;
 
   const ListItem({
-    Key? key,
+    super.key,
     required this.leadingIcon,
     required this.title,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

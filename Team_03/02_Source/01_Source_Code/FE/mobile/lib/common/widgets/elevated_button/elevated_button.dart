@@ -1,7 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mobile/cores/constants/colors.dart';
-import 'package:mobile/cores/constants/sizes.dart';
 
 class ElevatedButtonCustom extends StatelessWidget {
   final String? label;
@@ -11,13 +8,12 @@ class ElevatedButtonCustom extends StatelessWidget {
   final Icon? icon;
 
   const ElevatedButtonCustom(
-      {Key? key,
+      {super.key,
       this.label,
       required this.onPressed,
       this.width,
       this.textStyle,
-      this.icon})
-      : super(key: key);
+      this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +21,7 @@ class ElevatedButtonCustom extends StatelessWidget {
       onPressed: () {
         onPressed();
       },
-      icon: icon ?? SizedBox.shrink(),
+      icon: icon ?? const SizedBox.shrink(),
       style: ElevatedButton.styleFrom(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(100), // Custom rounded border
@@ -36,9 +32,7 @@ class ElevatedButtonCustom extends StatelessWidget {
       ),
       label: Text(
         label!,
-        style: textStyle != null
-            ? textStyle
-            : Theme.of(context).textTheme.labelMedium,
+        style: textStyle ?? Theme.of(context).textTheme.labelMedium,
       ),
     );
   }

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/common/widgets/bottom_nav_bar/bottom_nav_provider.dart';
-import 'package:mobile/cores/constants/routes.dart';
 import 'package:provider/provider.dart';
 
 class BottomNavBar extends StatelessWidget {
+  const BottomNavBar({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Consumer<BottomNavProvider>(

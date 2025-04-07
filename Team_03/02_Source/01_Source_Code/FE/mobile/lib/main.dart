@@ -4,8 +4,6 @@ import 'package:mobile/cores/constants/routes.dart';
 import 'package:mobile/cores/theme/theme.dart';
 import 'package:provider/provider.dart';
 
-import 'features/fitness/services/repository/diary_repository.dart';
-import 'features/fitness/view/search_food/search_food_screen.dart';
 import 'features/fitness/viewmodels/diary_viewmodel.dart';
 import 'features/fitness/viewmodels/search_food_viewmodel.dart';
 
@@ -21,7 +19,7 @@ void main() {
           create: (_) => DiaryViewModel(),
         ),
       ],
-      child: MyApp(),
+      child: const MyApp(),
       // child: const MaterialApp(
       //   home: SearchFoodScreen(),
       // ),
@@ -30,6 +28,8 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   //const MyApp({super.key});
 
   @override

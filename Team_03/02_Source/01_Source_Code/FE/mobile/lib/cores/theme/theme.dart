@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:mobile/cores/theme/widget_themes/checkbox_theme.dart';
 import 'package:mobile/cores/theme/widget_themes/color_scheme_theme.dart';
 import 'package:mobile/cores/theme/widget_themes/elevated_button_theme.dart';
 import 'package:mobile/cores/theme/widget_themes/outlined_button_theme.dart';

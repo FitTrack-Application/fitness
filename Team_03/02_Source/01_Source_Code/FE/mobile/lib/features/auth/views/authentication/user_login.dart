@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mobile/common/widgets/elevated_button/elevated_button.dart';
 import 'package:mobile/common/widgets/outlined_button/outlined_button.dart';
 import 'package:mobile/cores/constants/colors.dart';
 
@@ -63,7 +62,7 @@ class UserLogin extends StatelessWidget {
                   // Ví dụ: Điều hướng tới Dashboard sau khi đăng nhập thành công
                   GoRouter.of(context).go('/dashboard');
                 },
-                child: Text('Log In'),
+                child: const Text('Log In'),
                 // text: 'Log In',
                 // textStyle: Theme.of(context).textTheme.labelLarge,
               ),
@@ -100,7 +99,7 @@ class UserLogin extends StatelessWidget {
 
             // Nút Continue With Google
             OutlinedButtonCustom(
-              icon: Image(
+              icon: const Image(
                 image: AssetImage('assets/logo/google.png'),
                 width: 28,
               ),
@@ -110,7 +109,7 @@ class UserLogin extends StatelessWidget {
             const SizedBox(height: 16),
 
             OutlinedButtonCustom(
-              icon: Image(
+              icon: const Image(
                 image: AssetImage('assets/logo/facebook.png'),
                 width: 30,
               ),

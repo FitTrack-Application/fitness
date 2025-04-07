@@ -52,7 +52,7 @@ class EditProfile extends StatelessWidget {
                         "Avatar",
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
-                      CircleAvatar(
+                      const CircleAvatar(
                         radius: 20,
                         backgroundImage:
                             NetworkImage('https://example.com/avatar.jpg'),
