@@ -16,17 +16,7 @@ class DiaryScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
         title: const Text('Diary'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () => viewModel.fetchDiaryForSelectedDate(),
-          ),
-        ],
       ),
       body: AnimatedBuilder(
         animation: viewModel,
@@ -54,17 +44,19 @@ class DiaryScreen extends StatelessWidget {
         physics: const AlwaysScrollableScrollPhysics(),
         child: Column(
           children: [
-            _buildDateSelector(viewModel),
-            _buildCaloriesCard(viewModel),
+            _buildDateSelector(viewModel, context),
+            _buildCaloriesCard(viewModel, context),
             _buildFoodList(viewModel, context),
-            _buildExerciseList(viewModel),
+            _buildExerciseList(viewModel, context),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildDateSelector(DiaryViewModel viewModel) {
+  Widget _buildDateSelector(DiaryViewModel viewModel, BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16.0),
       child: Row(
@@ -78,7 +70,7 @@ class DiaryScreen extends StatelessWidget {
             viewModel.isSelectedDateToday
                 ? 'Today'
                 : DateFormat('MM/dd/yyyy').format(viewModel.selectedDate),
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: textTheme.titleLarge,
           ),
           IconButton(
             icon: const Icon(Icons.chevron_right),
@@ -89,33 +81,40 @@ class DiaryScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCaloriesCard(DiaryViewModel viewModel) {
+  Widget _buildCaloriesCard(DiaryViewModel viewModel, BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
     return Card(
       margin: const EdgeInsets.all(8.0),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            const Text('Calories Remaining', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text('Calories Remaining', style: textTheme.titleMedium),
             const SizedBox(height: 16),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  _buildCalorieColumn(viewModel.calorieGoal.toInt(), 'Goal'),
+                  _buildCalorieColumn(
+                      viewModel.calorieGoal.toInt(), 'Goal', context),
                   const SizedBox(width: 8),
-                  const Text('-', style: TextStyle(fontSize: 20)),
+                  Text('-', style: textTheme.titleLarge),
                   const SizedBox(width: 8),
-                  _buildCalorieColumn(viewModel.caloriesConsumed.toInt(), 'Food'),
+                  _buildCalorieColumn(
+                      viewModel.caloriesConsumed.toInt(), 'Food', context),
                   const SizedBox(width: 8),
-                  const Text('+', style: TextStyle(fontSize: 20)),
+                  Text('+', style: textTheme.titleLarge),
                   const SizedBox(width: 8),
-                  _buildCalorieColumn(viewModel.caloriesBurned.toInt(), 'Exercise'),
+                  _buildCalorieColumn(
+                      viewModel.caloriesBurned.toInt(), 'Exercise', context),
                   const SizedBox(width: 8),
-                  const Text('=', style: TextStyle(fontSize: 20)),
+                  Text('=', style: textTheme.titleLarge),
                   const SizedBox(width: 8),
-                  _buildCalorieColumn(viewModel.caloriesRemaining.toInt(), 'Remaining', bold: true),
+                  _buildCalorieColumn(
+                      viewModel.caloriesRemaining.toInt(), 'Remaining', context,
+                      bold: true),
                 ],
               ),
             ),
@@ -125,19 +124,30 @@ class DiaryScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCalorieColumn(int value, String label, {bool bold = false}) {
+  Widget _buildCalorieColumn(int value, String label, BuildContext context,
+      {bool bold = false}) {
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Column(
       children: [
         Text(
           value.toString(),
-          style: TextStyle(fontSize: 15, fontWeight: bold ? FontWeight.bold : null),
+          style: bold
+              ? textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold)
+              : textTheme.bodyLarge,
         ),
-        Text(label, style: const TextStyle(color: Colors.grey)),
+        Text(label,
+            style: textTheme.bodySmall
+                ?.copyWith(color: colorScheme.onSurfaceVariant)),
       ],
     );
   }
 
   Widget _buildFoodList(DiaryViewModel viewModel, BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Card(
       margin: const EdgeInsets.all(8.0),
       child: Column(
@@ -147,26 +157,28 @@ class DiaryScreen extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Breakfast', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                Text('Breakfast', style: textTheme.titleMedium),
                 Text('${viewModel.caloriesConsumed.toInt()}',
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                    style: textTheme.titleMedium),
               ],
             ),
           ),
           const Divider(height: 1),
-          ...viewModel.foodItems.map((item) => _buildFoodItem(item, () {
-            context.push('/food/${viewModel.diaryId}/${item.id}/edit');
-          })),
+          ...viewModel.foodItems
+              .map((item) => _buildFoodItem(item, context, () {
+                    context.push('/food/${viewModel.diaryId}/${item.id}/edit');
+                  })),
           TextButton(
             onPressed: () {
               context.push('/search/${viewModel.diaryId}');
             },
-            child: const Row(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Padding(
-                  padding: EdgeInsets.only(left: 16.0),
-                  child: Text('ADD FOOD', style: TextStyle(color: Colors.blue)),
+                  padding: const EdgeInsets.only(left: 16.0),
+                  child: Text('ADD FOOD',
+                      style: TextStyle(color: colorScheme.primary)),
                 ),
               ],
             ),
@@ -176,7 +188,10 @@ class DiaryScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildExerciseList(DiaryViewModel viewModel) {
+  Widget _buildExerciseList(DiaryViewModel viewModel, BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Card(
       margin: const EdgeInsets.all(8.0),
       child: Column(
@@ -186,24 +201,26 @@ class DiaryScreen extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Exercise', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                Text('Exercise', style: textTheme.titleMedium),
                 Text('${viewModel.caloriesBurned.toInt()}',
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                    style: textTheme.titleMedium),
               ],
             ),
           ),
           const Divider(height: 1),
-          ...viewModel.exerciseItems.map((item) => _buildExerciseItem(item)),
+          ...viewModel.exerciseItems
+              .map((item) => _buildExerciseItem(item, context)),
           TextButton(
             onPressed: () {
               // Thêm navigation đến màn add exercise
             },
-            child: const Row(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Padding(
-                  padding: EdgeInsets.only(left: 16.0),
-                  child: Text('ADD EXERCISE', style: TextStyle(color: Colors.blue)),
+                  padding: const EdgeInsets.only(left: 16.0),
+                  child: Text('ADD EXERCISE',
+                      style: TextStyle(color: colorScheme.primary)),
                 ),
               ],
             ),
@@ -213,7 +230,9 @@ class DiaryScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildFoodItem(Food item, VoidCallback onTap) {
+  Widget _buildFoodItem(Food item, BuildContext context, VoidCallback onTap) {
+    final textTheme = Theme.of(context).textTheme;
+
     return InkWell(
       onTap: onTap,
       child: Column(
@@ -222,7 +241,7 @@ class DiaryScreen extends StatelessWidget {
             title: Text(item.name),
             subtitle: Text(
                 "${item.calories} cal, Carbs: ${item.carbs}g, Fat: ${item.fat}g, Protein: ${item.protein}g"),
-            trailing: Text('${item.calories}', style: const TextStyle(fontSize: 16)),
+            trailing: Text('${item.calories}', style: textTheme.titleSmall),
           ),
           const Divider(height: 1, indent: 16),
         ],
@@ -230,13 +249,15 @@ class DiaryScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildExerciseItem(Exercise item) {
+  Widget _buildExerciseItem(Exercise item, BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
     return Column(
       children: [
         ListTile(
           title: Text(item.exerciseName),
           subtitle: Text("${item.duration} phút - ${item.description}"),
-          trailing: Text('${item.calories}', style: const TextStyle(fontSize: 16)),
+          trailing: Text('${item.calories}', style: textTheme.titleSmall),
         ),
         const Divider(height: 1, indent: 16),
       ],

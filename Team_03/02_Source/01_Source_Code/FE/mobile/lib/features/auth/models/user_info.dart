@@ -5,12 +5,12 @@ class UserInfo {
   final String gender;
   final double height;
   final double weight;
-  final String goalType; 
-  final double target; 
+  final String goalType;
+  final double target;
   final double goalPerWeek;
-  final String? imageURL; 
-  final String activityLevel; 
-  final double calorieGoal; 
+  final String? imageURL;
+  final String activityLevel;
+  final double calorieGoal;
 
   UserInfo({
     required this.userID,
@@ -22,9 +22,9 @@ class UserInfo {
     required this.goalType,
     required this.target,
     required this.goalPerWeek,
-    this.imageURL, 
-    required this.activityLevel, 
-    required this.calorieGoal, 
+    this.imageURL,
+    required this.activityLevel,
+    required this.calorieGoal,
   });
 
   factory UserInfo.fromJson(Map<String, dynamic> json) {
@@ -38,9 +38,9 @@ class UserInfo {
       goalType: json['goalType'],
       target: json['target'],
       goalPerWeek: json['goalPerWeek'],
-      imageURL: json['imageURL'], 
-      activityLevel: json['activityLevel'], 
-      calorieGoal: json['calorieGoal'], 
+      imageURL: json['imageURL'],
+      activityLevel: json['activityLevel'],
+      calorieGoal: json['calorieGoal'],
     );
   }
 
@@ -55,9 +55,9 @@ class UserInfo {
       'goalType': goalType,
       'target': target,
       'goalPerWeek': goalPerWeek,
-      'imageURL': imageURL, 
-      'activityLevel': activityLevel, 
-      'calorieGoal': calorieGoal, 
+      'imageURL': imageURL,
+      'activityLevel': activityLevel,
+      'calorieGoal': calorieGoal,
     };
   }
 }

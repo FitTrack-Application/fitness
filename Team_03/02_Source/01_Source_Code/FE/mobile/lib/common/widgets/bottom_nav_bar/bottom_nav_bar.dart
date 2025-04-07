@@ -26,7 +26,8 @@ class BottomNavBar extends StatelessWidget {
             }
           },
           items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.analytics), label: 'Dashboard'),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.analytics), label: 'Dashboard'),
             BottomNavigationBarItem(icon: Icon(Icons.book), label: 'Diary'),
             BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
           ],

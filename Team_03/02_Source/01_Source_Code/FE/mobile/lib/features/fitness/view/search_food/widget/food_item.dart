@@ -59,22 +59,22 @@ class FoodItemWidget extends StatelessWidget {
             child: InkWell(
               borderRadius: BorderRadius.circular(20),
               onTap: isAddingThisFood
-                  ? null // Vô hiệu hóa chỉ khi đang thêm food này
+                  ? null
                   : () {
                       diaryViewModel.addFoodToDiary(food, 1, DateTime.now());
                     },
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: isAddingThisFood
-                    ? const SizedBox(
+                    ? SizedBox(
                         width: 24,
                         height: 24,
                         child: CircularProgressIndicator(
                           strokeWidth: 2.5,
-                          color: Colors.black,
+                          color: colorScheme.onPrimaryContainer,
                         ),
                       )
-                    : const Icon(Icons.add, color: Colors.black),
+                    : Icon(Icons.add, color: colorScheme.onPrimaryContainer),
               ),
             ),
           ),

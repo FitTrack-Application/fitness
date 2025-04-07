@@ -81,8 +81,8 @@ class UserLogin extends StatelessWidget {
                 child: Text(
                   'Forget password?',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: HighlightColors.highlight500, // Màu xanh dư
-                  ),
+                        color: HighlightColors.highlight500, // Màu xanh dư
+                      ),
                 ),
               ),
             ),

@@ -10,15 +10,14 @@ class ElevatedButtonCustom extends StatelessWidget {
   final TextStyle? textStyle;
   final Icon? icon;
 
-
-  const ElevatedButtonCustom({
-    Key? key,
-    this.label,
-    required this.onPressed,
-    this.width,
-    this.textStyle,
-    this.icon
-  }) : super(key: key);
+  const ElevatedButtonCustom(
+      {Key? key,
+      this.label,
+      required this.onPressed,
+      this.width,
+      this.textStyle,
+      this.icon})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,11 +31,14 @@ class ElevatedButtonCustom extends StatelessWidget {
           borderRadius: BorderRadius.circular(100), // Custom rounded border
         ),
         //backgroundColor: tSecondaryColor, // Optional: Set a custom background color
-        padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 24.0), // Optional: Add padding
+        padding: const EdgeInsets.symmetric(
+            vertical: 10.0, horizontal: 24.0), // Optional: Add padding
       ),
       label: Text(
         label!,
-        style: textStyle != null ? textStyle : Theme.of(context).textTheme.labelMedium,
+        style: textStyle != null
+            ? textStyle
+            : Theme.of(context).textTheme.labelMedium,
       ),
     );
   }

@@ -27,7 +27,7 @@ class _StepThreeState extends State<StepThree> {
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: widget.formKey, 
+      key: widget.formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -37,7 +37,7 @@ class _StepThreeState extends State<StepThree> {
               if (widget.selectedGender.isEmpty) {
                 return "Please select a gender";
               }
-              return null; 
+              return null;
             },
             builder: (fieldState) {
               return Column(
@@ -60,7 +60,7 @@ class _StepThreeState extends State<StepThree> {
                           groupValue: widget.selectedGender,
                           onChanged: (value) {
                             widget.onGenderSelected(value);
-                            fieldState.didChange(value); 
+                            fieldState.didChange(value);
                           },
                         ),
                       ),
@@ -72,7 +72,7 @@ class _StepThreeState extends State<StepThree> {
                           groupValue: widget.selectedGender,
                           onChanged: (value) {
                             widget.onGenderSelected(value);
-                            fieldState.didChange(value); 
+                            fieldState.didChange(value);
                           },
                         ),
                       ),
@@ -98,7 +98,7 @@ class _StepThreeState extends State<StepThree> {
               if (age == null || age <= 0 || age > 150) {
                 return "Please enter a valid age";
               }
-              return null; 
+              return null;
             },
           ),
           const SizedBox(height: 16),
@@ -117,7 +117,7 @@ class _StepThreeState extends State<StepThree> {
               if (height == null || height <= 0 || height >= 250) {
                 return "Please enter a valid height";
               }
-              return null; 
+              return null;
             },
           ),
           const SizedBox(height: 16),
@@ -136,7 +136,7 @@ class _StepThreeState extends State<StepThree> {
               if (weight == null || weight <= 0 || weight >= 300) {
                 return "Please enter a valid weight";
               }
-              return null; 
+              return null;
             },
           ),
         ],

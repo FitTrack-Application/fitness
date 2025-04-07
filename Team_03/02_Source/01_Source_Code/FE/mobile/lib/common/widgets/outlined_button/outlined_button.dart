@@ -3,7 +3,6 @@ import 'package:mobile/cores/constants/colors.dart';
 
 import '../../../cores/constants/sizes.dart';
 
-
 class OutlinedButtonCustom extends StatelessWidget {
   final String label;
   final VoidCallback onPressed;
@@ -19,7 +18,8 @@ class OutlinedButtonCustom extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return OutlinedButton.icon(
-      icon: icon ?? SizedBox.shrink(), // Nếu không có icon, sử dụng SizedBox.shrink()
+      icon: icon ??
+          SizedBox.shrink(), // Nếu không có icon, sử dụng SizedBox.shrink()
       style: OutlinedButton.styleFrom(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(100),
@@ -27,7 +27,8 @@ class OutlinedButtonCustom extends StatelessWidget {
         foregroundColor: NeutralColors.dark400,
         backgroundColor: NeutralColors.light200,
         side: const BorderSide(color: NeutralColors.dark500),
-        padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 24.0), // Optional: Add padding
+        padding: const EdgeInsets.symmetric(
+            vertical: 10.0, horizontal: 24.0), // Optional: Add padding
       ),
       onPressed: onPressed,
       label: Text(label),

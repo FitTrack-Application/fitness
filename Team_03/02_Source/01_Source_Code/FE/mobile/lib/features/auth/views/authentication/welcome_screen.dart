@@ -53,7 +53,6 @@ class WelcomeScreen extends StatelessWidget {
                   // text: 'Sign Up For Free',
                   // textStyle: Theme.of(context).textTheme.labelLarge,
                 ),
-
               ),
               const SizedBox(height: 16),
               GestureDetector(

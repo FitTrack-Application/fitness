@@ -13,6 +13,7 @@ import 'package:mobile/features/statistic/view/dashboard/dashboard_screen.dart';
 
 import '../../features/fitness/view/food_detail/food_detail_screen.dart';
 import '../../features/fitness/view/search_food/search_food_screen.dart';
+
 final GoRouter appRouter = GoRouter(
   initialLocation: '/diary',
   routes: [
@@ -72,15 +73,15 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/survey',
-       builder: (context, state) =>  UserSurvey(),
+      builder: (context, state) => UserSurvey(),
     ),
     GoRoute(
       path: '/goal',
-      builder: (context, state) => GoalPage(), 
+      builder: (context, state) => GoalPage(),
     ),
     GoRoute(
       path: '/profile/edit',
-      builder: (context, state) => EditProfile(), 
+      builder: (context, state) => EditProfile(),
     ),
   ],
 );

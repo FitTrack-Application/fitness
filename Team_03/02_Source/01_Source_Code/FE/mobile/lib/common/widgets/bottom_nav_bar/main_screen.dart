@@ -18,10 +18,9 @@ class MainScreen extends StatelessWidget {
     ];
 
     return Scaffold(
-      body: child, 
-      bottomNavigationBar: routesWithBottomNavBar.contains(currentRoute)
-          ? BottomNavBar() 
-          : null,
+      body: child,
+      bottomNavigationBar:
+          routesWithBottomNavBar.contains(currentRoute) ? BottomNavBar() : null,
     );
   }
 }

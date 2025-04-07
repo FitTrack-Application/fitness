@@ -15,8 +15,7 @@ class DiaryViewModel extends ChangeNotifier {
   Diary? _currentDiaryDay;
   String? _errorMessage;
 
-  DiaryViewModel()
-      : _repository = DiaryRepository() {
+  DiaryViewModel() : _repository = DiaryRepository() {
     fetchDiaryForSelectedDate();
   }
 

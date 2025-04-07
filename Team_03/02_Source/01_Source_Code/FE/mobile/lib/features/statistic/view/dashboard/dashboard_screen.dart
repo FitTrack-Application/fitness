@@ -9,8 +9,10 @@ class DashboardScreen extends StatelessWidget {
       appBar: AppBar(title: Text("Dashboard")),
       body: Center(
         child: ElevatedButton(
-          child: Text("Dashboard Click Me",
-          style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),),
+          child: Text(
+            "Dashboard Click Me",
+            style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+          ),
           onPressed: () {
             GoRouter.of(context).push('/welcome');
           },

@@ -15,7 +15,8 @@ class TElevatedButtonTheme {
       foregroundColor: NeutralColors.light100,
       backgroundColor: HighlightColors.highlight500,
       side: const BorderSide(color: HighlightColors.highlight500),
-      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 24.0), // Optional: Add padding
+      padding: const EdgeInsets.symmetric(
+          vertical: 10.0, horizontal: 24.0), // Optional: Add padding
     ),
   );
 
@@ -28,7 +29,8 @@ class TElevatedButtonTheme {
       foregroundColor: NeutralColors.dark500,
       backgroundColor: HighlightColors.highlight400,
       side: const BorderSide(color: HighlightColors.highlight500),
-      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 24.0), // Optional: Add padding
+      padding: const EdgeInsets.symmetric(
+          vertical: 10.0, horizontal: 24.0), // Optional: Add padding
     ),
   );
 }

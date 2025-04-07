@@ -8,13 +8,14 @@ class ApiClient {
 
   ApiClient(this.baseUrl);
 
-  Future<dynamic> get(String endpoint, {Map<String, dynamic>? queryParams}) async {
+  Future<dynamic> get(String endpoint,
+      {Map<String, dynamic>? queryParams}) async {
     Uri uri = Uri.parse('$baseUrl/$endpoint');
 
     if (queryParams != null) {
       // Convert all values to strings for URI parameters
       final stringQueryParams = queryParams.map(
-            (key, value) => MapEntry(key, value.toString()),
+        (key, value) => MapEntry(key, value.toString()),
       );
       uri = uri.replace(queryParameters: stringQueryParams);
     }
@@ -61,7 +62,8 @@ class ApiClient {
         message = 'Unauthorized. Please log in again.';
         break;
       case 403:
-        message = 'Access forbidden. You don\'t have permission to access this resource.';
+        message =
+            'Access forbidden. You don\'t have permission to access this resource.';
         break;
       case 404:
         message = 'Resource not found. The requested food may not exist.';
@@ -88,7 +90,8 @@ class ApiClient {
     throw Exception('$message (Status code: ${response.statusCode})');
   }
 
-  Future<dynamic> post(String endpoint, {Map<String, dynamic>? body, Map<String, String>? headers}) async {
+  Future<dynamic> post(String endpoint,
+      {Map<String, dynamic>? body, Map<String, String>? headers}) async {
     final uri = Uri.parse('$baseUrl/$endpoint');
     final requestHeaders = {
       'Content-Type': 'application/json',

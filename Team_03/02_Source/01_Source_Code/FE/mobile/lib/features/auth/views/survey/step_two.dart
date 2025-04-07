@@ -32,7 +32,7 @@ class _StepTwoState extends State<StepTwo> {
               if (widget.selectedGoal.isEmpty) {
                 return "Please select a goal";
               }
-              return null; 
+              return null;
             },
             builder: (fieldState) {
               return Column(
@@ -52,7 +52,7 @@ class _StepTwoState extends State<StepTwo> {
                     groupValue: widget.selectedGoal,
                     onChanged: (value) {
                       widget.onGoalSelected(value);
-                      fieldState.didChange(value); 
+                      fieldState.didChange(value);
                     },
                   ),
                   const SizedBox(height: 10),
@@ -62,7 +62,7 @@ class _StepTwoState extends State<StepTwo> {
                     groupValue: widget.selectedGoal,
                     onChanged: (value) {
                       widget.onGoalSelected(value);
-                      fieldState.didChange(value); 
+                      fieldState.didChange(value);
                     },
                   ),
                   const SizedBox(height: 10),
@@ -72,7 +72,7 @@ class _StepTwoState extends State<StepTwo> {
                     groupValue: widget.selectedGoal,
                     onChanged: (value) {
                       widget.onGoalSelected(value);
-                      fieldState.didChange(value); 
+                      fieldState.didChange(value);
                     },
                   ),
                 ],
