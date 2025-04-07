@@ -9,6 +9,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DataResponse {
+    private UUID userId;
     private UUID goalId;
     private String message;
 }
