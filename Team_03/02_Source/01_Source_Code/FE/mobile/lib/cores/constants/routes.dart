@@ -13,6 +13,7 @@ import 'package:mobile/features/statistic/view/dashboard/dashboard_screen.dart';
 
 import '../../features/fitness/view/food_detail/food_detail_screen.dart';
 import '../../features/fitness/view/search_food/search_food_screen.dart';
+import 'package:mobile/features/statistic/view/weight/add_weight.dart';
 final GoRouter appRouter = GoRouter(
   initialLocation: '/diary',
   routes: [
@@ -81,6 +82,10 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/profile/edit',
       builder: (context, state) => EditProfile(), 
+    ),
+        GoRoute(
+      path: '/weight/add',
+      builder: (context, state) => AddWeight(), 
     ),
   ],
 );
