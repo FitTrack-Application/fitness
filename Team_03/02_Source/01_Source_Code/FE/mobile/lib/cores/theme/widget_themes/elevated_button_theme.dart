@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile/cores/constants/colors.dart';
-import 'package:mobile/cores/constants/sizes.dart';
 
 class TElevatedButtonTheme {
   TElevatedButtonTheme._();

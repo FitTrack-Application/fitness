@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/common/widgets/bottom_nav_bar/bottom_nav_bar.dart';
 import 'package:mobile/common/widgets/list_item/list_item.dart';
 import 'package:go_router/go_router.dart';
 
 class ProfileScreen extends StatelessWidget {
+  const ProfileScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Profile")),
+      appBar: AppBar(title: const Text("Profile")),
       body: Column(
         children: [
           Center(

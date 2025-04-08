@@ -347,7 +347,7 @@ class Summary extends StatelessWidget {
                           style: Theme.of(context).textTheme.bodyMedium),
                       Text('Weight: $weight kg',
                           style: Theme.of(context).textTheme.bodyMedium),
-                      Text('$activityLevel',
+                      Text(activityLevel,
                           style: Theme.of(context).textTheme.bodyMedium),
                     ],
                   ),

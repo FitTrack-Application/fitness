@@ -41,6 +41,7 @@ dependencies:
   google_fonts: ^4.0.4
   intl: ^0.20.2
   fluttertoast: ^8.2.12
+  fl_chart: ^0.35.0
 
 dev_dependencies:
   flutter_test:

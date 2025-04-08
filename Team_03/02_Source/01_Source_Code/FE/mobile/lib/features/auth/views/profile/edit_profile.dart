@@ -3,8 +3,6 @@ import 'package:mobile/cores/constants/colors.dart';
 import 'package:go_router/go_router.dart';
 
 class EditProfile extends StatelessWidget {
-  const EditProfile({super.key});
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,7 +50,7 @@ class EditProfile extends StatelessWidget {
                         "Avatar",
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
-                      CircleAvatar(
+                      const CircleAvatar(
                         radius: 20,
                         backgroundImage:
                             NetworkImage('https://example.com/avatar.jpg'),

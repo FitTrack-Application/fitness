@@ -13,25 +13,25 @@ import 'package:mobile/features/statistic/view/dashboard/dashboard_screen.dart';
 
 import '../../features/fitness/view/food_detail/food_detail_screen.dart';
 import '../../features/fitness/view/search_food/search_food_screen.dart';
-
+import 'package:mobile/features/statistic/view/weight/add_weight.dart';
 final GoRouter appRouter = GoRouter(
   initialLocation: '/diary',
   routes: [
     GoRoute(
       path: '/',
-      builder: (context, state) => SplashScreen(),
+      builder: (context, state) => const SplashScreen(),
     ),
     GoRoute(
       path: '/welcome',
-      builder: (context, state) => WelcomeScreen(),
+      builder: (context, state) => const WelcomeScreen(),
     ),
     GoRoute(
       path: '/dashboard',
-      builder: (context, state) => MainScreen(child: DashboardScreen()),
+      builder: (context, state) => const MainScreen(child: DashboardScreen()),
     ),
     GoRoute(
       path: '/diary',
-      builder: (context, state) => MainScreen(child: DiaryScreen()),
+      builder: (context, state) => const MainScreen(child: DiaryScreen()),
     ),
     GoRoute(
       path: '/search/:diaryId',
@@ -61,27 +61,31 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/profile',
-      builder: (context, state) => MainScreen(child: ProfileScreen()),
+      builder: (context, state) => const MainScreen(child: ProfileScreen()),
     ),
     GoRoute(
       path: '/auth/signup',
-      builder: (context, state) => UserRegister(),
+      builder: (context, state) => const UserRegister(),
     ),
     GoRoute(
       path: '/auth/login',
-      builder: (context, state) => UserLogin(),
+      builder: (context, state) => const UserLogin(),
     ),
     GoRoute(
       path: '/survey',
-      builder: (context, state) => UserSurvey(),
+      builder: (context, state) => const UserSurvey(),
     ),
     GoRoute(
       path: '/goal',
-      builder: (context, state) => GoalPage(),
+      builder: (context, state) => const GoalPage(),
     ),
     GoRoute(
       path: '/profile/edit',
-      builder: (context, state) => EditProfile(),
+      builder: (context, state) => EditProfile(), 
+    ),
+        GoRoute(
+      path: '/weight/add',
+      builder: (context, state) => AddWeight(), 
     ),
   ],
 );
