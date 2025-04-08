@@ -4,7 +4,8 @@ import 'package:provider/provider.dart';
 
 import '../../../../cores/constants/colors.dart';
 import '../../viewmodels/dashboard_viewmodel.dart';
-
+import 'package:mobile/features/statistic/view/dashboard/weight_graph.dart';
+import 'package:mobile/features/statistic/models/weight_entry.dart';
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
 
@@ -30,7 +31,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     final viewModel = Provider.of<DashboardViewModel>(context);
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Dashboard'),
@@ -54,7 +54,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final burned = viewModel.totalCaloriesBurned;
     final goal = viewModel.caloriesGoal;
     final remaining = goal - consumed; //+ burned;
-
+        final List<WeightEntry> weightEntries = [
+      WeightEntry(date: DateTime(2023, 1, 1), weight: 80.5),
+      WeightEntry(date: DateTime(2023, 1, 8), weight: 79.8),
+      WeightEntry(date: DateTime(2023, 1, 15), weight: 79.2),
+      WeightEntry(date: DateTime(2023, 1, 22), weight: 78.5),
+      WeightEntry(date: DateTime(2023, 1, 29), weight: 77.9),
+      WeightEntry(date: DateTime(2023, 2, 5), weight: 78.2),
+      WeightEntry(date: DateTime(2023, 2, 12), weight: 77.5),
+      WeightEntry(date: DateTime(2023, 2, 19), weight: 76.8),
+      WeightEntry(date: DateTime(2023, 2, 26), weight: 76.2),
+      WeightEntry(date: DateTime(2023, 3, 5), weight: 75.5),
+    ];
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: ListView(
@@ -67,6 +78,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
           _buildMacronutrientsCard(theme, viewModel),
           const SizedBox(height: 24),
           _buildQuickLogCard(theme),
+          const SizedBox(height: 16),
+           WeightGraph(
+                entries: weightEntries,
+                title: 'Weight History (kg)',
+              ),       
+          const SizedBox(height: 16),      
         ],
       ),
     );
