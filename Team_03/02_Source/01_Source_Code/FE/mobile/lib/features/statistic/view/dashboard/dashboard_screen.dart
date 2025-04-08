@@ -51,7 +51,7 @@ class DashboardScreen extends StatelessWidget {
                   onPressed: () {
                     GoRouter.of(context).push('/weight/add');
                   },
-                  Icon: Icon(Icons.add),
+                  child: Icon(Icons.add),
                 ),
               ],
               ),
