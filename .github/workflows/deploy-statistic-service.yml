@@ -8,6 +8,7 @@ on:
       - 'kiet'
     paths: 
       - 'Team_03/02_Source/01_Source_Code/BE/services/statistic-service/**'
+      - '.github/workflows/deploy-statistic-service.yml'
   pull_request:
     branches: 
       - 'main'
@@ -15,6 +16,7 @@ on:
       - 'kiet'
     paths: 
       - 'Team_03/02_Source/01_Source_Code/BE/services/statistic-service/**'
+      - '.github/workflows/deploy-statistic-service.yml'
 
 jobs:
   build-backend-dev:

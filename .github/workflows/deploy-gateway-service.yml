@@ -8,6 +8,7 @@ on:
       - 'kiet'
     paths: 
       - 'Team_03/02_Source/01_Source_Code/BE/services/gateway-service/**'
+      - '.github/workflows/deploy-gateway-service.yml'
   pull_request:
     branches: 
       - 'main'
@@ -15,6 +16,7 @@ on:
       - 'kiet'
     paths: 
       - 'Team_03/02_Source/01_Source_Code/BE/services/gateway-service/**'
+      - '.github/workflows/deploy-gateway-service.yml'
 
 jobs:
   build-backend-dev:

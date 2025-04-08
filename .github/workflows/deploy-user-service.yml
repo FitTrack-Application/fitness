@@ -8,6 +8,7 @@ on:
       - 'kiet'
     paths: 
       - 'Team_03/02_Source/01_Source_Code/BE/services/user-service/**'
+      - '.github/workflows/deploy-user-service.yml'
   pull_request:
     branches: 
       - 'main'
@@ -15,7 +16,7 @@ on:
       - 'kiet'
     paths: 
       - 'Team_03/02_Source/01_Source_Code/BE/services/user-service/**'
-
+      - '.github/workflows/deploy-user-service.yml'
 jobs:
   build-backend-dev:
     runs-on: ubuntu-latest
