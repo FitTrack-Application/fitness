@@ -1,17 +1,35 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../cores/constants/colors.dart';
+import '../../viewmodels/dashboard_viewmodel.dart';
 
-class DashboardScreen extends StatelessWidget {
+class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
 
   @override
+  State<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
+  bool _initialized = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_initialized) {
+      final viewModel = Provider.of<DashboardViewModel>(context, listen: false);
+      const token = 'auth_token';
+
+      viewModel.fetchDashboardData(token: token);
+      _initialized = true;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final today = DateFormat('EEEE, MMM d').format(DateTime.now());
+    final viewModel = Provider.of<DashboardViewModel>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -20,36 +38,41 @@ class DashboardScreen extends StatelessWidget {
         backgroundColor: HighlightColors.highlight500,
         foregroundColor: Colors.white,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ListView(
-          children: [
-            Text(
-              'Hi there 👋',
-              style: theme.textTheme.headlineMedium,
-            ),
-            Text(
-              today,
-              style: theme.textTheme.titleMedium?.copyWith(
-                color: NeutralColors.dark200,
-              ),
-            ),
-            const SizedBox(height: 24),
+      body: viewModel.isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : viewModel.errorMessage != null
+          ? Center(child: Text(viewModel.errorMessage!))
+          : _buildDashboardBody(context, viewModel),
+    );
+  }
 
-            _buildCaloriesCard(theme),
-            const SizedBox(height: 24),
+  Widget _buildDashboardBody(BuildContext context, DashboardViewModel viewModel) {
+    final theme = Theme.of(context);
+    final today = DateFormat('EEEE, MMM d').format(DateTime.now());
 
-            _buildMacronutrientsCard(theme),
-            const SizedBox(height: 24),
+    final consumed = viewModel.totalCaloriesConsumed;
+    final burned = viewModel.totalCaloriesBurned;
+    final goal = viewModel.caloriesGoal;
+    final remaining = goal - consumed; //+ burned;
 
-            _buildQuickLogCard(theme),
-          ],
-        ),
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: ListView(
+        children: [
+          Text('Hi there 👋', style: theme.textTheme.headlineMedium),
+          Text(today, style: theme.textTheme.titleMedium?.copyWith(color: NeutralColors.dark200)),
+          const SizedBox(height: 24),
+          _buildCaloriesCard(theme, consumed, goal, remaining),
+          const SizedBox(height: 24),
+          _buildMacronutrientsCard(theme, viewModel),
+          const SizedBox(height: 24),
+          _buildQuickLogCard(theme),
+        ],
       ),
     );
   }
 
-  Widget _buildCaloriesCard(ThemeData theme) {
+  Widget _buildCaloriesCard(ThemeData theme, int consumed, int goal, int remaining) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       color: HighlightColors.highlight100,
@@ -62,9 +85,9 @@ class DashboardScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _calorieBox('Consumed', '1,200', NutritionColor.fat),
-                _calorieBox('Goal', '2,000', NutritionColor.protein),
-                _calorieBox('Remaining', '800', NutritionColor.cabs),
+                _calorieBox('Consumed', '$consumed', NutritionColor.fat),
+                _calorieBox('Goal', '$goal', NutritionColor.protein),
+                _calorieBox('Remaining', '$remaining', NutritionColor.cabs),
               ],
             ),
           ],
@@ -76,19 +99,14 @@ class DashboardScreen extends StatelessWidget {
   Widget _calorieBox(String label, String value, Color color) {
     return Column(
       children: [
-        Text(label,
-            style: TextStyle(fontSize: 14, color: NeutralColors.dark300)),
+        Text(label, style: TextStyle(fontSize: 14, color: NeutralColors.dark300)),
         const SizedBox(height: 4),
-        Text(
-          value,
-          style: TextStyle(
-              fontSize: 18, fontWeight: FontWeight.bold, color: color),
-        ),
+        Text(value, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: color)),
       ],
     );
   }
 
-  Widget _buildMacronutrientsCard(ThemeData theme) {
+  Widget _buildMacronutrientsCard(ThemeData theme, DashboardViewModel viewModel) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       elevation: 2,
@@ -99,9 +117,9 @@ class DashboardScreen extends StatelessWidget {
           children: [
             Text('Macronutrients', style: theme.textTheme.titleLarge),
             const SizedBox(height: 12),
-            _macroRow('Carbs', 40, NutritionColor.cabs),
-            _macroRow('Protein', 60, NutritionColor.protein),
-            _macroRow('Fat', 30, NutritionColor.fat),
+            _macroRow('Carbs', viewModel.carbsPercent, NutritionColor.cabs),
+            _macroRow('Protein', viewModel.proteinPercent, NutritionColor.protein),
+            _macroRow('Fat', viewModel.fatPercent, NutritionColor.fat),
           ],
         ),
       ),
@@ -117,7 +135,7 @@ class DashboardScreen extends StatelessWidget {
           Text('$name - $percent%', style: TextStyle(color: color)),
           const SizedBox(height: 4),
           LinearProgressIndicator(
-            value: percent / 100,
+            value: percent.toDouble() / 100.0,
             color: color,
             backgroundColor: NeutralColors.light300,
             minHeight: 8,
@@ -137,7 +155,6 @@ class DashboardScreen extends StatelessWidget {
           children: [
             _quickAction(Icons.fastfood, 'Food', HighlightColors.highlight500),
             _quickAction(Icons.fitness_center, 'Exercise', AccentColors.red300),
-            //_quickAction(Icons.local_drink, 'Water', AccentColors.yellow300),
           ],
         ),
       ),
