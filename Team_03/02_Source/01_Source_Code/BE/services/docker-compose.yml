@@ -89,6 +89,26 @@ services:
       - ./user-service:/app
       - maven-repo:/root/.m2
     restart: unless-stopped
+
+  gateway-service:
+    build:
+      context: ./gateway-service
+      dockerfile: Dockerfile.dev
+    container_name: gateway-service
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8088:8088"
+    env_file:
+      - .env
+      - ./gateway-service/.env
+    networks:
+      - fitness-network
+    volumes:
+      - ./gateway-service:/app
+      - maven-repo:/root/.m2
+    restart: unless-stopped
 networks:
   fitness-network:
     driver: bridge
