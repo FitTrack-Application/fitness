@@ -22,7 +22,7 @@ jobs:
   build-backend-dev:
     runs-on: ubuntu-latest
     environment: Dev
-    if: github.ref == 'refs/head/dev' || github.ref == 'refs/head/kiet'
+    if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/kiet'
     steps:
     - name: ✅ Checkout Code
       uses: actions/checkout@v4
@@ -51,7 +51,7 @@ jobs:
     needs: build-backend-dev
     runs-on: ubuntu-latest
     environment: Dev
-    if: github.ref == 'refs/head/dev' || github.ref == 'refs/head/kiet'
+    if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/kiet'
     steps:
     - name: ✅ Checkout Code
       uses: actions/checkout@v4
