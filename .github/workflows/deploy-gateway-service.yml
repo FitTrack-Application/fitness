@@ -1,4 +1,4 @@
-name: CI/CD Pipeline For User Service
+name: CI/CD Pipeline For Gateway Service
 
 on:
   push:
@@ -7,14 +7,14 @@ on:
       - 'dev'
       - 'kiet'
     paths: 
-      - 'Team_03/02_Source/01_Source_Code/BE/services/user-service/**'
+      - 'Team_03/02_Source/01_Source_Code/BE/services/gateway-service/**'
   pull_request:
     branches: 
       - 'main'
       - 'dev'
       - 'kiet'
     paths: 
-      - 'Team_03/02_Source/01_Source_Code/BE/services/user-service/**'
+      - 'Team_03/02_Source/01_Source_Code/BE/services/gateway-service/**'
 
 jobs:
   build-backend-dev:
@@ -33,17 +33,17 @@ jobs:
               
     - name: 🔎 Build the Spring Boot application and Docker image
       run: |
-        cd Team_03/02_Source/01_Source_Code/BE/services/user-service
+        cd Team_03/02_Source/01_Source_Code/BE/services/gateway-service
         mvn clean package -DskipTests
-        docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/user-service:${{ github.sha }} -t ${{ secrets.DOCKER_HUB_USERNAME }}/user-service:latest .
+        docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/gateway-service:${{ github.sha }} -t ${{ secrets.DOCKER_HUB_USERNAME }}/gateway-service:latest .
 
     - name: 🔑 Log in to Docker Hub
       run: echo ${{ secrets.DOCKER_HUB_PASSWORD }} | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
 
     - name: 🔄 Push Docker image to Docker Hub
       run: |
-        docker push ${{ secrets.DOCKER_HUB_USERNAME }}/user-service:${{ github.sha }}
-        docker push ${{ secrets.DOCKER_HUB_USERNAME }}/user-service:latest
+        docker push ${{ secrets.DOCKER_HUB_USERNAME }}/gateway-service:${{ github.sha }}
+        docker push ${{ secrets.DOCKER_HUB_USERNAME }}/gateway-service:latest
 
   deploy-backend-dev:
     needs: build-backend-dev
@@ -56,4 +56,4 @@ jobs:
 
     - name: 🚩 Deploy to Render
       run: |
-        curl -X POST "${{ secrets.USER_SERVICE_DEPLOY_HOOK }}"
+        curl -X POST "${{ secrets.GATEWAY_SERVICE_DEPLOY_HOOK }}"
