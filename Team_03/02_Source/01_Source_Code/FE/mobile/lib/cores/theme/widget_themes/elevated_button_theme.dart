@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile/cores/constants/colors.dart';
-import 'package:mobile/cores/constants/sizes.dart';
 
 class TElevatedButtonTheme {
   TElevatedButtonTheme._();
@@ -15,7 +13,8 @@ class TElevatedButtonTheme {
       foregroundColor: NeutralColors.light100,
       backgroundColor: HighlightColors.highlight500,
       side: const BorderSide(color: HighlightColors.highlight500),
-      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 24.0), // Optional: Add padding
+      padding: const EdgeInsets.symmetric(
+          vertical: 10.0, horizontal: 24.0), // Optional: Add padding
     ),
   );
 
@@ -28,7 +27,8 @@ class TElevatedButtonTheme {
       foregroundColor: NeutralColors.dark500,
       backgroundColor: HighlightColors.highlight400,
       side: const BorderSide(color: HighlightColors.highlight500),
-      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 24.0), // Optional: Add padding
+      padding: const EdgeInsets.symmetric(
+          vertical: 10.0, horizontal: 24.0), // Optional: Add padding
     ),
   );
 }

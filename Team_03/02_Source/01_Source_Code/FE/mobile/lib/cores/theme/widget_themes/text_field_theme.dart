@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile/cores/constants/colors.dart';
 
 class TTextFormFieldTheme {
   TTextFormFieldTheme._();
-  
+
   static InputDecorationTheme lightInputDecorationTheme = InputDecorationTheme(
     border: OutlineInputBorder(
       borderSide: const BorderSide(width: 1, color: NeutralColors.light500),
@@ -13,7 +12,8 @@ class TTextFormFieldTheme {
     prefixIconColor: HighlightColors.highlight500,
     floatingLabelStyle: const TextStyle(color: NeutralColors.dark500),
     focusedBorder: OutlineInputBorder(
-      borderSide: const BorderSide(width: 2, color: HighlightColors.highlight500),
+      borderSide:
+          const BorderSide(width: 2, color: HighlightColors.highlight500),
       borderRadius: BorderRadius.circular(12),
     ),
   );
@@ -26,8 +26,8 @@ class TTextFormFieldTheme {
       prefixIconColor: HighlightColors.highlight500,
       floatingLabelStyle: const TextStyle(color: NeutralColors.light100),
       focusedBorder: OutlineInputBorder(
-        borderSide: const BorderSide(width: 2, color: HighlightColors.highlight500),
+        borderSide:
+            const BorderSide(width: 2, color: HighlightColors.highlight500),
         borderRadius: BorderRadius.circular(12),
-      )
-  );
+      ));
 }

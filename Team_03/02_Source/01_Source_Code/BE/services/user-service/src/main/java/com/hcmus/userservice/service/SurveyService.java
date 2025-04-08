@@ -47,12 +47,13 @@ public class SurveyService {
         Goal goal = new Goal();
         goal.setUser(user);
         goal.setGoalType(request.getGoalType());
-        goal.setTarget(request.getTarget());
+        goal.setWeightGoal(request.getWeightGoal());
         goal.setGoalPerWeek(request.getGoalPerWeek());
-        goal.setStartingDay(request.getStartingDay());
+        goal.setActivityLevel(request.getActivityLevel());
+        goal.setCaloriesGoal(request.getCaloriesGoal());
 
         goalRepository.save(goal);
-        return buildSurveyResponse("success", new DataResponse(goal.getGoalId(), "Information is successfully saved"));
+        return buildSurveyResponse("success", new DataResponse(user.getUserId(), goal.getGoalId(), "Successfully get user information and create goal"));
     }
 
     private SurveyResponse buildSurveyResponse(String status, Object data) {

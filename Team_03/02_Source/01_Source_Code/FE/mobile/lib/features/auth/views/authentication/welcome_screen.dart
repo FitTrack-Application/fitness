@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mobile/common/widgets/elevated_button/elevated_button.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
@@ -53,7 +52,6 @@ class WelcomeScreen extends StatelessWidget {
                   // text: 'Sign Up For Free',
                   // textStyle: Theme.of(context).textTheme.labelLarge,
                 ),
-
               ),
               const SizedBox(height: 16),
               GestureDetector(

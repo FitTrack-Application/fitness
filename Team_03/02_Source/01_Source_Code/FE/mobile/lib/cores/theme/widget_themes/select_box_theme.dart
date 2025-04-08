@@ -3,18 +3,19 @@ import 'package:flutter/material.dart';
 import '../../constants/colors.dart';
 
 class SelectBoxTheme {
-  static BoxDecoration containerDecoration(BuildContext context, bool isSelected) {
+  static BoxDecoration containerDecoration(
+      BuildContext context, bool isSelected) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return BoxDecoration(
       color: isDarkMode ? NeutralColors.dark300 : NeutralColors.light100,
-       
       border: Border.all(
         color: isSelected
-          ? (isDarkMode ? HighlightColors.highlight500 : HighlightColors.highlight500)
-          : Colors.transparent,
+            ? (isDarkMode
+                ? HighlightColors.highlight500
+                : HighlightColors.highlight500)
+            : Colors.transparent,
       ),
       borderRadius: BorderRadius.circular(14.0),
-      
     );
   }
 
@@ -25,5 +26,4 @@ class SelectBoxTheme {
       color: isDarkMode ? NeutralColors.light500 : HighlightColors.highlight500,
     );
   }
-
 }

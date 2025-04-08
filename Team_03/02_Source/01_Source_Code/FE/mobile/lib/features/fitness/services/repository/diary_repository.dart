@@ -5,15 +5,16 @@ class DiaryRepository {
   final ApiClient _apiClient;
 
   DiaryRepository({
-    String baseUrl = "https://54efe02a-ae6e-4055-9391-3a9bd9cac8f1.mock.pstmn.io/api/diary",
+    String baseUrl =
+        "https://54efe02a-ae6e-4055-9391-3a9bd9cac8f1.mock.pstmn.io/api/diary",
   }) : _apiClient = ApiClient(baseUrl);
 
   final String jwtToken = "abc";
 
   Map<String, String> get _headers => {
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer $jwtToken',
-  };
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $jwtToken',
+      };
 
   String _formatDateForApi(DateTime date) {
     return "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
@@ -33,7 +34,8 @@ class DiaryRepository {
     }
   }
 
-  Future<void> addFoodToDiary(int diaryId, String foodId, int servings, DateTime date) async {
+  Future<void> addFoodToDiary(
+      int diaryId, String foodId, int servings, DateTime date) async {
     // try {
     //   await _apiClient.post("/add_food", body: {
     //     "diary_id": diaryId,

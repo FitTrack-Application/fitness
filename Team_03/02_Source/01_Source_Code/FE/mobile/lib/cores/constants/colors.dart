@@ -1,7 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 
-
 // Highlight Colors (Xanh dương)
 class HighlightColors {
   static const Color highlight500 = Color(0xFF006FFD); // Màu chính
@@ -26,7 +25,7 @@ class TonalButtonColors {
   static const Color onPrimary = Color(0xFF006FFD);
 }
 
-class NutritionColor{
+class NutritionColor {
   static const Color cabs = Color(0xFF14B8A6);
   static const Color fat = Color(0xFFD8325D);
   static const Color protein = Color(0xFFFFB02A);

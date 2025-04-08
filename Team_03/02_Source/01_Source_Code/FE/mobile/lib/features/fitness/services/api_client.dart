@@ -8,11 +8,15 @@ class ApiClient {
 
   ApiClient(this.baseUrl);
 
-  Future<dynamic> get(String endpoint, {Map<String, dynamic>? queryParams}) async {
+  /// GET request with optional query parameters and headers
+  Future<dynamic> get(
+      String endpoint, {
+        Map<String, dynamic>? queryParams,
+        Map<String, String>? headers,
+      }) async {
     Uri uri = Uri.parse('$baseUrl/$endpoint');
 
     if (queryParams != null) {
-      // Convert all values to strings for URI parameters
       final stringQueryParams = queryParams.map(
             (key, value) => MapEntry(key, value.toString()),
       );
@@ -20,10 +24,9 @@ class ApiClient {
     }
 
     try {
-      final response = await http.get(uri);
+      final response = await http.get(uri, headers: headers);
 
       if (response.statusCode == 200) {
-        // Check if response body is empty
         if (response.body.isEmpty) {
           throw Exception('API returned empty response');
         }
@@ -43,52 +46,16 @@ class ApiClient {
     } on TimeoutException {
       throw Exception('Connection timed out. Please try again later.');
     } catch (e) {
-      if (e is Exception) {
-        rethrow; // Rethrow already formatted exceptions
-      }
       throw Exception('An unexpected error occurred: ${e.toString()}');
     }
   }
 
-  void _handleHttpError(http.Response response) {
-    String message;
-
-    switch (response.statusCode) {
-      case 400:
-        message = 'Bad request. Please check your input.';
-        break;
-      case 401:
-        message = 'Unauthorized. Please log in again.';
-        break;
-      case 403:
-        message = 'Access forbidden. You don\'t have permission to access this resource.';
-        break;
-      case 404:
-        message = 'Resource not found. The requested food may not exist.';
-        break;
-      case 500:
-      case 502:
-      case 503:
-        message = 'Server error. Please try again later.';
-        break;
-      default:
-        message = 'HTTP error ${response.statusCode}';
-    }
-
-    // Try to extract error message from response if available
-    try {
-      final errorBody = json.decode(response.body);
-      if (errorBody is Map && errorBody.containsKey('message')) {
-        message = '$message: ${errorBody['message']}';
-      }
-    } catch (_) {
-      // If we can't parse the error body, just use the status message
-    }
-
-    throw Exception('$message (Status code: ${response.statusCode})');
-  }
-
-  Future<dynamic> post(String endpoint, {Map<String, dynamic>? body, Map<String, String>? headers}) async {
+  /// POST request with optional body and headers
+  Future<dynamic> post(
+      String endpoint, {
+        Map<String, dynamic>? body,
+        Map<String, String>? headers,
+      }) async {
     final uri = Uri.parse('$baseUrl/$endpoint');
     final requestHeaders = {
       'Content-Type': 'application/json',
@@ -103,16 +70,14 @@ class ApiClient {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        // Check if response body is not empty before parsing
         if (response.body.isNotEmpty) {
           try {
             return json.decode(response.body);
           } on FormatException {
-            // Some successful requests might not return JSON
-            return {'success': true};
+            return {'success': true}; // Fallback
           }
         } else {
-          return {'success': true};
+          return {'success': true}; // No content
         }
       } else {
         _handleHttpError(response);
@@ -124,10 +89,45 @@ class ApiClient {
     } on TimeoutException {
       throw Exception('Connection timed out. Please try again later.');
     } catch (e) {
-      if (e is Exception) {
-        rethrow;
-      }
       throw Exception('An unexpected error occurred: ${e.toString()}');
     }
+  }
+
+  /// Custom error message handling
+  void _handleHttpError(http.Response response) {
+    String message;
+
+    switch (response.statusCode) {
+      case 400:
+        message = 'Bad request. Please check your input.';
+        break;
+      case 401:
+        message = 'Unauthorized. Please log in again.';
+        break;
+      case 403:
+        message = 'Forbidden. You don\'t have permission to access this.';
+        break;
+      case 404:
+        message = 'Resource not found.';
+        break;
+      case 500:
+      case 502:
+      case 503:
+        message = 'Server error. Please try again later.';
+        break;
+      default:
+        message = 'HTTP error ${response.statusCode}';
+    }
+
+    try {
+      final errorBody = json.decode(response.body);
+      if (errorBody is Map && errorBody.containsKey('message')) {
+        message += ': ${errorBody['message']}';
+      }
+    } catch (_) {
+      // Silent fallback
+    }
+
+    throw Exception('$message (Status code: ${response.statusCode})');
   }
 }

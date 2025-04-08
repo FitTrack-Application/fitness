@@ -5,13 +5,7 @@ import '../models/food.dart';
 import '../services/repository/food_repository.dart';
 
 // Define possible loading states
-enum LoadState {
-  initial,
-  loading,
-  loaded,
-  error,
-  timeout
-}
+enum LoadState { initial, loading, loaded, error, timeout }
 
 class FoodDetailViewModel extends ChangeNotifier {
   final FoodRepository _repository;
@@ -33,8 +27,8 @@ class FoodDetailViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final result = await _repository.getFoodById(id)
-          .timeout(_timeoutDuration, onTimeout: () {
+      final result = await _repository.getFoodById(id).timeout(_timeoutDuration,
+          onTimeout: () {
         throw TimeoutException('Connection timed out. Please try again.');
       });
 

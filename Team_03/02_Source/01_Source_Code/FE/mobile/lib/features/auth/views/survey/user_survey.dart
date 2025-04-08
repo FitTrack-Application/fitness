@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:mobile/common/widgets/tonal_button/tonal_button.dart';
 import 'package:mobile/cores/constants/colors.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mobile/features/auth/models/user_info.dart';  
-import 'package:mobile/features/auth/services/api_service.dart';  
+import 'package:mobile/features/auth/models/user_info.dart';
+import 'package:mobile/features/auth/services/api_service.dart';
 import 'step_one.dart';
 import 'step_two.dart';
 import 'step_three.dart';
 import 'step_four.dart';
 import 'step_five.dart';
+
 class UserSurvey extends StatefulWidget {
   const UserSurvey({super.key});
 
@@ -16,7 +17,6 @@ class UserSurvey extends StatefulWidget {
   // ignore: library_private_types_in_public_api
   _UserSurveyState createState() => _UserSurveyState();
 }
-
 
 class _UserSurveyState extends State<UserSurvey> {
   int _currentStep = 0;
@@ -33,7 +33,7 @@ class _UserSurveyState extends State<UserSurvey> {
   final GlobalKey<FormState> _stepFourKey = GlobalKey<FormState>();
   double _goalPerWeek = 0.2;
   String _selectedActivityLevel = '';
-  final double _calorieGoal = 0.0; 
+  final double _calorieGoal = 0.0;
   final apiService = ApiService();
   void _previousStep() {
     setState(() {
@@ -47,7 +47,7 @@ class _UserSurveyState extends State<UserSurvey> {
     setState(() {
       if (_currentStep == 0) {
         if (!(_stepOneKey.currentState?.validate() ?? false)) {
-          return; 
+          return;
         }
       }
       if (_currentStep == 1) {
@@ -73,23 +73,25 @@ class _UserSurveyState extends State<UserSurvey> {
         _currentStep++;
       } else {
         // Navigate to /dashboard when the last step is completed
-        sendSurveyData(); 
+        sendSurveyData();
         context.go('/dashboard');
       }
     });
   }
+
   void sendSurveyData() async {
     final String name = _nameController.text.trim();
     final int age = int.tryParse(_ageController.text.trim()) ?? 0;
     final String gender = _selectedGender;
     final double height = double.tryParse(_heightController.text.trim()) ?? 0.0;
     final double weight = double.tryParse(_weightController.text.trim()) ?? 0.0;
-    final double weightGoal = double.tryParse(_weightGoalController.text.trim()) ?? 0.0;
+    final double weightGoal =
+        double.tryParse(_weightGoalController.text.trim()) ?? 0.0;
     final String goal = _selectedGoal;
     final String activityLevel = _selectedActivityLevel;
     final double calorieGoal = _calorieGoal;
     final userInfo = UserInfo(
-      userID: "12345", 
+      userID: "12345",
       name: name,
       age: age,
       gender: gender,
@@ -114,6 +116,7 @@ class _UserSurveyState extends State<UserSurvey> {
       );
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -131,7 +134,10 @@ class _UserSurveyState extends State<UserSurvey> {
             const SizedBox(height: 20),
             Expanded(
               child: _currentStep == 0
-                  ? StepOne(nameController: _nameController, formKey: _stepOneKey,)
+                  ? StepOne(
+                      nameController: _nameController,
+                      formKey: _stepOneKey,
+                    )
                   : _currentStep == 1
                       ? StepTwo(
                           formKey: _stepTwoKey,
@@ -158,7 +164,8 @@ class _UserSurveyState extends State<UserSurvey> {
                           : _currentStep == 3
                               ? StepFour(
                                   formKey: _stepFourKey,
-                                  weightController: _weightController, // Pass current weight
+                                  weightController:
+                                      _weightController, // Pass current weight
                                   goal: _selectedGoal,
                                   weightGoalController: _weightGoalController,
                                   goalPerWeek: _goalPerWeek,
@@ -170,10 +177,12 @@ class _UserSurveyState extends State<UserSurvey> {
                                 )
                               : _currentStep == 4
                                   ? StepFive(
-                                      selectedActivityLevel: _selectedActivityLevel,
+                                      selectedActivityLevel:
+                                          _selectedActivityLevel,
                                       onActivityLevelSelected: (activityLevel) {
                                         setState(() {
-                                          _selectedActivityLevel = activityLevel;
+                                          _selectedActivityLevel =
+                                              activityLevel;
                                         });
                                       },
                                     )
@@ -224,7 +233,8 @@ class Summary extends StatelessWidget {
   final double goalPerWeek;
   final String activityLevel;
 
-  const Summary({super.key,
+  const Summary({
+    super.key,
     required this.name,
     required this.goal,
     required this.gender,
@@ -293,86 +303,107 @@ class Summary extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Summary', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 10),
-          Row(children: [
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.all(8.0),
-                decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8.0),
-              border: Border.all(color: HighlightColors.highlight500), // Added border with HighlightColors.highlight500
-                ),
-                child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Name: $name', style: Theme.of(context).textTheme.bodyMedium),
-                Text('Gender: $gender', style: Theme.of(context).textTheme.bodyMedium),
-                Text('Age: $age', style: Theme.of(context).textTheme.bodyMedium),
-              ],
-                ),
-              ),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.all(8.0),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8.0),
-                  border: Border.all(color: HighlightColors.highlight500), // Added border with HighlightColors.highlight500
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Height: $height cm', style: Theme.of(context).textTheme.bodyMedium),
-                    Text('Weight: $weight kg', style: Theme.of(context).textTheme.bodyMedium),
-                    Text('$activityLevel', style: Theme.of(context).textTheme.bodyMedium),
-                  ],
-                ),
-              ),
-            ),
-          ],
-          ),
+          const Text('Summary',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
           const SizedBox(height: 10),
           Row(
             children: [
-            Expanded(
-              child: Container(
-              padding: const EdgeInsets.all(8.0),
-              decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8.0),
-            border: Border.all(color: HighlightColors.highlight500), // Added border with HighlightColors.highlight500
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8.0),
+                    border: Border.all(
+                        color: HighlightColors
+                            .highlight500), // Added border with HighlightColors.highlight500
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Name: $name',
+                          style: Theme.of(context).textTheme.bodyMedium),
+                      Text('Gender: $gender',
+                          style: Theme.of(context).textTheme.bodyMedium),
+                      Text('Age: $age',
+                          style: Theme.of(context).textTheme.bodyMedium),
+                    ],
+                  ),
+                ),
               ),
-              child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Goal: $goal', style: Theme.of(context).textTheme.bodyMedium),
-              Text('Weight Goal: $weightGoal kg', style: Theme.of(context).textTheme.bodyMedium),
-              Text('Goal per Week: ${goalPerWeek.toString()} kg', style: Theme.of(context).textTheme.bodyMedium),
-            ],
+              const SizedBox(width: 10),
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8.0),
+                    border: Border.all(
+                        color: HighlightColors
+                            .highlight500), // Added border with HighlightColors.highlight500
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Height: $height cm',
+                          style: Theme.of(context).textTheme.bodyMedium),
+                      Text('Weight: $weight kg',
+                          style: Theme.of(context).textTheme.bodyMedium),
+                      Text(activityLevel,
+                          style: Theme.of(context).textTheme.bodyMedium),
+                    ],
+                  ),
+                ),
               ),
-              ),
-            ),
             ],
           ),
           const SizedBox(height: 10),
           Row(
             children: [
-            Expanded(
-              child: Container(
-              padding: const EdgeInsets.all(8.0),
-              decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8.0),
-            border: Border.all(color: HighlightColors.highlight500), // Added border with HighlightColors.highlight500
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8.0),
+                    border: Border.all(
+                        color: HighlightColors
+                            .highlight500), // Added border with HighlightColors.highlight500
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Goal: $goal',
+                          style: Theme.of(context).textTheme.bodyMedium),
+                      Text('Weight Goal: $weightGoal kg',
+                          style: Theme.of(context).textTheme.bodyMedium),
+                      Text('Goal per Week: ${goalPerWeek.toString()} kg',
+                          style: Theme.of(context).textTheme.bodyMedium),
+                    ],
+                  ),
+                ),
               ),
-              child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Calorie Goal per day (Remaining =  Goal - Food + Exercise): ${calorieGoal.toStringAsFixed(2)} kcal', style: Theme.of(context).textTheme.displayLarge), 
             ],
+          ),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8.0),
+                    border: Border.all(
+                        color: HighlightColors
+                            .highlight500), // Added border with HighlightColors.highlight500
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                          'Calorie Goal per day (Remaining =  Goal - Food + Exercise): ${calorieGoal.toStringAsFixed(2)} kcal',
+                          style: Theme.of(context).textTheme.displayLarge),
+                    ],
+                  ),
+                ),
               ),
-              ),
-            ),
             ],
           ),
         ],

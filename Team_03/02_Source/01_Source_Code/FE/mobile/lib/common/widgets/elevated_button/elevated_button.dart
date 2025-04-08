@@ -1,7 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mobile/cores/constants/colors.dart';
-import 'package:mobile/cores/constants/sizes.dart';
 
 class ElevatedButtonCustom extends StatelessWidget {
   final String? label;
@@ -10,15 +7,13 @@ class ElevatedButtonCustom extends StatelessWidget {
   final TextStyle? textStyle;
   final Icon? icon;
 
-
-  const ElevatedButtonCustom({
-    Key? key,
-    this.label,
-    required this.onPressed,
-    this.width,
-    this.textStyle,
-    this.icon
-  }) : super(key: key);
+  const ElevatedButtonCustom(
+      {super.key,
+      this.label,
+      required this.onPressed,
+      this.width,
+      this.textStyle,
+      this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -26,17 +21,18 @@ class ElevatedButtonCustom extends StatelessWidget {
       onPressed: () {
         onPressed();
       },
-      icon: icon ?? SizedBox.shrink(),
+      icon: icon ?? const SizedBox.shrink(),
       style: ElevatedButton.styleFrom(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(100), // Custom rounded border
         ),
         //backgroundColor: tSecondaryColor, // Optional: Set a custom background color
-        padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 24.0), // Optional: Add padding
+        padding: const EdgeInsets.symmetric(
+            vertical: 10.0, horizontal: 24.0), // Optional: Add padding
       ),
       label: Text(
         label!,
-        style: textStyle != null ? textStyle : Theme.of(context).textTheme.labelMedium,
+        style: textStyle ?? Theme.of(context).textTheme.labelMedium,
       ),
     );
   }

@@ -15,15 +15,17 @@ class FoodDetailScreen extends StatelessWidget {
   final int diaryId;
   final bool isEdit;
 
-  const FoodDetailScreen(
-      {super.key,
-      required this.foodId,
-      required this.diaryId,
-      required this.isEdit});
+  const FoodDetailScreen({
+    super.key,
+    required this.foodId,
+    required this.diaryId,
+    required this.isEdit,
+  });
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return ChangeNotifierProvider(
       create: (context) =>
@@ -31,7 +33,7 @@ class FoodDetailScreen extends StatelessWidget {
       child: Builder(
         builder: (context) => Scaffold(
           appBar: AppBar(
-            title: isEdit ? const Text('Edit Food') : const Text('Add Food'),
+            title: Text(isEdit ? 'Edit Food' : 'Add Food'),
             leading: IconButton(
               icon: const Icon(Icons.arrow_back),
               onPressed: () => GoRouter.of(context).pop(),
@@ -49,22 +51,26 @@ class FoodDetailScreen extends StatelessWidget {
 
                   return IconButton(
                     icon: isAdding
-                        ? const SizedBox(
+                        ? SizedBox(
                             height: 24,
                             width: 24,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
+                              color: colorScheme.primary,
                             ),
                           )
-                        : const Icon(Icons.check),
+                        : Icon(Icons.check, color: colorScheme.primary),
                     onPressed: isAdding
-                        ? null // Không cho bấm khi đang thêm
-                        : () {
-                            diaryVM.addFoodToDiary(
+                        ? null
+                        : () async {
+                            await diaryVM.addFoodToDiary(
                               food,
                               foodVM.servings,
                               foodVM.selectedDate,
                             );
+                            if (context.mounted) {
+                              context.pop();
+                            }
                           },
                   );
                 },
@@ -75,7 +81,7 @@ class FoodDetailScreen extends StatelessWidget {
             builder: (context, viewModel, child) {
               switch (viewModel.loadState) {
                 case LoadState.loading:
-                  return _buildLoadingState();
+                  return _buildLoadingState(context);
                 case LoadState.error:
                   return _buildErrorState(context, viewModel);
                 case LoadState.timeout:
@@ -83,7 +89,7 @@ class FoodDetailScreen extends StatelessWidget {
                 case LoadState.loaded:
                   return _buildLoadedState(context, viewModel, textTheme);
                 default:
-                  return _buildLoadingState();
+                  return _buildLoadingState(context);
               }
             },
           ),
@@ -92,35 +98,48 @@ class FoodDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildLoadingState() {
-    return const Center(
+  Widget _buildLoadingState(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
+    return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          CircularProgressIndicator(),
-          SizedBox(height: 16),
-          Text('Loading food information...'),
+          CircularProgressIndicator(color: colorScheme.primary),
+          const SizedBox(height: 16),
+          Text(
+            'Loading food information...',
+            style: textTheme.bodyMedium,
+          ),
         ],
       ),
     );
   }
 
   Widget _buildErrorState(BuildContext context, FoodDetailViewModel viewModel) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.error_outline, size: 64, color: Colors.red),
+          Icon(
+            Icons.error_outline,
+            size: 64,
+            color: colorScheme.error,
+          ),
           const SizedBox(height: 16),
           Text(
             'Failed to load food information',
-            style: Theme.of(context).textTheme.titleMedium,
+            style: textTheme.titleMedium,
           ),
           const SizedBox(height: 8),
           Text(
             viewModel.errorMessage ?? 'Unknown error occurred',
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyMedium,
+            style: textTheme.bodyMedium,
           ),
           const SizedBox(height: 24),
           ElevatedButton.icon(
@@ -135,20 +154,28 @@ class FoodDetailScreen extends StatelessWidget {
 
   Widget _buildTimeoutState(
       BuildContext context, FoodDetailViewModel viewModel) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.timer_off, size: 64, color: Colors.orange),
+          Icon(
+            Icons.timer_off,
+            size: 64,
+            color: colorScheme.error,
+          ),
           const SizedBox(height: 16),
           Text(
             'Connection Timeout',
-            style: Theme.of(context).textTheme.titleMedium,
+            style: textTheme.titleMedium,
           ),
           const SizedBox(height: 8),
-          const Text(
+          Text(
             'The server is taking too long to respond.\nPlease check your internet connection.',
             textAlign: TextAlign.center,
+            style: textTheme.bodyMedium,
           ),
           const SizedBox(height: 24),
           ElevatedButton.icon(
@@ -164,8 +191,15 @@ class FoodDetailScreen extends StatelessWidget {
   Widget _buildLoadedState(BuildContext context, FoodDetailViewModel viewModel,
       TextTheme textTheme) {
     final food = viewModel.food;
+    final colorScheme = Theme.of(context).colorScheme;
+
     if (food == null) {
-      return const Center(child: Text('No food information available'));
+      return Center(
+        child: Text(
+          'No food information available',
+          style: textTheme.bodyLarge,
+        ),
+      );
     }
 
     return SingleChildScrollView(
@@ -183,7 +217,9 @@ class FoodDetailScreen extends StatelessWidget {
           if (food.description.isNotEmpty)
             Text(
               food.description,
-              style: textTheme.bodyMedium?.copyWith(color: Colors.grey[700]),
+              style: textTheme.bodyMedium?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+              ),
             ),
           const SizedBox(height: 16),
           const CustomDivider(),
@@ -226,6 +262,7 @@ class FoodDetailScreen extends StatelessWidget {
       BuildContext context, FoodDetailViewModel viewModel) async {
     TextEditingController controller =
         TextEditingController(text: viewModel.servings.toString());
+    final colorScheme = Theme.of(context).colorScheme;
 
     await showDialog(
       context: context,
@@ -238,13 +275,25 @@ class FoodDetailScreen extends StatelessWidget {
             FilteringTextInputFormatter.digitsOnly,
             LengthLimitingTextInputFormatter(4),
           ],
-          decoration:
-              const InputDecoration(hintText: 'Enter number of servings'),
+          decoration: InputDecoration(
+            hintText: 'Enter number of servings',
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: colorScheme.primary),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
         ),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel')),
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              'Cancel',
+              style: TextStyle(color: colorScheme.primary),
+            ),
+          ),
           TextButton(
             onPressed: () {
               int? newServings = int.tryParse(controller.text);
@@ -253,7 +302,10 @@ class FoodDetailScreen extends StatelessWidget {
                 Navigator.pop(context);
               }
             },
-            child: const Text('OK'),
+            child: Text(
+              'OK',
+              style: TextStyle(color: colorScheme.primary),
+            ),
           ),
         ],
       ),
