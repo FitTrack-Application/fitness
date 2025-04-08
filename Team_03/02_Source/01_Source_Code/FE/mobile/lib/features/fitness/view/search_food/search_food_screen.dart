@@ -75,6 +75,7 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> {
   Widget build(BuildContext context) {
     final viewModel = context.watch<SearchFoodViewModel>();
     final theme = Theme.of(context);
+    final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
       appBar: AppBar(
@@ -82,7 +83,8 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text('Search Food'),
+        centerTitle: true,
+        title: Text('Search Food', style: textTheme.titleMedium,),
         actions: [
           IconButton(
             icon: const Icon(Icons.qr_code_scanner),
@@ -100,7 +102,7 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> {
                 controller: _searchController,
                 decoration: InputDecoration(
                   hintText: 'Search for food',
-                  hintStyle: theme.textTheme.labelMedium,
+                  hintStyle: theme.textTheme.bodyMedium,
                   prefixIcon: viewModel.isLoading
                       ? const SizedBox(
                           width: 24,

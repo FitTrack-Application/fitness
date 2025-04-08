@@ -37,11 +37,11 @@ class FoodItemWidget extends StatelessWidget {
                   children: [
                     Text(
                       food.name,
-                      style: textTheme.bodyLarge,
+                      style: textTheme.bodyMedium,
                     ),
                     Text(
                       "${food.calories} cal, Carbs: ${food.carbs}g, Fat: ${food.fat}g, Protein: ${food.protein}g",
-                      style: textTheme.bodyMedium?.copyWith(
+                      style: textTheme.bodySmall?.copyWith(
                         color: colorScheme.onSurfaceVariant,
                       ),
                     ),
