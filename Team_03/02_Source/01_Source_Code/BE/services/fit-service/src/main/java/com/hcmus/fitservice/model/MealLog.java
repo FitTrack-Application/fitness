@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -32,4 +33,6 @@ public class MealLog {
     @Column(nullable = false)
     private UUID userId;
 
+    @OneToMany(mappedBy = "mealLog", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<MealEntry> mealEntries;
 }
