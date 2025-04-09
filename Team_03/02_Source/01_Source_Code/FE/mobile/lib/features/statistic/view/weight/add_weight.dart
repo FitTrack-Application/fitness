@@ -15,6 +15,12 @@ class AddWeight extends StatelessWidget {
           },
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          
+        },
+        child: const Icon(Icons.add),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -23,7 +29,9 @@ class AddWeight extends StatelessWidget {
             Container(
                 padding: const EdgeInsets.all(16.0),
                 decoration: BoxDecoration(
-                color: NeutralColors.dark400,
+                color: Theme.of(context).brightness == Brightness.dark
+                  ? NeutralColors.dark400 
+                  : NeutralColors.light400, 
                 borderRadius: BorderRadius.circular(8.0),        
               ),
               child: Column(
@@ -37,7 +45,7 @@ class AddWeight extends StatelessWidget {
                       style: Theme.of(context).textTheme.bodyLarge,
                     ),
                     Text(
-                      "vinh123", 
+                      "70", 
                       style: Theme.of(context).textTheme.displaySmall,
                     ),
                   ],

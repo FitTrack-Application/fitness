@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../models/dashboard.dart';
+import '../models/weight_entry.dart';
 import '../services/dashboard_api_service.dart';
 
 class DashboardViewModel extends ChangeNotifier {
@@ -17,6 +18,8 @@ class DashboardViewModel extends ChangeNotifier {
   int totalCaloriesBurned = 0;
   Macronutrients macronutrients = Macronutrients(carbs: 0, protein: 0, fat: 0);
   int caloriesGoal = 0;
+
+  List<WeightEntry> weightEntries = []; 
 
   int get caloriesRemaining => caloriesGoal - totalCaloriesConsumed; //+ totalCaloriesBurned;
 
@@ -45,6 +48,16 @@ class DashboardViewModel extends ChangeNotifier {
     }
   }
 
+  Future<void> fetchWeightStatistics({required String token}) async {
+    try {
+      final result = await apiService.fetchWeightStatistics(token);
+      weightEntries = result;
+      notifyListeners();
+    } catch (e) {
+      errorMessage = e.toString();
+      notifyListeners();
+    }
+  }
   int _calculateMacroPercent(int macroValue) {
     final total = macronutrients.carbs + macronutrients.protein + macronutrients.fat;
     if (total == 0) return 0;

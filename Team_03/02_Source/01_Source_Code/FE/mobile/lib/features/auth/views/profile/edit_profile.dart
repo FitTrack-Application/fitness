@@ -11,7 +11,7 @@ class EditProfile extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            context.go('/profile'); // Navigate back to the previous screen
+            context.go('/profile'); 
           },
         ),
       ),
@@ -23,7 +23,9 @@ class EditProfile extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
-                color: NeutralColors.dark400,
+                color: Theme.of(context).brightness == Brightness.dark
+                  ? NeutralColors.dark400 
+                  : NeutralColors.light400, 
                 borderRadius: BorderRadius.circular(8.0),
               ),
               child: Column(

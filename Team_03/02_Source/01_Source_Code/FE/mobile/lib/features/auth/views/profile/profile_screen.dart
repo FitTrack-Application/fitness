@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/common/widgets/list_item/list_item.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobile/cores/constants/colors.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -21,11 +22,11 @@ class ProfileScreen extends StatelessWidget {
                   },
                   child: CircleAvatar(
                     radius: 50,
-                    backgroundColor: Colors.grey[300],
+                    backgroundColor: NeutralColors.light500,
                     child: Icon(
                       Icons.person,
                       size: 50,
-                      color: Colors.grey[700],
+                      color: NeutralColors.dark500,
                     ),
                   ),
                 ),

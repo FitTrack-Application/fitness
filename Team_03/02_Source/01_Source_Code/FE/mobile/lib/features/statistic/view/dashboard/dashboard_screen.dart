@@ -24,6 +24,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       const token = 'auth_token';
 
       viewModel.fetchDashboardData(token: token);
+      viewModel.fetchWeightStatistics(token: token);
       _initialized = true;
     }
   }
@@ -80,7 +81,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           _buildQuickLogCard(theme),
           const SizedBox(height: 16),
            WeightGraph(
-                entries: weightEntries,
+                entries: viewModel.weightEntries,
                 title: 'Weight History (kg)',
               ),       
           const SizedBox(height: 16),      
