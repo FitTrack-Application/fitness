@@ -33,7 +33,11 @@ class FoodDetailScreen extends StatelessWidget {
       child: Builder(
         builder: (context) => Scaffold(
           appBar: AppBar(
-            title: Text(isEdit ? 'Edit Food' : 'Add Food'),
+            title: Text(
+              isEdit ? 'Edit Food' : 'Add Food',
+              style: textTheme.titleMedium,
+            ),
+            centerTitle: true,
             leading: IconButton(
               icon: const Icon(Icons.arrow_back),
               onPressed: () => GoRouter.of(context).pop(),
@@ -209,7 +213,7 @@ class FoodDetailScreen extends StatelessWidget {
         children: [
           Text(
             food.name,
-            style: textTheme.titleLarge?.copyWith(
+            style: textTheme.titleSmall?.copyWith(
               fontWeight: FontWeight.bold,
             ),
           ),
