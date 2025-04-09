@@ -1,4 +1,4 @@
-package com.hcmus.userservice.dto;
+package com.hcmus.userservice.dto.request;
 
 import java.time.LocalDate;
 
