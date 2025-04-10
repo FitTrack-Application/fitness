@@ -47,8 +47,8 @@ class _StepTwoState extends State<StepTwo> {
                       ),
                     ),
                   SelectBox<String>(
-                    title: 'Gain Weight',
-                    value: 'Gain Weight',
+                    title: 'Gain weight',
+                    value: 'Gain weight',
                     groupValue: widget.selectedGoal,
                     onChanged: (value) {
                       widget.onGoalSelected(value);
@@ -57,8 +57,8 @@ class _StepTwoState extends State<StepTwo> {
                   ),
                   const SizedBox(height: 10),
                   SelectBox<String>(
-                    title: 'Maintain Weight',
-                    value: 'Maintain Weight',
+                    title: 'Maintain weight',
+                    value: 'Maintain weight',
                     groupValue: widget.selectedGoal,
                     onChanged: (value) {
                       widget.onGoalSelected(value);
@@ -67,8 +67,8 @@ class _StepTwoState extends State<StepTwo> {
                   ),
                   const SizedBox(height: 10),
                   SelectBox<String>(
-                    title: 'Lose Weight',
-                    value: 'Lose Weight',
+                    title: 'Lose weight',
+                    value: 'Lose weight',
                     groupValue: widget.selectedGoal,
                     onChanged: (value) {
                       widget.onGoalSelected(value);

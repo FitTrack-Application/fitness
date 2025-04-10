@@ -6,6 +6,7 @@ class TTextTheme {
   TTextTheme._();
 
   static TextTheme lightTextTheme = TextTheme(
+    // Display dành cho các chữ muốn nổi bật lên có size to hơn và màu Xanh
     displayLarge: GoogleFonts.montserrat(
       color: HighlightColors.highlight500,
       fontSize: 28,
@@ -21,6 +22,8 @@ class TTextTheme {
       fontSize: 16,
       fontWeight: FontWeight.bold,
     ),
+
+    // Dành cho các chữ to như Display nhưng màu tùy vào Theme, không phải màu Xanh
     headlineLarge: GoogleFonts.montserrat(
       color: NeutralColors.dark500,
       fontSize: 28,
@@ -36,6 +39,8 @@ class TTextTheme {
       fontSize: 20,
       fontWeight: FontWeight.w500,
     ),
+
+    // Body dành các chữ viết nội dung, bình thường dùng medium và small thôi
     bodyLarge: GoogleFonts.poppins(
       color: NeutralColors.dark400,
       fontSize: 14,
@@ -51,6 +56,8 @@ class TTextTheme {
       fontSize: 10,
       fontWeight: FontWeight.normal,
     ),
+
+    // Title dùng cho các tiêu đề và dùng trong Top App Bar thường dùng Medium và Small
     titleLarge: GoogleFonts.poppins(
       color: NeutralColors.dark400,
       fontSize: 22,
@@ -66,6 +73,8 @@ class TTextTheme {
       fontSize: 18,
       fontWeight: FontWeight.bold,
     ),
+
+    // Label dùng trong các Button. Chú ý "labelLarge có màu khác với hai loại còn lại"
     labelLarge: GoogleFonts.poppins(
       color: NeutralColors.light200,
       fontSize: 16,
