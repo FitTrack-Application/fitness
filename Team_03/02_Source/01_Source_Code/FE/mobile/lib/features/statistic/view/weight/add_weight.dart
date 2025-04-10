@@ -14,71 +14,70 @@ class AddWeight extends StatelessWidget {
             context.go('/dashboard'); // Navigate back to the previous screen
           },
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          
-        },
-        child: const Icon(Icons.add),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.check), // Confirm button icon
+            onPressed: () {
+              context.go('/dashboard');
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
+            Card(
+              child: Padding(
                 padding: const EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
-                color: Theme.of(context).brightness == Brightness.dark
-                  ? NeutralColors.dark400 
-                  : NeutralColors.light400, 
-                borderRadius: BorderRadius.circular(8.0),        
-              ),
-              child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "Weight",
-                      style: Theme.of(context).textTheme.bodyLarge,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Weight",
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                        Text(
+                          "70",
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ],
                     ),
-                    Text(
-                      "70", 
-                      style: Theme.of(context).textTheme.bodyLarge,
+                    const Divider(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Date",
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                        Text(
+                          "20/04/2025",
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ],
+                    ),
+                    const Divider(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Progress photo",
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                        CircleAvatar(
+                          radius: 20,
+                          backgroundImage:
+                              NetworkImage('https://example.com/avatar.jpg'),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                    "Date",
-                    style: Theme.of(context).textTheme.bodyLarge,
-                    ),
-                    Text(
-                    "20/04/2025", 
-                    style: Theme.of(context).textTheme.displaySmall,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                    "Progress photo",
-                    style: Theme.of(context).textTheme.bodyLarge,
-                    ),
-                    CircleAvatar(
-                      radius: 20,
-                      backgroundImage: NetworkImage('https://example.com/avatar.jpg'),
-                    )
-                  ],
-                ),                                      
-              ],
               ),
             ),
           ],

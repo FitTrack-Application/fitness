@@ -12,7 +12,7 @@ class SelectBoxTheme {
         color: isSelected
             ? (isDarkMode
                 ? HighlightColors.highlight400
-                : HighlightColors.highlight400)
+                : HighlightColors.highlight500)
             : Colors.transparent,
       ),
       borderRadius: BorderRadius.circular(14.0),
@@ -23,7 +23,7 @@ class SelectBoxTheme {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return TextStyle(
       fontSize: 14,
-      color: isDarkMode ? NeutralColors.light500 : HighlightColors.highlight500,
+      color: isDarkMode ? NeutralColors.light500 : NeutralColors.dark500,
     );
   }
 }
