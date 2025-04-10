@@ -23,7 +23,7 @@ class StepOne extends StatelessWidget {
             child: TextFormField(
               controller: nameController,
               decoration: const InputDecoration(
-                border: OutlineInputBorder(),
+                // border: OutlineInputBorder(),
                 labelText: 'Enter your name',
               ),
               validator: (value) {

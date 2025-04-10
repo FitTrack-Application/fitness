@@ -86,7 +86,7 @@ class _StepThreeState extends State<StepThree> {
           TextFormField(
             controller: widget.ageController,
             decoration: const InputDecoration(
-              border: OutlineInputBorder(),
+              // border: OutlineInputBorder(),
               labelText: 'Enter your age',
             ),
             keyboardType: TextInputType.number,
@@ -105,7 +105,7 @@ class _StepThreeState extends State<StepThree> {
           TextFormField(
             controller: widget.heightController,
             decoration: const InputDecoration(
-              border: OutlineInputBorder(),
+              // border: OutlineInputBorder(),
               labelText: 'Enter your height (cm)',
             ),
             keyboardType: TextInputType.number,
@@ -124,7 +124,7 @@ class _StepThreeState extends State<StepThree> {
           TextFormField(
             controller: widget.weightController,
             decoration: const InputDecoration(
-              border: OutlineInputBorder(),
+              // border: OutlineInputBorder(),
               labelText: 'Enter your weight (kg)',
             ),
             keyboardType: TextInputType.number,

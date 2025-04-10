@@ -93,7 +93,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget _buildCaloriesCard(ThemeData theme, int consumed, int goal, int remaining) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      color: HighlightColors.highlight100,
+      color: SurfaceColors.surface100,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(

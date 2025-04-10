@@ -46,7 +46,7 @@ class AddWeight extends StatelessWidget {
                     ),
                     Text(
                       "70", 
-                      style: Theme.of(context).textTheme.displaySmall,
+                      style: Theme.of(context).textTheme.bodyLarge,
                     ),
                   ],
                 ),

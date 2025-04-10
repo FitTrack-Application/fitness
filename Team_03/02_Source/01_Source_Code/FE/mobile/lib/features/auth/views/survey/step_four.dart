@@ -38,7 +38,7 @@ class _StepFourState extends State<StepFour> {
             child: TextFormField(
               controller: widget.weightGoalController,
               decoration: InputDecoration(
-                border: const OutlineInputBorder(),
+                // border: const OutlineInputBorder(),
                 labelText:
                     'Enter your weight goal (kg) starting from ${widget.weightController.text}',
               ),

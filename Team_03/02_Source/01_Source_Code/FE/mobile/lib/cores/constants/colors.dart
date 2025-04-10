@@ -65,3 +65,6 @@ class SupportColors {
   static const Color error200 = Color(0xFFFF616D); // Trung bình
   static const Color error100 = Color(0xFFFFE2E5); // Nhạt nhất
 }
+class SurfaceColors {
+  static const Color surface100 = Color(0x22E8E9F1); // Nhạt nhất
+}
