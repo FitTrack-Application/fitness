@@ -5,6 +5,7 @@ import com.hcmus.userservice.dto.response.ApiResponse;
 import com.hcmus.userservice.dto.response.AuthResponse;
 import com.hcmus.userservice.dto.request.RegisterRequest;
 import com.hcmus.userservice.dto.response.LoginResponse;
+import com.hcmus.userservice.exception.UserNotFoundException;
 import com.hcmus.userservice.model.Goal;
 import com.hcmus.userservice.model.Role;
 import com.hcmus.userservice.model.User;
@@ -28,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Map;
+import java.util.UUID;
 import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -198,4 +200,18 @@ public class AuthService {
             throw new IllegalArgumentException("Invalid refresh token: " + e.getMessage());
         }
     }
+
+    public ApiResponse<?> getUserIdAndGoalId(UUID userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("Không tìm thấy người dùng"));
+        
+        Goal goal = goalRepository.findByUser(user);
+        return ApiResponse.<Object>builder()
+                .status(HttpStatus.OK.value())
+                .generalMessage("Get user and goal id successfully")
+                .data(Map.of("userId", userId, "goalId", goal.getGoalId()))
+                .timestamp(LocalDateTime.now())
+                .build();
+    } 
+    
 }

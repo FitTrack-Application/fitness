@@ -58,12 +58,7 @@ public class UserController {
 
     }
 
-    @GetMapping("/getUserIdAndGoalId")
-    public ResponseEntity<?> getUserIdAndGoalId(@RequestHeader("Authorization") String token) {
-        String userIdStr = jwtUtil.extractUserId(token.replace("Bearer ", ""));
-        UUID userId = UUID.fromString(userIdStr);
-        return ResponseEntity.ok(updateInforUserService.getUserIdAndGoalId(userId));
-    }
+    
 
 
 }

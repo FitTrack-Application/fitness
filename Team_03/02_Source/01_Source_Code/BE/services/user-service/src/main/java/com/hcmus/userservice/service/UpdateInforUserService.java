@@ -54,16 +54,5 @@ public class UpdateInforUserService {
                 .build();
     }
 
-    public ApiResponse<?> getUserIdAndGoalId(UUID userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("Không tìm thấy người dùng"));
-        
-        Goal goal = goalRepository.findByUser(user);
-        return ApiResponse.<Object>builder()
-                .status(HttpStatus.OK.value())
-                .generalMessage("Get user and goal id successfully")
-                .data(Map.of("userId", userId, "goalId", goal.getGoalId()))
-                .timestamp(LocalDateTime.now())
-                .build();
-    } 
+    
 }
