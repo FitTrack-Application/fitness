@@ -88,10 +88,10 @@ public class AuthService {
         // Nếu role không được chỉ định, mặc định là USER
         user.setRole(request.getRole() != null ? request.getRole() : Role.USER);
 
-        userRepository.save(user);
+        User savedUser = userRepository.save(user); 
 
         Goal goal = new Goal();
-        goal.setUser(user);
+        goal.setUser(savedUser);
         goal.setGoalType(request.getGoalType());
         goal.setWeightGoal(request.getWeightGoal());
         goal.setGoalPerWeek(request.getGoalPerWeek());
@@ -101,19 +101,19 @@ public class AuthService {
 
         goalRepository.save(goal);
 
-        String token = jwtUtil.generateToken(user);
+        String token = jwtUtil.generateToken(savedUser);
 
-        AuthResponse authResponse = buildAuthResponse(user, goal, token);
+        AuthResponse authResponse = buildAuthResponse(savedUser, goal, token);
 
         AddWeightRequest addWeightRequest = new AddWeightRequest();
-        addWeightRequest.setUserId(user.getUserId());
+        addWeightRequest.setUserId(savedUser.getUserId());
         addWeightRequest.setGoalId(goal.getGoalId());
-        addWeightRequest.setWeight(user.getWeight());
+        addWeightRequest.setWeight(savedUser.getWeight());
         addWeightRequest.setUpdateDate(goal.getStartingDate()); 
-        addWeightRequest.setProgressPhoto(user.getImageUrl()); 
+        addWeightRequest.setProgressPhoto(savedUser.getImageUrl()); 
 
         
-        restTemplate.postForObject(statisticServiceUrl + "/api/statistic/addweight", addWeightRequest, Void.class);
+        //restTemplate.postForObject(statisticServiceUrl + "/api/statistic/addweight", addWeightRequest, Void.class);
         
 
         return ApiResponse.<AuthResponse>builder()
