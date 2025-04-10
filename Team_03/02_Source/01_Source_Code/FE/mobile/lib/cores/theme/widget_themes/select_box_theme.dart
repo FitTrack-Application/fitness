@@ -11,8 +11,8 @@ class SelectBoxTheme {
       border: Border.all(
         color: isSelected
             ? (isDarkMode
-                ? HighlightColors.highlight500
-                : HighlightColors.highlight500)
+                ? HighlightColors.highlight400
+                : HighlightColors.highlight400)
             : Colors.transparent,
       ),
       borderRadius: BorderRadius.circular(14.0),

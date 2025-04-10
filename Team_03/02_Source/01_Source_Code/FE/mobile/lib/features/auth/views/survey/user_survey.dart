@@ -301,55 +301,72 @@ class Summary extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Text('Summary',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+          Text(
+            'Congratulations! You have completed the survey',
+            style: Theme.of(context).textTheme.bodyLarge,
+            textAlign: TextAlign.center,
+          ),
           const SizedBox(height: 10),
+          Text(
+            'Your daily net calorie goal(kcal) is:',
+            style: Theme.of(context).textTheme.bodyMedium,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 10),
+          Text(
+            ' ${calorieGoal.toStringAsFixed(2)}',
+            style: Theme.of(context).textTheme.displayLarge,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 30),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+              'Details information:',
+              style: Theme.of(context).textTheme.titleSmall,
+              textAlign: TextAlign.left,
+              ),
+            ],
+          ),
           Row(
             children: [
               Expanded(
-                child: Container(
-                  padding: const EdgeInsets.all(8.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8.0),
-                    border: Border.all(
-                        color: HighlightColors
-                            .highlight500), // Added border with HighlightColors.highlight500
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Name: $name',
-                          style: Theme.of(context).textTheme.bodyMedium),
-                      Text('Gender: $gender',
-                          style: Theme.of(context).textTheme.bodyMedium),
-                      Text('Age: $age',
-                          style: Theme.of(context).textTheme.bodyMedium),
-                    ],
+                child: Card(
+                  elevation: Theme.of(context).cardTheme.elevation, // Use theme elevation
+                  shape: Theme.of(context).cardTheme.shape, // Use theme shape
+                  color: Theme.of(context).cardTheme.color, // Use theme color
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Name: $name', style: Theme.of(context).textTheme.bodyMedium),
+                        Text('Gender: $gender', style: Theme.of(context).textTheme.bodyMedium),
+                        Text('Age: $age', style: Theme.of(context).textTheme.bodyMedium),
+                      ],
+                    ),
                   ),
                 ),
               ),
               const SizedBox(width: 10),
               Expanded(
-                child: Container(
-                  padding: const EdgeInsets.all(8.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8.0),
-                    border: Border.all(
-                        color: HighlightColors
-                            .highlight500), // Added border with HighlightColors.highlight500
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Height: $height cm',
-                          style: Theme.of(context).textTheme.bodyMedium),
-                      Text('Weight: $weight kg',
-                          style: Theme.of(context).textTheme.bodyMedium),
-                      Text(activityLevel,
-                          style: Theme.of(context).textTheme.bodyMedium),
-                    ],
+                child: Card(
+                  elevation: Theme.of(context).cardTheme.elevation,
+                  shape: Theme.of(context).cardTheme.shape,
+                  color: Theme.of(context).cardTheme.color,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Height: $height cm', style: Theme.of(context).textTheme.bodyMedium),
+                        Text('Weight: $weight kg', style: Theme.of(context).textTheme.bodyMedium),
+                        Text(activityLevel, style: Theme.of(context).textTheme.bodyMedium),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -359,53 +376,25 @@ class Summary extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: Container(
-                  padding: const EdgeInsets.all(8.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8.0),
-                    border: Border.all(
-                        color: HighlightColors
-                            .highlight500), // Added border with HighlightColors.highlight500
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Goal: $goal',
-                          style: Theme.of(context).textTheme.bodyMedium),
-                      Text('Weight Goal: $weightGoal kg',
-                          style: Theme.of(context).textTheme.bodyMedium),
-                      Text('Goal per Week: ${goalPerWeek.toString()} kg',
-                          style: Theme.of(context).textTheme.bodyMedium),
-                    ],
+                child: Card(
+                  elevation: Theme.of(context).cardTheme.elevation,
+                  shape: Theme.of(context).cardTheme.shape,
+                  color: Theme.of(context).cardTheme.color,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Goal: $goal', style: Theme.of(context).textTheme.bodyMedium),
+                        Text('Weight Goal: $weightGoal kg', style: Theme.of(context).textTheme.bodyMedium),
+                        Text('Goal per Week: ${goalPerWeek.toString()} kg', style: Theme.of(context).textTheme.bodyMedium),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ],
-          ),
-          const SizedBox(height: 10),
-          Row(
-            children: [
-              Expanded(
-                child: Container(
-                  padding: const EdgeInsets.all(8.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8.0),
-                    border: Border.all(
-                        color: HighlightColors
-                            .highlight500), // Added border with HighlightColors.highlight500
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                          'Calorie Goal per day (Remaining =  Goal - Food + Exercise): ${calorieGoal.toStringAsFixed(2)} kcal',
-                          style: Theme.of(context).textTheme.displayLarge),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
+          ),          
         ],
       ),
     );
