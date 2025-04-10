@@ -11,6 +11,7 @@ import com.hcmus.userservice.model.User;
 import com.hcmus.userservice.repository.UserRepository;
 import com.hcmus.userservice.repository.GoalRepository;
 import com.hcmus.userservice.utility.JwtUtil;
+import com.hcmus.userservice.config.RestTemplateConfig;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
@@ -29,6 +30,11 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.Map;
 import java.util.HashMap;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.client.RestTemplate;
+import com.hcmus.userservice.dto.request.AddWeightRequest;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -42,6 +48,12 @@ public class AuthService {
     private final JwtUtil jwtUtil;
 
     private final AuthenticationManager authenticationManager;
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+    @Value("${statistic.service.url}")
+    private String statisticServiceUrl;
 
     public ApiResponse<AuthResponse> checkEmail(String email){
         if (userRepository.existsByEmail(email)) {
@@ -90,6 +102,17 @@ public class AuthService {
         String token = jwtUtil.generateToken(user);
 
         AuthResponse authResponse = buildAuthResponse(user, goal, token);
+
+        AddWeightRequest addWeightRequest = new AddWeightRequest();
+        addWeightRequest.setUserId(user.getUserId());
+        addWeightRequest.setGoalId(goal.getGoalId());
+        addWeightRequest.setWeight(user.getWeight());
+        addWeightRequest.setUpdateDate(goal.getStartingDate()); 
+        addWeightRequest.setProgressPhoto(user.getImageUrl()); 
+
+        
+        restTemplate.postForObject(statisticServiceUrl + "/api/statistic/addweight", addWeightRequest, Void.class);
+        
 
         return ApiResponse.<AuthResponse>builder()
                 .status(HttpStatus.OK.value())
