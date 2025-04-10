@@ -76,6 +76,35 @@ class AuthViewModel extends ChangeNotifier {
     }
   }
 
+  Future<bool> checkAccount({
+    required String email,
+  }) async {
+    isLoading = true;
+    error = null;
+    notifyListeners();
+
+    try {
+      final response = await _authService.checkAccount(email);
+
+      if (response.success) {
+        isLoading = false;
+        notifyListeners();
+        return true;
+      } else {
+        error = response.message ?? 'Account check failed';
+        isLoading = false;
+        notifyListeners();
+        return false;
+      }
+    } catch (e) {
+      print('Check Account error: $e');
+      error = e.toString();
+      isLoading = false;
+      notifyListeners();
+      return false;
+    }
+  }
+
   Future<bool> login({
     required String email,
     required String password,

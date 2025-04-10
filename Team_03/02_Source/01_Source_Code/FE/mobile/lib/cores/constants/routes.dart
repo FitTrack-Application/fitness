@@ -15,7 +15,7 @@ import '../../features/fitness/view/food_detail/food_detail_screen.dart';
 import '../../features/fitness/view/search_food/search_food_screen.dart';
 import 'package:mobile/features/statistic/view/weight/add_weight.dart';
 final GoRouter appRouter = GoRouter(
-  initialLocation: '/dashboard',
+  initialLocation: '/welcome',
   routes: [
     GoRoute(
       path: '/',
@@ -64,7 +64,7 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => const MainScreen(child: ProfileScreen()),
     ),
     GoRoute(
-      path: '/auth/signup',
+      path: '/auth/register',
       builder: (context, state) => const UserRegister(),
     ),
     GoRoute(
@@ -73,7 +73,13 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/survey',
-      builder: (context, state) => const UserSurvey(),
+      builder: (context, state) {
+        // Nhận dữ liệu từ extra
+        final extra = state.extra as Map<String, dynamic>?;
+        final email = extra?['email'] as String? ?? '';
+        final password = extra?['password'] as String? ?? '';
+        return UserSurvey(email: email, password: password);
+      },
     ),
     GoRoute(
       path: '/goal',

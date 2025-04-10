@@ -11,7 +11,14 @@ import 'step_four.dart';
 import 'step_five.dart';
 
 class UserSurvey extends StatefulWidget {
-  const UserSurvey({super.key});
+  final String email;
+  final String password;
+
+  const UserSurvey({
+    super.key,
+    required this.email,
+    required this.password,
+  });
 
   @override
   // ignore: library_private_types_in_public_api
