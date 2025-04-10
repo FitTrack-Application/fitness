@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile/common/widgets/bottom_nav_bar/bottom_nav_provider.dart';
 import 'package:mobile/cores/constants/routes.dart';
 import 'package:mobile/cores/theme/theme.dart';
+import 'package:mobile/features/auth/viewmodels/auth_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 import 'features/fitness/view/search_food/search_food_screen.dart';
@@ -13,6 +14,7 @@ void main() {
       MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => BottomNavProvider()),
+          ChangeNotifierProvider(create: (_) => AuthViewModel()),
           // ChangeNotifierProvider(create: (_) => DashboardScreen()),
           ChangeNotifierProvider(create: (_) => SearchFoodViewModel()..searchFoods()),
         ],

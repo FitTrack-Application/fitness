@@ -10,11 +10,12 @@ import 'package:mobile/features/auth/views/survey/user_survey.dart';
 import 'package:mobile/features/auth/views/authentication/user_register.dart';
 import 'package:mobile/features/auth/views/authentication/user_login.dart';
 import 'package:mobile/features/auth/views/profile/user_goal.dart';
+import 'package:mobile/features/statistic/view/statistic/calories_statistic_screen.dart';
 
 import '../../features/fitness/view/food_detail/food_detail_screen.dart';
 import '../../features/fitness/view/search_food/search_food_screen.dart';
 final GoRouter appRouter = GoRouter(
-  initialLocation: '/search',
+  initialLocation: '/statistic/calories',
   routes: [
     GoRoute(
       path: '/',
@@ -66,6 +67,10 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/goal',
       builder: (context, state) => MainScreen(child: GoalPage()), 
+    ),
+    GoRoute(
+      path: '/statistic/calories',
+      builder: (context, state) => const CaloriesStatisticScreen(userId: "1"),
     ),
   ],
 );
