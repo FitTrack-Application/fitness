@@ -1,7 +1,7 @@
 package com.hcmus.userservice.controller;
 
-import com.hcmus.userservice.dto.SurveyResponse;
-import com.hcmus.userservice.dto.SurveyRequest;
+import com.hcmus.userservice.dto.response.SurveyResponse;
+import com.hcmus.userservice.dto.request.SurveyRequest;
 import com.hcmus.userservice.service.SurveyService;
 import com.hcmus.userservice.utility.JwtUtil;
 
@@ -63,7 +63,7 @@ public class UserController {
     }
 
     @PostMapping("/survey")
-    public ResponseEntity<SurveyResponse> survey(@RequestBody SurveyRequest request, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<?> survey(@RequestBody SurveyRequest request, @RequestHeader("Authorization") String token) {
         String userIdStr = jwtUtil.extractUserId(token.replace("Bearer ", ""));
         UUID userId = UUID.fromString(userIdStr);
         return ResponseEntity.ok(surveyService.survey(request, userId));
