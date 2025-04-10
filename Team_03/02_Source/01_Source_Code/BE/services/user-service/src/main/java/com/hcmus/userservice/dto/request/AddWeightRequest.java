@@ -1,4 +1,4 @@
-package com.hcmus.statisticserivce.dto;
+package com.hcmus.userservice.dto.request;
 
 
 import lombok.AllArgsConstructor;

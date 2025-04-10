@@ -5,12 +5,14 @@ import com.hcmus.userservice.dto.response.ApiResponse;
 import com.hcmus.userservice.dto.response.AuthResponse;
 import com.hcmus.userservice.dto.request.RegisterRequest;
 import com.hcmus.userservice.dto.response.LoginResponse;
+import com.hcmus.userservice.exception.UserNotFoundException;
 import com.hcmus.userservice.model.Goal;
 import com.hcmus.userservice.model.Role;
 import com.hcmus.userservice.model.User;
 import com.hcmus.userservice.repository.UserRepository;
 import com.hcmus.userservice.repository.GoalRepository;
 import com.hcmus.userservice.utility.JwtUtil;
+import com.hcmus.userservice.config.RestTemplateConfig;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
@@ -27,7 +29,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Map;
+import java.util.UUID;
 import java.util.HashMap;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.client.RestTemplate;
+import com.hcmus.userservice.dto.request.AddWeightRequest;
 
 @Service
 @RequiredArgsConstructor
@@ -42,6 +50,12 @@ public class AuthService {
     private final JwtUtil jwtUtil;
 
     private final AuthenticationManager authenticationManager;
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+    @Value("${statistic.service.url}")
+    private String statisticServiceUrl;
 
     public ApiResponse<AuthResponse> checkEmail(String email){
         if (userRepository.existsByEmail(email)) {
@@ -90,6 +104,17 @@ public class AuthService {
         String token = jwtUtil.generateToken(user);
 
         AuthResponse authResponse = buildAuthResponse(user, goal, token);
+
+        AddWeightRequest addWeightRequest = new AddWeightRequest();
+        addWeightRequest.setUserId(user.getUserId());
+        addWeightRequest.setGoalId(goal.getGoalId());
+        addWeightRequest.setWeight(user.getWeight());
+        addWeightRequest.setUpdateDate(goal.getStartingDate()); 
+        addWeightRequest.setProgressPhoto(user.getImageUrl()); 
+
+        
+        restTemplate.postForObject(statisticServiceUrl + "/api/statistic/addweight", addWeightRequest, Void.class);
+        
 
         return ApiResponse.<AuthResponse>builder()
                 .status(HttpStatus.OK.value())
@@ -175,4 +200,18 @@ public class AuthService {
             throw new IllegalArgumentException("Invalid refresh token: " + e.getMessage());
         }
     }
+
+    public ApiResponse<?> getUserIdAndGoalId(UUID userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("Không tìm thấy người dùng"));
+        
+        Goal goal = goalRepository.findByUser(user);
+        return ApiResponse.<Object>builder()
+                .status(HttpStatus.OK.value())
+                .generalMessage("Get user and goal id successfully")
+                .data(Map.of("userId", userId, "goalId", goal.getGoalId()))
+                .timestamp(LocalDateTime.now())
+                .build();
+    } 
+    
 }

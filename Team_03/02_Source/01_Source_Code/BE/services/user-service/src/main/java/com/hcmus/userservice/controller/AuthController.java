@@ -12,16 +12,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.bind.annotation.RequestHeader;
+import com.hcmus.userservice.utility.JwtUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -29,6 +32,7 @@ import java.util.Map;
 public class AuthController {
 
     private final AuthService authService;
+    private final JwtUtil jwtUtil;
 
     @PostMapping("/checkemail")
     public ResponseEntity<?> checkEmail(@RequestBody @Valid CheckEmailRequest request) {
@@ -144,5 +148,12 @@ public class AuthController {
 
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
         }
+    }
+
+    @GetMapping("/getUserIdAndGoalId")
+    public ResponseEntity<?> getUserIdAndGoalId(@RequestHeader("Authorization") String token) {
+        String userIdStr = jwtUtil.extractUserId(token.replace("Bearer ", ""));
+        UUID userId = UUID.fromString(userIdStr);
+        return ResponseEntity.ok(authService.getUserIdAndGoalId(userId));
     }
 }
