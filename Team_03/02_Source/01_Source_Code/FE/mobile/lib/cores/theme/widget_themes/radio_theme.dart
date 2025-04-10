@@ -5,8 +5,8 @@ class TRadioTheme {
   TRadioTheme._();
 
   static final lightRadioTheme = RadioThemeData(
-    fillColor: MaterialStateProperty.resolveWith((states) {
-      if (states.contains(MaterialState.selected)) {
+    fillColor: WidgetStateProperty.resolveWith((states) {
+      if (states.contains(WidgetState.selected)) {
         return HighlightColors.highlight500;
       }
       return HighlightColors.highlight500;
@@ -14,8 +14,8 @@ class TRadioTheme {
   );
 
   static final darkRadioTheme = RadioThemeData(
-    fillColor: MaterialStateProperty.resolveWith((states) {
-      if (states.contains(MaterialState.selected)) {
+    fillColor: WidgetStateProperty.resolveWith((states) {
+      if (states.contains(WidgetState.selected)) {
         return NeutralColors.light500;
       }
       return NeutralColors.light500;

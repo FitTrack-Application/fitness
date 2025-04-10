@@ -9,7 +9,9 @@ import '../../viewmodels/search_food_viewmodel.dart';
 import 'widget/food_item.dart';
 
 class SearchFoodScreen extends StatefulWidget {
-  const SearchFoodScreen({super.key});
+  final int diaryId;
+
+  const SearchFoodScreen({super.key, required this.diaryId});
 
   @override
   State<SearchFoodScreen> createState() => _SearchFoodScreenState();
@@ -38,7 +40,9 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> {
     if (_debounceTimer?.isActive ?? false) _debounceTimer!.cancel();
 
     _debounceTimer = Timer(const Duration(milliseconds: 500), () {
-      context.read<SearchFoodViewModel>().searchFoods(query: _searchController.text);
+      context
+          .read<SearchFoodViewModel>()
+          .searchFoods(query: _searchController.text);
     });
   }
 
@@ -52,7 +56,9 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> {
 
   void _scrollListener() {
     final viewModel = context.read<SearchFoodViewModel>();
-    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200 && // Load before reaching the end
+    if (_scrollController.position.pixels >=
+            _scrollController.position.maxScrollExtent -
+                200 && // Load before reaching the end
         !viewModel.isFetchingMore &&
         viewModel.hasMoreData) {
       viewModel.loadMoreFoods();
@@ -60,13 +66,15 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> {
   }
 
   void _retrySearch() {
-    context.read<SearchFoodViewModel>().searchFoods(query: _searchController.text);
+    context
+        .read<SearchFoodViewModel>()
+        .searchFoods(query: _searchController.text);
   }
 
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<SearchFoodViewModel>();
-    final colorScheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
     final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
@@ -75,7 +83,8 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Search Food', style: textTheme.titleMedium),
+        centerTitle: true,
+        title: Text('Search Food', style: textTheme.titleMedium,),
         actions: [
           IconButton(
             icon: const Icon(Icons.qr_code_scanner),
@@ -92,54 +101,44 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> {
               child: TextField(
                 controller: _searchController,
                 decoration: InputDecoration(
-                  hintText: 'Search for a food',
-                  hintStyle: textTheme.bodyMedium?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
-                  ),
+                  hintText: 'Search for food',
+                  hintStyle: theme.textTheme.bodyMedium,
                   prefixIcon: viewModel.isLoading
-                      ? SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: colorScheme.primary,
-                      ),
-                    ),
-                  )
-                      : Icon(Icons.search, color: colorScheme.primary),
+                      ? const SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                            ),
+                          ),
+                        )
+                      : const Icon(Icons.search),
                   contentPadding: const EdgeInsets.symmetric(vertical: 10),
-                  fillColor: colorScheme.surfaceContainerHighest,
-                  filled: true,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    borderSide: BorderSide(color: colorScheme.primary),
-                  ),
                   suffixIcon: _searchController.text.isNotEmpty
                       ? IconButton(
-                    icon: const Icon(Icons.clear),
-                    onPressed: () {
-                      _searchController.clear();
-                      // When clearing text, still search with empty query rather than clearing results
-                      viewModel.searchFoods(query: '');
-                    },
-                  )
+                          icon: const Icon(Icons.clear),
+                          onPressed: () {
+                            _searchController.clear();
+                            // When clearing text, still search with empty query rather than clearing results
+                            viewModel.searchFoods(query: '');
+                          },
+                        )
                       : null,
                 ),
-                style: textTheme.bodyMedium,
               ),
             ),
           ),
           Expanded(
-            child: _buildBody(viewModel, context),
+            child: _buildBody(viewModel),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildBody(SearchFoodViewModel viewModel, BuildContext context) {
+  Widget _buildBody(SearchFoodViewModel viewModel) {
     if (viewModel.isLoading) {
       return const Center(
         child: CircularProgressIndicator(),
@@ -167,7 +166,6 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> {
               _searchController.text.isEmpty
                   ? 'No foods available'
                   : 'No foods found for "${_searchController.text}"',
-              style: Theme.of(context).textTheme.titleMedium,
             ),
           ],
         ),
@@ -199,7 +197,7 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> {
         return FoodItemWidget(
           food: food,
           onTap: () {
-            context.push('/food/${food.id}');
+            context.push('/food/${widget.diaryId}/${food.id}/add');
           },
         );
       },

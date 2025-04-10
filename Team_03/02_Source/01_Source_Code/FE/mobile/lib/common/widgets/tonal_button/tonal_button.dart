@@ -26,10 +26,11 @@ class TonalButton extends StatelessWidget {
       foregroundColor: HighlightColors.highlight500,
       elevation: 0, // Loại bỏ đổ bóng
       shape: isIconOnly
-          ? const CircleBorder(side: BorderSide(width: 0)) // Hình tròn cho nút chỉ có icon
+          ? const CircleBorder(
+              side: BorderSide(width: 0)) // Hình tròn cho nút chỉ có icon
           : RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(100),
-      ),
+              borderRadius: BorderRadius.circular(100),
+            ),
       padding: isIconOnly
           ? const EdgeInsets.all(10) // Padding cho nút hình tròn
           : const EdgeInsets.symmetric(vertical: 10.0, horizontal: 24.0),
@@ -39,18 +40,18 @@ class TonalButton extends StatelessWidget {
       onPressed: onPressed,
       icon: icon != null
           ? Icon(
-        icon,
-        size: 24,
-        //color: Theme.of(context).colorScheme.onPrimary,
-      )
+              icon,
+              size: 24,
+              //color: Theme.of(context).colorScheme.onPrimary,
+            )
           : const SizedBox.shrink(),
       style: buttonStyle,
       label: isIconOnly
           ? const SizedBox.shrink() // Ẩn label nếu chỉ có icon
           : Text(
-        label ?? "",
-        style: textStyle ?? Theme.of(context).textTheme.labelSmall,
-      ),
+              label ?? "",
+              style: textStyle ?? Theme.of(context).textTheme.labelSmall,
+            ),
     );
 
     // Chỉ áp dụng width nếu không phải nút hình tròn

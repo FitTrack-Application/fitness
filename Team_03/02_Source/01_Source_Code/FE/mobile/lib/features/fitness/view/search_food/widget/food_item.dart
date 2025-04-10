@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../models/food.dart';
+import '../../../viewmodels/diary_viewmodel.dart';
 
 class FoodItemWidget extends StatelessWidget {
   final Food food;
@@ -12,6 +14,8 @@ class FoodItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
+    final diaryViewModel = context.watch<DiaryViewModel>();
+    final isAddingThisFood = diaryViewModel.isAddingFood(food.id);
 
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
@@ -26,17 +30,18 @@ class FoodItemWidget extends StatelessWidget {
               onTap: onTap,
               borderRadius: BorderRadius.circular(12),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       food.name,
-                      style: textTheme.bodyLarge,
+                      style: textTheme.bodyMedium,
                     ),
                     Text(
                       "${food.calories} cal, Carbs: ${food.carbs}g, Fat: ${food.fat}g, Protein: ${food.protein}g",
-                      style: textTheme.bodyMedium?.copyWith(
+                      style: textTheme.bodySmall?.copyWith(
                         color: colorScheme.onSurfaceVariant,
                       ),
                     ),
@@ -53,10 +58,23 @@ class FoodItemWidget extends StatelessWidget {
             ),
             child: InkWell(
               borderRadius: BorderRadius.circular(20),
-              onTap: () {},
+              onTap: isAddingThisFood
+                  ? null
+                  : () {
+                      diaryViewModel.addFoodToDiary(food, 1, DateTime.now());
+                    },
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Icon(Icons.add, color: colorScheme.primary),
+                child: isAddingThisFood
+                    ? SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.5,
+                          color: colorScheme.onPrimaryContainer,
+                        ),
+                      )
+                    : Icon(Icons.add, color: colorScheme.onPrimaryContainer),
               ),
             ),
           ),

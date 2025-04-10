@@ -15,14 +15,21 @@ class ErrorDisplay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final textTheme = theme.textTheme;
 
     if (compact) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.error_outline, color: theme.colorScheme.error),
+          Icon(Icons.error_outline, color: colorScheme.error),
           const SizedBox(width: 8),
-          Flexible(child: Text(message, style: TextStyle(color: theme.colorScheme.error))),
+          Flexible(
+            child: Text(
+              message,
+              style: textTheme.bodyMedium?.copyWith(color: colorScheme.error),
+            ),
+          ),
           const SizedBox(width: 16),
           OutlinedButton(
             onPressed: onRetry,
@@ -37,19 +44,19 @@ class ErrorDisplay extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.cloud_off, size: 64, color: theme.colorScheme.error),
+          Icon(Icons.cloud_off, size: 64, color: colorScheme.error),
           const SizedBox(height: 16),
           Text(
             'Connection Error',
-            style: theme.textTheme.titleLarge?.copyWith(
-              color: theme.colorScheme.error,
+            style: textTheme.titleLarge?.copyWith(
+              color: colorScheme.error,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             message,
             textAlign: TextAlign.center,
-            style: theme.textTheme.bodyMedium,
+            style: textTheme.bodyMedium,
           ),
           const SizedBox(height: 24),
           ElevatedButton.icon(

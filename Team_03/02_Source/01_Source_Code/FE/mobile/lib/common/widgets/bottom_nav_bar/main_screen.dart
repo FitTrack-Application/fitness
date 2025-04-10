@@ -4,7 +4,7 @@ import 'package:mobile/common/widgets/bottom_nav_bar/bottom_nav_bar.dart';
 class MainScreen extends StatelessWidget {
   final Widget child;
 
-  const MainScreen({Key? key, required this.child}) : super(key: key);
+  const MainScreen({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -18,10 +18,9 @@ class MainScreen extends StatelessWidget {
     ];
 
     return Scaffold(
-      body: child, 
-      bottomNavigationBar: routesWithBottomNavBar.contains(currentRoute)
-          ? BottomNavBar() 
-          : null,
+      body: child,
+      bottomNavigationBar:
+          routesWithBottomNavBar.contains(currentRoute) ? const BottomNavBar() : null,
     );
   }
 }

@@ -2,13 +2,12 @@ import '../../../../common/model/oagination.dart';
 import '../../models/food.dart';
 import '../api_client.dart';
 
-// Cập nhật FoodRepository để sử dụng class mới
 class FoodRepository {
   final ApiClient _apiClient;
 
   FoodRepository(
       {String baseUrl =
-      "https://54efe02a-ae6e-4055-9391-3a9bd9cac8f1.mock.pstmn.io/api/foods"})
+          "https://54efe02a-ae6e-4055-9391-3a9bd9cac8f1.mock.pstmn.io/api/foods"})
       : _apiClient = ApiClient(baseUrl);
 
   Food _mapToFood(dynamic data) {
@@ -16,10 +15,10 @@ class FoodRepository {
       id: data['foodId'],
       name: data['foodName'],
       servingSize: (data['servingSize'] as num).toDouble(),
-      calories: (data['calories'] as num).toDouble(),
-      protein: (data['protein'] as num).toDouble(),
-      carbs: (data['carbs'] as num).toDouble(),
-      fat: (data['fat'] as num).toDouble(),
+      calories: (data['calories'] as num).toInt(),
+      protein: (data['protein'] as num).toInt(),
+      carbs: (data['carbs'] as num).toInt(),
+      fat: (data['fat'] as num).toInt(),
       unit: data['unit'] ?? 'g',
       description: data['description'] ?? '',
     );
@@ -35,7 +34,8 @@ class FoodRepository {
     }
   }
 
-  Future<PaginatedResponse<Food>> searchFoods(String name, {int page = 1, int size = 10}) async {
+  Future<PaginatedResponse<Food>> searchFoods(String name,
+      {int page = 1, int size = 10}) async {
     try {
       final response = await _apiClient.get('search', queryParams: {
         'name': name,
@@ -44,7 +44,8 @@ class FoodRepository {
       });
 
       final List<dynamic> foodList = (response['data'] as List<dynamic>);
-      final List<Food> foods = foodList.map((item) => _mapToFood(item)).toList();
+      final List<Food> foods =
+          foodList.map((item) => _mapToFood(item)).toList();
 
       final pagination = Pagination.fromJson(response['pagination']);
 

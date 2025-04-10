@@ -43,8 +43,7 @@ class SearchFoodViewModel extends ChangeNotifier {
     try {
       // Add timeout for request
       final paginatedResponse = await _fetchWithTimeout(
-              () => _repository.searchFoods(query, page: _currentPage, size: 10)
-      );
+          () => _repository.searchFoods(query, page: _currentPage, size: 10));
 
       _foods.clear();
       _foods.addAll(paginatedResponse.data);
@@ -73,9 +72,8 @@ class SearchFoodViewModel extends ChangeNotifier {
 
     try {
       _currentPage++;
-      final paginatedResponse = await _fetchWithTimeout(
-              () => _repository.searchFoods(_searchQuery, page: _currentPage, size: size)
-      );
+      final paginatedResponse = await _fetchWithTimeout(() => _repository
+          .searchFoods(_searchQuery, page: _currentPage, size: size));
 
       if (paginatedResponse.data.isEmpty) {
         _hasMoreData = false;
@@ -85,7 +83,7 @@ class SearchFoodViewModel extends ChangeNotifier {
         // Update pagination info from response
         _totalPages = paginatedResponse.pagination.totalPages;
         _hasMoreData = _currentPage < _totalPages;
-            }
+      }
     } catch (e) {
       _loadMoreError = _getErrorMessage(e);
       _currentPage--; // Rollback page increment on error
@@ -101,7 +99,8 @@ class SearchFoodViewModel extends ChangeNotifier {
     try {
       return await fetchFunction().timeout(_timeout);
     } on TimeoutException {
-      throw TimeoutException('Request timed out. Please check your connection and try again.');
+      throw TimeoutException(
+          'Request timed out. Please check your connection and try again.');
     }
   }
 

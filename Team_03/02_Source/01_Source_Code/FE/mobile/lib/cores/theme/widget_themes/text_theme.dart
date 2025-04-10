@@ -38,12 +38,17 @@ class TTextTheme {
     ),
     bodyLarge: GoogleFonts.poppins(
       color: NeutralColors.dark400,
-      fontSize: 16,
+      fontSize: 14,
       fontWeight: FontWeight.normal,
     ),
     bodyMedium: GoogleFonts.poppins(
       color: NeutralColors.dark400,
-      fontSize: 14,
+      fontSize: 12,
+      fontWeight: FontWeight.normal,
+    ),
+    bodySmall: GoogleFonts.poppins(
+      color: NeutralColors.dark400,
+      fontSize: 10,
       fontWeight: FontWeight.normal,
     ),
     titleLarge: GoogleFonts.poppins(
@@ -111,27 +116,32 @@ class TTextTheme {
     ),
     bodyLarge: GoogleFonts.poppins(
       color: NeutralColors.light200,
-      fontSize: 16,
+      fontSize: 14,
       fontWeight: FontWeight.normal,
     ),
     bodyMedium: GoogleFonts.poppins(
       color: NeutralColors.light200,
-      fontSize: 14,
+      fontSize: 12,
+      fontWeight: FontWeight.normal,
+    ),
+    bodySmall: GoogleFonts.poppins(
+      color: NeutralColors.light200,
+      fontSize: 10,
       fontWeight: FontWeight.normal,
     ),
     titleLarge: GoogleFonts.poppins(
       color: NeutralColors.light200,
-      fontSize: 22,
+      fontSize: 20,
       fontWeight: FontWeight.bold,
     ),
     titleMedium: GoogleFonts.poppins(
       color: NeutralColors.light200,
-      fontSize: 20,
+      fontSize: 17,
       fontWeight: FontWeight.bold,
     ),
     titleSmall: GoogleFonts.poppins(
       color: NeutralColors.light200,
-      fontSize: 18,
+      fontSize: 14,
       fontWeight: FontWeight.bold,
     ),
     labelLarge: GoogleFonts.poppins(

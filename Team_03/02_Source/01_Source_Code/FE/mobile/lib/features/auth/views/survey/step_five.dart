@@ -5,7 +5,8 @@ class StepFive extends StatelessWidget {
   final String selectedActivityLevel;
   final ValueChanged<String> onActivityLevelSelected;
 
-  const StepFive({super.key, 
+  const StepFive({
+    super.key,
     required this.selectedActivityLevel,
     required this.onActivityLevelSelected,
   });
