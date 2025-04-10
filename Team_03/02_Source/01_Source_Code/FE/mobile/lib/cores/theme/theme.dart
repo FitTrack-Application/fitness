@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/cores/constants/colors.dart';
+import 'package:mobile/cores/theme/widget_themes/bottom_navbar_theme.dart';
 import 'package:mobile/cores/theme/widget_themes/card_theme.dart';
 import 'package:mobile/cores/theme/widget_themes/color_scheme_theme.dart';
 import 'package:mobile/cores/theme/widget_themes/elevated_button_theme.dart';
@@ -22,6 +23,7 @@ class TAppTheme {
     radioTheme: TRadioTheme.lightRadioTheme,
     //scaffoldBackgroundColor: NeutralColors.light300,
     cardTheme: TCardTheme.lightCardTheme,
+    bottomNavigationBarTheme: TBottomNavBarTheme.lightBottomNavBarTheme,
   );
 
   static ThemeData darkTheme = ThemeData(
@@ -34,5 +36,6 @@ class TAppTheme {
     //checkboxTheme: TCheckboxTheme.lightCheckboxTheme,
     radioTheme: TRadioTheme.darkRadioTheme,
     cardTheme: TCardTheme.darkCardTheme,
+    bottomNavigationBarTheme: TBottomNavBarTheme.darkBottomNavBarTheme,
   );
 }
