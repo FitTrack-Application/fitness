@@ -3,11 +3,11 @@ import 'package:mobile/common/widgets/select_box/select_box.dart';
 
 class StepFour extends StatefulWidget {
   final TextEditingController weightGoalController; // Weight goal input
-  final TextEditingController
-      weightController; // Current weight from Step Three
+  final TextEditingController weightController; // Current weight from Step Three
   final String goal; // Goal type: Gain Weight, Maintain Weight, Lose Weight
   final double goalPerWeek;
-  final ValueChanged<double> onGoalPerWeekSelected;
+  final ValueChanged<double> onGoalPerWeekSelected; // Callback for goal per week
+  final ValueChanged<String> onWeightGoalChanged; // Callback for weight goal
   final GlobalKey<FormState> formKey;
 
   const StepFour({
@@ -17,6 +17,7 @@ class StepFour extends StatefulWidget {
     required this.goal,
     required this.goalPerWeek,
     required this.onGoalPerWeekSelected,
+    required this.onWeightGoalChanged, // Add this parameter
     required this.formKey,
   });
 
@@ -38,11 +39,11 @@ class _StepFourState extends State<StepFour> {
             child: TextFormField(
               controller: widget.weightGoalController,
               decoration: InputDecoration(
-                // border: const OutlineInputBorder(),
                 labelText:
                     'Enter your weight goal (kg) starting from ${widget.weightController.text}',
               ),
               keyboardType: TextInputType.number,
+              onChanged: widget.onWeightGoalChanged, // Use the callback here
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
                   return "Weight goal cannot be empty";
@@ -76,6 +77,8 @@ class _StepFourState extends State<StepFour> {
               },
             ),
           ),
+          const SizedBox(height: 16),
+          const Text('Select your goal per week:'),
           FormField<double>(
             validator: (value) {
               if (widget.goalPerWeek <= 0) {
@@ -101,8 +104,7 @@ class _StepFourState extends State<StepFour> {
                     groupValue: widget.goalPerWeek,
                     onChanged: (value) {
                       widget.onGoalPerWeekSelected(value);
-                      fieldState.didChange(
-                          value); // Notify the FormField of the change
+                      fieldState.didChange(value); // Notify the FormField of the change
                     },
                   ),
                   const SizedBox(height: 10),
@@ -112,8 +114,7 @@ class _StepFourState extends State<StepFour> {
                     groupValue: widget.goalPerWeek,
                     onChanged: (value) {
                       widget.onGoalPerWeekSelected(value);
-                      fieldState.didChange(
-                          value); // Notify the FormField of the change
+                      fieldState.didChange(value); // Notify the FormField of the change
                     },
                   ),
                   const SizedBox(height: 10),
@@ -123,8 +124,7 @@ class _StepFourState extends State<StepFour> {
                     groupValue: widget.goalPerWeek,
                     onChanged: (value) {
                       widget.onGoalPerWeekSelected(value);
-                      fieldState.didChange(
-                          value); // Notify the FormField of the change
+                      fieldState.didChange(value); // Notify the FormField of the change
                     },
                   ),
                 ],

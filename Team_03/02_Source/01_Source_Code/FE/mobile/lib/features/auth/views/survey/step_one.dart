@@ -3,17 +3,19 @@ import 'package:flutter/material.dart';
 class StepOne extends StatelessWidget {
   final TextEditingController nameController;
   final GlobalKey<FormState> formKey;
+  final ValueChanged<String> onNameChanged; 
 
   const StepOne({
     super.key,
     required this.nameController,
     required this.formKey,
+    required this.onNameChanged, 
   });
 
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: formKey, // Associate the Form with the GlobalKey
+      key: formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -23,14 +25,14 @@ class StepOne extends StatelessWidget {
             child: TextFormField(
               controller: nameController,
               decoration: const InputDecoration(
-                // border: OutlineInputBorder(),
                 labelText: 'Enter your name',
               ),
+              onChanged: onNameChanged, 
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
                   return "Name cannot be empty";
                 }
-                return null; // Return null if the input is valid
+                return null;
               },
             ),
           ),

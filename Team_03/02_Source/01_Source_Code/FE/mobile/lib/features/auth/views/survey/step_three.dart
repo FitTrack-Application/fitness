@@ -7,6 +7,9 @@ class StepThree extends StatefulWidget {
   final TextEditingController ageController;
   final TextEditingController heightController;
   final TextEditingController weightController;
+  final ValueChanged<String> onAgeChanged;
+  final ValueChanged<String> onHeightChanged;
+  final ValueChanged<String> onWeightChanged;
   final GlobalKey<FormState> formKey;
 
   const StepThree({
@@ -16,6 +19,9 @@ class StepThree extends StatefulWidget {
     required this.ageController,
     required this.heightController,
     required this.weightController,
+    required this.onAgeChanged,
+    required this.onHeightChanged,
+    required this.onWeightChanged,
     required this.formKey,
   });
 
@@ -86,10 +92,10 @@ class _StepThreeState extends State<StepThree> {
           TextFormField(
             controller: widget.ageController,
             decoration: const InputDecoration(
-              // border: OutlineInputBorder(),
               labelText: 'Enter your age',
             ),
             keyboardType: TextInputType.number,
+            onChanged: widget.onAgeChanged,
             validator: (value) {
               if (value == null || value.trim().isEmpty) {
                 return "Age cannot be empty";
@@ -105,10 +111,10 @@ class _StepThreeState extends State<StepThree> {
           TextFormField(
             controller: widget.heightController,
             decoration: const InputDecoration(
-              // border: OutlineInputBorder(),
               labelText: 'Enter your height (cm)',
             ),
             keyboardType: TextInputType.number,
+            onChanged: widget.onHeightChanged,
             validator: (value) {
               if (value == null || value.trim().isEmpty) {
                 return "Height cannot be empty";
@@ -124,10 +130,10 @@ class _StepThreeState extends State<StepThree> {
           TextFormField(
             controller: widget.weightController,
             decoration: const InputDecoration(
-              // border: OutlineInputBorder(),
               labelText: 'Enter your weight (kg)',
             ),
             keyboardType: TextInputType.number,
+            onChanged: widget.onWeightChanged,
             validator: (value) {
               if (value == null || value.trim().isEmpty) {
                 return "Weight cannot be empty";
