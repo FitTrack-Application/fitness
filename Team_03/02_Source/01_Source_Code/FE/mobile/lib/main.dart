@@ -11,13 +11,17 @@ import 'features/fitness/viewmodels/diary_viewmodel.dart';
 import 'features/fitness/viewmodels/search_food_viewmodel.dart';
 import 'features/statistic/services/dashboard_api_service.dart';
 import 'features/statistic/view/dashboard/dashboard_screen.dart';
-
+import 'package:mobile/features/statistic/viewmodels/dashboard_viewmodel.dart';
+import 'package:mobile/features/auth/viewmodels/goal_viewmodel.dart';
+import 'package:mobile/features/auth/viewmodels/profile_viewmodel.dart';
 void main() {
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => BottomNavProvider()),
         ChangeNotifierProvider(create: (_) => AuthViewModel()),
+        ChangeNotifierProvider(create: (_) => GoalViewModel()),
+        ChangeNotifierProvider(create: (_) => ProfileViewModel()),
         Provider<ApiClient>(create: (_) => ApiClient('https://54efe02a-ae6e-4055-9391-3a9bd9cac8f1.mock.pstmn.io')),
         ProxyProvider<ApiClient, DashboardApiService>(
           update: (_, client, __) => DashboardApiService(client),
