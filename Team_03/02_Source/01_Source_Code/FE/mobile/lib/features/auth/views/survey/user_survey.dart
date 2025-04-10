@@ -218,6 +218,7 @@ class Summary extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          const SizedBox(height: 30),
           Text(
             'Congratulations! You have completed the survey',
             style: Theme.of(context).textTheme.bodyLarge,
@@ -229,13 +230,13 @@ class Summary extends StatelessWidget {
             style: Theme.of(context).textTheme.bodyMedium,
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 50),
           Text(
             '${calorieGoal.toStringAsFixed(2)}',
             style: Theme.of(context).textTheme.displayLarge,
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 30),
+          const SizedBox(height: 50),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -246,6 +247,7 @@ class Summary extends StatelessWidget {
               ),
             ],
           ),
+          const SizedBox(height: 20),
           Row(
             children: [
               Expanded(
@@ -261,6 +263,8 @@ class Summary extends StatelessWidget {
                         Text('Name: ${surveyViewModel.name}', style: Theme.of(context).textTheme.bodyMedium),
                         Text('Gender: ${surveyViewModel.gender}', style: Theme.of(context).textTheme.bodyMedium),
                         Text('Age: ${surveyViewModel.age}', style: Theme.of(context).textTheme.bodyMedium),
+                        Text('Height: ${surveyViewModel.height} cm', style: Theme.of(context).textTheme.bodyMedium),
+                        Text('Weight: ${surveyViewModel.weight} kg', style: Theme.of(context).textTheme.bodyMedium),
                       ],
                     ),
                   ),
@@ -277,32 +281,12 @@ class Summary extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Height: ${surveyViewModel.height} cm', style: Theme.of(context).textTheme.bodyMedium),
-                        Text('Weight: ${surveyViewModel.weight} kg', style: Theme.of(context).textTheme.bodyMedium),
+                        
                         Text(surveyViewModel.activityLevel, style: Theme.of(context).textTheme.bodyMedium),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Row(
-            children: [
-              Expanded(
-                child: Card(
-                  elevation: Theme.of(context).cardTheme.elevation,
-                  shape: Theme.of(context).cardTheme.shape,
-                  color: Theme.of(context).cardTheme.color,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
                         Text('Goal: ${surveyViewModel.goal}', style: Theme.of(context).textTheme.bodyMedium),
                         Text('Weight Goal: ${surveyViewModel.weightGoal} kg', style: Theme.of(context).textTheme.bodyMedium),
                         Text('Goal per Week: ${surveyViewModel.goalPerWeek.toString()} kg', style: Theme.of(context).textTheme.bodyMedium),
+                        Text(' '),
                       ],
                     ),
                   ),
@@ -310,6 +294,7 @@ class Summary extends StatelessWidget {
               ),
             ],
           ),
+          
         ],
       ),
     );

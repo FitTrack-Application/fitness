@@ -33,12 +33,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     final viewModel = Provider.of<DashboardViewModel>(context);
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Dashboard'),
-        centerTitle: true,
-        backgroundColor: HighlightColors.highlight500,
-        foregroundColor: Colors.white,
-      ),
+
       //backgroundColor: NeutralColors.dark500.withOpacity(0.05),
       body: viewModel.isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -56,18 +51,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final burned = viewModel.totalCaloriesBurned;
     final goal = viewModel.caloriesGoal;
     final remaining = goal - consumed; //+ burned;
-        final List<WeightEntry> weightEntries = [
-      WeightEntry(date: DateTime(2023, 1, 1), weight: 80.5),
-      WeightEntry(date: DateTime(2023, 1, 8), weight: 79.8),
-      WeightEntry(date: DateTime(2023, 1, 15), weight: 79.2),
-      WeightEntry(date: DateTime(2023, 1, 22), weight: 78.5),
-      WeightEntry(date: DateTime(2023, 1, 29), weight: 77.9),
-      WeightEntry(date: DateTime(2023, 2, 5), weight: 78.2),
-      WeightEntry(date: DateTime(2023, 2, 12), weight: 77.5),
-      WeightEntry(date: DateTime(2023, 2, 19), weight: 76.8),
-      WeightEntry(date: DateTime(2023, 2, 26), weight: 76.2),
-      WeightEntry(date: DateTime(2023, 3, 5), weight: 75.5),
-    ];
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: ListView(
@@ -80,7 +63,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           _buildMacronutrientsCard(theme, viewModel),
           const SizedBox(height: 24),
           _buildQuickLogCard(theme),
-          const SizedBox(height: 16),
+          const SizedBox(height: 24),
            WeightGraph(
                 entries: viewModel.weightEntries,
                 title: 'Weight History (kg)',
@@ -120,7 +103,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget _calorieBox(String label, String value, Color color) {
     return Column(
       children: [
-        Text(label, style: TextStyle(fontSize: 14, color: NeutralColors.dark300)),
+        Text(label, style: Theme.of(context).textTheme.bodyMedium),
         const SizedBox(height: 4),
         Text(value, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: color)),
       ],

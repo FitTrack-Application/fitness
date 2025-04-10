@@ -8,11 +8,6 @@ class WeightGraphTheme {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return BoxDecoration(
       color: isDarkMode ? NeutralColors.dark100 : NeutralColors.light100,
-      boxShadow: [
-        BoxShadow(
-          color: isDarkMode ? NeutralColors.light100 : NeutralColors.dark500,
-        ),
-      ],
       borderRadius: BorderRadius.circular(14.0),
     );
   }

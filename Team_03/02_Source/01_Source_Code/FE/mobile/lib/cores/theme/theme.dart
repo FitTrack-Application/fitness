@@ -7,7 +7,7 @@ import 'package:mobile/cores/theme/widget_themes/outlined_button_theme.dart';
 import 'package:mobile/cores/theme/widget_themes/radio_theme.dart';
 import 'package:mobile/cores/theme/widget_themes/text_field_theme.dart';
 import 'package:mobile/cores/theme/widget_themes/text_theme.dart';
-
+import 'package:mobile/cores/theme/widget_themes/divider_theme.dart';
 class TAppTheme {
   TAppTheme._();
 
@@ -22,6 +22,7 @@ class TAppTheme {
     radioTheme: TRadioTheme.lightRadioTheme,
     //scaffoldBackgroundColor: NeutralColors.light300,
     cardTheme: TCardTheme.lightCardTheme,
+    dividerTheme: TDividerTheme.lightDividerTheme,
   );
 
   static ThemeData darkTheme = ThemeData(
@@ -34,5 +35,6 @@ class TAppTheme {
     //checkboxTheme: TCheckboxTheme.lightCheckboxTheme,
     radioTheme: TRadioTheme.darkRadioTheme,
     cardTheme: TCardTheme.darkCardTheme,
+    dividerTheme: TDividerTheme.darkDividerTheme,
   );
 }
