@@ -22,17 +22,15 @@ public class FoodServiceImpl implements FoodService {
     }
 
     @Override
-    public Page<FoodDto> getAllFoods(Pageable pageable) {
-        Page<Food> foodPage = foodRepository.findAll(pageable);
-
-        return foodPage.map(this::convertToDto);
+    public List<FoodDto> getAllFoods() {
+        return foodRepository.findAll().stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
     @Override
     public FoodDto getFoodById(UUID foodId) {
         return foodRepository.findById(foodId)
                 .map(this::convertToDto)
-                .orElseThrow(() -> new IllegalArgumentException("Food not found with ID: " + foodId));
+                .orElse(null);
     }
 
     @Override

@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,47 +27,54 @@ public class FoodController {
         this.foodService = foodService;
     }
 
-    // Get Food by id
-    @GetMapping("/{foodId}")
-    public ResponseEntity<ApiResponse<FoodDto>> getFoodById(@PathVariable UUID foodId) {
-        try {
-            FoodDto food = foodService.getFoodById(foodId);
+    // Get all foods
+    @GetMapping
+    public ApiResponse<List<FoodDto>> getAllFoods() {
+        List<FoodDto> foods = foodService.getAllFoods();
 
-            ApiResponse<FoodDto> response = ApiResponse.<FoodDto>builder()
-                    .status(200)
-                    .generalMessage("Successfully retrieved food")
-                    .data(food)
-                    .timestamp(LocalDateTime.now())
-                    .build();
-
-            return ResponseEntity.ok(response);
-        } catch (IllegalArgumentException e) {
-            ApiResponse<FoodDto> response = ApiResponse.<FoodDto>builder()
-                    .status(404)
-                    .generalMessage("Failed to get food")
-                    .errorDetails(List.of(e.getMessage()))
-                    .timestamp(LocalDateTime.now())
-                    .build();
-
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        }
+        return ApiResponse.<List<FoodDto>>builder()
+                .status(200)
+                .generalMessage("Sucessfully retrieved all foods")
+                .data(foods)
+                .build();
     }
 
-    // Get Foods with pagination (chưa có tìm kiếm gần đúng và không dấu)
-    @GetMapping
-    public ResponseEntity<ApiResponse<List<FoodDto>>> getFoods(
-            @RequestParam(required = false) String query,
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
-        Pageable pageable = PageRequest.of(page - 1, size);
+    // Get food by id
+    @GetMapping("/{foodId}")
+    public ResponseEntity<ApiResponse<FoodDto>> getFoodById(@PathVariable String foodId) {
+        FoodDto food = foodService.getFoodById(UUID.fromString(foodId));
 
-        Page<FoodDto> foodPage;
-        // If query is not provided or empty, return all foods
-        if (query == null || query.isEmpty()) {
-            foodPage = foodService.getAllFoods(pageable);
-        } else {
-            foodPage = foodService.searchFoodsByName(query, pageable);
+        if (food == null) {
+            ApiResponse<FoodDto> response = ApiResponse.<FoodDto>builder()
+                    .status(404)
+                    .generalMessage("Food not found with ID: " + foodId)
+                    .build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        ApiResponse<FoodDto> response = ApiResponse.<FoodDto>builder()
+                .status(200)
+                .generalMessage("Successfully retrieved food with ID: " + foodId)
+                .data(food)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    // Search food by name (chưa có tìm kiếm không dấu và gần đúng)
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse<List<FoodDto>>> searchFoodsByName(
+            @RequestParam String query,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Page<FoodDto> foodPage = foodService.searchFoodsByName(query, pageable);
+
+        if (foodPage.isEmpty()) {
+            ApiResponse<List<FoodDto>> response = ApiResponse.<List<FoodDto>>builder()
+                    .status(404)
+                    .generalMessage("No foods found with name: " + query)
+                    .build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
 
         // Pagination info
@@ -83,10 +89,9 @@ public class FoodController {
 
         ApiResponse<List<FoodDto>> response = ApiResponse.<List<FoodDto>>builder()
                 .status(200)
-                .generalMessage("Successfully retrieved foods")
+                .generalMessage("Successfully retrieved foods with name: " + query)
                 .data(foodPage.getContent())
                 .metadata(metadata)
-                .timestamp(LocalDateTime.now())
                 .build();
         return ResponseEntity.ok(response);
     }

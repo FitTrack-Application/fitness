@@ -13,7 +13,7 @@ import jakarta.validation.constraints.Size;
 @NoArgsConstructor
 @Data
 public class FoodDto {
-    private UUID id;
+    private UUID foodId;
 
     @NotNull(message = "Food name cannot be empty")
     @Size(max = 255, message = "Food name cannot exceed 255 characters")
