@@ -1,8 +1,8 @@
 package com.hcmus.userservice.service;
 
-import com.hcmus.userservice.dto.SurveyResponse;
-import com.hcmus.userservice.dto.DataResponse;
-import com.hcmus.userservice.dto.SurveyRequest;
+import com.hcmus.userservice.dto.request.SurveyRequest;
+import com.hcmus.userservice.dto.response.ApiResponse;
+import com.hcmus.userservice.dto.response.SurveyResponse;
 import com.hcmus.userservice.model.Goal;
 import com.hcmus.userservice.model.Role;
 import com.hcmus.userservice.model.User;
@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
@@ -28,10 +29,10 @@ public class SurveyService {
 
     private final PasswordEncoder passwordEncoder;
 
-    public SurveyResponse survey(SurveyRequest request, UUID userId) {
+    public ApiResponse<SurveyResponse> survey(SurveyRequest request, UUID userId) {
         User user = userRepository.findById(userId).orElse(null);
         if (user == null) {
-            return buildSurveyResponse("error", "Invalid information. Please try again");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid information. returPlease try again");
         }
         
         user.setName(request.getName());
@@ -51,15 +52,23 @@ public class SurveyService {
         goal.setGoalPerWeek(request.getGoalPerWeek());
         goal.setActivityLevel(request.getActivityLevel());
         goal.setCaloriesGoal(request.getCaloriesGoal());
+        goal.setStartingDate(LocalDate.now());
 
         goalRepository.save(goal);
-        return buildSurveyResponse("success", new DataResponse(user.getUserId(), goal.getGoalId(), "Successfully get user information and create goal"));
+
+        return ApiResponse.<SurveyResponse>builder()
+                .status(HttpStatus.OK.value())
+                .generalMessage("success")
+                .data(buildSurveyResponse(user, goal))
+                .build();
+        
     }
 
-    private SurveyResponse buildSurveyResponse(String status, Object data) {
+    private SurveyResponse buildSurveyResponse(User user, Goal goal) {
         return SurveyResponse.builder()
-                .status(status)
-                .data(data)
+                .userId(user.getUserId())
+                .goalId(goal.getGoalId())
+                .message("Successfully get user information and create goal")
                 .build();
 
     }

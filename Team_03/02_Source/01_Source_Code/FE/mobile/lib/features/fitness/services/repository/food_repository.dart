@@ -7,7 +7,7 @@ class FoodRepository {
 
   FoodRepository(
       {String baseUrl =
-          "https://54efe02a-ae6e-4055-9391-3a9bd9cac8f1.mock.pstmn.io/api/foods"})
+          "https://abf1f370-fb74-44fe-a48a-8a4d4b4ecce0.mock.pstmn.io/api/foods"})
       : _apiClient = ApiClient(baseUrl);
 
   Food _mapToFood(dynamic data) {
@@ -58,4 +58,50 @@ class FoodRepository {
       throw Exception('Failed to search foods: $e');
     }
   }
+
+  // Future<Food> getFoodById(String foodId) async {
+  //   await Future.delayed(const Duration(milliseconds: 500)); // Giả lập delay mạng
+  //   return Food(
+  //     id: foodId,
+  //     name: 'Cơm gà',
+  //     servingSize: 150.0,
+  //     calories: 350,
+  //     protein: 25,
+  //     carbs: 40,
+  //     fat: 10,
+  //     unit: 'g',
+  //     description: 'Một phần cơm gà thơm ngon với rau củ.',
+  //   );
+  // }
+
+  // Future<PaginatedResponse<Food>> searchFoods(String name,
+  //     {int page = 1, int size = 10}) async {
+  //   await Future.delayed(const Duration(milliseconds: 500)); // Giả lập delay mạng
+  //
+  //   List<Food> mockFoods = List.generate(size, (index) {
+  //     int number = ((page - 1) * size) + index + 1;
+  //     return Food(
+  //       id: 'food_$number',
+  //       name: '$name món $number',
+  //       servingSize: 100 + number.toDouble(),
+  //       calories: 200 + number,
+  //       protein: 10 + number,
+  //       carbs: 30 + number,
+  //       fat: 5 + number,
+  //       unit: 'g',
+  //       description: 'Món ăn mô phỏng số $number',
+  //     );
+  //   });
+  //
+  //   return PaginatedResponse<Food>(
+  //     message: 'Mock data fetched successfully',
+  //     data: mockFoods,
+  //     pagination: Pagination(
+  //       currentPage: page,
+  //       pageSize: size,
+  //       totalItems: 100,
+  //       totalPages: 10,
+  //     ),
+  //   );
+  // }
 }

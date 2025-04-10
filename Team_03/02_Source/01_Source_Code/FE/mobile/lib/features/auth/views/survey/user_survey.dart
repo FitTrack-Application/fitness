@@ -9,7 +9,7 @@ import 'step_two.dart';
 import 'step_three.dart';
 import 'step_four.dart';
 import 'step_five.dart';
-
+import 'package:mobile/features/auth/viewmodels/survey_viewmodel.dart'; 
 class UserSurvey extends StatefulWidget {
   final String email;
   final String password;
@@ -27,21 +27,13 @@ class UserSurvey extends StatefulWidget {
 
 class _UserSurveyState extends State<UserSurvey> {
   int _currentStep = 0;
-  final TextEditingController _nameController = TextEditingController();
-  String _selectedGoal = '';
-  String _selectedGender = '';
-  final TextEditingController _ageController = TextEditingController();
-  final TextEditingController _heightController = TextEditingController();
-  final TextEditingController _weightController = TextEditingController();
-  final TextEditingController _weightGoalController = TextEditingController();
+  final SurveyViewModel surveyViewModel = SurveyViewModel();
+
   final GlobalKey<FormState> _stepOneKey = GlobalKey<FormState>();
   final GlobalKey<FormState> _stepTwoKey = GlobalKey<FormState>();
   final GlobalKey<FormState> _stepThreeKey = GlobalKey<FormState>();
   final GlobalKey<FormState> _stepFourKey = GlobalKey<FormState>();
-  double _goalPerWeek = 0.2;
-  String _selectedActivityLevel = '';
-  final double _calorieGoal = 0.0;
-  final apiService = ApiService();
+
   void _previousStep() {
     setState(() {
       if (_currentStep > 0) {
@@ -58,70 +50,34 @@ class _UserSurveyState extends State<UserSurvey> {
         }
       }
       if (_currentStep == 1) {
-        // Validate StepTwo before moving to the next step
         if (!(_stepTwoKey.currentState?.validate() ?? false)) {
-          return; // Prevent moving to the next step if validation fails
+          return;
         }
       }
       if (_currentStep == 2) {
-        // Validate StepThree before moving to the next step
         if (!(_stepThreeKey.currentState?.validate() ?? false)) {
-          return; // Prevent moving to the next step if validation fails
+          return;
         }
       }
       if (_currentStep == 3) {
-        // Validate StepFour before moving to the next step
         if (!(_stepFourKey.currentState?.validate() ?? false)) {
-          return; // Prevent moving to the next step if validation fails
+          return;
         }
       }
 
       if (_currentStep < 5) {
         _currentStep++;
       } else {
-        // Navigate to /dashboard when the last step is completed
-        sendSurveyData();
-        context.go('/dashboard');
+        // Submit survey data and navigate to dashboard
+        surveyViewModel.sendSurveyData().then((_) {
+          context.go('/dashboard');
+        }).catchError((error) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Error submitting survey: $error")),
+          );
+        });
       }
     });
-  }
-
-  void sendSurveyData() async {
-    final String name = _nameController.text.trim();
-    final int age = int.tryParse(_ageController.text.trim()) ?? 0;
-    final String gender = _selectedGender;
-    final double height = double.tryParse(_heightController.text.trim()) ?? 0.0;
-    final double weight = double.tryParse(_weightController.text.trim()) ?? 0.0;
-    final double weightGoal =
-        double.tryParse(_weightGoalController.text.trim()) ?? 0.0;
-    final String goal = _selectedGoal;
-    final String activityLevel = _selectedActivityLevel;
-    final double calorieGoal = _calorieGoal;
-    final userInfo = UserInfo(
-      userID: "12345",
-      name: name,
-      age: age,
-      gender: gender,
-      height: height,
-      weight: weight,
-      goalType: goal,
-      target: weightGoal,
-      goalPerWeek: _goalPerWeek,
-      activityLevel: activityLevel,
-      calorieGoal: calorieGoal,
-      imageURL: "https://example.com/avatar.jpg", // Optional field
-    );
-
-    try {
-      await apiService.userSurvey(userInfo);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Survey data submitted successfully!")),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error submitting survey: $e")),
-      );
-    }
   }
 
   @override
@@ -142,67 +98,83 @@ class _UserSurveyState extends State<UserSurvey> {
             Expanded(
               child: _currentStep == 0
                   ? StepOne(
-                      nameController: _nameController,
+                      nameController: TextEditingController(
+                          text: surveyViewModel.name),
                       formKey: _stepOneKey,
+                      onNameChanged: (value) {
+                        surveyViewModel.name = value;
+                      },
                     )
                   : _currentStep == 1
                       ? StepTwo(
                           formKey: _stepTwoKey,
-                          selectedGoal: _selectedGoal,
+                          selectedGoal: surveyViewModel.goal,
                           onGoalSelected: (goal) {
                             setState(() {
-                              _selectedGoal = goal;
+                              surveyViewModel.goal = goal;
                             });
                           },
                         )
                       : _currentStep == 2
                           ? StepThree(
                               formKey: _stepThreeKey,
-                              selectedGender: _selectedGender,
+                              selectedGender: surveyViewModel.gender,
                               onGenderSelected: (gender) {
                                 setState(() {
-                                  _selectedGender = gender;
+                                  surveyViewModel.gender = gender;
                                 });
                               },
-                              ageController: _ageController,
-                              heightController: _heightController,
-                              weightController: _weightController,
+                              ageController: TextEditingController(
+                                  text: surveyViewModel.age.toString()),
+                              heightController: TextEditingController(
+                                  text: surveyViewModel.height.toString()),
+                              weightController: TextEditingController(
+                                  text: surveyViewModel.weight.toString()),
+                              onAgeChanged: (value) {
+                                surveyViewModel.age = int.tryParse(value) ?? 0;
+                              },
+                              onHeightChanged: (value) {
+                                surveyViewModel.height =
+                                    double.tryParse(value) ?? 0.0;
+                              },
+                              onWeightChanged: (value) {
+                                surveyViewModel.weight =
+                                    double.tryParse(value) ?? 0.0;
+                              },
                             )
                           : _currentStep == 3
                               ? StepFour(
                                   formKey: _stepFourKey,
-                                  weightController:
-                                      _weightController, // Pass current weight
-                                  goal: _selectedGoal,
-                                  weightGoalController: _weightGoalController,
-                                  goalPerWeek: _goalPerWeek,
+                                  weightGoalController: TextEditingController(
+                                      text: surveyViewModel.weightGoal
+                                          .toString()),
+                                  weightController: TextEditingController(
+                                      text: surveyViewModel.weight.toString()),
+                                  goal: surveyViewModel.goal,
+                                  goalPerWeek: surveyViewModel.goalPerWeek,
                                   onGoalPerWeekSelected: (goal) {
                                     setState(() {
-                                      _goalPerWeek = goal;
+                                      surveyViewModel.goalPerWeek = goal;
                                     });
+                                  },
+                                  onWeightGoalChanged: (value) {
+                                    surveyViewModel.weightGoal =
+                                        double.tryParse(value) ?? 0.0;
                                   },
                                 )
                               : _currentStep == 4
                                   ? StepFive(
                                       selectedActivityLevel:
-                                          _selectedActivityLevel,
+                                          surveyViewModel.activityLevel,
                                       onActivityLevelSelected: (activityLevel) {
                                         setState(() {
-                                          _selectedActivityLevel =
+                                          surveyViewModel.activityLevel =
                                               activityLevel;
                                         });
                                       },
                                     )
                                   : Summary(
-                                      name: _nameController.text,
-                                      goal: _selectedGoal,
-                                      gender: _selectedGender,
-                                      age: _ageController.text,
-                                      height: _heightController.text,
-                                      weight: _weightController.text,
-                                      weightGoal: _weightGoalController.text,
-                                      goalPerWeek: _goalPerWeek,
-                                      activityLevel: _selectedActivityLevel,
+                                      surveyViewModel: surveyViewModel,
                                     ),
             ),
             Row(
@@ -210,7 +182,6 @@ class _UserSurveyState extends State<UserSurvey> {
               children: [
                 TonalButton(
                   onPressed: _previousStep,
-                  //icon: const Icon(Icons.arrow_back, color: HighlightColors.highlight500),
                   icon: Icons.arrow_back,
                 ),
                 const SizedBox(width: 10),
@@ -230,189 +201,100 @@ class _UserSurveyState extends State<UserSurvey> {
 }
 
 class Summary extends StatelessWidget {
-  final String name;
-  final String goal;
-  final String gender;
-  final String age;
-  final String height;
-  final String weight;
-  final String weightGoal;
-  final double goalPerWeek;
-  final String activityLevel;
+  final SurveyViewModel surveyViewModel;
 
   const Summary({
     super.key,
-    required this.name,
-    required this.goal,
-    required this.gender,
-    required this.age,
-    required this.height,
-    required this.weight,
-    required this.weightGoal,
-    required this.goalPerWeek,
-    required this.activityLevel,
+    required this.surveyViewModel,
   });
-
-  double calculateGoal() {
-    double weight = double.parse(this.weight);
-    double height = double.parse(this.height);
-    int age = int.parse(this.age);
-    double calorieGoal;
-
-    if (gender == 'Male') {
-      calorieGoal = (10 * weight) + (6.25 * height) - (5 * age) + 5;
-    } else {
-      calorieGoal = (10 * weight) + (6.25 * height) - (5 * age) - 161;
-    }
-
-    double activityFactor;
-    switch (activityLevel) {
-      case 'Sedentary':
-        activityFactor = 1.2;
-        break;
-      case 'Lightly active':
-        activityFactor = 1.375;
-        break;
-      case 'Moderately active':
-        activityFactor = 1.55;
-        break;
-      case 'Very active':
-        activityFactor = 1.725;
-        break;
-      case 'Extra active':
-        activityFactor = 1.9;
-        break;
-      default:
-        activityFactor = 1.0;
-    }
-    calorieGoal = calorieGoal * activityFactor;
-    switch (goal) {
-      case 'Lose weight':
-        calorieGoal -= goalPerWeek; // Subtract 500 calories for weight loss
-        break;
-      case 'Gain weight':
-        calorieGoal += goalPerWeek; // Add 500 calories for weight gain
-        break;
-      case 'Maintain weight':
-        break; // No change for maintenance
-      default:
-        break;
-    }
-    return calorieGoal;
-  }
 
   @override
   Widget build(BuildContext context) {
-    double calorieGoal = calculateGoal();
+    // Use calculateCalorieGoal() from the viewmodel
+    double calorieGoal = surveyViewModel.calculateCalorieGoal();
 
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Text('Summary',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 30),
+          Text(
+            'Congratulations! You have completed the survey',
+            style: Theme.of(context).textTheme.bodyLarge,
+            textAlign: TextAlign.center,
+          ),
           const SizedBox(height: 10),
+          Text(
+            'Your daily net calorie goal (kcal) is:',
+            style: Theme.of(context).textTheme.bodyMedium,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 50),
+          Text(
+            '${calorieGoal.toStringAsFixed(2)}',
+            style: Theme.of(context).textTheme.displayLarge,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 50),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Details information:',
+                style: Theme.of(context).textTheme.titleSmall,
+                textAlign: TextAlign.left,
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
           Row(
             children: [
               Expanded(
-                child: Container(
-                  padding: const EdgeInsets.all(8.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8.0),
-                    border: Border.all(
-                        color: HighlightColors
-                            .highlight500), // Added border with HighlightColors.highlight500
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Name: $name',
-                          style: Theme.of(context).textTheme.bodyMedium),
-                      Text('Gender: $gender',
-                          style: Theme.of(context).textTheme.bodyMedium),
-                      Text('Age: $age',
-                          style: Theme.of(context).textTheme.bodyMedium),
-                    ],
+                child: Card(
+                  elevation: Theme.of(context).cardTheme.elevation,
+                  shape: Theme.of(context).cardTheme.shape,
+                  color: Theme.of(context).cardTheme.color,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Name: ${surveyViewModel.name}', style: Theme.of(context).textTheme.bodyMedium),
+                        Text('Gender: ${surveyViewModel.gender}', style: Theme.of(context).textTheme.bodyMedium),
+                        Text('Age: ${surveyViewModel.age}', style: Theme.of(context).textTheme.bodyMedium),
+                        Text('Height: ${surveyViewModel.height} cm', style: Theme.of(context).textTheme.bodyMedium),
+                        Text('Weight: ${surveyViewModel.weight} kg', style: Theme.of(context).textTheme.bodyMedium),
+                      ],
+                    ),
                   ),
                 ),
               ),
               const SizedBox(width: 10),
               Expanded(
-                child: Container(
-                  padding: const EdgeInsets.all(8.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8.0),
-                    border: Border.all(
-                        color: HighlightColors
-                            .highlight500), // Added border with HighlightColors.highlight500
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Height: $height cm',
-                          style: Theme.of(context).textTheme.bodyMedium),
-                      Text('Weight: $weight kg',
-                          style: Theme.of(context).textTheme.bodyMedium),
-                      Text(activityLevel,
-                          style: Theme.of(context).textTheme.bodyMedium),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Row(
-            children: [
-              Expanded(
-                child: Container(
-                  padding: const EdgeInsets.all(8.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8.0),
-                    border: Border.all(
-                        color: HighlightColors
-                            .highlight500), // Added border with HighlightColors.highlight500
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Goal: $goal',
-                          style: Theme.of(context).textTheme.bodyMedium),
-                      Text('Weight Goal: $weightGoal kg',
-                          style: Theme.of(context).textTheme.bodyMedium),
-                      Text('Goal per Week: ${goalPerWeek.toString()} kg',
-                          style: Theme.of(context).textTheme.bodyMedium),
-                    ],
+                child: Card(
+                  elevation: Theme.of(context).cardTheme.elevation,
+                  shape: Theme.of(context).cardTheme.shape,
+                  color: Theme.of(context).cardTheme.color,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        
+                        Text(surveyViewModel.activityLevel, style: Theme.of(context).textTheme.bodyMedium),
+                        Text('Goal: ${surveyViewModel.goal}', style: Theme.of(context).textTheme.bodyMedium),
+                        Text('Weight Goal: ${surveyViewModel.weightGoal} kg', style: Theme.of(context).textTheme.bodyMedium),
+                        Text('Goal per Week: ${surveyViewModel.goalPerWeek.toString()} kg', style: Theme.of(context).textTheme.bodyMedium),
+                        Text(' '),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 10),
-          Row(
-            children: [
-              Expanded(
-                child: Container(
-                  padding: const EdgeInsets.all(8.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8.0),
-                    border: Border.all(
-                        color: HighlightColors
-                            .highlight500), // Added border with HighlightColors.highlight500
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                          'Calorie Goal per day (Remaining =  Goal - Food + Exercise): ${calorieGoal.toStringAsFixed(2)} kcal',
-                          style: Theme.of(context).textTheme.displayLarge),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
+          
         ],
       ),
     );
