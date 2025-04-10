@@ -7,9 +7,11 @@ class TColorSchemeTheme {
   static const lightColorSchemeTheme = ColorScheme.light(
     primary: HighlightColors.highlight500,
     onPrimary: NeutralColors.light100,
-    surface: NeutralColors.light200,
+    surface: NeutralColors.light300,
     error: SupportColors.error300,
     onError: NeutralColors.light100,
+    //primaryContainer: HighlightColors.highlight300,
+    //surfaceBright: HighlightColors.highlight300,
   );
 
   static const darkColorSchemeTheme = ColorScheme.dark(

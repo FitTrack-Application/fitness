@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile/common/widgets/bottom_nav_bar/bottom_nav_provider.dart';
 import 'package:mobile/cores/constants/routes.dart';
 import 'package:mobile/cores/theme/theme.dart';
+import 'package:mobile/features/auth/viewmodels/auth_viewmodel.dart';
 import 'package:mobile/features/statistic/viewmodels/dashboard_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -16,6 +17,7 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => BottomNavProvider()),
+        ChangeNotifierProvider(create: (_) => AuthViewModel()),
         Provider<ApiClient>(create: (_) => ApiClient('https://54efe02a-ae6e-4055-9391-3a9bd9cac8f1.mock.pstmn.io')),
         ProxyProvider<ApiClient, DashboardApiService>(
           update: (_, client, __) => DashboardApiService(client),
@@ -30,7 +32,7 @@ void main() {
           create: (_) => DiaryViewModel(),
         ),
       ],
-      child: const MyApp(),
+      child: MyApp(),
       // child: const MaterialApp(
       //   home: SearchFoodScreen(),
       // ),
@@ -39,8 +41,6 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
   //const MyApp({super.key});
 
   @override
