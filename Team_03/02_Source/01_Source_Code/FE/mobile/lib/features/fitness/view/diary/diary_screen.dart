@@ -154,7 +154,7 @@ class DiaryScreen extends StatelessWidget {
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.fromLTRB(16.0, 16.0, 24.0, 16.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -176,7 +176,7 @@ class DiaryScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(left: 16.0),
+                  padding: const EdgeInsets.only(left: 10),
                   child: Text(
                     'ADD FOOD',
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
@@ -201,7 +201,7 @@ class DiaryScreen extends StatelessWidget {
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.fromLTRB(16.0, 16.0, 24.0, 16.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -221,7 +221,7 @@ class DiaryScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(left: 16.0),
+                  padding: const EdgeInsets.only(left: 10),
                   child: Text(
                     'ADD EXERCISE',
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
