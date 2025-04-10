@@ -39,6 +39,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         backgroundColor: HighlightColors.highlight500,
         foregroundColor: Colors.white,
       ),
+      //backgroundColor: NeutralColors.dark500.withOpacity(0.05),
       body: viewModel.isLoading
           ? const Center(child: CircularProgressIndicator())
           : viewModel.errorMessage != null
@@ -92,8 +93,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget _buildCaloriesCard(ThemeData theme, int consumed, int goal, int remaining) {
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      color: HighlightColors.highlight100,
+      //shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      //color: NeutralColors.light100.withOpacity(0.1),
+      //elevation: 0,
+      //surfaceTintColor: SurfaceColors.surface100,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -126,8 +129,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget _buildMacronutrientsCard(ThemeData theme, DashboardViewModel viewModel) {
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      elevation: 2,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
