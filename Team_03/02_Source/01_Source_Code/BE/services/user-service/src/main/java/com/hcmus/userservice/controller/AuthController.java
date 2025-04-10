@@ -1,6 +1,7 @@
 package com.hcmus.userservice.controller;
 
 import com.hcmus.userservice.dto.request.LoginRequest;
+import com.hcmus.userservice.dto.request.CheckEmailRequest;
 import com.hcmus.userservice.dto.response.ApiResponse;
 import com.hcmus.userservice.dto.response.AuthResponse;
 import com.hcmus.userservice.dto.request.RegisterRequest;
@@ -28,6 +29,22 @@ import java.util.Map;
 public class AuthController {
 
     private final AuthService authService;
+
+    @PostMapping("/checkemail")
+    public ResponseEntity<?> checkEmail(@RequestBody @Valid CheckEmailRequest request) {
+        try {
+            return ResponseEntity.ok(authService.checkEmail(request.getEmail()));
+        } catch (ResponseStatusException e) {
+            
+            ApiResponse<Object> errorResponse = ApiResponse.builder()
+                    .status(HttpStatus.CONFLICT.value())
+                    .generalMessage("Email is already exist")
+                    .timestamp(LocalDateTime.now())
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+        }
+    }
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody @Valid RegisterRequest request) {

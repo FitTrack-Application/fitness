@@ -5,12 +5,15 @@ import com.hcmus.userservice.dto.response.ApiResponse;
 import com.hcmus.userservice.dto.response.AuthResponse;
 import com.hcmus.userservice.dto.request.RegisterRequest;
 import com.hcmus.userservice.dto.response.LoginResponse;
+import com.hcmus.userservice.model.Goal;
 import com.hcmus.userservice.model.Role;
 import com.hcmus.userservice.model.User;
 import com.hcmus.userservice.repository.UserRepository;
+import com.hcmus.userservice.repository.GoalRepository;
 import com.hcmus.userservice.utility.JwtUtil;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.springframework.http.HttpStatus;
@@ -32,11 +35,26 @@ public class AuthService {
 
     private final UserRepository userRepository;
 
+    private final GoalRepository goalRepository;
+
     private final PasswordEncoder passwordEncoder;
 
     private final JwtUtil jwtUtil;
 
     private final AuthenticationManager authenticationManager;
+
+    public ApiResponse<AuthResponse> checkEmail(String email){
+        if (userRepository.existsByEmail(email)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already exists");
+        }
+
+        return ApiResponse.<AuthResponse>builder()
+                .status(HttpStatus.OK.value())
+                .generalMessage("Email is available")
+                .timestamp(LocalDateTime.now())
+                .build();
+
+    }
 
     public ApiResponse<AuthResponse> register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
@@ -57,9 +75,21 @@ public class AuthService {
         user.setRole(request.getRole() != null ? request.getRole() : Role.USER);
 
         userRepository.save(user);
+
+        Goal goal = new Goal();
+        goal.setUser(user);
+        goal.setGoalType(request.getGoalType());
+        goal.setWeightGoal(request.getWeightGoal());
+        goal.setGoalPerWeek(request.getGoalPerWeek());
+        goal.setActivityLevel(request.getActivityLevel());
+        goal.setCaloriesGoal(request.getCaloriesGoal());
+        goal.setStartingDate(LocalDate.now());
+
+        goalRepository.save(goal);
+
         String token = jwtUtil.generateToken(user);
 
-        AuthResponse authResponse = buildAuthResponse(user, token);
+        AuthResponse authResponse = buildAuthResponse(user, goal, token);
 
         return ApiResponse.<AuthResponse>builder()
                 .status(HttpStatus.OK.value())
@@ -91,13 +121,15 @@ public class AuthService {
                 .build();
     }
 
-    private AuthResponse buildAuthResponse(User user, String token) {
+    private AuthResponse buildAuthResponse(User user, Goal goal, String token) {
         return AuthResponse.builder()
                 .token(token)
                 .userId(user.getUserId())
+                .goalId(goal.getGoalId())
                 .email(user.getEmail())
                 .name(user.getName())
                 .role(user.getRole())
+                .message("Successfully get user information and create goal")
                 .build();
     }
 
