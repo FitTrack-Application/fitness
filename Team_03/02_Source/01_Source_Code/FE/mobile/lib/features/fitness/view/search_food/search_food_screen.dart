@@ -88,7 +88,9 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.qr_code_scanner),
-            onPressed: () {},
+            onPressed: () {
+              GoRouter.of(context).go('/scan');
+            },
           ),
         ],
       ),

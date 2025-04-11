@@ -9,13 +9,14 @@ import 'package:mobile/features/auth/views/profile/user_goal.dart';
 import 'package:mobile/features/auth/views/splash/splash_screen.dart';
 import 'package:mobile/features/auth/views/survey/user_survey.dart';
 import 'package:mobile/features/fitness/view/diary/diary_screen.dart';
+import 'package:mobile/features/fitness/view/scan_barcode/scan_barcode_screen.dart';
 import 'package:mobile/features/statistic/view/dashboard/dashboard_screen.dart';
 
 import '../../features/fitness/view/food_detail/food_detail_screen.dart';
 import '../../features/fitness/view/search_food/search_food_screen.dart';
 import 'package:mobile/features/statistic/view/weight/add_weight.dart';
 final GoRouter appRouter = GoRouter(
-  initialLocation: '/survey',
+  initialLocation: '/welcome',
   routes: [
     GoRoute(
       path: '/',
@@ -89,9 +90,13 @@ final GoRouter appRouter = GoRouter(
       path: '/profile/edit',
       builder: (context, state) => EditProfile(), 
     ),
-        GoRoute(
+    GoRoute(
       path: '/weight/add',
       builder: (context, state) => AddWeight(), 
+    ),
+    GoRoute(
+      path: '/scan',
+      builder: (context, state) => const ScanBarcodeScreen(),
     ),
   ],
 );

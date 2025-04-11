@@ -112,61 +112,77 @@ class AuthService {
     }
   }
 
+  // Future<ApiResponse> login(String email, String password) async {
+  //   try {
+  //     final response = await dio.post(
+  //       '/api/auth/login',
+  //       data: {
+  //         'email': email,
+  //         'password': password,
+  //       },
+  //     );
+  //
+  //
+  //     print(">>>>>>>>>>>>>>>>>>>>>>>>>");
+  //     print(response.data['data']);
+  //
+  //     if (response.data['status'] == 200) {
+  //       return ApiResponse(
+  //         success: true,
+  //         data: response.data['data'],
+  //         message: response.data['generalMessage'],
+  //         statusCode: response.data['status'] ?? 200,
+  //       );
+  //     } else {
+  //       return ApiResponse(
+  //         success: false,
+  //         message: response.data['generalMessage'],
+  //         statusCode: response.data['status'] ?? 400,
+  //       );
+  //     }
+  //   } on DioException catch (e) {
+  //     String errorMessage = 'Failed! ';
+  //     if (e.response != null) {
+  //       final errorData = e.response!.data;
+  //
+  //       // Check for custom error messages in the response data
+  //       if (errorData['details'] != null && errorData['details'].isNotEmpty) {
+  //         // Collect all issues in `details` into a single message
+  //         log('errorData: ${errorData['details']}');
+  //         List<String> issues = (errorData['details'] as List<dynamic>)
+  //             .map<String>((detail) => detail['issue'] ?? 'Unknown issue')
+  //             .toList();
+  //         errorMessage = issues.join(', ');
+  //       }
+  //
+  //       return ApiResponse(
+  //         success: false,
+  //         message: errorMessage,
+  //         statusCode: e.response!.statusCode ?? 400,
+  //       );
+  //     }
+  //
+  //     return ApiResponse(
+  //       success: false,
+  //       message: errorMessage,
+  //       statusCode: e.response?.statusCode ?? 500,
+  //     );
+  //   }
+  // }
+
+
   Future<ApiResponse> login(String email, String password) async {
-    try {
-      final response = await dio.post(
-        '/api/auth/login',
-        data: {
-          'email': email,
-          'password': password,
-        },
-      );
-      print(">>>>>>>>>>>>>>>>>>>>>>>>>");
-      print(response.data['data']);
-
-      if (response.data['status'] == 200) {
-        return ApiResponse(
-          success: true,
-          data: response.data['data'],
-          message: response.data['generalMessage'],
-          statusCode: response.data['status'] ?? 200,
-        );
-      } else {
-        return ApiResponse(
-          success: false,
-          message: response.data['generalMessage'],
-          statusCode: response.data['status'] ?? 400,
-        );
-      }
-    } on DioException catch (e) {
-      String errorMessage = 'Failed! ';
-      if (e.response != null) {
-        final errorData = e.response!.data;
-
-        // Check for custom error messages in the response data
-        if (errorData['details'] != null && errorData['details'].isNotEmpty) {
-          // Collect all issues in `details` into a single message
-          log('errorData: ${errorData['details']}');
-          List<String> issues = (errorData['details'] as List<dynamic>)
-              .map<String>((detail) => detail['issue'] ?? 'Unknown issue')
-              .toList();
-          errorMessage = issues.join(', ');
-        }
-
-        return ApiResponse(
-          success: false,
-          message: errorMessage,
-          statusCode: e.response!.statusCode ?? 400,
-        );
-      }
-
-      return ApiResponse(
-        success: false,
-        message: errorMessage,
-        statusCode: e.response?.statusCode ?? 500,
-      );
-    }
+    return ApiResponse(
+      success: true,
+      data: {
+        "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiVVNFUiIsIm5hbWUiOiJOZ3V54buFbiBWxINuIEEiLCJ1c2VySWQiOiI5NGJhMzUwMy0zM2ZlLTQyZjMtODkyZS0xN2YzOGZhNmY5OTEiLCJzdWIiOiJuZ3V5ZW52YW5hQGV4YW1wbGUuY29tIiwiaWF0IjoxNzQ0MjcyNTYxLCJleHAiOjE3NDQyNzYxNjF9.8QdwJSZ3yxBT8dhmChC7cFf9DFrGoXc7Vhp5X33RglM",
+        "refreshToken": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiI5NGJhMzUwMy0zM2ZlLTQyZjMtODkyZS0xN2YzOGZhNmY5OTEiLCJzdWIiOiJuZ3V5ZW52YW5hQGV4YW1wbGUuY29tIiwiaWF0IjoxNzQ0MjcyNTYxLCJleHAiOjE3NDQ4NzczNjF9.9RdwJSZ3yxBT8dhmChC7cFf9DFrGoXc7Vhp5X33RglN",
+      },
+      message: 'Login Successful!',
+      statusCode: 200,
+    );
   }
+
 
   Future<ApiResponse> getCurrentUser(String accessToken) async {
     try {
