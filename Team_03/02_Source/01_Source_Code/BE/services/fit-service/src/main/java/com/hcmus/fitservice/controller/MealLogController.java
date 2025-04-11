@@ -83,25 +83,25 @@ public class MealLogController {
 
     // Get Meal Log by User Id and Date (User Id sẽ sửa thành lấy từ JWT)
     @GetMapping
-    public ResponseEntity<ApiResponse<MealLogDto>> getMealLogByUserIdAndDate(
+    public ResponseEntity<ApiResponse<List<MealLogDto>>> getMealLogsByUserIdAndDate(
             @RequestParam UUID userId,
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date date
     ) {
         try {
-            MealLogDto mealLogDto = mealLogService.getMealLogByUserIdAndDate(userId, date);
+            List<MealLogDto> mealLogDtos = mealLogService.getMealLogsByUserIdAndDate(userId, date);
 
-            ApiResponse<MealLogDto> response = ApiResponse.<MealLogDto>builder()
+            ApiResponse<List<MealLogDto>> response = ApiResponse.<List<MealLogDto>>builder()
                     .status(200)
                     .generalMessage("Successfully retrieved meal log")
-                    .data(mealLogDto)
+                    .data(mealLogDtos)
                     .timestamp(LocalDateTime.now())
                     .build();
 
             return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
-            ApiResponse<MealLogDto> response = ApiResponse.<MealLogDto>builder()
+            ApiResponse<List<MealLogDto>> response = ApiResponse.<List<MealLogDto>>builder()
                     .status(404)
-                    .generalMessage("Failed to get meal log")
+                    .generalMessage("Failed to get meal logs")
                     .errorDetails(List.of(e.getMessage()))
                     .timestamp(LocalDateTime.now())
                     .build();

@@ -4,6 +4,7 @@ import com.hcmus.fitservice.dto.MealEntryDto;
 import com.hcmus.fitservice.dto.MealLogDto;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 public interface MealLogService {
@@ -12,5 +13,5 @@ public interface MealLogService {
     MealEntryDto addMealEntry(UUID mealLogId, UUID foodId, String servingUnit, Integer numberOfServings);
 
     // Get meal log by user id and date
-    MealLogDto getMealLogByUserIdAndDate(UUID userId, Date date);
+    List<MealLogDto> getMealLogsByUserIdAndDate(UUID userId, Date date);
 }
