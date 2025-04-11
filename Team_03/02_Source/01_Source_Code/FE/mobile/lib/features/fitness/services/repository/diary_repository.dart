@@ -21,56 +21,56 @@ class DiaryRepository {
     return "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
   }
 
-  Future<Diary> getDiaryForDate(DateTime date) async {
-    final formattedDate = _formatDateForApi(date);
-
-    try {
-      final response = await _apiClient.get("/", queryParams: {
-        'date': formattedDate,
-      });
-
-      return Diary.fromJson(response['data']);
-    } catch (e) {
-      throw Exception('Failed to load diary: $e');
-    }
-  }
-
   // Future<Diary> getDiaryForDate(DateTime date) async {
-  //   await Future.delayed(const Duration(milliseconds: 500)); // Giả lập delay
+  //   final formattedDate = _formatDateForApi(date);
   //
-  //   return Diary(
-  //     diaryId: 101,
-  //     date: date,
-  //     calorieGoal: 2200,
-  //     foodItems: [
-  //       Food(
-  //         id: 'f1',
-  //         name: 'Phở bò',
-  //         servingSize: 350.0,
-  //         calories: 500,
-  //         protein: 25,
-  //         carbs: 60,
-  //         fat: 15,
-  //         unit: 'g',
-  //         description: 'Một tô phở bò nóng hổi',
-  //       ),
-  //       Food(
-  //         id: 'f2',
-  //         name: 'Trứng luộc',
-  //         servingSize: 100.0,
-  //         calories: 150,
-  //         protein: 13,
-  //         carbs: 1,
-  //         fat: 10,
-  //         unit: 'g',
-  //         description: 'Hai quả trứng gà luộc',
-  //       ),
-  //     ],
-  //     exerciseItems: [
+  //   try {
+  //     final response = await _apiClient.get("/", queryParams: {
+  //       'date': formattedDate,
+  //     });
   //
-  //     ],
-  //   );
+  //     return Diary.fromJson(response['data']);
+  //   } catch (e) {
+  //     throw Exception('Failed to load diary: $e');
+  //   }
   // }
+
+  Future<Diary> getDiaryForDate(DateTime date) async {
+    await Future.delayed(const Duration(milliseconds: 500)); // Giả lập delay
+
+    return Diary(
+      diaryId: 101,
+      date: date,
+      calorieGoal: 2200,
+      foodItems: [
+        Food(
+          id: 'f1',
+          name: 'Phở bò',
+          servingSize: 350.0,
+          calories: 500,
+          protein: 25,
+          carbs: 60,
+          fat: 15,
+          unit: 'g',
+          description: 'Một tô phở bò nóng hổi',
+        ),
+        Food(
+          id: 'f2',
+          name: 'Trứng luộc',
+          servingSize: 100.0,
+          calories: 150,
+          protein: 13,
+          carbs: 1,
+          fat: 10,
+          unit: 'g',
+          description: 'Hai quả trứng gà luộc',
+        ),
+      ],
+      exerciseItems: [
+
+      ],
+    );
+  }
 
   Future<void> addFoodToDiary(
       int diaryId, String foodId, int servings, DateTime date) async {
