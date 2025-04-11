@@ -20,8 +20,8 @@ public class Goal {
     @Column(name = "goalid", updatable = false, nullable = false)
     private UUID goalId;
 
-    @ManyToOne
-    @JoinColumn(name = "userid", nullable = false)
+    @OneToOne
+    @JoinColumn(name = "userid", nullable = false, unique = true)
     private User user;
 
     private String goalType;
