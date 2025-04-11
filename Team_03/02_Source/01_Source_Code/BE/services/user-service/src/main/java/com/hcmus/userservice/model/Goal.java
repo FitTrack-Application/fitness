@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.UuidGenerator;
-import java.time.LocalDate;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Getter
@@ -25,9 +25,14 @@ public class Goal {
     private User user;
 
     private String goalType;
+
     private Double weightGoal;
+
     private Double goalPerWeek;
+
     private String activityLevel;
+
     private Double caloriesGoal;
+
     private LocalDate startingDate;
 }

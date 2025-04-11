@@ -3,9 +3,7 @@ package com.hcmus.userservice.controller;
 import com.hcmus.userservice.dto.request.LoginRequest;
 import com.hcmus.userservice.dto.request.CheckEmailRequest;
 import com.hcmus.userservice.dto.response.ApiResponse;
-import com.hcmus.userservice.dto.response.AuthResponse;
 import com.hcmus.userservice.dto.request.RegisterRequest;
-import com.hcmus.userservice.dto.response.LoginResponse;
 import com.hcmus.userservice.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.bind.annotation.RequestHeader;
-import com.hcmus.userservice.utility.JwtUtil;
+import com.hcmus.userservice.util.JwtUtil;
 
 import java.util.ArrayList;
 import java.util.List;

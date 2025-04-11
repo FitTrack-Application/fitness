@@ -2,8 +2,6 @@ package com.hcmus.userservice.service;
 
 import com.hcmus.userservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-
-
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,5 +18,4 @@ public class CustomUserDetailsService implements UserDetailsService {
         return userRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Không tìm thấy người dùng với email: " + username));
     }
-
 }

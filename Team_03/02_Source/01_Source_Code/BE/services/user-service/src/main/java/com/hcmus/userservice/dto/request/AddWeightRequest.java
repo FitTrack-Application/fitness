@@ -1,36 +1,30 @@
 package com.hcmus.userservice.dto.request;
 
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.NotBlank;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.UUID;
 
-import jakarta.validation.constraints.NotBlank;
-
-
-@Data
+@Setter
+@Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class AddWeightRequest {
-    @NotBlank(message = "UserId is required")
+
+    @NotBlank(message = "User id is required")
     private UUID userId;
-    
-    @NotBlank(message = "GoalId is required")
+
+    @NotBlank(message = "Goal id is required")
     private UUID goalId;
 
 
     @NotBlank(message = "Weight is required")
     private Double weight;
 
-    @NotBlank(message = "UpdateDate is required")
+    @NotBlank(message = "Update date is required")
     private LocalDate updateDate;
 
-    
     private String progressPhoto;
-    
 }

@@ -1,5 +1,6 @@
-package com.hcmus.userservice.utility;
+package com.hcmus.userservice.util;
 
+import com.hcmus.userservice.exception.InvalidTokenException;
 import com.hcmus.userservice.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -20,12 +21,12 @@ import java.util.function.Function;
 public class JwtUtil {
 
     @Value("${jwt.secret}")
-    private String secret;
+    private String jwtSecretKey;
 
     @Value("${jwt.expiration}")
     private long jwtExpiration;
 
-    @Value("${jwt.refresh-expiration:604800000}") // Default 7 days in milliseconds
+    @Value("${jwt.refresh-expiration}")
     private long refreshTokenExpiration;
 
     public String extractUsername(String token) {
@@ -44,17 +45,7 @@ public class JwtUtil {
             claims.put("name", user.getName());
             claims.put("role", user.getRole().name());
         }
-        return generateToken(claims, userDetails);
-    }
-
-    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
-        return Jwts.builder()
-                .setClaims(extraClaims)
-                .setSubject(userDetails.getUsername())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
-                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
-                .compact();
+        return generateToken(claims, userDetails, jwtExpiration);
     }
 
     public String generateRefreshToken(UserDetails userDetails) {
@@ -63,11 +54,15 @@ public class JwtUtil {
             claims.put("userId", user.getUserId().toString());
             claims.put("tokenType", "refresh");
         }
+        return generateToken(claims, userDetails, refreshTokenExpiration);
+    }
+
+    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails, long expireIn) {
         return Jwts.builder()
-                .setClaims(claims)
+                .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpiration))
+                .setExpiration(new Date(System.currentTimeMillis() + expireIn))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -77,12 +72,54 @@ public class JwtUtil {
         return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
     }
 
+    public String extractUserId(String token) {
+        return extractClaim(token, claims -> claims.get("userId", String.class));
+    }
+
+    public Map<String, Object> validateTokenAndGetClaims(String token) {
+        try {
+            Claims claims = extractAllClaims(token);
+            if (isTokenExpired(token)) {
+                throw new InvalidTokenException("Token has expired!");
+            }
+
+            Map<String, Object> claimsMap = new HashMap<>();
+            claimsMap.put("userId", claims.get("userId", String.class));
+            claimsMap.put("name", claims.get("name", String.class));
+            claimsMap.put("role", claims.get("role", String.class));
+            claimsMap.put("email", claims.getSubject());
+            claimsMap.put("exp", claims.getExpiration().getTime());
+            claimsMap.put("iat", claims.getIssuedAt().getTime());
+
+            return claimsMap;
+        } catch (Exception e) {
+            throw new InvalidTokenException("Failed to parse token: " + e.getMessage() + "!");
+        }
+    }
+
+    public Map<String, Object> validateRefreshTokenAndGetClaims(String token) {
+        try {
+            Claims claims = extractAllClaims(token);
+            if (isTokenExpired(token)) {
+                throw new InvalidTokenException("Refresh token has expired!");
+            }
+            String tokenType = claims.get("tokenType", String.class);
+            if (!"refresh".equals(tokenType)) {
+                throw new InvalidTokenException("Not a refresh token!");
+            }
+            return claims;
+        } catch (Exception e) {
+            throw new InvalidTokenException("Failed to parse refresh token: " + e.getMessage() + "!");
+        }
+    }
+
     private boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
-    private Date extractExpiration(String token) {
-        return extractClaim(token, Claims::getExpiration);
+    private Key getSignInKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(jwtSecretKey);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 
     private Claims extractAllClaims(String token) {
@@ -93,57 +130,7 @@ public class JwtUtil {
                 .getBody();
     }
 
-    private Key getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(secret);
-        return Keys.hmacShaKeyFor(keyBytes);
+    private Date extractExpiration(String token) {
+        return extractClaim(token, Claims::getExpiration);
     }
-    public String extractUserId(String token) {
-        return extractClaim(token, claims -> claims.get("userId", String.class));
-    }
-
-    public Map<String, Object> validateTokenAndGetClaims(String token) {
-        try {
-            Claims claims = extractAllClaims(token);
-            
-            // Check if token is expired
-            if (isTokenExpired(token)) {
-                throw new IllegalArgumentException("Token has expired");
-            }
-            
-            // Extract relevant claims into a map
-            Map<String, Object> claimsMap = new HashMap<>();
-            claimsMap.put("userId", claims.get("userId", String.class));
-            claimsMap.put("name", claims.get("name", String.class));
-            claimsMap.put("role", claims.get("role", String.class));
-            claimsMap.put("email", claims.getSubject());
-            claimsMap.put("exp", claims.getExpiration().getTime());
-            claimsMap.put("iat", claims.getIssuedAt().getTime());
-            
-            return claimsMap;
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Failed to parse token: " + e.getMessage());
-        }
-    }
-
-    public Map<String, Object> validateRefreshTokenAndGetClaims(String token) {
-        try {
-            Claims claims = extractAllClaims(token);
-            
-            // Check if token is expired
-            if (isTokenExpired(token)) {
-                throw new IllegalArgumentException("Refresh token has expired");
-            }
-            
-            // Verify this is a refresh token
-            String tokenType = claims.get("tokenType", String.class);
-            if (!"refresh".equals(tokenType)) {
-                throw new IllegalArgumentException("Not a refresh token");
-            }
-            
-            return claims;
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Failed to parse refresh token: " + e.getMessage());
-        }
-    }
-
 }

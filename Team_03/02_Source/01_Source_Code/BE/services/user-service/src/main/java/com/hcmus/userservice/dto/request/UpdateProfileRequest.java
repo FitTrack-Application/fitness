@@ -1,14 +1,15 @@
 package com.hcmus.userservice.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
-
-
-@Data
+@Setter
+@Getter
 @Builder
-public class UserUpdateRequest {
+@AllArgsConstructor
+@NoArgsConstructor
+public class UpdateProfileRequest {
+
     @NotBlank(message = "Name is required")
     private String name;
 
@@ -21,5 +22,4 @@ public class UserUpdateRequest {
     private Double weight;
 
     private String imageUrl;
-
 }
