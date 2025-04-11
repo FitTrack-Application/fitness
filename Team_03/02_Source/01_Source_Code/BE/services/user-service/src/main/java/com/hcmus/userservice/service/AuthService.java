@@ -101,6 +101,9 @@ public class AuthService {
 
         goalRepository.save(goal);
 
+        savedUser.setGoalId(goal.getGoalId());
+        userRepository.save(savedUser);
+
         String token = jwtUtil.generateToken(savedUser);
 
         AuthResponse authResponse = buildAuthResponse(savedUser, goal, token);
