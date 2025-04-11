@@ -31,7 +31,7 @@ class ApiService {
 
   Future<void> userSurvey(Map<String, dynamic> user) async {
     final response = await http.post(
-      Uri.parse("https://54efe02a-ae6e-4055-9391-3a9bd9cac8f1.mock.pstmn.io/api/users/survey"),
+      Uri.parse("https://b542ee45-7bae-4351-aae6-fd50549da5ac.mock.pstmn.io/api/users/survey"),
       headers: {"Content-Type": "application/json"},
       body: json.encode(user),
     );
@@ -68,7 +68,7 @@ class ApiService {
 
   Future<Map<String, dynamic>> getGoal() async {
     final response = await http.get(
-      Uri.parse("https://abf1f370-fb74-44fe-a48a-8a4d4b4ecce0.mock.pstmn.io/api/users/goals"),
+      Uri.parse("https://b542ee45-7bae-4351-aae6-fd50549da5ac.mock.pstmn.io/api/users/goals"),
       headers: {"Content-Type": "application/json"},
     );
 
