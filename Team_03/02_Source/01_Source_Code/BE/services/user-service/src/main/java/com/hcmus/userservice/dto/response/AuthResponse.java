@@ -18,11 +18,14 @@ public class AuthResponse {
 
     private UUID userId;
 
+    private UUID goalId;
+
     private String email;
 
     private String name;
 
     private Role role;
+
     private String message;
 
     public AuthResponse(String message) {
