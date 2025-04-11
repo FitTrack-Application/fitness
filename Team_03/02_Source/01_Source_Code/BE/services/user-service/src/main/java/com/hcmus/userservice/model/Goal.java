@@ -21,7 +21,7 @@ public class Goal {
     private UUID goalId;
 
     @OneToOne
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    @JoinColumn(name = "userid", nullable = false, unique = true)
     private User user;
 
     private String goalType;

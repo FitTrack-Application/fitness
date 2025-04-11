@@ -37,4 +37,14 @@ public class RegisterRequest {
     private String imageUrl;
 
     private Role role;
+
+    private String goalType;
+
+    private Double weightGoal;
+    
+    private Double goalPerWeek;
+
+    private String activityLevel;
+
+    private Double caloriesGoal;
 }

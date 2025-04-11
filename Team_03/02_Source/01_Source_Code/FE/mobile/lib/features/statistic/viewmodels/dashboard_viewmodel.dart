@@ -32,7 +32,8 @@ class DashboardViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final result = await apiService.fetchDashboardData(token);
+      final result = createMockData();
+      //final result = await apiService.fetchDashboardData(token);
       meals = result.meals;
       activities = result.activities;
       caloriesGoal = result.caloriesGoal;
@@ -63,4 +64,27 @@ class DashboardViewModel extends ChangeNotifier {
     if (total == 0) return 0;
     return ((macroValue / total) * 100).toInt();
   }
+}
+
+
+DashboardLogModel createMockData() {
+  return DashboardLogModel(
+    caloriesGoal: 2000,
+    totalCaloriesConsumed: 1200,
+    totalCaloriesBurned: 400,
+    macronutrients: Macronutrients(
+      carbs: 150,
+      protein: 100,
+      fat: 50,
+    ),
+    meals: [
+      MealLog(id: 1, name: "Breakfast", calories: 350),
+      MealLog(id: 2, name: "Lunch", calories: 450),
+      MealLog(id: 3, name: "Dinner", calories: 400),
+    ],
+    activities: [
+      ActivityLog(id: 1, name: "Running", caloriesBurned: 300),
+      ActivityLog(id: 2, name: "Cycling", caloriesBurned: 100),
+    ],
+  );
 }

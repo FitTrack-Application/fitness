@@ -4,8 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../cores/constants/colors.dart';
 import '../../viewmodels/dashboard_viewmodel.dart';
-import 'package:mobile/features/statistic/view/dashboard/weight_graph.dart';
-import 'package:mobile/features/statistic/models/weight_entry.dart';
+
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
 
@@ -24,7 +23,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
       const token = 'auth_token';
 
       viewModel.fetchDashboardData(token: token);
-      viewModel.fetchWeightStatistics(token: token);
       _initialized = true;
     }
   }
@@ -32,9 +30,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     final viewModel = Provider.of<DashboardViewModel>(context);
-    return Scaffold(
 
-      //backgroundColor: NeutralColors.dark500.withOpacity(0.05),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Dashboard'),
+        centerTitle: true,
+        backgroundColor: HighlightColors.highlight500,
+        foregroundColor: Colors.white,
+      ),
       body: viewModel.isLoading
           ? const Center(child: CircularProgressIndicator())
           : viewModel.errorMessage != null
@@ -51,13 +54,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final burned = viewModel.totalCaloriesBurned;
     final goal = viewModel.caloriesGoal;
     final remaining = goal - consumed; //+ burned;
+
     return Padding(
-      padding: const EdgeInsets.only(
-        top: 16.0,
-        left: 16.0,
-        right: 16.0,
-        bottom: 0, // Không có padding bottom
-      ),
+      padding: const EdgeInsets.all(16.0),
       child: ListView(
         children: [
           Text('Hi there 👋', style: theme.textTheme.headlineMedium),
@@ -68,12 +67,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
           _buildMacronutrientsCard(theme, viewModel),
           const SizedBox(height: 24),
           _buildQuickLogCard(theme),
-          const SizedBox(height: 24),
-           WeightGraph(
-                entries: viewModel.weightEntries,
-                title: 'Weight History (kg)',
-              ),       
-          const SizedBox(height: 16),      
         ],
       ),
     );
@@ -81,10 +74,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget _buildCaloriesCard(ThemeData theme, int consumed, int goal, int remaining) {
     return Card(
-      //shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      //color: NeutralColors.light100.withOpacity(0.1),
-      //elevation: 0,
-      //surfaceTintColor: SurfaceColors.surface100,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      color: HighlightColors.highlight100,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -108,7 +99,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget _calorieBox(String label, String value, Color color) {
     return Column(
       children: [
-        Text(label, style: Theme.of(context).textTheme.bodyMedium),
+        Text(label, style: TextStyle(fontSize: 14, color: NeutralColors.dark300)),
         const SizedBox(height: 4),
         Text(value, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: color)),
       ],
@@ -117,6 +108,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget _buildMacronutrientsCard(ThemeData theme, DashboardViewModel viewModel) {
     return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      elevation: 2,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(

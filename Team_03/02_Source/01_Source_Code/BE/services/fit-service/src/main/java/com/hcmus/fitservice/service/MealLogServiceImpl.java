@@ -72,31 +72,30 @@ public class MealLogServiceImpl implements MealLogService {
 
     @Override
     @Transactional
-    public MealLogDto getMealLogByUserIdAndDate(UUID userId, Date date) {
+    public List<MealLogDto> getMealLogsByUserIdAndDate(UUID userId, Date date) {
         // Find the meal log by user ID and date
-        MealLog mealLog = mealLogRepository.findByUserIdAndDate(userId, date);
+        List<MealLog> mealLogs = mealLogRepository.findByUserIdAndDate(userId, date);
 
-        if (mealLog == null) {
-            throw new IllegalArgumentException("Meal log not found for user ID: " + userId + " and date: " + date);
+        if (mealLogs.isEmpty()) {
+            throw new IllegalArgumentException("No meal logs found for user ID: " + userId + " and date: " + date);
         }
 
         // Convert to Dto
-        MealLogDto mealLogDto = new MealLogDto();
+        List<MealLogDto> mealLogDtos = mealLogs.stream().map(
+                mealLog -> new MealLogDto(
+                        mealLog.getMealLogId(),
+                        date,
+                        mealLog.getMealType().name(),
+                        mealLog.getMealEntries().stream()
+                                .map(mealEntry -> new MealEntryDto(
+                                        mealEntry.getMealEntryId(),
+                                        mealEntry.getFood().getFoodId(),
+                                        mealEntry.getServingUnit().name(),
+                                        mealEntry.getNumberOfServings()))
+                                .collect(Collectors.toList())
+                )
+        ).collect(Collectors.toList());
 
-        mealLogDto.setId(mealLog.getMealLogId());
-        mealLogDto.setDate(date);
-        mealLogDto.setMealType(mealLog.getMealType().name());
-
-        List<MealEntryDto> mealEntryDtos = mealLog.getMealEntries().stream()
-                .map(mealEntry -> new MealEntryDto(
-                        mealEntry.getMealEntryId(),
-                        mealEntry.getFood().getFoodId(),
-                        mealEntry.getServingUnit().name(),
-                        mealEntry.getNumberOfServings()))
-                .collect(Collectors.toList());
-
-        mealLogDto.setMealEntries(mealEntryDtos);
-
-        return mealLogDto;
+        return mealLogDtos;
     }
 }
