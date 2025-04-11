@@ -1,11 +1,13 @@
 package com.hcmus.userservice.model;
 
+import com.hcmus.userservice.model.type.Gender;
+import com.hcmus.userservice.model.type.Role;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.UuidGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -24,42 +26,55 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue
     @UuidGenerator
-    @Column(name = "userid", updatable = false, nullable = false)
-    private UUID userId;
+    @Column(name = "user_id", nullable = false)
+    private UUID id;
 
     @NotNull
-    @Size(max = 255)
-    @Column(nullable = false)
-    private String name;
-
+    @Column(name = "age", nullable = false)
     private Integer age;
 
-    @Size(max = 10)
-    private String gender;
-
-    private Double height;
-
-    private Double weight;
-
-    @NotNull
-    @Email
     @Size(max = 255)
-    @Column(nullable = false, unique = true)
+    @NotNull
+    @Column(name = "email", nullable = false)
     private String email;
 
+    @Size(max = 10)
     @NotNull
-    @Column(nullable = false)
-    private String password;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "gender", nullable = false, length = 10)
+    private Gender gender;
 
+    @NotNull
+    @Column(name = "height", nullable = false)
+    private Integer height;
+
+    @Size(max = 255)
+    @Column(name = "image_url")
     private String imageUrl;
 
-    @Column(name = "goalId")
-    private UUID goalId;
+    @Size(max = 255)
+    @NotNull
+    @Column(name = "name", nullable = false)
+    private String name;
 
+    @Size(max = 255)
+    @NotNull
+    @Column(name = "password", nullable = false)
+    private String password;
+
+    @Size(max = 255)
+    @NotNull
     @Enumerated(EnumType.STRING)
-    private Role role = Role.USER;
+    @Column(name = "role", nullable = false)
+    private Role role;
 
-    private boolean enabled = true;
+    @NotNull
+    @Column(name = "weight", nullable = false)
+    private Double weight;
+
+    @ColumnDefault("false")
+    @Column(name = "enabled")
+    private Boolean enabled;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

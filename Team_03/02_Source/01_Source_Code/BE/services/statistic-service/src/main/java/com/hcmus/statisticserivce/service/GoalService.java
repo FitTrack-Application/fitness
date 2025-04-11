@@ -1,7 +1,5 @@
 package com.hcmus.statisticserivce.service;
 
-import com.hcmus.statisticserivce.dto.GoalDto;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;

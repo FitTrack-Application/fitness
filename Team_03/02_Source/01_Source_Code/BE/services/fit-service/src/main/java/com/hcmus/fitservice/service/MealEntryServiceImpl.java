@@ -3,7 +3,7 @@ package com.hcmus.fitservice.service;
 import com.hcmus.fitservice.dto.MealEntryDto;
 import com.hcmus.fitservice.model.Food;
 import com.hcmus.fitservice.model.MealEntry;
-import com.hcmus.fitservice.model.ServingUnit;
+import com.hcmus.fitservice.model.type.ServingUnit;
 import com.hcmus.fitservice.repository.FoodRepository;
 import com.hcmus.fitservice.repository.MealEntryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +46,7 @@ public class MealEntryServiceImpl implements MealEntryService {
         // Update meal entry
         mealEntry.setFood(food);
         mealEntry.setServingUnit(ServingUnit.valueOf(servingUnit));
-        mealEntry.setNumberOfServings(numberOfServings);
+//        mealEntry.setNumberOfServings(numberOfServings);
 
         mealEntryRepository.save(mealEntry);
 

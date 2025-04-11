@@ -1,12 +1,7 @@
 package com.hcmus.statisticserivce.service;
 
-import com.hcmus.statisticserivce.db.model.WeightProgress;
 import com.hcmus.statisticserivce.repository.WeightRepository;
-import com.hcmus.statisticserivce.dto.WeightRequest;
-import com.hcmus.statisticserivce.dto.WeightResponse;
 import com.hcmus.statisticserivce.dto.AddWeightRequest;
-import com.hcmus.statisticserivce.dto.AddWeightResponse;
-import com.hcmus.statisticserivce.dto.WeightProgressDto;
 
 
 import lombok.RequiredArgsConstructor;
@@ -14,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 import java.lang.String;
 
 @Service

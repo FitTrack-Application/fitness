@@ -9,5 +9,4 @@ public class StatisticSerivceApplication {
     public static void main(String[] args) {
         SpringApplication.run(StatisticSerivceApplication.class, args);
     }
-
 }

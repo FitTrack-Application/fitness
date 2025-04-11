@@ -1,7 +1,7 @@
 package com.hcmus.fitservice.repository;
 
 import com.hcmus.fitservice.model.MealLog;
-import com.hcmus.fitservice.model.MealType;
+import com.hcmus.fitservice.model.type.MealType;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Date;

@@ -1,7 +1,7 @@
 package com.hcmus.statisticserivce.controller;
 
-import com.hcmus.statisticserivce.dto.FoodLogDto;
 import com.hcmus.statisticserivce.service.FoodLogService;
+import com.hcmus.statisticserivce.util.JwtUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -14,11 +14,13 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/foodlogs")
+@RequestMapping("/api/food-logs")
 @RequiredArgsConstructor
 public class FoodLogController {
 
     private final FoodLogService foodLogService;
+
+    private final JwtUtil jwtUtil;
 
     @GetMapping
     public ResponseEntity<List<FoodLogDto>> getAllFoodLogs() {
@@ -31,7 +33,7 @@ public class FoodLogController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<FoodLogDto>> getFoodLogsByUserId(@PathVariable UUID userId) {
+    public ResponseEntity<List<FoodLogDto>> getFoodLogsByUserId(@RequestHeader("authorization") String authorization) {
         return ResponseEntity.ok(foodLogService.getFoodLogsByUserId(userId));
     }
 

@@ -4,10 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 @Getter
 @Setter
@@ -22,7 +20,7 @@ public class ApiResponse<T> {
 
     private T data;
 
-    private Map<String, String> metadata;
+    private Map<String, Object> metadata;
 
     private List<String> errorDetails;
 
@@ -30,13 +28,21 @@ public class ApiResponse<T> {
     private LocalDateTime timestamp;
 
     public String toJson() {
+        StringBuilder errorDetailsStr = new StringBuilder("[");
+        for (int i = 0; i < errorDetails.size(); i++) {
+            errorDetailsStr.append("\"").append(errorDetails.get(i)).append("\"");
+            if (i < errorDetails.size() - 1) {
+                errorDetailsStr.append(",");
+            }
+        }
+        errorDetailsStr.append("]");
         return "{"
-                + "\"status\":" + status + "\","
-                + ",\"generalMessage\":\"" + generalMessage + "\""
-                + ",\"data\":" + data + "\","
-                + ",\"metadata\":" + metadata + "\","
-                + ",\"errorDetails\":" + errorDetails + "\","
-                + ",\"timestamp\":\"" + timestamp + "\""
+                + "\"status\":" + status + ","
+                + "\"generalMessage\":\"" + generalMessage + "\","
+                + "\"data\":" + null + ","
+                + "\"metadata\":" + null + ","
+                + "\"errorDetails\":" + errorDetailsStr + ","
+                + "\"timestamp\":\"" + timestamp + "\""
                 + "}";
     }
 }

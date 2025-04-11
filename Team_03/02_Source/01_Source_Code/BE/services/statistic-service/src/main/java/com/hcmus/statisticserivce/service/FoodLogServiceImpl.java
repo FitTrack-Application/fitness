@@ -1,7 +1,5 @@
 package com.hcmus.statisticserivce.service;
 
-import com.hcmus.statisticserivce.db.model.FoodLog;
-import com.hcmus.statisticserivce.dto.FoodLogDto;
 import com.hcmus.statisticserivce.exception.ResourceNotFoundException;
 import com.hcmus.statisticserivce.repository.FoodLogRepository;
 import lombok.RequiredArgsConstructor;
