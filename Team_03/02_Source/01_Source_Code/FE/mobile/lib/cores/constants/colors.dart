@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 // Highlight Colors (Xanh dương)
 class HighlightColors {
-  static const Color highlight500 = Color(0xFF006FFD); // Màu chính
-  static const Color highlight400 = Color(0xFF2897FF); // Nhạt hơn
+  static const Color highlight500 = Color(0xFF006FFD); // Màu primary trong light Theme
+  static const Color highlight400 = Color(0xFF2897FF); // Màu primary trong dark Theme
   static const Color highlight300 = Color(0xFF6FBAFF); // Nhạt hơn nữa
   static const Color highlight200 = Color(0xFFB4DBFF); // Rất nhạt
   static const Color highlight100 = Color(0xFFEAF2FF); // Gần trắng
@@ -36,13 +36,13 @@ class NeutralColors {
   // Light
   static const Color light500 = Color(0xFFC5C6CC); // Xám trung bình
   static const Color light400 = Color(0xFFD4D6DD); // Nhạt hơn
-  static const Color light300 = Color(0xFFE8E9F1); // Nhạt hơn nữa
-  static const Color light200 = Color(0xFFF8F9FE); // Rất nhạt
-  static const Color light100 = Color(0xFFFFFFFF); // Trắng
+  static const Color light300 = Color(0xFFEDEDF6); // Nhạt hơn nữa
+  static const Color light200 = Color(0xFFF8F9FE); // Rất nhạt và là màu background trong Light Theme
+  static const Color light100 = Color(0xFFFFFFFF); // Trắng và là màu background cho các Card ở Light Theme
 
   // Dart
-  static const Color dark500 = Color(0xFF121620); // Đậm nhất
-  static const Color dark400 = Color(0xFF1F2735); // Đậm vừa
+  static const Color dark500 = Color(0xFF121620); // Đậm nhất và là màu background trong Dark Theme
+  static const Color dark400 = Color(0xFF252E37); // Đậm vừa và là màu background cho các Card ở Dark Theme
   static const Color dark300 = Color(0xFF353F54); // Trung bình
   static const Color dark200 = Color(0xFF60647A); // Nhạt hơn
   static const Color dark100 = Color(0xFF83869F); // Nhạt nhất
@@ -64,4 +64,7 @@ class SupportColors {
   static const Color error300 = Color(0xFFED3241); // Đậm nhất
   static const Color error200 = Color(0xFFFF616D); // Trung bình
   static const Color error100 = Color(0xFFFFE2E5); // Nhạt nhất
+}
+class SurfaceColors {
+  static const Color surface100 = Color(0x22E8E9F1); // Nhạt nhất
 }

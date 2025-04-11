@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/cores/constants/colors.dart';
+import 'package:mobile/cores/theme/widget_themes/bottom_navbar_theme.dart';
+import 'package:mobile/cores/theme/widget_themes/card_theme.dart';
 import 'package:mobile/cores/theme/widget_themes/color_scheme_theme.dart';
 import 'package:mobile/cores/theme/widget_themes/elevated_button_theme.dart';
 import 'package:mobile/cores/theme/widget_themes/outlined_button_theme.dart';
 import 'package:mobile/cores/theme/widget_themes/radio_theme.dart';
 import 'package:mobile/cores/theme/widget_themes/text_field_theme.dart';
 import 'package:mobile/cores/theme/widget_themes/text_theme.dart';
-
+import 'package:mobile/cores/theme/widget_themes/divider_theme.dart';
 class TAppTheme {
   TAppTheme._();
 
@@ -18,6 +21,10 @@ class TAppTheme {
     inputDecorationTheme: TTextFormFieldTheme.lightInputDecorationTheme,
     //checkboxTheme: TCheckboxTheme.lightCheckboxTheme,
     radioTheme: TRadioTheme.lightRadioTheme,
+    //scaffoldBackgroundColor: NeutralColors.light300,
+    cardTheme: TCardTheme.lightCardTheme,
+    bottomNavigationBarTheme: TBottomNavBarTheme.lightBottomNavBarTheme,
+    dividerTheme: TDividerTheme.lightDividerTheme,
   );
 
   static ThemeData darkTheme = ThemeData(
@@ -29,5 +36,8 @@ class TAppTheme {
     inputDecorationTheme: TTextFormFieldTheme.darkInputDecorationTheme,
     //checkboxTheme: TCheckboxTheme.lightCheckboxTheme,
     radioTheme: TRadioTheme.darkRadioTheme,
+    cardTheme: TCardTheme.darkCardTheme,
+    bottomNavigationBarTheme: TBottomNavBarTheme.darkBottomNavBarTheme,
+    dividerTheme: TDividerTheme.darkDividerTheme,
   );
 }

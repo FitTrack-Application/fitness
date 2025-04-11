@@ -26,11 +26,31 @@ class BottomNavBar extends StatelessWidget {
                 break;
             }
           },
-          items: const [
+          items: [
             BottomNavigationBarItem(
-                icon: Icon(Icons.analytics), label: 'Dashboard'),
-            BottomNavigationBarItem(icon: Icon(Icons.book), label: 'Diary'),
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+              icon: Icon(
+                navProvider.currentIndex == 0
+                    ? Icons.dashboard // Icon khi được chọn
+                    : Icons.dashboard_outlined, // Icon khi không được chọn
+              ),
+              label: 'Dashboard',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(
+                navProvider.currentIndex == 1
+                    ? Icons.local_library // Icon khi được chọn
+                    : Icons.local_library_outlined, // Icon khi không được chọn
+              ),
+              label: 'Diary',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(
+                navProvider.currentIndex == 2
+                    ? Icons.person // Icon khi được chọn
+                    : Icons.person_outlined, // Icon khi không được chọn
+              ),
+              label: 'Profile',
+            ),
           ],
         );
       },

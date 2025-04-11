@@ -17,11 +17,11 @@ public class Goal {
     @Id
     @GeneratedValue
     @UuidGenerator
-    @Column(name = "userid", updatable = false, nullable = false)
+    @Column(name = "goalid", updatable = false, nullable = false)
     private UUID goalId;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @OneToOne
+    @JoinColumn(name = "userid", nullable = false, unique = true)
     private User user;
 
     private String goalType;
@@ -29,4 +29,5 @@ public class Goal {
     private Double goalPerWeek;
     private String activityLevel;
     private Double caloriesGoal;
+    private LocalDate startingDate;
 }

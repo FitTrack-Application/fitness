@@ -1,4 +1,5 @@
 import '../../models/diary.dart';
+import '../../models/food.dart';
 import '../api_client.dart';
 
 class DiaryRepository {
@@ -6,7 +7,7 @@ class DiaryRepository {
 
   DiaryRepository({
     String baseUrl =
-        "https://54efe02a-ae6e-4055-9391-3a9bd9cac8f1.mock.pstmn.io/api/diary",
+        "https://abf1f370-fb74-44fe-a48a-8a4d4b4ecce0.mock.pstmn.io/api/diary",
   }) : _apiClient = ApiClient(baseUrl);
 
   final String jwtToken = "abc";
@@ -20,18 +21,55 @@ class DiaryRepository {
     return "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
   }
 
+  // Future<Diary> getDiaryForDate(DateTime date) async {
+  //   final formattedDate = _formatDateForApi(date);
+  //
+  //   try {
+  //     final response = await _apiClient.get("/", queryParams: {
+  //       'date': formattedDate,
+  //     });
+  //
+  //     return Diary.fromJson(response['data']);
+  //   } catch (e) {
+  //     throw Exception('Failed to load diary: $e');
+  //   }
+  // }
+
   Future<Diary> getDiaryForDate(DateTime date) async {
-    final formattedDate = _formatDateForApi(date);
+    await Future.delayed(const Duration(milliseconds: 500)); // Giả lập delay
 
-    try {
-      final response = await _apiClient.get("/", queryParams: {
-        'date': formattedDate,
-      });
+    return Diary(
+      diaryId: 101,
+      date: date,
+      calorieGoal: 2200,
+      foodItems: [
+        Food(
+          id: 'f1',
+          name: 'Phở bò',
+          servingSize: 350.0,
+          calories: 500,
+          protein: 25,
+          carbs: 60,
+          fat: 15,
+          unit: 'g',
+          description: 'Một tô phở bò nóng hổi',
+        ),
+        Food(
+          id: 'f2',
+          name: 'Trứng luộc',
+          servingSize: 100.0,
+          calories: 150,
+          protein: 13,
+          carbs: 1,
+          fat: 10,
+          unit: 'g',
+          description: 'Hai quả trứng gà luộc',
+        ),
+      ],
+      exerciseItems: [
 
-      return Diary.fromJson(response['data']);
-    } catch (e) {
-      throw Exception('Failed to load diary: $e');
-    }
+      ],
+    );
   }
 
   Future<void> addFoodToDiary(

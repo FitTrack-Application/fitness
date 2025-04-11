@@ -46,7 +46,7 @@ class WelcomeScreen extends StatelessWidget {
                 width: 330,
                 child: ElevatedButton(
                   onPressed: () {
-                    GoRouter.of(context).push('/survey');
+                    GoRouter.of(context).push('/auth/register');
                   },
                   child: const Text('Sign Up For Free'),
                   // text: 'Sign Up For Free',

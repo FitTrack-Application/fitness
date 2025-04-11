@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:mobile/cores/constants/colors.dart';
 import 'package:mobile/features/fitness/models/exercise.dart';
 import 'package:mobile/features/fitness/models/food.dart';
 import 'package:provider/provider.dart';
@@ -15,9 +16,6 @@ class DiaryScreen extends StatelessWidget {
     final viewModel = Provider.of<DiaryViewModel>(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Diary'),
-      ),
       body: AnimatedBuilder(
         animation: viewModel,
         builder: (context, child) {
@@ -58,7 +56,7 @@ class DiaryScreen extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16.0),
+      padding: const EdgeInsets.only(top: 25),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -70,7 +68,7 @@ class DiaryScreen extends StatelessWidget {
             viewModel.isSelectedDateToday
                 ? 'Today'
                 : DateFormat('MM/dd/yyyy').format(viewModel.selectedDate),
-            style: textTheme.titleLarge,
+            style: textTheme.titleSmall,
           ),
           IconButton(
             icon: const Icon(Icons.chevron_right),
@@ -84,41 +82,44 @@ class DiaryScreen extends StatelessWidget {
   Widget _buildCaloriesCard(DiaryViewModel viewModel, BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
-    return Card(
-      margin: const EdgeInsets.all(8.0),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Text('Calories Remaining', style: textTheme.titleMedium),
-            const SizedBox(height: 16),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Calories Remaining', style: textTheme.titleSmall),
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   _buildCalorieColumn(
                       viewModel.calorieGoal.toInt(), 'Goal', context),
-                  const SizedBox(width: 8),
-                  Text('-', style: textTheme.titleLarge),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 12),
+                  Text('-', style: textTheme.bodySmall),
+                  const SizedBox(width: 12),
                   _buildCalorieColumn(
                       viewModel.caloriesConsumed.toInt(), 'Food', context),
-                  const SizedBox(width: 8),
-                  Text('+', style: textTheme.titleLarge),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 12),
+                  Text('+', style: textTheme.bodySmall),
+                  const SizedBox(width: 12),
                   _buildCalorieColumn(
                       viewModel.caloriesBurned.toInt(), 'Exercise', context),
-                  const SizedBox(width: 8),
-                  Text('=', style: textTheme.titleLarge),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 12),
+                  Text('=', style: textTheme.bodySmall),
+                  const SizedBox(width: 12),
                   _buildCalorieColumn(
-                      viewModel.caloriesRemaining.toInt(), 'Remaining', context,
+                      viewModel.caloriesRemaining.toInt(),
+                      'Remaining',
+                      context,
                       bold: true),
                 ],
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -134,8 +135,8 @@ class DiaryScreen extends StatelessWidget {
         Text(
           value.toString(),
           style: bold
-              ? textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold)
-              : textTheme.bodyLarge,
+              ? textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)
+              : textTheme.bodyMedium,
         ),
         Text(label,
             style: textTheme.bodySmall
@@ -149,21 +150,20 @@ class DiaryScreen extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Card(
-      margin: const EdgeInsets.all(8.0),
+      margin: const EdgeInsets.all(12),
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.fromLTRB(16.0, 16.0, 24.0, 16.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Breakfast', style: textTheme.titleMedium),
+                Text('Food', style: textTheme.titleSmall),
                 Text('${viewModel.caloriesConsumed.toInt()}',
-                    style: textTheme.titleMedium),
+                    style: textTheme.titleSmall),
               ],
             ),
           ),
-          const Divider(height: 1),
           ...viewModel.foodItems
               .map((item) => _buildFoodItem(item, context, () {
                     context.push('/food/${viewModel.diaryId}/${item.id}/edit');
@@ -176,9 +176,13 @@ class DiaryScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(left: 16.0),
-                  child: Text('ADD FOOD',
-                      style: TextStyle(color: colorScheme.primary)),
+                  padding: const EdgeInsets.only(left: 10),
+                  child: Text(
+                    'ADD FOOD',
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          color: colorScheme.primary,
+                        ),
+                  ),
                 ),
               ],
             ),
@@ -193,21 +197,20 @@ class DiaryScreen extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Card(
-      margin: const EdgeInsets.all(8.0),
+      margin: const EdgeInsets.all(12),
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.fromLTRB(16.0, 16.0, 24.0, 16.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Exercise', style: textTheme.titleMedium),
+                Text('Exercise', style: textTheme.titleSmall),
                 Text('${viewModel.caloriesBurned.toInt()}',
-                    style: textTheme.titleMedium),
+                    style: textTheme.titleSmall),
               ],
             ),
           ),
-          const Divider(height: 1),
           ...viewModel.exerciseItems
               .map((item) => _buildExerciseItem(item, context)),
           TextButton(
@@ -218,9 +221,13 @@ class DiaryScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(left: 16.0),
-                  child: Text('ADD EXERCISE',
-                      style: TextStyle(color: colorScheme.primary)),
+                  padding: const EdgeInsets.only(left: 10),
+                  child: Text(
+                    'ADD EXERCISE',
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          color: colorScheme.primary,
+                        ),
+                  ),
                 ),
               ],
             ),
@@ -238,12 +245,20 @@ class DiaryScreen extends StatelessWidget {
       child: Column(
         children: [
           ListTile(
-            title: Text(item.name),
+            title: Text(
+              item.name,
+              style: textTheme.bodyMedium,
+            ),
             subtitle: Text(
-                "${item.calories} cal, Carbs: ${item.carbs}g, Fat: ${item.fat}g, Protein: ${item.protein}g"),
-            trailing: Text('${item.calories}', style: textTheme.titleSmall),
+                "${item.calories} cal, Carbs: ${item.carbs}g, Fat: ${item.fat}g, Protein: ${item.protein}g",
+                style: textTheme.bodySmall),
+            trailing: Text('${item.calories}'),
           ),
-          const Divider(height: 1, indent: 16),
+          const Divider(
+            height: 0.1,
+            indent: 16,
+            endIndent: 16,
+          ),
         ],
       ),
     );
@@ -259,7 +274,11 @@ class DiaryScreen extends StatelessWidget {
           subtitle: Text("${item.duration} phút - ${item.description}"),
           trailing: Text('${item.calories}', style: textTheme.titleSmall),
         ),
-        const Divider(height: 1, indent: 16),
+        const Divider(
+          height: 0.1,
+          indent: 16,
+          endIndent: 16,
+        ),
       ],
     );
   }

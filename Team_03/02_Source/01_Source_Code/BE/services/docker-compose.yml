@@ -1,47 +1,33 @@
 version: "3.8"
 
 services:
-  postgres:
-    image: postgres:15
-    container_name: fitness-postgres
-    ports:
-      - "${POSTGRES_PORT:-15432}:5432"
-    environment:
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_USER: ${POSTGRES_USER}
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
-    networks:
-      - fitness-network
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    restart: unless-stopped
 
   fit-service:
     build:
       context: ./fit-service
       dockerfile: Dockerfile.dev
     container_name: fit-service
-    depends_on:
-      postgres:
-        condition: service_healthy
     ports:
       - "${FIT_SERVICE_PORT:-8080}:8080"
     env_file:
       - .env
       - ./fit-service/.env
     environment:
-      - POSTGRESQL_DB_HOST=postgres
+      - POSTGRESQL_DB_HOST=ep-tight-flower-a1w3np3d-pooler.ap-southeast-1.aws.neon.tech
+      - POSTGRESQL_DB_PORT=${POSTGRES_PORT:-5432}
       - POSTGRESQL_DB_NAME=${FIT_DB_NAME}
+      - POSTGRESQL_DB_USERNAME=${POSTGRES_USER}
+      - POSTGRESQL_DB_PASSWORD=${POSTGRES_PASSWORD}
     networks:
       - fitness-network
     volumes:
       - ./fit-service:/app
       - maven-repo:/root/.m2
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:8080/actuator/health || exit 1" ]
+      interval: 20s
+      timeout: 20s
+      retries: 3
     restart: unless-stopped
 
   statistic-service:
@@ -49,22 +35,27 @@ services:
       context: ./statistic-service
       dockerfile: Dockerfile.dev
     container_name: statistic-service
-    depends_on:
-      postgres:
-        condition: service_healthy
     ports:
       - "${STATISTIC_SERVICE_PORT:-8081}:8081"
     env_file:
       - .env
       - ./statistic-service/.env
     environment:
-      - POSTGRESQL_DB_HOST=postgres
+      - POSTGRESQL_DB_HOST=ep-tight-flower-a1w3np3d-pooler.ap-southeast-1.aws.neon.tech
+      - POSTGRESQL_DB_PORT=${POSTGRES_PORT:-5432}
       - POSTGRESQL_DB_NAME=${STATISTIC_DB_NAME}
+      - POSTGRESQL_DB_USERNAME=${POSTGRES_USER}
+      - POSTGRESQL_DB_PASSWORD=${POSTGRES_PASSWORD}
     networks:
       - fitness-network
     volumes:
       - ./statistic-service:/app
       - maven-repo:/root/.m2
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:8081/actuator/health || exit 1" ]
+      interval: 20s
+      timeout: 20s
+      retries: 3
     restart: unless-stopped
 
   user-service:
@@ -72,27 +63,64 @@ services:
       context: ./user-service
       dockerfile: Dockerfile.dev
     container_name: user-service
-    depends_on:
-      postgres:
-        condition: service_healthy
     ports:
       - "8082:8082"
     env_file:
       - .env
       - ./user-service/.env
     environment:
-      - POSTGRESQL_DB_HOST=postgres
-      - POSTGRESQL_DB_NAME=user_service_db
+      - POSTGRESQL_DB_HOST=ep-tight-flower-a1w3np3d-pooler.ap-southeast-1.aws.neon.tech
+      - POSTGRESQL_DB_PORT=${POSTGRES_PORT:-5432}
+      - POSTGRESQL_DB_NAME=${USER_DB_NAME}
+      - POSTGRESQL_DB_USERNAME=${POSTGRES_USER}
+      - POSTGRESQL_DB_PASSWORD=${POSTGRES_PASSWORD}
+      - JWT_SECRET=2b44b0b00f92nf39fj20f21f0jcn023c320j123r2t12321crj32jy742b038151
+      - JWT_EXPIRATION=604800000
     networks:
       - fitness-network
     volumes:
       - ./user-service:/app
       - maven-repo:/root/.m2
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:8082/actuator/health || exit 1" ]
+      interval: 20s
+      timeout: 20s
+      retries: 3
     restart: unless-stopped
+
+  gateway-service:
+    build:
+      context: ./gateway-service
+      dockerfile: Dockerfile.dev
+    container_name: gateway-service
+    depends_on:
+      - fit-service
+      - statistic-service
+      - user-service
+    ports:
+      - "8088:8088"
+    env_file:
+      - .env
+      - ./gateway-service/.env
+    environment:
+      - USER_SERVICE_URI=http://user-service:${USER_SERVICE_PORT:-8082}
+      - FIT_SERVICE_URI=http://fit-service:${FIT_SERVICE_PORT:-8080}
+      - STATISTIC_SERVICE_URI=http://statistic-service:${STATISTIC_SERVICE_PORT:-8081}
+    networks:
+      - fitness-network
+    volumes:
+      - ./gateway-service:/app
+      - maven-repo:/root/.m2
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:8088/actuator/health || exit 1" ]
+      interval: 20s
+      timeout: 20s
+      retries: 3
+    restart: always
+
 networks:
   fitness-network:
     driver: bridge
 
 volumes:
-  postgres-data:
   maven-repo:
