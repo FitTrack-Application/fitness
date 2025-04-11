@@ -1,5 +1,7 @@
 package com.hcmus.userservice.dto.response;
 
+import java.util.UUID;
+
 import lombok.*;
 
 @Setter
@@ -9,5 +11,5 @@ import lombok.*;
 @NoArgsConstructor
 public class GoalResponse {
 
-    private String goalId;
+    private UUID goalId;
 }

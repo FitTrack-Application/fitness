@@ -6,9 +6,7 @@ import com.hcmus.userservice.dto.response.ApiResponse;
 import com.hcmus.userservice.dto.response.GoalResponse;
 import com.hcmus.userservice.exception.UserNotFoundException;
 import com.hcmus.userservice.mapper.UserMapper;
-import com.hcmus.userservice.model.Goal;
 import com.hcmus.userservice.model.User;
-import com.hcmus.userservice.repository.GoalRepository;
 import com.hcmus.userservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,8 +20,6 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-
-    private final GoalRepository goalRepository;
 
     @Override
     public ApiResponse<UserDto> getUserProfileResponse(UUID userId) {
@@ -65,8 +61,8 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("Not found user!"));
 
-        Goal goal = goalRepository.findByUser(user);
-        GoalResponse goalResponse = new GoalResponse(goal.getGoalId().toString());
+        
+        GoalResponse goalResponse = new GoalResponse(user.getGoalId().toString());
         return ApiResponse.<GoalResponse>builder()
                 .status(HttpStatus.OK.value())
                 .generalMessage("Get goal successfully!")

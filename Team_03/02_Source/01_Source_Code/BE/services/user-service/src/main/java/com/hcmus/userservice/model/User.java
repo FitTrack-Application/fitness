@@ -24,7 +24,7 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue
     @UuidGenerator
-    @Column(name = "userid", updatable = false, nullable = false)
+    @Column(name = "user_id", updatable = false, nullable = false)
     private UUID userId;
 
     @NotNull
@@ -53,7 +53,7 @@ public class User implements UserDetails {
 
     private String imageUrl;
 
-    @Column(name = "goalId")
+    @Column(name = "goal_id")
     private UUID goalId;
 
     @Enumerated(EnumType.STRING)
