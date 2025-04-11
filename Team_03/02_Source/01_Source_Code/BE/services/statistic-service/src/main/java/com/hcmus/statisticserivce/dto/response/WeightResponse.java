@@ -1,18 +1,18 @@
-package com.hcmus.statisticserivce.dto;
+package com.hcmus.statisticserivce.dto.response;
+
+import com.hcmus.statisticserivce.dto.WeightProgressDto;
+import lombok.*;
 
 import java.util.List;
-import com.hcmus.statisticserivce.dto.WeightProgressDto;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class WeightResponse {
-    
+
     private String message;
+
     private List<WeightProgressDto> data;
 }

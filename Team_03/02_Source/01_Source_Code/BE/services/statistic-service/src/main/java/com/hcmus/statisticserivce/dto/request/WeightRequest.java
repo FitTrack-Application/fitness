@@ -1,23 +1,20 @@
-package com.hcmus.statisticserivce.dto;
+package com.hcmus.statisticserivce.dto.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.NotBlank;
+import lombok.*;
 
 import java.util.UUID;
 
-import jakarta.validation.constraints.NotBlank;
-
-
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class WeightRequest {
+
     @NotBlank(message = "UserId is required")
     private UUID userId;
-    
+
     @NotBlank(message = "GoalId is required")
     private UUID goalId;
 }

@@ -1,4 +1,4 @@
-package com.hcmus.statisticserivce.db.model;
+package com.hcmus.statisticserivce.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -19,11 +19,11 @@ public class Goal {
     @Id
     @GeneratedValue
     @UuidGenerator
-    @Column(name = "goalid", updatable = false, nullable = false)
+    @Column(name = "goal_id", updatable = false, nullable = false)
     private UUID goalId;
 
     @NotNull
-    @Column(name = "userid", nullable = false)
+    @Column(name = "user_id", nullable = false)
     private UUID userId;
 
     @NotNull

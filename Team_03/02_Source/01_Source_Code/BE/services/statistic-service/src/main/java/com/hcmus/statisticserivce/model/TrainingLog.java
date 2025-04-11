@@ -1,4 +1,4 @@
-package com.hcmus.statisticserivce.db.model;
+package com.hcmus.statisticserivce.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;

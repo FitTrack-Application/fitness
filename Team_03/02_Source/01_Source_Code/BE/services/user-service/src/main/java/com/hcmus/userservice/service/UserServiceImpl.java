@@ -3,17 +3,18 @@ package com.hcmus.userservice.service;
 import com.hcmus.userservice.dto.UserDto;
 import com.hcmus.userservice.dto.request.UpdateProfileRequest;
 import com.hcmus.userservice.dto.response.ApiResponse;
+import com.hcmus.userservice.dto.response.GoalResponse;
 import com.hcmus.userservice.exception.UserNotFoundException;
 import com.hcmus.userservice.mapper.UserMapper;
 import com.hcmus.userservice.model.Goal;
 import com.hcmus.userservice.model.User;
+import com.hcmus.userservice.repository.GoalRepository;
 import com.hcmus.userservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -21,6 +22,8 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+
+    private final GoalRepository goalRepository;
 
     @Override
     public ApiResponse<UserDto> getUserProfileResponse(UUID userId) {
@@ -58,15 +61,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ApiResponse<?> getUserIdAndGoalIdResponse(UUID userId) {
+    public ApiResponse<GoalResponse> getGoalResponse(UUID userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("Không tìm thấy người dùng"));
+                .orElseThrow(() -> new UserNotFoundException("Not found user!"));
 
         Goal goal = goalRepository.findByUser(user);
-        return ApiResponse.<Object>builder()
+        GoalResponse goalResponse = new GoalResponse(goal.getGoalId().toString());
+        return ApiResponse.<GoalResponse>builder()
                 .status(HttpStatus.OK.value())
-                .generalMessage("Get user and goal id successfully")
-                .data(Map.of("userId", userId, "goalId", goal.getGoalId()))
+                .generalMessage("Get goal successfully!")
+                .data(goalResponse)
                 .timestamp(LocalDateTime.now())
                 .build();
     }

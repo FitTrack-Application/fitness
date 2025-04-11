@@ -1,157 +1,76 @@
 package com.hcmus.userservice.controller;
 
-import com.hcmus.userservice.dto.request.LoginRequest;
 import com.hcmus.userservice.dto.request.CheckEmailRequest;
-import com.hcmus.userservice.dto.response.ApiResponse;
+import com.hcmus.userservice.dto.request.LoginRequest;
+import com.hcmus.userservice.dto.request.RefreshRequest;
 import com.hcmus.userservice.dto.request.RegisterRequest;
+import com.hcmus.userservice.dto.response.ApiResponse;
+import com.hcmus.userservice.dto.response.LoginResponse;
+import com.hcmus.userservice.dto.response.RefreshResponse;
+import com.hcmus.userservice.dto.response.RegisterResponse;
+import com.hcmus.userservice.exception.InvalidTokenException;
 import com.hcmus.userservice.service.AuthService;
+import com.hcmus.userservice.util.JwtUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.bind.annotation.RequestHeader;
-import com.hcmus.userservice.util.JwtUtil;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.time.LocalDateTime;
 import java.util.Map;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@Slf4j
 public class AuthController {
 
     private final AuthService authService;
+
     private final JwtUtil jwtUtil;
 
-    @PostMapping("/checkemail")
-    public ResponseEntity<?> checkEmail(@RequestBody @Valid CheckEmailRequest request) {
-        try {
-            return ResponseEntity.ok(authService.checkEmail(request.getEmail()));
-        } catch (ResponseStatusException e) {
-            
-            ApiResponse<Object> errorResponse = ApiResponse.builder()
-                    .status(HttpStatus.CONFLICT.value())
-                    .generalMessage("Email is already exist")
-                    .timestamp(LocalDateTime.now())
-                    .build();
+    @PostMapping("/check-email")
+    public ResponseEntity<ApiResponse<Boolean>> checkEmail(@RequestBody @Valid CheckEmailRequest request) {
+        log.info("Check email: {}", request.getEmail());
+        ApiResponse<Boolean> response = authService.checkEmail(request.getEmail());
 
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
-        }
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody @Valid RegisterRequest request) {
-        try {
-            return ResponseEntity.ok(authService.register(request));
-        } catch (ResponseStatusException e) {
-            List<String> errorDetails = new ArrayList<>();
-            errorDetails.add("Email is already exist or invalid information");
+    public ResponseEntity<ApiResponse<RegisterResponse>> register(@RequestBody @Valid RegisterRequest request) {
+        log.info("Register new user");
+        ApiResponse<RegisterResponse> response = authService.register(request);
 
-            ApiResponse<Object> errorResponse = ApiResponse.builder()
-                    .status(HttpStatus.CONFLICT.value())
-                    .generalMessage("Registration failed")
-                    .errorDetails(errorDetails)
-                    .timestamp(LocalDateTime.now())
-                    .build();
-
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
-        } catch (IllegalArgumentException e) {
-            List<String> errorDetails = new ArrayList<>();
-            errorDetails.add(e.getMessage());
-
-            ApiResponse<Object> errorResponse = ApiResponse.builder()
-                    .status(HttpStatus.BAD_REQUEST.value())
-                    .generalMessage("Registration failed")
-                    .errorDetails(errorDetails)
-                    .timestamp(LocalDateTime.now())
-                    .build();
-
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
-        }
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody @Valid LoginRequest request) {
-        try {
-            return ResponseEntity.ok(authService.login(request));
-        } catch (IllegalArgumentException e) {
-            List<String> errorDetails = new ArrayList<>();
-            errorDetails.add(e.getMessage());
+    public ResponseEntity<ApiResponse<LoginResponse>> login(@RequestBody @Valid LoginRequest request) {
+        log.info("Login user");
+        ApiResponse<LoginResponse> response = authService.login(request);
 
-            ApiResponse<Object> errorResponse = ApiResponse.builder()
-                    .status(HttpStatus.UNAUTHORIZED.value())
-                    .generalMessage("Authentication failed")
-                    .errorDetails(errorDetails)
-                    .timestamp(LocalDateTime.now())
-                    .build();
-
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
-        }
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/verify")
-    public ResponseEntity<?> verifyToken(@RequestHeader("Authorization") String token) {
-        try {
-            // Remove "Bearer " prefix if present
-            if (token.startsWith("Bearer ")) {
-                token = token.substring(7);
-            }
-
-            ApiResponse<Map<String, Object>> response = authService.verifyToken(token);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            List<String> errorDetails = new ArrayList<>();
-            errorDetails.add(e.getMessage());
-
-            ApiResponse<Object> errorResponse = ApiResponse.builder()
-                    .status(HttpStatus.UNAUTHORIZED.value())
-                    .generalMessage("Token verification failed")
-                    .errorDetails(errorDetails)
-                    .timestamp(LocalDateTime.now())
-                    .build();
-
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+    public ResponseEntity<ApiResponse<Map<String, Object>>> verifyToken(@RequestHeader("Authorization") String authorization) {
+        if (authorization.startsWith("Bearer ")) {
+            authorization = authorization.substring(7);
+        } else {
+            throw new InvalidTokenException("Invalid token!");
         }
+        log.info("Verify token!");
+        ApiResponse<Map<String, Object>> response = authService.verifyToken(authorization);
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<?> refreshToken(@RequestHeader("Authorization") String refreshToken) {
-        try {
-            // Remove "Bearer " prefix if present
-            if (refreshToken.startsWith("Bearer ")) {
-                refreshToken = refreshToken.substring(7);
-            }
+    public ResponseEntity<ApiResponse<RefreshResponse>> refreshToken(@RequestBody @Valid RefreshRequest refreshRequest) {
+        log.info("Refresh token!");
+        ApiResponse<RefreshResponse> response = authService.getRefreshResponse(refreshRequest.getRefreshToken());
 
-            ApiResponse<Map<String, String>> response = authService.refreshToken(refreshToken);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            List<String> errorDetails = new ArrayList<>();
-            errorDetails.add(e.getMessage());
-
-            ApiResponse<Object> errorResponse = ApiResponse.builder()
-                    .status(HttpStatus.UNAUTHORIZED.value())
-                    .generalMessage("Token refresh failed")
-                    .errorDetails(errorDetails)
-                    .timestamp(LocalDateTime.now())
-                    .build();
-
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
-        }
-    }
-
-    @GetMapping("/getUserIdAndGoalId")
-    public ResponseEntity<?> getUserIdAndGoalId(@RequestHeader("Authorization") String token) {
-        String userIdStr = jwtUtil.extractUserId(token.replace("Bearer ", ""));
-        UUID userId = UUID.fromString(userIdStr);
-        return ResponseEntity.ok(authService.getUserIdAndGoalId(userId));
+        return ResponseEntity.ok(response);
     }
 }

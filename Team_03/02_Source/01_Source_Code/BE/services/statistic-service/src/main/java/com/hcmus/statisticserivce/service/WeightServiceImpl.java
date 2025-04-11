@@ -1,23 +1,20 @@
 package com.hcmus.statisticserivce.service;
 
-import com.hcmus.statisticserivce.model.WeightProgress;
-import com.hcmus.statisticserivce.repository.WeightRepository;
-import com.hcmus.statisticserivce.dto.request.WeightRequest;
-import com.hcmus.statisticserivce.dto.response.WeightResponse;
 import com.hcmus.statisticserivce.dto.AddWeightRequest;
 import com.hcmus.statisticserivce.dto.WeightProgressDto;
-
-
+import com.hcmus.statisticserivce.dto.request.WeightRequest;
+import com.hcmus.statisticserivce.dto.response.WeightResponse;
+import com.hcmus.statisticserivce.model.WeightProgress;
+import com.hcmus.statisticserivce.repository.WeightRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.lang.String;
 
 @Service
 @RequiredArgsConstructor
-public class WeightService {
+public class WeightServiceImpl {
     private final WeightRepository weightRepository;
 
     public AddWeightResponse addWeight(AddWeightRequest request) {

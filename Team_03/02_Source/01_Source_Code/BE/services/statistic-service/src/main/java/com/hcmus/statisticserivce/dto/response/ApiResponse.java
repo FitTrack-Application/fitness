@@ -1,4 +1,4 @@
-package com.hcmus.userservice.dto.response;
+package com.hcmus.statisticserivce.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
@@ -20,7 +20,7 @@ public class ApiResponse<T> {
 
     private T data;
 
-    private Map<String, Object> metadata;
+    private Map<String, String> metadata;
 
     private List<String> errorDetails;
 

@@ -1,7 +1,6 @@
 package com.hcmus.userservice.security;
 
 import com.hcmus.userservice.dto.response.ApiResponse;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;

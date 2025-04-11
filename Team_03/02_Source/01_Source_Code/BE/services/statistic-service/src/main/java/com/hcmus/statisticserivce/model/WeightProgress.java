@@ -1,8 +1,6 @@
-package com.hcmus.statisticserivce.db.model;
+package com.hcmus.statisticserivce.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.UuidGenerator;
@@ -14,7 +12,6 @@ import java.util.UUID;
 @Setter
 @Entity
 @Table(name = "weightprogress")
-
 public class WeightProgress {
 
     @Id
@@ -34,9 +31,6 @@ public class WeightProgress {
 
     @Column(name = "weight")
     private Double weight;
-    
+
     private String progressPhoto;
-
-
-    
 }

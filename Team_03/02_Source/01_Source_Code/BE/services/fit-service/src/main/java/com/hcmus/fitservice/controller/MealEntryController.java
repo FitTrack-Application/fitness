@@ -1,6 +1,6 @@
 package com.hcmus.fitservice.controller;
 
-import com.hcmus.fitservice.dto.ApiResponse;
+import com.hcmus.fitservice.dto.response.ApiResponse;
 import com.hcmus.fitservice.dto.MealEntryDto;
 import com.hcmus.fitservice.dto.MealEntryRequestDto;
 import com.hcmus.fitservice.service.MealEntryService;

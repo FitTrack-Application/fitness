@@ -1,4 +1,4 @@
-package com.hcmus.statisticserivce.db.model;
+package com.hcmus.statisticserivce.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -13,20 +13,20 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name = "foodlogs")
+@Table(name = "food_logs")
 public class FoodLog {
 
     @Id
     @GeneratedValue
     @UuidGenerator
-    @Column(name = "foodlogid", updatable = false, nullable = false)
+    @Column(name = "food_log_id", updatable = false, nullable = false)
     private UUID foodLogId;
 
     @NotNull
-    @Column(name = "userid", nullable = false)
+    @Column(name = "user_id", nullable = false)
     private UUID userId;
 
-    @Column(name = "foodid")
+    @Column(name = "food_id")
     private UUID foodId;
 
     @NotNull

@@ -3,6 +3,7 @@ package com.hcmus.userservice.service;
 import com.hcmus.userservice.dto.UserDto;
 import com.hcmus.userservice.dto.request.UpdateProfileRequest;
 import com.hcmus.userservice.dto.response.ApiResponse;
+import com.hcmus.userservice.dto.response.GoalResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -14,5 +15,5 @@ public interface UserService {
 
     ApiResponse<?> getUpdateProfileResponse(UpdateProfileRequest updateProfileRequest, UUID userId);
 
-    ApiResponse<?> getUserIdAndGoalIdResponse(UUID userId);
+    ApiResponse<GoalResponse> getGoalResponse(UUID userId);
 }

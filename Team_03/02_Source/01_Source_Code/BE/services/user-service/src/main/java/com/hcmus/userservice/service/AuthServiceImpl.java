@@ -4,9 +4,11 @@ import com.hcmus.userservice.dto.request.AddWeightRequest;
 import com.hcmus.userservice.dto.request.LoginRequest;
 import com.hcmus.userservice.dto.request.RegisterRequest;
 import com.hcmus.userservice.dto.response.ApiResponse;
-import com.hcmus.userservice.dto.response.AuthResponse;
+import com.hcmus.userservice.dto.response.RegisterResponse;
 import com.hcmus.userservice.dto.response.LoginResponse;
+import com.hcmus.userservice.dto.response.RefreshResponse;
 import com.hcmus.userservice.exception.ConflictException;
+import com.hcmus.userservice.exception.InvalidTokenException;
 import com.hcmus.userservice.exception.UserNotFoundException;
 import com.hcmus.userservice.model.Goal;
 import com.hcmus.userservice.model.Role;
@@ -21,17 +23,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class AuthServiceImpl implements AuthService{
+public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
 
@@ -43,7 +42,7 @@ public class AuthServiceImpl implements AuthService{
 
     private final AuthenticationManager authenticationManager;
 
-    public ApiResponse<Boolean> checkEmail(String email){
+    public ApiResponse<Boolean> checkEmail(String email) {
         if (userRepository.existsByEmail(email)) {
             throw new ConflictException("Email already exists!");
         }
@@ -56,9 +55,9 @@ public class AuthServiceImpl implements AuthService{
                 .build();
     }
 
-    public ApiResponse<AuthResponse> register(RegisterRequest request) {
+    public ApiResponse<RegisterResponse> register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already exists");
+            throw new ConflictException("Email already exists!");
         }
 
         User user = new User();
@@ -70,11 +69,8 @@ public class AuthServiceImpl implements AuthService{
         user.setHeight(request.getHeight());
         user.setWeight(request.getWeight());
         user.setImageUrl(request.getImageUrl());
-
-        // Nếu role không được chỉ định, mặc định là USER
         user.setRole(request.getRole() != null ? request.getRole() : Role.USER);
-
-        User savedUser = userRepository.save(user); 
+        User savedUser = userRepository.save(user);
 
         Goal goal = new Goal();
         goal.setUser(savedUser);
@@ -84,28 +80,33 @@ public class AuthServiceImpl implements AuthService{
         goal.setActivityLevel(request.getActivityLevel());
         goal.setCaloriesGoal(request.getCaloriesGoal());
         goal.setStartingDate(LocalDate.now());
-
         goalRepository.save(goal);
 
-        String token = jwtUtil.generateToken(savedUser);
-
-        AuthResponse authResponse = buildAuthResponse(savedUser, goal, token);
+        String accessToken = jwtUtil.generateToken(savedUser);
+        String refreshToken = jwtUtil.generateRefreshToken(savedUser);
+        RegisterResponse registerResponse = RegisterResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .userId(user.getUserId())
+                .goalId(goal.getGoalId())
+                .email(user.getEmail())
+                .name(user.getName())
+                .role(user.getRole())
+                .build();
 
         AddWeightRequest addWeightRequest = new AddWeightRequest();
         addWeightRequest.setUserId(savedUser.getUserId());
         addWeightRequest.setGoalId(goal.getGoalId());
         addWeightRequest.setWeight(savedUser.getWeight());
-        addWeightRequest.setUpdateDate(goal.getStartingDate()); 
-        addWeightRequest.setProgressPhoto(savedUser.getImageUrl()); 
+        addWeightRequest.setUpdateDate(goal.getStartingDate());
+        addWeightRequest.setProgressPhoto(savedUser.getImageUrl());
 
-        
         //restTemplate.postForObject(statisticServiceUrl + "/api/statistic/addweight", addWeightRequest, Void.class);
-        
 
-        return ApiResponse.<AuthResponse>builder()
-                .status(HttpStatus.OK.value())
+        return ApiResponse.<RegisterResponse>builder()
+                .status(HttpStatus.CREATED.value())
                 .generalMessage("Register successfully!")
-                .data(authResponse)
+                .data(registerResponse)
                 .timestamp(LocalDateTime.now())
                 .build();
     }
@@ -124,6 +125,7 @@ public class AuthServiceImpl implements AuthService{
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
+
         return ApiResponse.<LoginResponse>builder()
                 .status(HttpStatus.OK.value())
                 .generalMessage("Login successfully!")
@@ -132,72 +134,38 @@ public class AuthServiceImpl implements AuthService{
                 .build();
     }
 
-    private AuthResponse buildAuthResponse(User user, Goal goal, String token) {
-        return AuthResponse.builder()
-                .token(token)
-                .userId(user.getUserId())
-                .goalId(goal.getGoalId())
-                .email(user.getEmail())
-                .name(user.getName())
-                .role(user.getRole())
-                .message("Successfully get user information and create goal")
-                .build();
-    }
-
     public ApiResponse<Map<String, Object>> verifyToken(String token) {
         try {
-            // Verify token and extract claims
             Map<String, Object> claims = jwtUtil.validateTokenAndGetClaims(token);
-
             return ApiResponse.<Map<String, Object>>builder()
                     .status(HttpStatus.OK.value())
-                    .generalMessage("Token is valid")
+                    .generalMessage("Token is valid!")
                     .data(claims)
                     .timestamp(LocalDateTime.now())
                     .build();
         } catch (Exception e) {
-            throw new IllegalArgumentException("Invalid token: " + e.getMessage());
+            throw new InvalidTokenException("Invalid token: " + e.getMessage() + "!");
         }
     }
 
-    public ApiResponse<Map<String, String>> refreshToken(String refreshToken) {
+    public ApiResponse<RefreshResponse> getRefreshResponse(String refreshToken) {
         try {
-            // Validate refresh token
             Map<String, Object> claims = jwtUtil.validateRefreshTokenAndGetClaims(refreshToken);
 
-            // Get user from the database
             String email = (String) claims.get("sub");
             User user = userRepository.findByEmail(email)
-                    .orElseThrow(() -> new IllegalArgumentException("User not found"));
-
-            // Generate new access token
+                    .orElseThrow(() -> new UserNotFoundException("User not found!"));
             String newAccessToken = jwtUtil.generateToken(user);
+            RefreshResponse response = new RefreshResponse(newAccessToken);
 
-            Map<String, String> tokens = new HashMap<>();
-            tokens.put("accessToken", newAccessToken);
-
-            return ApiResponse.<Map<String, String>>builder()
+            return ApiResponse.<RefreshResponse>builder()
                     .status(HttpStatus.OK.value())
-                    .generalMessage("Token refreshed successfully")
-                    .data(tokens)
+                    .generalMessage("Token refreshed successfully!")
+                    .data(response)
                     .timestamp(LocalDateTime.now())
                     .build();
         } catch (Exception e) {
-            throw new IllegalArgumentException("Invalid refresh token: " + e.getMessage());
+            throw new InvalidTokenException("Invalid refresh token: " + e.getMessage() + "!");
         }
     }
-
-    public ApiResponse<?> getUserIdAndGoalId(UUID userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("Không tìm thấy người dùng"));
-
-        Goal goal = goalRepository.findByUser(user);
-        return ApiResponse.<Object>builder()
-                .status(HttpStatus.OK.value())
-                .generalMessage("Get user and goal id successfully")
-                .data(Map.of("userId", userId, "goalId", goal.getGoalId()))
-                .timestamp(LocalDateTime.now())
-                .build();
-    } 
-    
 }

@@ -1,19 +1,19 @@
 package com.hcmus.statisticserivce.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;  
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
 import java.time.LocalDate;
 
-
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class WeightProgressDto {
-    private LocalDate updateDate;
-    private Double weight;
-    private String progressPhoto;
 
+    private LocalDate updateDate;
+
+    private Double weight;
+
+    private String progressPhoto;
 }

@@ -10,9 +10,11 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthResponse {
+public class RegisterResponse {
 
-    private String token;
+    private String accessToken;
+
+    private String refreshToken;
 
     private UUID userId;
 
@@ -23,10 +25,4 @@ public class AuthResponse {
     private String name;
 
     private Role role;
-
-    private String message;
-
-    public AuthResponse(String message) {
-        this.message = message;
-    }
 }

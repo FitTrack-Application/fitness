@@ -1,4 +1,4 @@
-package com.hcmus.fitservice.dto;
+package com.hcmus.fitservice.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;

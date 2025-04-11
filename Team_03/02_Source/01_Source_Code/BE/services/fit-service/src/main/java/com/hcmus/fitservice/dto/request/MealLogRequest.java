@@ -1,4 +1,4 @@
-package com.hcmus.fitservice.dto;
+package com.hcmus.fitservice.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,7 +10,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class MealLogRequestDto {
+public class MealLogRequest {
     private UUID userId; // Sẽ bỏ đi và lấy từ JWT
 
     private Date date;
