@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 
 import '../../../../cores/constants/colors.dart';
 import '../../viewmodels/dashboard_viewmodel.dart';
+import 'excerciselog_screen.dart';
+import 'foodlog_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -32,12 +34,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final viewModel = Provider.of<DashboardViewModel>(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Dashboard'),
-        centerTitle: true,
-        backgroundColor: HighlightColors.highlight500,
-        foregroundColor: Colors.white,
-      ),
       body: viewModel.isLoading
           ? const Center(child: CircularProgressIndicator())
           : viewModel.errorMessage != null
@@ -99,7 +95,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget _calorieBox(String label, String value, Color color) {
     return Column(
       children: [
-        Text(label, style: TextStyle(fontSize: 14, color: NeutralColors.dark300)),
+        Text(label, style: const TextStyle(fontSize: 14, color: NeutralColors.dark300)),
         const SizedBox(height: 4),
         Text(value, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: color)),
       ],
@@ -153,24 +149,33 @@ class _DashboardScreenState extends State<DashboardScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            _quickAction(Icons.fastfood, 'Food', HighlightColors.highlight500),
-            _quickAction(Icons.fitness_center, 'Exercise', AccentColors.red300),
+            _quickAction(Icons.fastfood, 'Food', HighlightColors.highlight500, () {
+              Navigator.push(context, MaterialPageRoute(builder: (_) => const FoodLogScreen()));
+            }),
+            _quickAction(Icons.fitness_center, 'Exercise', AccentColors.red300, () {
+              Navigator.push(context, MaterialPageRoute(builder: (_) => const ExerciseLogScreen()));
+            }),
           ],
         ),
       ),
     );
   }
 
-  Widget _quickAction(IconData icon, String label, Color color) {
-    return Column(
-      children: [
-        CircleAvatar(
-          backgroundColor: color.withOpacity(0.2),
-          child: Icon(icon, color: color),
-        ),
-        const SizedBox(height: 8),
-        Text(label),
-      ],
+
+  Widget _quickAction(IconData icon, String label, Color color, VoidCallback onTap) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(30),
+      child: Column(
+        children: [
+          CircleAvatar(
+            backgroundColor: color.withOpacity(0.2),
+            child: Icon(icon, color: color),
+          ),
+          const SizedBox(height: 8),
+          Text(label),
+        ],
+      ),
     );
   }
 }

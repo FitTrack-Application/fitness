@@ -15,7 +15,7 @@ import '../../features/fitness/view/food_detail/food_detail_screen.dart';
 import '../../features/fitness/view/search_food/search_food_screen.dart';
 
 final GoRouter appRouter = GoRouter(
-  initialLocation: '/diary',
+  initialLocation: '/dashboard',
   routes: [
     GoRoute(
       path: '/',
