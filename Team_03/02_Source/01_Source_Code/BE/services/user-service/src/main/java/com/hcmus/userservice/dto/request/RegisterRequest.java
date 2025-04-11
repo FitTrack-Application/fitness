@@ -1,6 +1,6 @@
 package com.hcmus.userservice.dto.request;
 
-import com.hcmus.userservice.model.Role;
+import com.hcmus.userservice.model.type.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

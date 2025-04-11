@@ -1,6 +1,5 @@
 package com.hcmus.fitservice.model;
 
-
 import com.hcmus.fitservice.model.type.ServingUnit;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -17,18 +16,18 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "meal_entries")
-public class MealEntry {
+@Table(name = "recipe_entries")
+public class RecipeEntry {
 
     @Id
     @GeneratedValue
     @UuidGenerator
-    @Column(name = "meal_entry_id")
-    private UUID mealEntryId;
+    @Column(name = "recipe_entry_id")
+    private UUID recipeEntryId;
 
     @ManyToOne
-    @JoinColumn(name = "meal_log_id", referencedColumnName = "meal_log_id", nullable = false)
-    private MealLog mealLog;
+    @JoinColumn(name = "recipe_id", referencedColumnName = "recipe_id", nullable = false)
+    private Recipe recipe;
 
     @ManyToOne
     @JoinColumn(name = "food_id", referencedColumnName = "food_id", nullable = false)

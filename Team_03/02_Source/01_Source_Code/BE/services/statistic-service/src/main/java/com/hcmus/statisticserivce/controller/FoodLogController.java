@@ -1,6 +1,5 @@
 package com.hcmus.statisticserivce.controller;
 
-import com.hcmus.statisticserivce.dto.FoodLogDto;
 import com.hcmus.statisticserivce.service.FoodLogService;
 import com.hcmus.statisticserivce.util.JwtUtil;
 import jakarta.validation.Valid;

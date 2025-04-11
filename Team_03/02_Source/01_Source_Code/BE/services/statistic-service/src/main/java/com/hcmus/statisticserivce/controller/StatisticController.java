@@ -1,7 +1,6 @@
 package com.hcmus.statisticserivce.controller;
 
 import com.hcmus.statisticserivce.dto.AddWeightRequest;
-import com.hcmus.statisticserivce.dto.request.WeightRequest;
 import com.hcmus.statisticserivce.service.WeightService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;

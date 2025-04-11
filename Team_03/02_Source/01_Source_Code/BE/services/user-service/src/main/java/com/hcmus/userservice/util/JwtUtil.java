@@ -1,7 +1,6 @@
 package com.hcmus.userservice.util;
 
 import com.hcmus.userservice.exception.InvalidTokenException;
-import com.hcmus.userservice.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

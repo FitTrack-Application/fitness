@@ -1,7 +1,5 @@
 package com.hcmus.statisticserivce.service;
 
-import com.hcmus.statisticserivce.model.Goal;
-import com.hcmus.statisticserivce.dto.GoalDto;
 import com.hcmus.statisticserivce.exception.ResourceNotFoundException;
 import com.hcmus.statisticserivce.repository.GoalRepository;
 import lombok.RequiredArgsConstructor;

@@ -3,7 +3,6 @@ package com.hcmus.statisticserivce.exception;
 import com.hcmus.statisticserivce.controller.FoodLogController;
 import com.hcmus.statisticserivce.controller.GoalController;
 import com.hcmus.statisticserivce.controller.StatisticController;
-import com.hcmus.statisticserivce.dto.response.ApiResponse;
 import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;

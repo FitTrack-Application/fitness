@@ -6,8 +6,6 @@ import com.hcmus.userservice.dto.response.ApiResponse;
 import com.hcmus.userservice.dto.response.GoalResponse;
 import com.hcmus.userservice.exception.UserNotFoundException;
 import com.hcmus.userservice.mapper.UserMapper;
-import com.hcmus.userservice.model.Goal;
-import com.hcmus.userservice.model.User;
 import com.hcmus.userservice.repository.GoalRepository;
 import com.hcmus.userservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

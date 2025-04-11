@@ -1,6 +1,6 @@
 package com.hcmus.userservice.dto.response;
 
-import com.hcmus.userservice.model.Role;
+import com.hcmus.userservice.model.type.Role;
 import lombok.*;
 
 import java.util.UUID;

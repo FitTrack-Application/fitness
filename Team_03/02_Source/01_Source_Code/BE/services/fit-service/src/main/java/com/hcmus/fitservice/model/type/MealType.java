@@ -1,4 +1,4 @@
-package com.hcmus.fitservice.model;
+package com.hcmus.fitservice.model.type;
 
 public enum MealType {
     BREAKFAST,

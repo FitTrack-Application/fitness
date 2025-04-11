@@ -1,6 +1,5 @@
 package com.hcmus.statisticserivce.controller;
 
-import com.hcmus.statisticserivce.dto.GoalDto;
 import com.hcmus.statisticserivce.service.GoalService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
