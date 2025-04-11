@@ -24,7 +24,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       const token = 'auth_token';
 
       viewModel.fetchDashboardData(token: token);
-      viewModel.fetchWeightStatistics(token: token);
+      viewModel.fetchWeightStatistics();
       _initialized = true;
     }
   }
