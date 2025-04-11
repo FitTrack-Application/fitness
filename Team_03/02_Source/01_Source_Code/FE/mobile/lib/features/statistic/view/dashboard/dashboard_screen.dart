@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mobile/features/statistic/models/weight_entry.dart';
+import 'package:mobile/features/statistic/view/dashboard/weight_graph.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../cores/constants/colors.dart';
@@ -32,12 +34,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final viewModel = Provider.of<DashboardViewModel>(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Dashboard'),
-        centerTitle: true,
-        backgroundColor: HighlightColors.highlight500,
-        foregroundColor: Colors.white,
-      ),
       body: viewModel.isLoading
           ? const Center(child: CircularProgressIndicator())
           : viewModel.errorMessage != null
@@ -55,6 +51,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final goal = viewModel.caloriesGoal;
     final remaining = goal - consumed; //+ burned;
 
+    final List<WeightEntry> fixedEntries = [
+      WeightEntry(weight:70, date: DateTime(2025,4,20)),
+      WeightEntry(weight:72, date: DateTime(2025,4,20)),
+      WeightEntry(weight:75, date: DateTime(2025,4,20)),
+      WeightEntry(weight:77, date: DateTime(2025,4,20)),
+    ];
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: ListView(
@@ -67,6 +69,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
           _buildMacronutrientsCard(theme, viewModel),
           const SizedBox(height: 24),
           _buildQuickLogCard(theme),
+          const SizedBox(height: 24),
+          WeightGraph(
+              entries: fixedEntries,
+              title: 'Weight History(kg)',
+            lineColor: HighlightColors.highlight100,
+            gradientColor: HighlightColors.highlight100,
+          ),
+
         ],
       ),
     );
@@ -74,8 +84,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget _buildCaloriesCard(ThemeData theme, int consumed, int goal, int remaining) {
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      color: HighlightColors.highlight100,
+      // shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      // color: HighlightColors.highlight100,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -99,7 +109,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget _calorieBox(String label, String value, Color color) {
     return Column(
       children: [
-        Text(label, style: TextStyle(fontSize: 14, color: NeutralColors.dark300)),
+        Text(label, style: Theme.of(context).textTheme.bodyMedium),
         const SizedBox(height: 4),
         Text(value, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: color)),
       ],

@@ -59,57 +59,65 @@ class AuthService {
     }
   }
 
+  // Future<ApiResponse> checkAccount(String email) async {
+  //   try {
+  //     final response = await dio.post(
+  //       '/api/auth/checkemail',
+  //       data: {
+  //         'email': email,
+  //       },
+  //     );
+  //
+  //     if (response.data['status'] == 200 || response.data['status'] == 201) {
+  //       return ApiResponse(
+  //         success: true,
+  //         message: response.data['generalMessage'],
+  //         data: response.data['data'],
+  //         statusCode: response.data['status'] ?? 200,
+  //       );
+  //     } else {
+  //       log('data: ${response.data['data']}');
+  //       return ApiResponse(
+  //         success: false,
+  //         message: response.data['generalMessage'],
+  //         statusCode: response.data['status'] ?? 400,
+  //       );
+  //     }
+  //   } on DioException catch (e) {
+  //     if (e.response != null) {
+  //       final errorData = e.response!.data;
+  //       String errorMessage = 'Failed! ';
+  //
+  //       // Check for custom error messages in the response data
+  //       if (errorData['details'] != null && errorData['details'].isNotEmpty) {
+  //         // Collect all issues in `details` into a single message
+  //         log('errorData: ${errorData['details']}');
+  //         List<String> issues = (errorData['details'] as List<dynamic>)
+  //             .map<String>((detail) => detail['issue'] ?? 'Unknown issue')
+  //             .toList();
+  //         errorMessage = issues.join(', ');
+  //       }
+  //
+  //       return ApiResponse(
+  //         success: false,
+  //         message: errorMessage,
+  //         statusCode: e.response!.statusCode ?? 400,
+  //       );
+  //     }
+  //     return ApiResponse(
+  //       success: false,
+  //       message: 'Network Error: $e',
+  //       statusCode: 500,
+  //     );
+  //   }
+  // }
+
   Future<ApiResponse> checkAccount(String email) async {
-    try {
-      final response = await dio.post(
-        '/api/auth/checkemail',
-        data: {
-          'email': email,
-        },
-      );
-
-      if (response.data['status'] == 200 || response.data['status'] == 201) {
-        return ApiResponse(
-          success: true,
-          message: response.data['generalMessage'],
-          data: response.data['data'],
-          statusCode: response.data['status'] ?? 200,
-        );
-      } else {
-        log('data: ${response.data['data']}');
-        return ApiResponse(
-          success: false,
-          message: response.data['generalMessage'],
-          statusCode: response.data['status'] ?? 400,
-        );
-      }
-    } on DioException catch (e) {
-      if (e.response != null) {
-        final errorData = e.response!.data;
-        String errorMessage = 'Failed! ';
-
-        // Check for custom error messages in the response data
-        if (errorData['details'] != null && errorData['details'].isNotEmpty) {
-          // Collect all issues in `details` into a single message
-          log('errorData: ${errorData['details']}');
-          List<String> issues = (errorData['details'] as List<dynamic>)
-              .map<String>((detail) => detail['issue'] ?? 'Unknown issue')
-              .toList();
-          errorMessage = issues.join(', ');
-        }
-
-        return ApiResponse(
-          success: false,
-          message: errorMessage,
-          statusCode: e.response!.statusCode ?? 400,
-        );
-      }
-      return ApiResponse(
-        success: false,
-        message: 'Network Error: $e',
-        statusCode: 500,
-      );
-    }
+    return ApiResponse(
+      success: true,
+      message: 'Oke',
+      statusCode: 200,
+    );
   }
 
   // Future<ApiResponse> login(String email, String password) async {
