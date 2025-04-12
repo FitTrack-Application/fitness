@@ -1,7 +1,13 @@
 package com.hcmus.userservice.dto.request;
 
+import com.hcmus.userservice.model.type.Gender;
+import com.hcmus.userservice.model.type.Role;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
+
+import java.util.UUID;
 
 @Setter
 @Getter
@@ -10,14 +16,13 @@ import lombok.*;
 @NoArgsConstructor
 public class UpdateProfileRequest {
 
-    @NotBlank(message = "Name is required")
     private String name;
 
     private Integer age;
 
     private String gender;
 
-    private Double height;
+    private Integer height;
 
     private Double weight;
 

@@ -1,13 +1,12 @@
 package com.hcmus.userservice.service;
 
-import com.hcmus.userservice.dto.UserDto;
 import com.hcmus.userservice.dto.request.UpdateProfileRequest;
 import com.hcmus.userservice.dto.response.ApiResponse;
-import com.hcmus.userservice.dto.response.GoalResponse;
+import com.hcmus.userservice.dto.response.UserProfileResponse;
 import com.hcmus.userservice.exception.UserNotFoundException;
 import com.hcmus.userservice.mapper.UserMapper;
 import com.hcmus.userservice.model.User;
-import com.hcmus.userservice.repository.GoalRepository;
+import com.hcmus.userservice.model.type.Gender;
 import com.hcmus.userservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,19 +21,17 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
-    private final GoalRepository goalRepository;
-
     @Override
-    public ApiResponse<UserDto> getUserProfileResponse(UUID userId) {
+    public ApiResponse<UserProfileResponse> getUserProfileResponse(UUID userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("The user is not found!"));
 
-        UserDto userDto = UserMapper.INSTANCE.convertToUserDto(user);
+        UserProfileResponse userProfileResponse = UserMapper.INSTANCE.convertToUserDto(user);
 
-        return ApiResponse.<UserDto>builder()
+        return ApiResponse.<UserProfileResponse>builder()
                 .status(HttpStatus.OK.value())
                 .generalMessage("Get profile successfully!")
-                .data(userDto)
+                .data(userProfileResponse)
                 .timestamp(LocalDateTime.now())
                 .build();
     }
@@ -43,18 +40,21 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("The user is not found!"));
 
-        user.setName(updateProfileRequest.getName());
-        user.setAge(updateProfileRequest.getAge());
-        user.setGender(updateProfileRequest.getGender());
-        user.setHeight(updateProfileRequest.getHeight());
-        user.setWeight(updateProfileRequest.getWeight());
-        user.setImageUrl(updateProfileRequest.getImageUrl());
+        user.setName(updateProfileRequest.getName() == null ? user.getName() : updateProfileRequest.getName());
+        user.setAge(updateProfileRequest.getAge() == null ? user.getAge() : updateProfileRequest.getAge());
+        if (updateProfileRequest.getGender() != null) {
+            Gender gender = Gender.fromString(updateProfileRequest.getGender());
+            user.setGender(gender);
+        }
+        user.setHeight(updateProfileRequest.getHeight() == null ? user.getHeight() : updateProfileRequest.getHeight());
+        user.setWeight(updateProfileRequest.getWeight() == null ? user.getWeight() : updateProfileRequest.getWeight());
+        user.setImageUrl(updateProfileRequest.getImageUrl() == null ? user.getImageUrl() : updateProfileRequest.getImageUrl());
 
         userRepository.save(user);
 
-        return ApiResponse.<String>builder()
+        return ApiResponse.builder()
                 .status(HttpStatus.OK.value())
-                .generalMessage("Update profile successfully for " + user.getUserId() + "!")
+                .generalMessage("Update profile successfully for " + user.getName() + "!")
                 .timestamp(LocalDateTime.now())
                 .build();
     }

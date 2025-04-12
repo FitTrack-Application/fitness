@@ -28,7 +28,7 @@ public class RegisterRequest {
 
     private String gender;
 
-    private Double height;
+    private Integer height;
 
     private Double weight;
 

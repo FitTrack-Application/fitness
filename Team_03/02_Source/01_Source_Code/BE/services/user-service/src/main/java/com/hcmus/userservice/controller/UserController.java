@@ -1,9 +1,8 @@
 package com.hcmus.userservice.controller;
 
-import com.hcmus.userservice.dto.UserDto;
+import com.hcmus.userservice.dto.response.UserProfileResponse;
 import com.hcmus.userservice.dto.request.UpdateProfileRequest;
 import com.hcmus.userservice.dto.response.ApiResponse;
-import com.hcmus.userservice.dto.response.GoalResponse;
 import com.hcmus.userservice.service.UserService;
 import com.hcmus.userservice.util.JwtUtil;
 import jakarta.validation.Valid;
@@ -25,22 +24,18 @@ public class UserController {
     private final JwtUtil jwtUtil;
 
     @GetMapping("/me")
-    public ResponseEntity<ApiResponse<UserDto>> getUserProfile(@RequestHeader("Authorization") String authorizationHeader) {
-
-        String userIdStr = jwtUtil.extractUserId(authorizationHeader.replace("Bearer ", ""));
-        UUID userId = UUID.fromString(userIdStr);
+    public ResponseEntity<ApiResponse<UserProfileResponse>> getUserProfile(@RequestHeader("Authorization") String authorizationHeader) {
+        UUID userId = UUID.fromString(jwtUtil.extractUserId(authorizationHeader.replace("Bearer ", "")));
 
         log.info("Get user profile for user: {}", userId);
-        ApiResponse<UserDto> response = userService.getUserProfileResponse(userId);
+        ApiResponse<UserProfileResponse> response = userService.getUserProfileResponse(userId);
 
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("/me")
     public ResponseEntity<ApiResponse<?>> updateUserProfile(@Valid @RequestBody UpdateProfileRequest updateProfileRequest, @RequestHeader("Authorization") String authorizationHeader) {
-
-        String userIdStr = jwtUtil.extractUserId(authorizationHeader.replace("Bearer ", ""));
-        UUID userId = UUID.fromString(userIdStr);
+        UUID userId = UUID.fromString(jwtUtil.extractUserId(authorizationHeader.replace("Bearer ", "")));
 
         log.info("Update user profile for user: {}", userId);
         ApiResponse<?> response = userService.getUpdateProfileResponse(updateProfileRequest, userId);
