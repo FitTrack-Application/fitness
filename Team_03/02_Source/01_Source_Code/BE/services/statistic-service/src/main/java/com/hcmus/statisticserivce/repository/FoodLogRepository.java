@@ -1,6 +1,5 @@
 package com.hcmus.statisticserivce.repository;
 
-import com.hcmus.statisticserivce.db.model.FoodLog;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

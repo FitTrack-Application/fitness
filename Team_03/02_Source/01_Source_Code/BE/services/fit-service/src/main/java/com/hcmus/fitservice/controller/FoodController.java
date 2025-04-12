@@ -1,8 +1,7 @@
 package com.hcmus.fitservice.controller;
 
-import com.hcmus.fitservice.dto.ApiResponse;
+import com.hcmus.fitservice.dto.response.ApiResponse;
 import com.hcmus.fitservice.dto.FoodDto;
-import com.hcmus.fitservice.model.Food;
 import com.hcmus.fitservice.service.FoodService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

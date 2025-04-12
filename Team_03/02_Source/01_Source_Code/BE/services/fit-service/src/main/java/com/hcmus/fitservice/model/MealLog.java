@@ -1,21 +1,26 @@
 package com.hcmus.fitservice.model;
 
+import com.hcmus.fitservice.model.type.MealType;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "meal_logs")
 public class MealLog {
+
     @Id
     @GeneratedValue
     @UuidGenerator
@@ -23,14 +28,15 @@ public class MealLog {
     private UUID mealLogId;
 
     @Temporal(TemporalType.DATE)
-    @Column(nullable = false)
+    @Column(name = "date", nullable = false)
     private Date date;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "meal_type", nullable = false)
     private MealType mealType;
 
-    @Column(nullable = false)
+    @NotNull
+    @Column(name = "user_id", nullable = false)
     private UUID userId;
 
     @OneToMany(mappedBy = "mealLog", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

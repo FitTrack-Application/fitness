@@ -3,6 +3,8 @@ package com.hcmus.fitservice.service;
 import com.hcmus.fitservice.dto.MealEntryDto;
 import com.hcmus.fitservice.dto.MealLogDto;
 import com.hcmus.fitservice.model.*;
+import com.hcmus.fitservice.model.type.MealType;
+import com.hcmus.fitservice.model.type.ServingUnit;
 import com.hcmus.fitservice.repository.FoodRepository;
 import com.hcmus.fitservice.repository.MealEntryRepository;
 import com.hcmus.fitservice.repository.MealLogRepository;
@@ -62,7 +64,7 @@ public class MealLogServiceImpl implements MealLogService {
         MealEntry mealEntry = new MealEntry();
         mealEntry.setMealLog(mealLog);
         mealEntry.setFood(food);
-        mealEntry.setNumberOfServings(numberOfServings);
+//        mealEntry.setNumberOfServings(numberOfServings);
         mealEntry.setServingUnit(ServingUnit.valueOf(servingUnit));
 
         mealEntryRepository.save(mealEntry);

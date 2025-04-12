@@ -1,6 +1,8 @@
 package com.hcmus.fitservice.controller;
 
 import com.hcmus.fitservice.dto.*;
+import com.hcmus.fitservice.dto.request.MealLogRequest;
+import com.hcmus.fitservice.dto.response.ApiResponse;
 import com.hcmus.fitservice.service.MealLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -25,9 +27,9 @@ public class MealLogController {
 
     // Create Meal Log (User Id sẽ sửa thành lấy từ JWT)
     @PostMapping
-    public ResponseEntity<ApiResponse<Void>> createMealLog(@RequestBody MealLogRequestDto mealLogRequestDto) {
+    public ResponseEntity<ApiResponse<Void>> createMealLog(@RequestHeader("Authorization") String authorization, @RequestBody MealLogRequest mealLogRequest) {
         try {
-            mealLogService.createMealLog(mealLogRequestDto.getUserId(), mealLogRequestDto.getDate(), mealLogRequestDto.getMealType());
+            mealLogService.createMealLog(mealLogRequest.getUserId(), mealLogRequest.getDate(), mealLogRequest.getMealType());
 
             ApiResponse<Void> response = ApiResponse.<Void>builder()
                     .status(201)
@@ -51,7 +53,7 @@ public class MealLogController {
     public ResponseEntity<ApiResponse<MealEntryDto>> addMealEntry(
             @PathVariable UUID mealLogId,
             @RequestBody MealEntryRequestDto mealEntryRequestDto
-            ) {
+    ) {
         try {
             MealEntryDto mealEntryDto = mealLogService.addMealEntry(
                     mealLogId,
