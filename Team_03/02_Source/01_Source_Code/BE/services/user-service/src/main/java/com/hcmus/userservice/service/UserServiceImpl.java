@@ -6,6 +6,7 @@ import com.hcmus.userservice.dto.response.ApiResponse;
 import com.hcmus.userservice.dto.response.GoalResponse;
 import com.hcmus.userservice.exception.UserNotFoundException;
 import com.hcmus.userservice.mapper.UserMapper;
+import com.hcmus.userservice.model.User;
 import com.hcmus.userservice.repository.GoalRepository;
 import com.hcmus.userservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -54,21 +55,6 @@ public class UserServiceImpl implements UserService {
         return ApiResponse.<String>builder()
                 .status(HttpStatus.OK.value())
                 .generalMessage("Update profile successfully for " + user.getUserId() + "!")
-                .timestamp(LocalDateTime.now())
-                .build();
-    }
-
-    @Override
-    public ApiResponse<GoalResponse> getGoalResponse(UUID userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("Not found user!"));
-
-        Goal goal = goalRepository.findByUser(user);
-        GoalResponse goalResponse = new GoalResponse(goal.getGoalId().toString());
-        return ApiResponse.<GoalResponse>builder()
-                .status(HttpStatus.OK.value())
-                .generalMessage("Get goal successfully!")
-                .data(goalResponse)
                 .timestamp(LocalDateTime.now())
                 .build();
     }

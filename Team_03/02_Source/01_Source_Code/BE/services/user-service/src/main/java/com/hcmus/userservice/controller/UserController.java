@@ -47,17 +47,5 @@ public class UserController {
 
         return ResponseEntity.ok(response);
     }
-
-    @GetMapping("/me/goal")
-    public ResponseEntity<ApiResponse<GoalResponse>> getGoal(@RequestHeader("Authorization") String authorization) {
-
-        String userIdStr = jwtUtil.extractUserId(authorization.replace("Bearer ", ""));
-        UUID userId = UUID.fromString(userIdStr);
-
-        log.info("Get goal of user: {}", userId);
-        ApiResponse<GoalResponse> response = userService.getGoalResponse(userId);
-
-        return ResponseEntity.ok(response);
-    }
 }
 

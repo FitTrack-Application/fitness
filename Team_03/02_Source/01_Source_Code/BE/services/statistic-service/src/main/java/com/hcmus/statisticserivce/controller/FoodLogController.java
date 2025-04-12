@@ -34,6 +34,7 @@ public class FoodLogController {
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<FoodLogDto>> getFoodLogsByUserId(@RequestHeader("authorization") String authorization) {
+        UUID userId = extractUserId(authorization);
         return ResponseEntity.ok(foodLogService.getFoodLogsByUserId(userId));
     }
 

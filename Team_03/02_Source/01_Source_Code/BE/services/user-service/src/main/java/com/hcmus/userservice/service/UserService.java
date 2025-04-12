@@ -14,6 +14,4 @@ public interface UserService {
     ApiResponse<UserDto> getUserProfileResponse(UUID userId);
 
     ApiResponse<?> getUpdateProfileResponse(UpdateProfileRequest updateProfileRequest, UUID userId);
-
-    ApiResponse<GoalResponse> getGoalResponse(UUID userId);
 }
