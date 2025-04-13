@@ -5,7 +5,6 @@ import com.hcmus.statisticservice.dto.response.ApiResponse;
 import com.hcmus.statisticservice.model.WeightLog;
 import com.hcmus.statisticservice.repository.WeightRepository;
 import lombok.RequiredArgsConstructor;
-import main.java.com.hcmus.statisticservice.dto.response.WeightResponse;
 import org.springframework.http.HttpStatus;
 
 import org.springframework.stereotype.Service;
@@ -19,7 +18,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class WeightServiceImpl {
+public class WeightServiceImpl implements WeightService {
     private final WeightRepository weightRepository;
 
     public ApiResponse<Void> addWeight(AddWeightRequest request, UUID userId) {

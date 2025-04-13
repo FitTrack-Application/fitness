@@ -1,6 +1,6 @@
 package com.hcmus.statisticservice.controller;
 
-import com.hcmus.statisticservice.dto.AddWeightRequest;
+import com.hcmus.statisticservice.dto.request.AddWeightRequest;
 import com.hcmus.statisticservice.service.WeightService;
 import com.hcmus.statisticservice.util.JwtUtil;
 

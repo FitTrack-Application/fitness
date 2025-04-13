@@ -2,6 +2,7 @@ package com.hcmus.statisticservice.exception;
 
 
 import com.hcmus.statisticservice.controller.StatisticController;
+import com.hcmus.statisticservice.dto.response.ApiResponse;
 import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
