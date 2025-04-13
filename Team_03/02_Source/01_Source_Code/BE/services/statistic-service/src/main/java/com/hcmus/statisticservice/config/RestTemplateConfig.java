@@ -1,4 +1,4 @@
-package com.hcmus.statisticserivce.config;
+package com.hcmus.statisticservice.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

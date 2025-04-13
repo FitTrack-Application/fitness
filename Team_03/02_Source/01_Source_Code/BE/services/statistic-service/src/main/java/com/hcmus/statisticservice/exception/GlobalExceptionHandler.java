@@ -1,8 +1,8 @@
-package com.hcmus.statisticserivce.exception;
+package com.hcmus.statisticservice.exception;
 
-import com.hcmus.statisticserivce.controller.FoodLogController;
-import com.hcmus.statisticserivce.controller.GoalController;
-import com.hcmus.statisticserivce.controller.StatisticController;
+
+import com.hcmus.statisticservice.controller.StatisticController;
+import com.hcmus.statisticservice.dto.response.ApiResponse;
 import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -22,8 +22,6 @@ import java.util.List;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @RestControllerAdvice(basePackageClasses = {
-        FoodLogController.class,
-        GoalController.class,
         StatisticController.class
 })
 public class GlobalExceptionHandler {

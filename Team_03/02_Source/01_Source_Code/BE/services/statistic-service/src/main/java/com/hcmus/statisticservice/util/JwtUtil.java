@@ -1,6 +1,6 @@
-package com.hcmus.statisticserivce.util;
+package com.hcmus.statisticservice.util;
 
-import com.hcmus.statisticserivce.exception.InvalidTokenException;
+import com.hcmus.statisticservice.exception.InvalidTokenException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
