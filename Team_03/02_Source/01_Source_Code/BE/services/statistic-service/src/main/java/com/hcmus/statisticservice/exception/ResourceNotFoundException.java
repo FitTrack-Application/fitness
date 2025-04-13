@@ -1,4 +1,4 @@
-package com.hcmus.statisticserivce.exception;
+package com.hcmus.statisticservice.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

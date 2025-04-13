@@ -1,6 +1,5 @@
 package com.hcmus.userservice.service;
 
-import com.hcmus.userservice.dto.request.AddWeightRequest;
 import com.hcmus.userservice.dto.request.LoginRequest;
 import com.hcmus.userservice.dto.request.RegisterRequest;
 import com.hcmus.userservice.dto.response.ApiResponse;
@@ -11,7 +10,6 @@ import com.hcmus.userservice.exception.ConflictException;
 import com.hcmus.userservice.exception.InvalidTokenException;
 import com.hcmus.userservice.exception.UserNotFoundException;
 import com.hcmus.userservice.model.type.Role;
-import com.hcmus.userservice.repository.GoalRepository;
 import com.hcmus.userservice.repository.UserRepository;
 import com.hcmus.userservice.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +19,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import com.hcmus.userservice.model.User;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -31,8 +30,6 @@ import java.util.Map;
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
-
-    private final GoalRepository goalRepository;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -68,38 +65,25 @@ public class AuthServiceImpl implements AuthService {
         user.setWeight(request.getWeight());
         user.setImageUrl(request.getImageUrl());
         user.setRole(request.getRole() != null ? request.getRole() : Role.USER);
+        user.setEnabled(true);
+
         User savedUser = userRepository.save(user);
 
-        Goal goal = new Goal();
-        goal.setUser(savedUser);
-        goal.setGoalType(request.getGoalType());
-        goal.setWeightGoal(request.getWeightGoal());
-        goal.setGoalPerWeek(request.getGoalPerWeek());
-        goal.setActivityLevel(request.getActivityLevel());
-        goal.setCaloriesGoal(request.getCaloriesGoal());
-        goal.setStartingDate(LocalDate.now());
-        goalRepository.save(goal);
+        
 
         String accessToken = jwtUtil.generateToken(savedUser);
         String refreshToken = jwtUtil.generateRefreshToken(savedUser);
         RegisterResponse registerResponse = RegisterResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
-                .userId(user.getUserId())
-                .goalId(goal.getGoalId())
-                .email(user.getEmail())
-                .name(user.getName())
-                .role(user.getRole())
+                .userId(savedUser.getUserId())
+                .email(savedUser.getEmail())
+                .name(savedUser.getName())
+                .role(savedUser.getRole())
+                .message("Successfully get user information and create goal")
                 .build();
 
-        AddWeightRequest addWeightRequest = new AddWeightRequest();
-        addWeightRequest.setUserId(savedUser.getUserId());
-        addWeightRequest.setGoalId(goal.getGoalId());
-        addWeightRequest.setWeight(savedUser.getWeight());
-        addWeightRequest.setUpdateDate(goal.getStartingDate());
-        addWeightRequest.setProgressPhoto(savedUser.getImageUrl());
-
-        //restTemplate.postForObject(statisticServiceUrl + "/api/statistic/addweight", addWeightRequest, Void.class);
+        
 
         return ApiResponse.<RegisterResponse>builder()
                 .status(HttpStatus.CREATED.value())

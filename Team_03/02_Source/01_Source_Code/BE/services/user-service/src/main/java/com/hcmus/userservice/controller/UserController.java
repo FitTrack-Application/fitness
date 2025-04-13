@@ -3,7 +3,6 @@ package com.hcmus.userservice.controller;
 import com.hcmus.userservice.dto.UserDto;
 import com.hcmus.userservice.dto.request.UpdateProfileRequest;
 import com.hcmus.userservice.dto.response.ApiResponse;
-import com.hcmus.userservice.dto.response.GoalResponse;
 import com.hcmus.userservice.service.UserService;
 import com.hcmus.userservice.util.JwtUtil;
 import jakarta.validation.Valid;
@@ -48,16 +47,6 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/me/goal")
-    public ResponseEntity<ApiResponse<GoalResponse>> getGoal(@RequestHeader("Authorization") String authorization) {
-
-        String userIdStr = jwtUtil.extractUserId(authorization.replace("Bearer ", ""));
-        UUID userId = UUID.fromString(userIdStr);
-
-        log.info("Get goal of user: {}", userId);
-        ApiResponse<GoalResponse> response = userService.getGoalResponse(userId);
-
-        return ResponseEntity.ok(response);
-    }
+    
 }
 
