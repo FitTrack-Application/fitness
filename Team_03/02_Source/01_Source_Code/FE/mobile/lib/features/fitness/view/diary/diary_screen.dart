@@ -1,15 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:mobile/cores/constants/colors.dart';
 import 'package:mobile/features/fitness/models/exercise.dart';
 import 'package:mobile/features/fitness/models/food.dart';
 import 'package:provider/provider.dart';
 
 import '../../viewmodels/diary_viewmodel.dart';
 
-class DiaryScreen extends StatelessWidget {
+class DiaryScreen extends StatefulWidget {
   const DiaryScreen({super.key});
+
+  @override
+  State<DiaryScreen> createState() => _DiaryScreenState();
+}
+
+class _DiaryScreenState extends State<DiaryScreen> with TickerProviderStateMixin {
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,16 +56,67 @@ class DiaryScreen extends StatelessWidget {
       onRefresh: () async {
         await viewModel.fetchDiaryForSelectedDate();
       },
-      child: SingleChildScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        child: Column(
-          children: [
-            _buildDateSelector(viewModel, context),
-            _buildCaloriesCard(viewModel, context),
-            _buildFoodList(viewModel, context),
-            _buildExerciseList(viewModel, context),
-          ],
-        ),
+      child: Column(
+        children: [
+          _buildDateSelector(viewModel, context),
+          _buildCaloriesCard(viewModel, context),
+          // Tab chính: Food và Exercise
+          TabBar(
+            controller: _tabController,
+            tabs: const [
+              Tab(text: 'FOOD'),
+              Tab(text: 'EXERCISE'),
+            ],
+          ),
+          // TabBarView chính
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                // Tab Food với 3 danh sách
+                SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: Column(
+                    children: [
+                      // Breakfast
+                      _buildMealList(
+                        viewModel,
+                        context,
+                        'Breakfast',
+                        viewModel.breakfastItems,
+                        viewModel.breakfastCalories,
+                        MealType.breakfast,
+                      ),
+                      // Lunch
+                      _buildMealList(
+                        viewModel,
+                        context,
+                        'Lunch',
+                        viewModel.lunchItems,
+                        viewModel.lunchCalories,
+                        MealType.lunch,
+                      ),
+                      // Dinner
+                      _buildMealList(
+                        viewModel,
+                        context,
+                        'Dinner',
+                        viewModel.dinnerItems,
+                        viewModel.dinnerCalories,
+                        MealType.dinner,
+                      ),
+                    ],
+                  ),
+                ),
+                // Tab Exercise
+                SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: _buildExerciseList(viewModel, context),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -145,7 +214,14 @@ class DiaryScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildFoodList(DiaryViewModel viewModel, BuildContext context) {
+  Widget _buildMealList(
+      DiaryViewModel viewModel,
+      BuildContext context,
+      String mealTitle,
+      List<Food> foodItems,
+      int calories,
+      MealType mealType,
+      ) {
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
 
@@ -158,19 +234,18 @@ class DiaryScreen extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Food', style: textTheme.titleSmall),
-                Text('${viewModel.caloriesConsumed.toInt()}',
-                    style: textTheme.titleSmall),
+                Text(mealTitle, style: textTheme.titleSmall),
+                Text('$calories', style: textTheme.titleSmall),
               ],
             ),
           ),
-          ...viewModel.foodItems
-              .map((item) => _buildFoodItem(item, context, () {
-                    context.push('/food/${viewModel.diaryId}/${item.id}/edit');
-                  })),
+          ...foodItems.map((item) => _buildFoodItem(item, context, () {
+            context.push('/food/${viewModel.diaryId}/${item.id}/edit');
+          })),
           TextButton(
             onPressed: () {
-              context.push('/search/${viewModel.diaryId}');
+              // Truyền mealType vào màn hình tìm kiếm
+              context.push('/search/${viewModel.diaryId}?mealType=${mealType.toString().split('.').last}');
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -180,8 +255,8 @@ class DiaryScreen extends StatelessWidget {
                   child: Text(
                     'ADD FOOD',
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          color: colorScheme.primary,
-                        ),
+                      color: colorScheme.primary,
+                    ),
                   ),
                 ),
               ],
@@ -225,8 +300,8 @@ class DiaryScreen extends StatelessWidget {
                   child: Text(
                     'ADD EXERCISE',
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          color: colorScheme.primary,
-                        ),
+                      color: colorScheme.primary,
+                    ),
                   ),
                 ),
               ],

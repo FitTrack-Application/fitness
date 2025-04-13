@@ -104,4 +104,19 @@ class FoodRepository {
       ),
     );
   }
+
+  Future<PaginatedResponse<Food>> searchMyFoods(String name,
+      {int page = 1, int size = 10}) async {
+    // Return an empty list for "My Food"
+    return PaginatedResponse<Food>(
+      message: 'No data available for My Food',
+      data: [],
+      pagination: Pagination(
+        currentPage: page,
+        pageSize: size,
+        totalItems: 0,
+        totalPages: 1,
+      ),
+    );
+  }
 }

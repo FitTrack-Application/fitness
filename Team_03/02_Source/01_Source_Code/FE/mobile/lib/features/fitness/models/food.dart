@@ -8,6 +8,7 @@ class Food {
   final int protein;
   final String unit;
   final String description;
+  final MealType mealType;
 
   Food({
     required this.id,
@@ -19,6 +20,7 @@ class Food {
     required this.protein,
     required this.unit,
     required this.description,
+    this.mealType = MealType.breakfast,
   });
 
   factory Food.fromJson(Map<String, dynamic> json) {
@@ -34,4 +36,11 @@ class Food {
       description: json['description'] ?? '',
     );
   }
+}
+
+// Thêm enum MealType nếu chưa có
+enum MealType {
+  breakfast,
+  lunch,
+  dinner
 }

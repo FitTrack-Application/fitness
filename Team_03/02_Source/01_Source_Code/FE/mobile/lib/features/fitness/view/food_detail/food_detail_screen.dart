@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import '../../services/repository/food_repository.dart';
 import '../../viewmodels/diary_viewmodel.dart';
 import '../../viewmodels/food_detail_viewmodel.dart';
+import '../../models/food.dart';
 
 class FoodDetailScreen extends StatelessWidget {
   final String foodId;
@@ -29,7 +30,7 @@ class FoodDetailScreen extends StatelessWidget {
 
     return ChangeNotifierProvider(
       create: (context) =>
-          FoodDetailViewModel(FoodRepository())..loadFood(foodId),
+      FoodDetailViewModel(FoodRepository())..loadFood(foodId),
       child: Builder(
         builder: (context) => Scaffold(
           appBar: AppBar(
@@ -56,26 +57,26 @@ class FoodDetailScreen extends StatelessWidget {
                   return IconButton(
                     icon: isAdding
                         ? SizedBox(
-                            height: 24,
-                            width: 24,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: colorScheme.primary,
-                            ),
-                          )
+                      height: 24,
+                      width: 24,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: colorScheme.primary,
+                      ),
+                    )
                         : Icon(Icons.check, color: colorScheme.primary),
                     onPressed: isAdding
                         ? null
                         : () async {
-                            await diaryVM.addFoodToDiary(
-                              food,
-                              foodVM.servings,
-                              foodVM.selectedDate,
-                            );
-                            if (context.mounted) {
-                              context.pop();
-                            }
-                          },
+                      await diaryVM.addFoodToDiary(
+                        food,
+                        foodVM.servings,
+                        foodVM.selectedDate,
+                      );
+                      if (context.mounted) {
+                        context.pop();
+                      }
+                    },
                   );
                 },
               ),
@@ -240,9 +241,15 @@ class FoodDetailScreen extends StatelessWidget {
           ),
           const CustomDivider(),
           FoodInfoSection(
+            label: 'Meal Type',
+            value: _getMealTypeDisplayName(viewModel.selectedMealType),
+            onTap: () => _selectMealType(context, viewModel),
+          ),
+          const CustomDivider(),
+          FoodInfoSection(
             label: 'Date & Time',
             value:
-                "${viewModel.selectedDate.day}/${viewModel.selectedDate.month}/${viewModel.selectedDate.year} - ${viewModel.selectedDate.hour}:${viewModel.selectedDate.minute.toString().padLeft(2, '0')}",
+            "${viewModel.selectedDate.day}/${viewModel.selectedDate.month}/${viewModel.selectedDate.year} - ${viewModel.selectedDate.hour}:${viewModel.selectedDate.minute.toString().padLeft(2, '0')}",
             onTap: () => _selectDateTime(context, viewModel),
           ),
           const CustomDivider(),
@@ -251,9 +258,9 @@ class FoodDetailScreen extends StatelessWidget {
             children: [
               CalorieSummary(
                 calories: food.calories * viewModel.servings,
-                carbs: food.carbs,
-                fat: food.fat,
-                protein: food.protein,
+                carbs: food.carbs * viewModel.servings,
+                fat: food.fat * viewModel.servings,
+                protein: food.protein * viewModel.servings,
               ),
             ],
           ),
@@ -262,10 +269,129 @@ class FoodDetailScreen extends StatelessWidget {
     );
   }
 
+  String _getMealTypeDisplayName(MealType mealType) {
+    switch (mealType) {
+      case MealType.breakfast:
+        return 'Breakfast';
+      case MealType.lunch:
+        return 'Lunch';
+      case MealType.dinner:
+        return 'Dinner';
+      default:
+        return 'Breakfast';
+    }
+  }
+
+  Future<void> _selectMealType(
+      BuildContext context, FoodDetailViewModel viewModel) async {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          'Select Meal Type',
+          style: textTheme.titleMedium,
+        ),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildMealTypeOption(
+                context,
+                MealType.breakfast,
+                viewModel,
+                Icons.wb_sunny_outlined,
+              ),
+              const SizedBox(height: 8),
+              _buildMealTypeOption(
+                context,
+                MealType.lunch,
+                viewModel,
+                Icons.restaurant_outlined,
+              ),
+              const SizedBox(height: 8),
+              _buildMealTypeOption(
+                context,
+                MealType.dinner,
+                viewModel,
+                Icons.nights_stay_outlined,
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              'Cancel',
+              style: TextStyle(color: colorScheme.primary),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMealTypeOption(
+      BuildContext context,
+      MealType mealType,
+      FoodDetailViewModel viewModel,
+      IconData icon,
+      ) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+    final isSelected = viewModel.selectedMealType == mealType;
+
+    return InkWell(
+      onTap: () {
+        viewModel.updateMealType(mealType);
+        Navigator.pop(context);
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        decoration: BoxDecoration(
+          // Using a more subtle background color with lower opacity
+          color: isSelected ? colorScheme.primary.withOpacity(0.1) : Colors.transparent,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: isSelected ? colorScheme.primary : colorScheme.outline.withOpacity(0.5),
+            width: isSelected ? 2 : 1,
+          ),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              color: isSelected ? colorScheme.primary : colorScheme.onSurface.withOpacity(0.7),
+            ),
+            const SizedBox(width: 16),
+            Text(
+              _getMealTypeDisplayName(mealType),
+              style: textTheme.bodyMedium?.copyWith(
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                // Making sure text color has good contrast with the background
+                color: isSelected ? colorScheme.primary : colorScheme.onSurface,
+              ),
+            ),
+            const Spacer(),
+            if (isSelected)
+              Icon(
+                Icons.check_circle,
+                color: colorScheme.primary,
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Future<void> _editServings(
       BuildContext context, FoodDetailViewModel viewModel) async {
     TextEditingController controller =
-        TextEditingController(text: viewModel.servings.toString());
+    TextEditingController(text: viewModel.servings.toString());
     final colorScheme = Theme.of(context).colorScheme;
 
     await showDialog(

@@ -1,3 +1,5 @@
+import 'package:mobile/features/fitness/viewmodels/diary_viewmodel.dart';
+
 import '../../models/diary.dart';
 import '../../models/food.dart';
 import '../api_client.dart';

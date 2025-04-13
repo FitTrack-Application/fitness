@@ -12,6 +12,7 @@ class FoodDetailViewModel extends ChangeNotifier {
   Food? food;
   int servings = 1;
   DateTime selectedDate = DateTime.now();
+  MealType selectedMealType = MealType.breakfast;
 
   LoadState loadState = LoadState.initial;
   String? errorMessage;
@@ -29,10 +30,16 @@ class FoodDetailViewModel extends ChangeNotifier {
     try {
       final result = await _repository.getFoodById(id).timeout(_timeoutDuration,
           onTimeout: () {
-        throw TimeoutException('Connection timed out. Please try again.');
-      });
+            throw TimeoutException('Connection timed out. Please try again.');
+          });
 
       food = result;
+
+      // If this is an edit and the food has a meal type, use it
+      if (food != null) {
+        selectedMealType = food!.mealType;
+      }
+
       loadState = LoadState.loaded;
     } on TimeoutException catch (e) {
       loadState = LoadState.timeout;
@@ -54,6 +61,11 @@ class FoodDetailViewModel extends ChangeNotifier {
 
   void updateSelectedDate(DateTime date) {
     selectedDate = date;
+    notifyListeners();
+  }
+
+  void updateMealType(MealType mealType) {
+    selectedMealType = mealType;
     notifyListeners();
   }
 }

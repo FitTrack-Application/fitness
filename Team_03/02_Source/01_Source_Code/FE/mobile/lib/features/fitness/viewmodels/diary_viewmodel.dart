@@ -26,9 +26,29 @@ class DiaryViewModel extends ChangeNotifier {
   DateTime get selectedDate => _selectedDate;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
+
+  // Mảng thực phẩm cho từng bữa ăn
+  List<Food> get breakfastItems => _currentDiaryDay?.foodItems
+      .where((food) => food.mealType == MealType.breakfast)
+      .toList() ?? [];
+
+  List<Food> get lunchItems => _currentDiaryDay?.foodItems
+      .where((food) => food.mealType == MealType.lunch)
+      .toList() ?? [];
+
+  List<Food> get dinnerItems => _currentDiaryDay?.foodItems
+      .where((food) => food.mealType == MealType.dinner)
+      .toList() ?? [];
+
   List<Food> get foodItems => _currentDiaryDay?.foodItems ?? [];
   List<Exercise> get exerciseItems => _currentDiaryDay?.exerciseItems ?? [];
   int get calorieGoal => _currentDiaryDay?.calorieGoal ?? 0;
+
+  // Calo tiêu thụ theo từng bữa
+  int get breakfastCalories => breakfastItems.fold(0, (sum, item) => sum + item.calories);
+  int get lunchCalories => lunchItems.fold(0, (sum, item) => sum + item.calories);
+  int get dinnerCalories => dinnerItems.fold(0, (sum, item) => sum + item.calories);
+
   int get caloriesConsumed => _currentDiaryDay?.caloriesConsumed ?? 0;
   int get caloriesBurned => _currentDiaryDay?.caloriesBurned ?? 0;
   int get caloriesRemaining => _currentDiaryDay?.caloriesRemaining ?? 0;
@@ -95,3 +115,6 @@ class DiaryViewModel extends ChangeNotifier {
     }
   }
 }
+
+// Đảm bảo class Food có trường mealType
+// Nếu chưa có, bạn cần cập nhật model Food

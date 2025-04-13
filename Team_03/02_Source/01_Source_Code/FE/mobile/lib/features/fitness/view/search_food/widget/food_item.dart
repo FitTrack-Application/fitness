@@ -53,7 +53,7 @@ class FoodItemWidget extends StatelessWidget {
           Container(
             margin: const EdgeInsets.only(right: 12),
             decoration: BoxDecoration(
-              color: colorScheme.primaryContainer,
+              color: colorScheme.primaryContainer.withOpacity(0.7),
               borderRadius: BorderRadius.circular(20),
             ),
             child: InkWell(
