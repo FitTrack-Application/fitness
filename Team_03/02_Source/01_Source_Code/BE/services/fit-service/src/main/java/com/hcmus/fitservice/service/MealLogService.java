@@ -10,7 +10,7 @@ import java.util.UUID;
 public interface MealLogService {
     void createMealLog(UUID userId, Date date, String mealType);
 
-    MealEntryDto addMealEntry(UUID mealLogId, UUID foodId, String servingUnit, Integer numberOfServings);
+    MealEntryDto addMealEntry(UUID mealLogId, UUID foodId, String servingUnit, Double numberOfServings);
 
     // Get meal log by user id and date
     List<MealLogDto> getMealLogsByUserIdAndDate(UUID userId, Date date);

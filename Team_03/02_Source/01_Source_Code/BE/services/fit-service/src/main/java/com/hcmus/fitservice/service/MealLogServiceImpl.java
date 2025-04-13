@@ -51,7 +51,7 @@ public class MealLogServiceImpl implements MealLogService {
     }
 
     @Override
-    public MealEntryDto addMealEntry(UUID mealLogId, UUID foodId, String servingUnit, Integer numberOfServings) {
+    public MealEntryDto addMealEntry(UUID mealLogId, UUID foodId, String servingUnit, Double numberOfServings) {
         // Find the meal log by ID
         MealLog mealLog = mealLogRepository.findById(mealLogId)
                 .orElseThrow(() -> new IllegalArgumentException("Meal log not found with ID: " + mealLogId));
