@@ -27,8 +27,6 @@ public class AuthController {
 
     private final AuthService authService;
 
-    private final JwtUtil jwtUtil;
-
     @PostMapping("/check-email")
     public ResponseEntity<ApiResponse<Boolean>> checkEmail(@RequestBody @Valid CheckEmailRequest request) {
         log.info("Check email: {}", request.getEmail());

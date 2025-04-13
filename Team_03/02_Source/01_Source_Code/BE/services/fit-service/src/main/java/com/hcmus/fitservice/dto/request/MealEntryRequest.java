@@ -10,6 +10,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MealEntryRequest {
+
     private UUID foodId;
 
     private String servingUnit;

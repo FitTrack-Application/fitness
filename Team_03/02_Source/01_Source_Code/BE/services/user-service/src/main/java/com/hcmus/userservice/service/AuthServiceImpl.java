@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -55,16 +56,18 @@ public class AuthServiceImpl implements AuthService {
             throw new ConflictException("Email already exists!");
         }
 
-        User user = new User();
-        user.setName(request.getName());
-        user.setEmail(request.getEmail());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setAge(request.getAge());
-        user.setGender(Gender.fromString(request.getGender()));
-        user.setHeight(request.getHeight());
-        user.setWeight(request.getWeight());
-        user.setImageUrl(request.getImageUrl());
-        user.setRole(request.getRole() != null ? request.getRole() : Role.USER);
+        User user = User.builder()
+                .name(request.getName())
+                .age(request.getAge())
+                .email(request.getEmail())
+                .height(request.getHeight())
+                .gender(Gender.fromString(request.getGender()))
+                .weight(request.getWeight())
+                .imageUrl(request.getImageUrl())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(Role.USER)
+                .enabled(true)
+                .build();
         User savedUser = userRepository.save(user);
 
         String accessToken = jwtUtil.generateToken(savedUser);
@@ -74,8 +77,9 @@ public class AuthServiceImpl implements AuthService {
                 .refreshToken(refreshToken)
                 .email(user.getEmail())
                 .name(user.getName())
-                .role(user.getRole())
                 .build();
+
+        // call statistic save goal
 
         return ApiResponse.<RegisterResponse>builder()
                 .status(HttpStatus.CREATED.value())

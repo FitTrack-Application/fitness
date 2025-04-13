@@ -1,8 +1,8 @@
 package com.hcmus.userservice.controller;
 
-import com.hcmus.userservice.dto.response.UserProfileResponse;
 import com.hcmus.userservice.dto.request.UpdateProfileRequest;
 import com.hcmus.userservice.dto.response.ApiResponse;
+import com.hcmus.userservice.dto.response.UserProfileResponse;
 import com.hcmus.userservice.service.UserService;
 import com.hcmus.userservice.util.JwtUtil;
 import jakarta.validation.Valid;

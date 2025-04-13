@@ -1,21 +1,15 @@
 package com.hcmus.fitservice.controller;
 
-import com.hcmus.fitservice.dto.response.ApiResponse;
 import com.hcmus.fitservice.dto.FoodDto;
+import com.hcmus.fitservice.dto.response.ApiResponse;
 import com.hcmus.fitservice.service.FoodService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -28,9 +22,9 @@ public class FoodController {
     @GetMapping("/{foodId}")
     public ResponseEntity<ApiResponse<FoodDto>> getFoodById(@PathVariable UUID foodId) {
 
-            ApiResponse<FoodDto> response = foodService.getFoodById(foodId);
+        ApiResponse<FoodDto> response = foodService.getFoodById(foodId);
 
-            return ResponseEntity.ok(response);
+        return ResponseEntity.ok(response);
     }
 
     // Get Foods with pagination (chưa có tìm kiếm gần đúng và không dấu)

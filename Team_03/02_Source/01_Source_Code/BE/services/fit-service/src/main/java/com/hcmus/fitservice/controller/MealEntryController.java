@@ -1,16 +1,13 @@
 package com.hcmus.fitservice.controller;
 
-import com.hcmus.fitservice.dto.response.ApiResponse;
 import com.hcmus.fitservice.dto.MealEntryDto;
 import com.hcmus.fitservice.dto.request.MealEntryRequest;
+import com.hcmus.fitservice.dto.response.ApiResponse;
 import com.hcmus.fitservice.service.MealEntryService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor

@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.util.Date;
+
 @Setter
 @Getter
 @Builder
@@ -13,15 +15,12 @@ import lombok.*;
 @NoArgsConstructor
 public class RegisterRequest {
 
-    @NotBlank(message = "Name is required")
+    // profile
+
     private String name;
 
-    @Email(message = "Invalid email format")
-    @NotBlank(message = "Email is required")
     private String email;
 
-    @NotBlank(message = "Password is required")
-    @Size(min = 6, message = "Password must be at least 6 characters")
     private String password;
 
     private Integer age;
@@ -34,15 +33,15 @@ public class RegisterRequest {
 
     private String imageUrl;
 
-    private Role role;
+    // goals
 
     private String goalType;
 
-    private Double weightGoal;
+    private Date startingDate;
 
-    private Double goalPerWeek;
+    private Double goalWeight;
+
+    private Double weeklyGoal;
 
     private String activityLevel;
-
-    private Double caloriesGoal;
 }
