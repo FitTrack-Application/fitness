@@ -14,7 +14,8 @@ class DiaryScreen extends StatefulWidget {
   State<DiaryScreen> createState() => _DiaryScreenState();
 }
 
-class _DiaryScreenState extends State<DiaryScreen> with TickerProviderStateMixin {
+class _DiaryScreenState extends State<DiaryScreen>
+    with TickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -34,7 +35,8 @@ class _DiaryScreenState extends State<DiaryScreen> with TickerProviderStateMixin
     final viewModel = Provider.of<DiaryViewModel>(context);
 
     return Scaffold(
-      body: AnimatedBuilder(
+      body: SafeArea(
+          child: AnimatedBuilder(
         animation: viewModel,
         builder: (context, child) {
           if (viewModel.isLoading) {
@@ -47,77 +49,92 @@ class _DiaryScreenState extends State<DiaryScreen> with TickerProviderStateMixin
 
           return _buildDiaryContent(viewModel, context);
         },
-      ),
+      )),
     );
   }
 
   Widget _buildDiaryContent(DiaryViewModel viewModel, BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: () async {
-        await viewModel.fetchDiaryForSelectedDate();
-      },
-      child: Column(
-        children: [
-          _buildDateSelector(viewModel, context),
-          _buildCaloriesCard(viewModel, context),
-          // Tab chính: Food và Exercise
-          TabBar(
+    return Column(
+      children: [
+        _buildDateSelector(viewModel, context),
+        _buildCaloriesCard(viewModel, context),
+        // Tab chính: Food và Exercise
+        TabBar(
+          controller: _tabController,
+          tabs: const [
+            Tab(text: 'FOOD'),
+            Tab(text: 'EXERCISE'),
+          ],
+        ),
+        // TabBarView chính
+        Expanded(
+          child: TabBarView(
             controller: _tabController,
-            tabs: const [
-              Tab(text: 'FOOD'),
-              Tab(text: 'EXERCISE'),
-            ],
-          ),
-          // TabBarView chính
-          Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              children: [
-                // Tab Food với 3 danh sách
-                SingleChildScrollView(
+            children: [
+              // Tab Food với RefreshIndicator đã được di chuyển vào đây
+              RefreshIndicator(
+                onRefresh: () async {
+                  await viewModel.fetchDiaryForSelectedDate();
+                },
+                child: SingleChildScrollView(
                   physics: const AlwaysScrollableScrollPhysics(),
-                  child: Column(
-                    children: [
-                      // Breakfast
-                      _buildMealList(
-                        viewModel,
-                        context,
-                        'Breakfast',
-                        viewModel.breakfastItems,
-                        viewModel.breakfastCalories,
-                        MealType.breakfast,
-                      ),
-                      // Lunch
-                      _buildMealList(
-                        viewModel,
-                        context,
-                        'Lunch',
-                        viewModel.lunchItems,
-                        viewModel.lunchCalories,
-                        MealType.lunch,
-                      ),
-                      // Dinner
-                      _buildMealList(
-                        viewModel,
-                        context,
-                        'Dinner',
-                        viewModel.dinnerItems,
-                        viewModel.dinnerCalories,
-                        MealType.dinner,
-                      ),
-                    ],
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minHeight: MediaQuery.of(context).size.height - 200,
+                    ),
+                    child: Column(
+                      children: [
+                        // Breakfast
+                        _buildMealList(
+                          viewModel,
+                          context,
+                          'Breakfast',
+                          viewModel.breakfastItems,
+                          viewModel.breakfastCalories,
+                          MealType.breakfast,
+                        ),
+                        // Lunch
+                        _buildMealList(
+                          viewModel,
+                          context,
+                          'Lunch',
+                          viewModel.lunchItems,
+                          viewModel.lunchCalories,
+                          MealType.lunch,
+                        ),
+                        // Dinner
+                        _buildMealList(
+                          viewModel,
+                          context,
+                          'Dinner',
+                          viewModel.dinnerItems,
+                          viewModel.dinnerCalories,
+                          MealType.dinner,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                // Tab Exercise
-                SingleChildScrollView(
+              ),
+              // Tab Exercise với RefreshIndicator đã được di chuyển vào đây
+              RefreshIndicator(
+                onRefresh: () async {
+                  await viewModel.fetchDiaryForSelectedDate();
+                },
+                child: SingleChildScrollView(
                   physics: const AlwaysScrollableScrollPhysics(),
-                  child: _buildExerciseList(viewModel, context),
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minHeight: MediaQuery.of(context).size.height - 200,
+                    ),
+                    child: _buildExerciseList(viewModel, context),
+                  ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -125,7 +142,7 @@ class _DiaryScreenState extends State<DiaryScreen> with TickerProviderStateMixin
     final textTheme = Theme.of(context).textTheme;
 
     return Container(
-      padding: const EdgeInsets.only(top: 25),
+      padding: const EdgeInsets.only(top: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -181,9 +198,7 @@ class _DiaryScreenState extends State<DiaryScreen> with TickerProviderStateMixin
                   Text('=', style: textTheme.bodySmall),
                   const SizedBox(width: 12),
                   _buildCalorieColumn(
-                      viewModel.caloriesRemaining.toInt(),
-                      'Remaining',
-                      context,
+                      viewModel.caloriesRemaining.toInt(), 'Remaining', context,
                       bold: true),
                 ],
               ),
@@ -215,13 +230,13 @@ class _DiaryScreenState extends State<DiaryScreen> with TickerProviderStateMixin
   }
 
   Widget _buildMealList(
-      DiaryViewModel viewModel,
-      BuildContext context,
-      String mealTitle,
-      List<Food> foodItems,
-      int calories,
-      MealType mealType,
-      ) {
+    DiaryViewModel viewModel,
+    BuildContext context,
+    String mealTitle,
+    List<Food> foodItems,
+    int calories,
+    MealType mealType,
+  ) {
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
 
@@ -239,13 +254,12 @@ class _DiaryScreenState extends State<DiaryScreen> with TickerProviderStateMixin
               ],
             ),
           ),
-          ...foodItems.map((item) => _buildFoodItem(item, context, () {
-            context.push('/food/${viewModel.diaryId}/${item.id}/edit');
-          })),
+          ...foodItems.map((item) => _buildFoodItem(item, context, viewModel)),
           TextButton(
             onPressed: () {
               // Truyền mealType vào màn hình tìm kiếm
-              context.push('/search/${viewModel.diaryId}?mealType=${mealType.toString().split('.').last}');
+              context.push(
+                  '/search/${viewModel.diaryId}?mealType=${mealType.toString().split('.').last}');
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -255,8 +269,8 @@ class _DiaryScreenState extends State<DiaryScreen> with TickerProviderStateMixin
                   child: Text(
                     'ADD FOOD',
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      color: colorScheme.primary,
-                    ),
+                          color: colorScheme.primary,
+                        ),
                   ),
                 ),
               ],
@@ -300,8 +314,8 @@ class _DiaryScreenState extends State<DiaryScreen> with TickerProviderStateMixin
                   child: Text(
                     'ADD EXERCISE',
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      color: colorScheme.primary,
-                    ),
+                          color: colorScheme.primary,
+                        ),
                   ),
                 ),
               ],
@@ -312,30 +326,75 @@ class _DiaryScreenState extends State<DiaryScreen> with TickerProviderStateMixin
     );
   }
 
-  Widget _buildFoodItem(Food item, BuildContext context, VoidCallback onTap) {
+  Widget _buildFoodItem(
+      Food item, BuildContext context, DiaryViewModel viewModel) {
     final textTheme = Theme.of(context).textTheme;
+    final isRemoving = viewModel.isRemovingFood(item.id);
 
-    return InkWell(
-      onTap: onTap,
-      child: Column(
-        children: [
-          ListTile(
-            title: Text(
-              item.name,
-              style: textTheme.bodyMedium,
-            ),
-            subtitle: Text(
-                "${item.calories} cal, Carbs: ${item.carbs}g, Fat: ${item.fat}g, Protein: ${item.protein}g",
-                style: textTheme.bodySmall),
-            trailing: Text('${item.calories}'),
+    return Column(
+      children: [
+        ListTile(
+          title: Text(
+            item.name,
+            style: textTheme.bodyMedium,
           ),
-          const Divider(
-            height: 0.1,
-            indent: 16,
-            endIndent: 16,
+          subtitle: Text(
+              "${item.calories} cal, Carbs: ${item.carbs}g, Fat: ${item.fat}g, Protein: ${item.protein}g",
+              style: textTheme.bodySmall),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('${item.calories}'),
+              IconButton(
+                icon: isRemoving
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.delete_outline, color: Colors.red),
+                onPressed: isRemoving
+                    ? null
+                    : () async {
+                        // Hiện hộp thoại xác nhận
+                        final shouldDelete = await showDialog<bool>(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text("Xác nhận xóa"),
+                            content: Text(
+                                "Bạn có chắc muốn xóa ${item.name} khỏi nhật ký?"),
+                            actions: [
+                              TextButton(
+                                onPressed: () =>
+                                    Navigator.of(context).pop(false),
+                                child: const Text("Hủy"),
+                              ),
+                              TextButton(
+                                onPressed: () =>
+                                    Navigator.of(context).pop(true),
+                                child: const Text("Xóa"),
+                              ),
+                            ],
+                          ),
+                        );
+
+                        if (shouldDelete == true) {
+                          await viewModel.removeFoodFromDiary(item.id);
+                        }
+                      },
+              ),
+            ],
           ),
-        ],
-      ),
+          onTap: () {
+            context.push('/food/${viewModel.diaryId}/${item.id}/edit');
+          },
+        ),
+        const Divider(
+          height: 0.1,
+          indent: 16,
+          endIndent: 16,
+        ),
+      ],
     );
   }
 

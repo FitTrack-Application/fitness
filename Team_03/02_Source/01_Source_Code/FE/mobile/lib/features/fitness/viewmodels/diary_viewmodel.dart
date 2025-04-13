@@ -12,6 +12,8 @@ class DiaryViewModel extends ChangeNotifier {
   bool _isLoading = false;
   // Thay thế biến isAdding bằng Set các foodIds đang được thêm
   final Set<String> _addingFoodIds = {};
+  // Thêm set để theo dõi các món ăn đang được xóa
+  final Set<String> _removingFoodIds = {};
   Diary? _currentDiaryDay;
   String? _errorMessage;
 
@@ -21,6 +23,9 @@ class DiaryViewModel extends ChangeNotifier {
 
   // Getters
   bool isAddingFood(String foodId) => _addingFoodIds.contains(foodId);
+
+  // Getter để kiểm tra món ăn có đang được xóa không
+  bool isRemovingFood(String foodId) => _removingFoodIds.contains(foodId);
 
   // Getters
   DateTime get selectedDate => _selectedDate;
@@ -105,6 +110,8 @@ class DiaryViewModel extends ChangeNotifier {
     try {
       await Future.delayed(const Duration(milliseconds: 500));
       await _repository.addFoodToDiary(diaryId, food.id, servingSize, date);
+      // Cập nhật lại diary sau khi thêm thành công
+      await fetchDiaryForSelectedDate();
     } catch (e) {
       _errorMessage = "Không thể thêm thức ăn: ${e.toString()}";
       notifyListeners();
@@ -114,7 +121,38 @@ class DiaryViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
-}
 
-// Đảm bảo class Food có trường mealType
-// Nếu chưa có, bạn cần cập nhật model Food
+  /// Xóa thức ăn khỏi nhật ký
+  Future<void> removeFoodFromDiary(String foodId) async {
+    _removingFoodIds.add(foodId);
+    notifyListeners();
+
+    try {
+      await _repository.removeFoodFromDiary(diaryId, foodId, _selectedDate);
+
+      // Cập nhật lại UI sau khi xóa thành công
+      if (_currentDiaryDay != null) {
+        // Tạo Diary mới với danh sách món ăn đã được cập nhật
+        final updatedFoodItems = _currentDiaryDay!.foodItems
+            .where((food) => food.id != foodId)
+            .toList();
+
+        _currentDiaryDay = Diary(
+          diaryId: _currentDiaryDay!.diaryId,
+          date: _currentDiaryDay!.date,
+          calorieGoal: _currentDiaryDay!.calorieGoal,
+          foodItems: updatedFoodItems,
+          exerciseItems: _currentDiaryDay!.exerciseItems,
+        );
+      }
+
+      notifyListeners();
+    } catch (e) {
+      _errorMessage = "Không thể xóa thức ăn: ${e.toString()}";
+      notifyListeners();
+    } finally {
+      _removingFoodIds.remove(foodId);
+      notifyListeners();
+    }
+  }
+}

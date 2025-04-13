@@ -9,15 +9,15 @@ class DiaryRepository {
 
   DiaryRepository({
     String baseUrl =
-        "https://abf1f370-fb74-44fe-a48a-8a4d4b4ecce0.mock.pstmn.io/api/diary",
+    "https://abf1f370-fb74-44fe-a48a-8a4d4b4ecce0.mock.pstmn.io/api/diary",
   }) : _apiClient = ApiClient(baseUrl);
 
   final String jwtToken = "abc";
 
   Map<String, String> get _headers => {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $jwtToken',
-      };
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer $jwtToken',
+  };
 
   String _formatDateForApi(DateTime date) {
     return "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
@@ -55,6 +55,7 @@ class DiaryRepository {
           fat: 15,
           unit: 'g',
           description: 'Một tô phở bò nóng hổi',
+          mealType: MealType.breakfast,
         ),
         Food(
           id: 'f2',
@@ -66,6 +67,7 @@ class DiaryRepository {
           fat: 10,
           unit: 'g',
           description: 'Hai quả trứng gà luộc',
+          mealType: MealType.lunch,
         ),
       ],
       exerciseItems: [
@@ -86,5 +88,26 @@ class DiaryRepository {
     // } catch (e) {
     //   throw Exception('Failed to add food to diary: $e');
     // }
+
+    // Giả lập thêm thành công
+    await Future.delayed(const Duration(milliseconds: 500));
+  }
+
+  /// Xóa món ăn khỏi nhật ký
+  Future<void> removeFoodFromDiary(int diaryId, String foodId, DateTime date) async {
+    // Trong môi trường thực tế
+    // try {
+    //   final formattedDate = _formatDateForApi(date);
+    //   await _apiClient.delete("/remove_food", queryParams: {
+    //     "diary_id": diaryId.toString(),
+    //     "food_id": foodId,
+    //     "date": formattedDate,
+    //   });
+    // } catch (e) {
+    //   throw Exception('Failed to remove food from diary: $e');
+    // }
+
+    // Giả lập xóa thành công
+    await Future.delayed(const Duration(milliseconds: 500));
   }
 }
