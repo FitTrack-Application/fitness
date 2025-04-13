@@ -43,13 +43,13 @@ public class FoodController {
             return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
             ApiResponse<FoodDto> response = ApiResponse.<FoodDto>builder()
-                    .status(404)
+                    .status(400)
                     .generalMessage("Failed to get food")
                     .errorDetails(List.of(e.getMessage()))
                     .timestamp(LocalDateTime.now())
                     .build();
 
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            return ResponseEntity.badRequest().body(response);
         }
     }
 

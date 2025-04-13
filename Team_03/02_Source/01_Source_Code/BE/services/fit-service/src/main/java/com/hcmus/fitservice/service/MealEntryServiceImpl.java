@@ -34,7 +34,7 @@ public class MealEntryServiceImpl implements MealEntryService {
     }
 
     @Override
-    public MealEntryDto updateMealEntry(UUID mealEntryId, UUID foodId, String servingUnit, Integer numberOfServings) {
+    public MealEntryDto updateMealEntry(UUID mealEntryId, UUID foodId, String servingUnit, Double numberOfServings) {
         // Find the meal entry by ID
         MealEntry mealEntry = mealEntryRepository.findById(mealEntryId)
                 .orElseThrow(() -> new IllegalArgumentException("Meal entry not found with ID: " + mealEntryId));

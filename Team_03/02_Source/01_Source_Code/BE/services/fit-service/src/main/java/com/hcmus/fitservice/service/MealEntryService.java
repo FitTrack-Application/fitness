@@ -7,5 +7,5 @@ import java.util.UUID;
 public interface MealEntryService {
     void deleteMealEntry(UUID mealEntryId);
 
-    MealEntryDto updateMealEntry(UUID mealEntryId, UUID foodId, String servingUnit, Integer numberOfServings);
+    MealEntryDto updateMealEntry(UUID mealEntryId, UUID foodId, String servingUnit, Double numberOfServings);
 }
