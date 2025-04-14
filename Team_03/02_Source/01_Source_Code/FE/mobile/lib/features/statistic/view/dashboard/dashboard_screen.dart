@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mobile/features/statistic/models/step_entry.dart';
 import 'package:mobile/features/statistic/models/weight_entry.dart' show WeightEntry;
 import 'package:mobile/features/statistic/view/dashboard/weight_graph.dart';
+import 'package:mobile/features/statistic/view/dashboard/widget/step_graph.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../cores/constants/colors.dart';
@@ -63,6 +65,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
       WeightEntry(date: DateTime(2025, 4, 26), weight: 75.0),
       WeightEntry(date: DateTime(2025, 4, 28), weight: 73.0),
     ];
+      final List<StepEntry> stepEntries = [
+    StepEntry(date: DateTime.now().subtract(const Duration(days: 6)), steps: 8742),
+    StepEntry(date: DateTime.now().subtract(const Duration(days: 5)), steps: 10253),
+    StepEntry(date: DateTime.now().subtract(const Duration(days: 4)), steps: 7391),
+    StepEntry(date: DateTime.now().subtract(const Duration(days: 3)), steps: 12483),
+    StepEntry(date: DateTime.now().subtract(const Duration(days: 2)), steps: 5932),
+    StepEntry(date: DateTime.now().subtract(const Duration(days: 1)), steps: 9847),
+    StepEntry(date: DateTime.now(), steps: 11362),
+  ];
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: ListView(
@@ -76,11 +87,30 @@ class _DashboardScreenState extends State<DashboardScreen> {
           const SizedBox(height: 24),
           _buildQuickLogCard(theme),
           const SizedBox(height: 24),
-          WeightGraph(
-            entries: fixedEntries, // Pass the fixed data here
-            title: 'Weight History (kg)',
-            lineColor: Colors.blue,
-            gradientColor: Colors.blueAccent,
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal, // Enable horizontal scrolling
+            child: Row(
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.8, // Adjust width for each graph
+                  
+                  child: WeightGraph(
+                    entries: fixedEntries,
+                    title: 'Weight History (kg)',
+                  ),
+                ),
+                const SizedBox(width: 16), // Add spacing between the graphs
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.8, // Adjust width for each graph
+ 
+                  
+                  child: StepGraph(
+                    entries: stepEntries,
+                    title: 'Steps Today',
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),

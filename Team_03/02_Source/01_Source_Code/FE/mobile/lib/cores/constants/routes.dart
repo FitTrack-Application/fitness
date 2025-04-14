@@ -10,6 +10,7 @@ import 'package:mobile/features/auth/views/splash/splash_screen.dart';
 import 'package:mobile/features/auth/views/survey/user_survey.dart';
 import 'package:mobile/features/fitness/view/diary/diary_screen.dart';
 import 'package:mobile/features/statistic/view/dashboard/dashboard_screen.dart';
+import 'package:mobile/features/statistic/view/step/add_step.dart';
 
 import '../../features/fitness/view/food_detail/food_detail_screen.dart';
 import '../../features/fitness/view/search_food/search_food_screen.dart';
@@ -92,6 +93,10 @@ final GoRouter appRouter = GoRouter(
         GoRoute(
       path: '/weight/add',
       builder: (context, state) => AddWeight(), 
+    ),
+    GoRoute(
+      path: '/steps/add',
+      builder: (context, state) => AddStep(),
     ),
   ],
 );

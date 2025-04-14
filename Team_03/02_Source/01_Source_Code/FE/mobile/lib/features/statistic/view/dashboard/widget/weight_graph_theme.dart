@@ -1,6 +1,5 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import '../../constants/colors.dart';
+import '../../../../../cores/constants/colors.dart';
 
 class WeightGraphTheme {
   // Container decoration based on theme

@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile/features/statistic/models/weight_entry.dart';
 import 'package:mobile/cores/constants/colors.dart';
-import 'package:mobile/cores/theme/widget_themes/weight_graph_theme.dart';
+import 'package:mobile/features/statistic/view/dashboard/widget/weight_graph_theme.dart';
 
 class WeightGraph extends StatelessWidget {
   final List<WeightEntry> entries;
@@ -39,6 +39,10 @@ class WeightGraph extends StatelessWidget {
     // Find min and max dates
     final minDate = sortedEntries.first.date;
     final maxDate = sortedEntries.last.date;
+    
+    // Calculate date intervals for x-axis
+    final totalDays = maxDate.difference(minDate).inDays;
+    final daysInterval = _calculateOptimalDaysInterval(totalDays);
     
     return Container(
       decoration: WeightGraphTheme.containerDecoration(context), 
@@ -106,19 +110,27 @@ class WeightGraph extends StatelessWidget {
                               sideTitles: SideTitles(
                                 showTitles: true,
                                 reservedSize: 30,
-                                interval: 2, // Increase the interval to control spacing
+                                interval: 2, // Adjust interval to avoid duplicates
                                 getTitlesWidget: (double value, TitleMeta meta) {
+                                  // Convert the x-axis value to a date
                                   final date = DateTime.fromMillisecondsSinceEpoch(
                                     minDate.millisecondsSinceEpoch +
                                         ((value / 10) * (maxDate.millisecondsSinceEpoch - minDate.millisecondsSinceEpoch)).toInt(),
                                   );
-                                  return Transform.rotate(
-                                    angle: 45 * 3.1415926535 / 180,
-                                    child: Text(
-                                      DateFormat('MM/dd').format(date),
-                                      style: WeightGraphTheme.titleDataStyle(context),
-                                    ),
-                                  );
+                                  
+                                  // Only show labels at specific intervals to avoid overcrowding
+                                  final daysSinceStart = date.difference(minDate).inDays;
+                                  
+                                  if (daysSinceStart % daysInterval == 0) {
+                                    return Transform.rotate(
+                                      angle: -0.5, // Slight rotation for better readability
+                                      child: Text(
+                                        DateFormat('MM/dd').format(date),
+                                        style: WeightGraphTheme.titleDataStyle(context),
+                                      ),
+                                    );
+                                  }
+                                  return const SizedBox();
                                 },
                               ),
                             ),
@@ -130,7 +142,7 @@ class WeightGraph extends StatelessWidget {
                                 getTitlesWidget: (double value, TitleMeta meta) {
                                   if (value % 4 == 0) {
                                     return Text(
-                                      '${value.toInt()} kg',
+                                      '${value.toInt()} ',
                                       style: WeightGraphTheme.titleDataStyle(context),
                                     );
                                   }
@@ -138,10 +150,10 @@ class WeightGraph extends StatelessWidget {
                                 },
                               ),
                             ),
-                            topTitles: AxisTitles(
+                            topTitles: const AxisTitles(
                               sideTitles: SideTitles(showTitles: false),
                             ),
-                            rightTitles: AxisTitles(
+                            rightTitles: const AxisTitles(
                               sideTitles: SideTitles(showTitles: false),
                             ),
                           ),
@@ -160,7 +172,7 @@ class WeightGraph extends StatelessWidget {
                               color: lineColor,
                               barWidth: 3,
                               isStrokeCapRound: true,
-                              dotData: FlDotData(
+                              dotData: const FlDotData(
                                 show: true,
                               ),
                               belowBarData: BarAreaData(
@@ -178,7 +190,10 @@ class WeightGraph extends StatelessWidget {
                           ],
                           lineTouchData: LineTouchData(
                             touchTooltipData: LineTouchTooltipData(
+                              // Fix: Add tooltipBgColor for fl_chart 0.70.2
                               
+                              tooltipRoundedRadius: 8,
+                              tooltipPadding: const EdgeInsets.all(8),
                               getTooltipItems: (List<LineBarSpot> touchedBarSpots) {
                                 return touchedBarSpots.map((barSpot) {
                                   final date = DateTime.fromMillisecondsSinceEpoch(
@@ -212,7 +227,6 @@ class WeightGraph extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 16),
                 ],
               ),
             ),
@@ -230,5 +244,20 @@ class WeightGraph extends StatelessWidget {
       final xValue = (entry.date.difference(minDate).inMilliseconds / totalDuration) * 10;
       return FlSpot(xValue, entry.weight);
     }).toList();
+  }
+  
+  // Calculate optimal interval for date labels based on total days
+  int _calculateOptimalDaysInterval(int totalDays) {
+    if (totalDays <= 7) {
+      return 1; // Show every day for a week or less
+    } else if (totalDays <= 30) {
+      return 3; // Show every 3 days for a month
+    } else if (totalDays <= 90) {
+      return 7; // Show weekly for 3 months
+    } else if (totalDays <= 365) {
+      return 30; // Show monthly for a year
+    } else {
+      return 90; // Show quarterly for more than a year
+    }
   }
 }
