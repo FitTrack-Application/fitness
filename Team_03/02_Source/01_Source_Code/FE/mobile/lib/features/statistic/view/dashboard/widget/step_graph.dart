@@ -62,7 +62,7 @@ class StepGraph extends StatelessWidget {
                     children: [
                       Text(
                         title,
-                        style: StepGraphTheme.cardTitleStyle(context),
+                        style: Theme.of(context).textTheme.titleLarge,
                       ),
                       // Add button
                       IconButton(

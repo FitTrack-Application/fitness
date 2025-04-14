@@ -12,12 +12,13 @@ class WeightGraph extends StatelessWidget {
   final Color gradientColor;
   final String title;
   final VoidCallback? onAddPressed;
-  
+  final double weightGoal;
   const WeightGraph({
     super.key,
     required this.entries,
     this.lineColor = HighlightColors.highlight500,
     this.gradientColor = HighlightColors.highlight500,
+    this.weightGoal = 68.0,
     this.title = 'Weight Tracking',
     this.onAddPressed,
   });
@@ -64,7 +65,7 @@ class WeightGraph extends StatelessWidget {
                     children: [
                       Text(
                         title,
-                        style: WeightGraphTheme.cardTitleStyle(context),
+                        style: Theme.of(context).textTheme.titleLarge,
                       ),
                       // Add button
                       IconButton(
@@ -175,19 +176,20 @@ class WeightGraph extends StatelessWidget {
                               dotData: const FlDotData(
                                 show: true,
                               ),
-                              belowBarData: BarAreaData(
-                                show: true,
-                                gradient: LinearGradient(
-                                  colors: [
-                                    gradientColor.withOpacity(0.3),
-                                    gradientColor.withOpacity(0.0),
-                                  ],
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                ),
-                              ),
+                              
                             ),
                           ],
+                          extraLinesData: ExtraLinesData(
+                            horizontalLines: [
+                              HorizontalLine(
+                                y: weightGoal, // Set the y-coordinate for the weight goal
+                                color: HighlightColors.highlight200, // Color of the goal line
+                                strokeWidth: 2, // Thickness of the goal line
+                                dashArray: [5, 5], // Optional: Make the line dashed
+                
+                              ),
+                            ],
+                          ),
                           lineTouchData: LineTouchData(
                             touchTooltipData: LineTouchTooltipData(
                               // Fix: Add tooltipBgColor for fl_chart 0.70.2
