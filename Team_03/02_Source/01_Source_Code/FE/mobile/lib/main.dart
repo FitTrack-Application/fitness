@@ -10,7 +10,8 @@ import 'features/fitness/viewmodels/diary_viewmodel.dart';
 import 'features/fitness/viewmodels/search_food_viewmodel.dart';
 import 'features/statistic/services/dashboard_api_service.dart';
 import 'features/statistic/view/dashboard/dashboard_screen.dart';
-
+import 'package:mobile/features/auth/viewmodels/goal_viewmodel.dart';
+import 'package:mobile/features/auth/viewmodels/profile_viewmodel.dart';
 void main() {
   runApp(
     MultiProvider(
@@ -28,6 +29,12 @@ void main() {
             create: (_) => SearchFoodViewModel()..searchFoods()),
         ChangeNotifierProvider(
           create: (_) => DiaryViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => ProfileViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => GoalViewModel(),
         ),
       ],
       child: const MyApp(),

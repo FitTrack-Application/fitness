@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mobile/features/statistic/models/weight_entry.dart' show WeightEntry;
+import 'package:mobile/features/statistic/view/dashboard/weight_graph.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../cores/constants/colors.dart';
@@ -23,7 +25,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       const token = 'auth_token';
 
       viewModel.fetchDashboardData(token: token);
-      viewModel.fetchWeightStatistics();
+
       _initialized = true;
     }
   }
@@ -55,7 +57,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final burned = viewModel.totalCaloriesBurned;
     final goal = viewModel.caloriesGoal;
     final remaining = goal - consumed; //+ burned;
-
+    final List<WeightEntry> fixedEntries = [
+      WeightEntry(date: DateTime(2025, 4, 20), weight: 70.0),
+      WeightEntry(date: DateTime(2025, 4, 22), weight: 72.0),
+      WeightEntry(date: DateTime(2025, 4, 26), weight: 75.0),
+      WeightEntry(date: DateTime(2025, 4, 28), weight: 73.0),
+    ];
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: ListView(
@@ -68,6 +75,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
           _buildMacronutrientsCard(theme, viewModel),
           const SizedBox(height: 24),
           _buildQuickLogCard(theme),
+          const SizedBox(height: 24),
+          WeightGraph(
+            entries: fixedEntries, // Pass the fixed data here
+            title: 'Weight History (kg)',
+            lineColor: Colors.blue,
+            gradientColor: Colors.blueAccent,
+          ),
         ],
       ),
     );
@@ -76,7 +90,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget _buildCaloriesCard(ThemeData theme, int consumed, int goal, int remaining) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      color: HighlightColors.highlight100,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -100,7 +113,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget _calorieBox(String label, String value, Color color) {
     return Column(
       children: [
-        Text(label, style: TextStyle(fontSize: 14, color: NeutralColors.dark300)),
+        Text(label, style: Theme.of(context).textTheme.bodySmall),
         const SizedBox(height: 4),
         Text(value, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: color)),
       ],

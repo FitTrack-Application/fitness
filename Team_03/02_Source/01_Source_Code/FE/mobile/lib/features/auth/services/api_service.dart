@@ -46,7 +46,7 @@ class ApiService {
 
   Future<Map<String, dynamic>> getProfile() async {
   final response = await http.get(
-    Uri.parse("https://abf1f370-fb74-44fe-a48a-8a4d4b4ecce0.mock.pstmn.io/api/users/me"),
+    Uri.parse("https://b542ee45-7bae-4351-aae6-fd50549da5ac.mock.pstmn.io/api/users/me"),
     headers: {"Content-Type": "application/json"},
   );
 
