@@ -28,13 +28,21 @@ public class ApiResponse<T> {
     private LocalDateTime timestamp;
 
     public String toJson() {
+        StringBuilder errorDetailsStr = new StringBuilder("[");
+        for (int i = 0; i < errorDetails.size(); i++) {
+            errorDetailsStr.append("\"").append(errorDetails.get(i)).append("\"");
+            if (i < errorDetails.size() - 1) {
+                errorDetailsStr.append(",");
+            }
+        }
+        errorDetailsStr.append("]");
         return "{"
-                + "\"status\":" + status + "\","
-                + ",\"generalMessage\":\"" + generalMessage + "\""
-                + ",\"data\":" + data + "\","
-                + ",\"metadata\":" + metadata + "\","
-                + ",\"errorDetails\":" + errorDetails + "\","
-                + ",\"timestamp\":\"" + timestamp + "\""
+                + "\"status\":" + status + ","
+                + "\"generalMessage\":\"" + generalMessage + "\","
+                + "\"data\":" + null + ","
+                + "\"metadata\":" + null + ","
+                + "\"errorDetails\":" + errorDetailsStr + ","
+                + "\"timestamp\":\"" + timestamp + "\""
                 + "}";
     }
 }

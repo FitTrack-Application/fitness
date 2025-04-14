@@ -21,25 +21,26 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/meal-logs")
 public class MealLogController {
+
     private final MealLogService mealLogService;
 
     private final JwtUtil jwtUtil;
 
-    // Create Meal Log (User Id sẽ sửa thành lấy từ JWT)
+    // Create meal log
     @PostMapping
     public ResponseEntity<ApiResponse<Void>> createMealLog(
             @RequestHeader("Authorization") String authorization,
             @RequestBody MealLogRequest mealLogRequest
     ) {
-        UUID userId = jwtUtil.extractUserId(authorization);
+        UUID userId = jwtUtil.extractUserId(authorization.replace("Bearer ", ""));
         ApiResponse<Void> response = mealLogService.createMealLog(
                 userId,
                 mealLogRequest.getDate(),
                 mealLogRequest.getMealType());
-        return ResponseEntity.badRequest().body(response);
+        return ResponseEntity.ok(response);
     }
 
-    // Add Meal Entry (sẽ thêm User Id lấy từ JWT)
+    // Add meal entry
     @PostMapping("/{mealLogId}/entries")
     public ResponseEntity<ApiResponse<MealEntryDto>> addMealEntry(
             @PathVariable UUID mealLogId,
@@ -54,13 +55,13 @@ public class MealLogController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    // Get Meal Log by User Id and Date (User Id sẽ sửa thành lấy từ JWT)
+    // Get meal log by user id and date
     @GetMapping
     public ResponseEntity<ApiResponse<List<MealLogDto>>> getMealLogsByUserIdAndDate(
             @RequestHeader("Authorization") String authorization,
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date date
     ) {
-        UUID userId = jwtUtil.extractUserId(authorization);
+        UUID userId = jwtUtil.extractUserId(authorization.replace("Bearer ", ""));
         ApiResponse<List<MealLogDto>> response = mealLogService.getMealLogsByUserIdAndDate(userId, date);
         return ResponseEntity.ok(response);
     }

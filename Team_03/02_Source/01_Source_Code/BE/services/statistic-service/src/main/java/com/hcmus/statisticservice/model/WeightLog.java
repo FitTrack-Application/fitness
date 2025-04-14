@@ -14,6 +14,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "weight_logs")
 public class WeightLog {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "weight_log_id", nullable = false)

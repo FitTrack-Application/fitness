@@ -12,33 +12,30 @@ import java.util.UUID;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("api/meal-entries")
+@RequestMapping("/api/meal-entries")
 public class MealEntryController {
+
     private final MealEntryService mealEntryService;
 
-    // Delete Meal Entry
+    // Delete meal entry
     @DeleteMapping("/{mealEntryId}")
     public ResponseEntity<ApiResponse<Void>> deleteMealEntry(@PathVariable UUID mealEntryId) {
-
         ApiResponse<Void> response = mealEntryService.deleteMealEntry(mealEntryId);
-
         return ResponseEntity.ok(response);
     }
 
-    // Update Meal Entry
+    // Update meal entry
     @PutMapping("/{mealEntryId}")
     public ResponseEntity<ApiResponse<MealEntryDto>> updateMealEntry(
             @PathVariable UUID mealEntryId,
             @RequestBody MealEntryRequest mealEntryRequest
     ) {
-
         ApiResponse<MealEntryDto> response = mealEntryService.updateMealEntry(
                 mealEntryId,
                 mealEntryRequest.getFoodId(),
                 mealEntryRequest.getServingUnit(),
                 mealEntryRequest.getNumberOfServings()
         );
-
         return ResponseEntity.ok(response);
     }
 }

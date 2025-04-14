@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class MealLogServiceImpl implements MealLogService {
+
     private final MealLogRepository mealLogRepository;
 
     private final FoodRepository foodRepository;
@@ -49,14 +50,12 @@ public class MealLogServiceImpl implements MealLogService {
 
         mealLogRepository.save(mealLog);
 
-        // Create response
-        ApiResponse<Void> response = ApiResponse.<Void>builder()
+        // Return response
+        return ApiResponse.<Void>builder()
                 .status(201)
                 .generalMessage("Meal log created successfully")
                 .timestamp(LocalDateTime.now())
                 .build();
-
-        return response;
     }
 
     @Override
@@ -80,15 +79,13 @@ public class MealLogServiceImpl implements MealLogService {
 
         MealEntryDto mealEntryDto = new MealEntryDto(mealEntry.getMealEntryId(), food.getFoodId(), mealEntry.getServingUnit().name(), mealEntry.getNumberOfServings());
 
-        // Create response
-        ApiResponse<MealEntryDto> response = ApiResponse.<MealEntryDto>builder()
+        // Return response
+        return ApiResponse.<MealEntryDto>builder()
                 .status(201)
                 .generalMessage("Meal entry added successfully")
                 .data(mealEntryDto)
                 .timestamp(LocalDateTime.now())
                 .build();
-
-        return response;
     }
 
     @Override
@@ -117,14 +114,12 @@ public class MealLogServiceImpl implements MealLogService {
                 )
         ).collect(Collectors.toList());
 
-        // Create response
-        ApiResponse<List<MealLogDto>> response = ApiResponse.<List<MealLogDto>>builder()
+        // Return response
+        return ApiResponse.<List<MealLogDto>>builder()
                 .status(200)
                 .generalMessage("Meal logs retrieved successfully")
                 .data(mealLogDtos)
                 .timestamp(LocalDateTime.now())
                 .build();
-
-        return response;
     }
 }

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface WeightRepository extends JpaRepository<WeightLog, UUID> {
-    List<WeightLog> findByUserId(UUID userId);
+public interface WeightLogRepository extends JpaRepository<WeightLog, UUID> {
 
+    List<WeightLog> findByUserId(UUID userId);
 }

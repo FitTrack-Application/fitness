@@ -3,6 +3,7 @@ package com.hcmus.fitservice.service;
 import com.hcmus.fitservice.dto.FoodDto;
 import com.hcmus.fitservice.dto.response.ApiResponse;
 import com.hcmus.fitservice.exception.ResourceNotFoundException;
+import com.hcmus.fitservice.mapper.FoodMapper;
 import com.hcmus.fitservice.model.Food;
 import com.hcmus.fitservice.repository.FoodRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,63 +20,39 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class FoodServiceImpl implements FoodService {
+
     private final FoodRepository foodRepository;
 
     @Override
     public ApiResponse<FoodDto> getFoodById(UUID foodId) {
         FoodDto foodDto = foodRepository.findById(foodId)
-                .map(this::convertToDto)
+                .map(FoodMapper.INSTANCE::convertToFoodDto)
                 .orElseThrow(() -> new ResourceNotFoundException("Food not found with ID: " + foodId));
 
-        // Create response
-        ApiResponse<FoodDto> response = ApiResponse.<FoodDto>builder()
+        // Return response
+        return ApiResponse.<FoodDto>builder()
                 .status(200)
-                .generalMessage("Successfully retrieved food")
+                .generalMessage("Successfully retrieved food!")
                 .data(foodDto)
                 .timestamp(LocalDateTime.now())
                 .build();
-
-        return response;
     }
-
 
     @Override
     public ApiResponse<List<FoodDto>> getAllFoods(Pageable pageable) {
         Page<Food> foodPage = foodRepository.findAll(pageable);
-
-        // Convert to Dto
-        Page<FoodDto> foodPageDto = foodPage.map(this::convertToDto);
-
-        // Pagination info
-        Map<String, Object> pagination = new HashMap<>();
-        pagination.put("currentPage", foodPage.getNumber() + 1); // Page number start at 1
-        pagination.put("totalPages", foodPage.getTotalPages());
-        pagination.put("totalItems", foodPage.getTotalElements());
-        pagination.put("pageSize", foodPage.getSize());
-
-        Map<String, Object> metadata = new HashMap<>();
-        metadata.put("pagination", pagination);
-
-        // Create response
-        ApiResponse<List<FoodDto>> response = ApiResponse.<List<FoodDto>>builder()
-                .status(200)
-                .generalMessage("Successfully retrieved foods")
-                .data(foodPageDto.getContent())
-                .metadata(metadata)
-                .timestamp(LocalDateTime.now())
-                .build();
-
-        return response;
+        return buildFoodDtoListResponse(foodPage);
     }
 
 
     @Override
     public ApiResponse<List<FoodDto>> searchFoodsByName(String query, Pageable pageable) {
         Page<Food> foodPage = foodRepository.findByFoodNameContainingIgnoreCase(query, pageable);
+        return buildFoodDtoListResponse(foodPage);
+    }
 
-        // Convert to Dto
-        Page<FoodDto> foodPageDto = foodPage.map(this::convertToDto);
-
+    // Convert Food entity to FoodDto
+    private ApiResponse<List<FoodDto>> buildFoodDtoListResponse(Page<Food> foodPage) {
         // Pagination info
         Map<String, Object> pagination = new HashMap<>();
         pagination.put("currentPage", foodPage.getNumber() + 1); // Page number start at 1
@@ -86,26 +63,15 @@ public class FoodServiceImpl implements FoodService {
         Map<String, Object> metadata = new HashMap<>();
         metadata.put("pagination", pagination);
 
+        Page<FoodDto> foodPageDto = foodPage.map(FoodMapper.INSTANCE::convertToFoodDto);
+
         // Create response
-        ApiResponse<List<FoodDto>> response = ApiResponse.<List<FoodDto>>builder()
+        return ApiResponse.<List<FoodDto>>builder()
                 .status(200)
                 .generalMessage("Successfully retrieved foods")
                 .data(foodPageDto.getContent())
                 .metadata(metadata)
                 .timestamp(LocalDateTime.now())
                 .build();
-
-        return response;
-    }
-
-    // Convert Food entity to FoodDto
-    private FoodDto convertToDto(Food food) {
-        return new FoodDto(
-                food.getFoodId(),
-                food.getFoodName(),
-                food.getCaloriesPer100g(),
-                food.getProteinPer100g(),
-                food.getCarbsPer100g(),
-                food.getFatPer100g());
     }
 }

@@ -131,6 +131,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ApiResponse<?>> handleGlobalException(RuntimeException exception) {
+        exception.printStackTrace();
         final ApiResponse<?> response = ApiResponse.builder()
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .generalMessage("An unexpected error occurred. Please try again later!")

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface FoodService {
+
     ApiResponse<List<FoodDto>> getAllFoods(Pageable pageable);
 
     ApiResponse<FoodDto> getFoodById(UUID foodId);

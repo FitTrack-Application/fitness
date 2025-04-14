@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.UUID;
 
 public interface MealLogService {
+
     ApiResponse<Void> createMealLog(UUID userId, Date date, String mealType);
 
     ApiResponse<MealEntryDto> addMealEntry(UUID mealLogId, UUID foodId, String servingUnit, Double numberOfServings);
 
-    // Get meal log by user id and date
     ApiResponse<List<MealLogDto>> getMealLogsByUserIdAndDate(UUID userId, Date date);
 }

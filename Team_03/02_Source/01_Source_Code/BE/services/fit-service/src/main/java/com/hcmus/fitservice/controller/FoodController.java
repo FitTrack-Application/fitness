@@ -16,18 +16,17 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/foods")
 public class FoodController {
+
     private final FoodService foodService;
 
-    // Get Food by id
+    // Get food by id
     @GetMapping("/{foodId}")
     public ResponseEntity<ApiResponse<FoodDto>> getFoodById(@PathVariable UUID foodId) {
-
         ApiResponse<FoodDto> response = foodService.getFoodById(foodId);
-
         return ResponseEntity.ok(response);
     }
 
-    // Get Foods with pagination (chưa có tìm kiếm gần đúng và không dấu)
+    // Get foods with pagination (The search is not perfectly with UTF-8)
     @GetMapping
     public ResponseEntity<ApiResponse<List<FoodDto>>> getFoods(
             @RequestParam(required = false) String query,
@@ -35,8 +34,8 @@ public class FoodController {
             @RequestParam(defaultValue = "10") int size
     ) {
         Pageable pageable = PageRequest.of(page - 1, size);
-
         ApiResponse<List<FoodDto>> response;
+
         // If query is not provided or empty, return all foods
         if (query == null || query.isEmpty()) {
             response = foodService.getAllFoods(pageable);

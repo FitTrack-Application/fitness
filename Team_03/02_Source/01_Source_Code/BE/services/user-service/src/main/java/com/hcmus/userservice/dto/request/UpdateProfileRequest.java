@@ -1,13 +1,6 @@
 package com.hcmus.userservice.dto.request;
 
-import com.hcmus.userservice.model.type.Gender;
-import com.hcmus.userservice.model.type.Role;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.*;
-
-import java.util.UUID;
 
 @Setter
 @Getter

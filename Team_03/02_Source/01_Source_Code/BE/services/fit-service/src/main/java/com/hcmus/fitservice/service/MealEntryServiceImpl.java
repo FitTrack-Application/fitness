@@ -23,21 +23,18 @@ public class MealEntryServiceImpl implements MealEntryService {
 
     @Override
     public ApiResponse<Void> deleteMealEntry(UUID mealEntryId) {
-        // Find the meal entry by ID
+        // Find the meal entry by id
         MealEntry mealEntry = mealEntryRepository.findById(mealEntryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Meal entry not found with ID: " + mealEntryId));
 
         // Delete the meal entry
         mealEntryRepository.delete(mealEntry);
 
-        // Create response
-        ApiResponse<Void> response = ApiResponse.<Void>builder()
+        return ApiResponse.<Void>builder()
                 .status(200)
                 .generalMessage("Successfully deleted meal entry")
                 .timestamp(LocalDateTime.now())
                 .build();
-
-        return response;
     }
 
     @Override
@@ -59,14 +56,11 @@ public class MealEntryServiceImpl implements MealEntryService {
 
         MealEntryDto mealEntryDto = new MealEntryDto(mealEntryId, foodId, servingUnit, numberOfServings);
 
-        // Create response
-        ApiResponse<MealEntryDto> response = ApiResponse.<MealEntryDto>builder()
+        return ApiResponse.<MealEntryDto>builder()
                 .status(200)
                 .generalMessage("Successfully updated meal entry")
                 .data(mealEntryDto)
                 .timestamp(LocalDateTime.now())
                 .build();
-
-        return response;
     }
 }
