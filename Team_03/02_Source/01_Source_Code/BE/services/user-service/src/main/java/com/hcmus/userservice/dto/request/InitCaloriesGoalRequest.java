@@ -1,4 +1,4 @@
-package com.hcmus.statisticservice.dto.request;
+package com.hcmus.userservice.dto.request;
 
 import lombok.*;
 

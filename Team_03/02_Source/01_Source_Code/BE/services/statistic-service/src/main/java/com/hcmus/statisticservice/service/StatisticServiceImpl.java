@@ -123,9 +123,9 @@ public class StatisticServiceImpl implements StatisticService {
             caloriesGoal = caloriesGoal + 1100*initCaloriesGoalRequest.getWeeklyGoal();
         }
 
-        Double protein = 2.5*initCaloriesGoalRequest.getWeight();
-        Double fat = 1*initCaloriesGoalRequest.getWeight();
-        Double carb = (caloriesGoal - protein*4 - fat*9)/4;
+        Double protein = caloriesGoal*0.3/4;
+        Double fat = caloriesGoal*0.25/9;
+        Double carb = caloriesGoal*0.45/4;
 
         Integer caloriesGoalInt = (int) Math.round(caloriesGoal);
 
