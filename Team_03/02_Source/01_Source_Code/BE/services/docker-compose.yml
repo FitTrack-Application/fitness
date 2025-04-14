@@ -13,11 +13,10 @@ services:
       - .env
       - ./fit-service/.env
     environment:
-      - POSTGRESQL_DB_HOST=ep-tight-flower-a1w3np3d-pooler.ap-southeast-1.aws.neon.tech
-      - POSTGRESQL_DB_PORT=${POSTGRES_PORT:-5432}
-      - POSTGRESQL_DB_NAME=${FIT_DB_NAME}
-      - POSTGRESQL_DB_USERNAME=${POSTGRES_USER}
-      - POSTGRESQL_DB_PASSWORD=${POSTGRES_PASSWORD}
+      - FIT_SERVICE_HOST=http://fit-service:${FIT_SERVICE_PORT:-8080}
+      - STATISTIC_SERVICE_HOST=http://statistic-service:${STATISTIC_SERVICE_PORT:-8081}
+      - USER_SERVICE_HOST=http://user-service:${USER_SERVICE_PORT:-8082}
+      - GATEWAY_SERVICE_HOST=http://gateway-service:${GATEWAY_SERVICE_PORT:-8088}
     networks:
       - fitness-network
     volumes:
@@ -41,11 +40,10 @@ services:
       - .env
       - ./statistic-service/.env
     environment:
-      - POSTGRESQL_DB_HOST=ep-tight-flower-a1w3np3d-pooler.ap-southeast-1.aws.neon.tech
-      - POSTGRESQL_DB_PORT=${POSTGRES_PORT:-5432}
-      - POSTGRESQL_DB_NAME=${STATISTIC_DB_NAME}
-      - POSTGRESQL_DB_USERNAME=${POSTGRES_USER}
-      - POSTGRESQL_DB_PASSWORD=${POSTGRES_PASSWORD}
+      - FIT_SERVICE_HOST=http://fit-service:${FIT_SERVICE_PORT:-8080}
+      - STATISTIC_SERVICE_HOST=http://statistic-service:${STATISTIC_SERVICE_PORT:-8081}
+      - USER_SERVICE_HOST=http://user-service:${USER_SERVICE_PORT:-8082}
+      - GATEWAY_SERVICE_HOST=http://gateway-service:${GATEWAY_SERVICE_PORT:-8088}
     networks:
       - fitness-network
     volumes:
@@ -69,13 +67,10 @@ services:
       - .env
       - ./user-service/.env
     environment:
-      - POSTGRESQL_DB_HOST=ep-tight-flower-a1w3np3d-pooler.ap-southeast-1.aws.neon.tech
-      - POSTGRESQL_DB_PORT=${POSTGRES_PORT:-5432}
-      - POSTGRESQL_DB_NAME=${USER_DB_NAME}
-      - POSTGRESQL_DB_USERNAME=${POSTGRES_USER}
-      - POSTGRESQL_DB_PASSWORD=${POSTGRES_PASSWORD}
-      - JWT_SECRET=2b44b0b00f92nf39fj20f21f0jcn023c320j123r2t12321crj32jy742b038151
-      - JWT_EXPIRATION=604800000
+      - FIT_SERVICE_HOST=http://fit-service:${FIT_SERVICE_PORT:-8080}
+      - STATISTIC_SERVICE_HOST=http://statistic-service:${STATISTIC_SERVICE_PORT:-8081}
+      - USER_SERVICE_HOST=http://user-service:${USER_SERVICE_PORT:-8082}
+      - GATEWAY_SERVICE_HOST=http://gateway-service:${GATEWAY_SERVICE_PORT:-8088}
     networks:
       - fitness-network
     volumes:
@@ -103,9 +98,10 @@ services:
       - .env
       - ./gateway-service/.env
     environment:
-      - USER_SERVICE_URI=http://user-service:${USER_SERVICE_PORT:-8082}
-      - FIT_SERVICE_URI=http://fit-service:${FIT_SERVICE_PORT:-8080}
-      - STATISTIC_SERVICE_URI=http://statistic-service:${STATISTIC_SERVICE_PORT:-8081}
+      - FIT_SERVICE_HOST=http://fit-service:${FIT_SERVICE_PORT:-8080}
+      - STATISTIC_SERVICE_HOST=http://statistic-service:${STATISTIC_SERVICE_PORT:-8081}
+      - USER_SERVICE_HOST=http://user-service:${USER_SERVICE_PORT:-8082}
+      - GATEWAY_SERVICE_HOST=http://gateway-service:${GATEWAY_SERVICE_PORT:-8088}
     networks:
       - fitness-network
     volumes:
