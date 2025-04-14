@@ -1,10 +1,9 @@
 package com.hcmus.userservice.dto.request;
 
-import com.hcmus.userservice.model.type.Role;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.Date;
 
 @Setter
 @Getter
@@ -13,36 +12,34 @@ import lombok.*;
 @NoArgsConstructor
 public class RegisterRequest {
 
-    @NotBlank(message = "Name is required")
+    // profile
+
     private String name;
 
-    @Email(message = "Invalid email format")
-    @NotBlank(message = "Email is required")
     private String email;
 
-    @NotBlank(message = "Password is required")
-    @Size(min = 6, message = "Password must be at least 6 characters")
     private String password;
 
     private Integer age;
 
     private String gender;
 
-    private Double height;
+    private Integer height;
 
     private Double weight;
 
     private String imageUrl;
 
-    private Role role;
+    // goals
 
     private String goalType;
 
-    private Double weightGoal;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date startingDate;
 
-    private Double goalPerWeek;
+    private Double goalWeight;
+
+    private Double weeklyGoal;
 
     private String activityLevel;
-
-    private Double caloriesGoal;
 }

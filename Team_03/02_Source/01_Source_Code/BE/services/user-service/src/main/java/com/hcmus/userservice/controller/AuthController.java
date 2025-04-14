@@ -1,9 +1,6 @@
 package com.hcmus.userservice.controller;
 
-import com.hcmus.userservice.dto.request.CheckEmailRequest;
-import com.hcmus.userservice.dto.request.LoginRequest;
-import com.hcmus.userservice.dto.request.RefreshRequest;
-import com.hcmus.userservice.dto.request.RegisterRequest;
+import com.hcmus.userservice.dto.request.*;
 import com.hcmus.userservice.dto.response.ApiResponse;
 import com.hcmus.userservice.dto.response.LoginResponse;
 import com.hcmus.userservice.dto.response.RefreshResponse;
@@ -26,8 +23,6 @@ import java.util.Map;
 public class AuthController {
 
     private final AuthService authService;
-
-    private final JwtUtil jwtUtil;
 
     @PostMapping("/check-email")
     public ResponseEntity<ApiResponse<Boolean>> checkEmail(@RequestBody @Valid CheckEmailRequest request) {
@@ -54,19 +49,14 @@ public class AuthController {
     }
 
     @PostMapping("/verify")
-    public ResponseEntity<ApiResponse<Map<String, Object>>> verifyToken(@RequestHeader("Authorization") String authorization) {
-        if (authorization.startsWith("Bearer ")) {
-            authorization = authorization.substring(7);
-        } else {
-            throw new InvalidTokenException("Invalid token!");
-        }
+    public ResponseEntity<ApiResponse<Map<String, Object>>> verifyToken(@RequestBody VerifyRequest request) {
         log.info("Verify token!");
-        ApiResponse<Map<String, Object>> response = authService.verifyToken(authorization);
+        ApiResponse<Map<String, Object>> response = authService.verifyToken(request.getToken());
 
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/refresh")
+    @PostMapping("/refresh-token")
     public ResponseEntity<ApiResponse<RefreshResponse>> refreshToken(@RequestBody @Valid RefreshRequest refreshRequest) {
         log.info("Refresh token!");
         ApiResponse<RefreshResponse> response = authService.getRefreshResponse(refreshRequest.getRefreshToken());

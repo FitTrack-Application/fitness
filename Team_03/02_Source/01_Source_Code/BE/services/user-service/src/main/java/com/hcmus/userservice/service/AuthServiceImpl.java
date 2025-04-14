@@ -1,17 +1,20 @@
 package com.hcmus.userservice.service;
 
-import com.hcmus.userservice.dto.request.AddWeightRequest;
+import com.hcmus.userservice.client.StatisticClient;
+import com.hcmus.userservice.dto.request.InitWeightGoalRequest;
 import com.hcmus.userservice.dto.request.LoginRequest;
 import com.hcmus.userservice.dto.request.RegisterRequest;
 import com.hcmus.userservice.dto.response.ApiResponse;
-import com.hcmus.userservice.dto.response.RegisterResponse;
 import com.hcmus.userservice.dto.response.LoginResponse;
 import com.hcmus.userservice.dto.response.RefreshResponse;
+import com.hcmus.userservice.dto.response.RegisterResponse;
+import com.hcmus.userservice.exception.BadRequestException;
 import com.hcmus.userservice.exception.ConflictException;
 import com.hcmus.userservice.exception.InvalidTokenException;
 import com.hcmus.userservice.exception.UserNotFoundException;
+import com.hcmus.userservice.model.User;
+import com.hcmus.userservice.model.type.Gender;
 import com.hcmus.userservice.model.type.Role;
-import com.hcmus.userservice.repository.GoalRepository;
 import com.hcmus.userservice.repository.UserRepository;
 import com.hcmus.userservice.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -21,10 +24,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -32,13 +36,13 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
 
-    private final GoalRepository goalRepository;
-
     private final PasswordEncoder passwordEncoder;
 
     private final JwtUtil jwtUtil;
 
     private final AuthenticationManager authenticationManager;
+
+    private final StatisticClient statisticClient;
 
     public ApiResponse<Boolean> checkEmail(String email) {
         if (userRepository.existsByEmail(email)) {
@@ -53,53 +57,51 @@ public class AuthServiceImpl implements AuthService {
                 .build();
     }
 
+    @Transactional
     public ApiResponse<RegisterResponse> register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new ConflictException("Email already exists!");
         }
 
-        User user = new User();
-        user.setName(request.getName());
-        user.setEmail(request.getEmail());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setAge(request.getAge());
-        user.setGender(request.getGender());
-        user.setHeight(request.getHeight());
-        user.setWeight(request.getWeight());
-        user.setImageUrl(request.getImageUrl());
-        user.setRole(request.getRole() != null ? request.getRole() : Role.USER);
-        User savedUser = userRepository.save(user);
+        User user = User.builder()
+                .name(request.getName())
+                .age(request.getAge())
+                .email(request.getEmail())
+                .height(request.getHeight())
+                .gender(Gender.fromString(request.getGender()))
+                .weight(request.getWeight())
+                .imageUrl(request.getImageUrl())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(Role.USER)
+                .enabled(true)
+                .build();
 
-        Goal goal = new Goal();
-        goal.setUser(savedUser);
-        goal.setGoalType(request.getGoalType());
-        goal.setWeightGoal(request.getWeightGoal());
-        goal.setGoalPerWeek(request.getGoalPerWeek());
-        goal.setActivityLevel(request.getActivityLevel());
-        goal.setCaloriesGoal(request.getCaloriesGoal());
-        goal.setStartingDate(LocalDate.now());
-        goalRepository.save(goal);
+        InitWeightGoalRequest initWeightGoalRequest = InitWeightGoalRequest.builder()
+                .startingWeight(request.getWeight())
+                .startingDate(request.getStartingDate())
+                .goalWeight(request.getGoalWeight())
+                .weeklyGoal(request.getWeeklyGoal())
+                .build();
+
+        User savedUser = userRepository.save(user);
 
         String accessToken = jwtUtil.generateToken(savedUser);
         String refreshToken = jwtUtil.generateRefreshToken(savedUser);
+
+        ApiResponse<?> statisticResponse = statisticClient.initWeightGoal(
+                initWeightGoalRequest,
+                "Bearer " + accessToken);
+
+        if (statisticResponse.getStatus() != HttpStatus.CREATED.value()) {
+            throw new BadRequestException("Failed to initialize weight goal!");
+        }
+
         RegisterResponse registerResponse = RegisterResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
-                .userId(user.getUserId())
-                .goalId(goal.getGoalId())
                 .email(user.getEmail())
                 .name(user.getName())
-                .role(user.getRole())
                 .build();
-
-        AddWeightRequest addWeightRequest = new AddWeightRequest();
-        addWeightRequest.setUserId(savedUser.getUserId());
-        addWeightRequest.setGoalId(goal.getGoalId());
-        addWeightRequest.setWeight(savedUser.getWeight());
-        addWeightRequest.setUpdateDate(goal.getStartingDate());
-        addWeightRequest.setProgressPhoto(savedUser.getImageUrl());
-
-        //restTemplate.postForObject(statisticServiceUrl + "/api/statistic/addweight", addWeightRequest, Void.class);
 
         return ApiResponse.<RegisterResponse>builder()
                 .status(HttpStatus.CREATED.value())

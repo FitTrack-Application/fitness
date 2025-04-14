@@ -1,16 +1,17 @@
 package com.hcmus.fitservice.service;
 
 import com.hcmus.fitservice.dto.FoodDto;
-import org.springframework.data.domain.Page;
+import com.hcmus.fitservice.dto.response.ApiResponse;
 import org.springframework.data.domain.Pageable;
-import java.util.UUID;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface FoodService {
-    Page<FoodDto> getAllFoods(Pageable pageable);
 
-    FoodDto getFoodById(UUID foodId);
+    ApiResponse<List<FoodDto>> getAllFoods(Pageable pageable);
 
-    Page<FoodDto> searchFoodsByName(String query, Pageable pageable);
+    ApiResponse<FoodDto> getFoodById(UUID foodId);
+
+    ApiResponse<List<FoodDto>> searchFoodsByName(String query, Pageable pageable);
 }
