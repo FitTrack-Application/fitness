@@ -5,11 +5,20 @@ import com.hcmus.userservice.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
+import org.springframework.stereotype.Component;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public interface UserMapper {
+@Component
+public class UserMapper {
 
-    UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
-
-    UserProfileResponse convertToUserDto(User user);
+    public UserProfileResponse convertToUserDto(User user) {
+        return UserProfileResponse.builder()
+                .age(user.getAge())
+                .email(user.getEmail())
+                .name(user.getName())
+                .gender(user.getGender().toString())
+                .height(user.getHeight())
+                .imageUrl(user.getImageUrl())
+                .weight(user.getWeight())
+                .build();
+    }
 }

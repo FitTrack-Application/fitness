@@ -4,17 +4,19 @@ import com.hcmus.fitservice.dto.FoodDto;
 import com.hcmus.fitservice.model.Food;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
+import org.springframework.stereotype.Component;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public interface FoodMapper {
+@Component
+public class FoodMapper {
 
-    FoodMapper INSTANCE = Mappers.getMapper(FoodMapper.class);
-
-    @Mapping(target = "id", source = "foodId")
-    @Mapping(target = "name", source = "foodName")
-    @Mapping(target = "calories", source = "caloriesPer100g")
-    @Mapping(target = "protein", source = "proteinPer100g")
-    @Mapping(target = "carbs", source = "carbsPer100g")
-    @Mapping(target = "fat", source = "fatPer100g")
-    FoodDto convertToFoodDto(Food user);
+    public FoodDto convertToFoodDto(Food food) {
+        return FoodDto.builder()
+                .id(food.getFoodId())
+                .name(food.getFoodName())
+                .fat(food.getFatPer100g())
+                .carbs(food.getCarbsPer100g())
+                .protein(food.getProteinPer100g())
+                .calories(food.getCaloriesPer100g())
+                .build();
+    }
 }

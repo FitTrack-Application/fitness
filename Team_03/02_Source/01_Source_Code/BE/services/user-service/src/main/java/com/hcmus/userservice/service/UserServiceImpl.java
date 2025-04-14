@@ -21,12 +21,14 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
+    private final UserMapper userMapper;
+
     @Override
     public ApiResponse<UserProfileResponse> getUserProfileResponse(UUID userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("The user is not found!"));
 
-        UserProfileResponse userProfileResponse = UserMapper.INSTANCE.convertToUserDto(user);
+        UserProfileResponse userProfileResponse = userMapper.convertToUserDto(user);
 
         return ApiResponse.<UserProfileResponse>builder()
                 .status(HttpStatus.OK.value())

@@ -23,10 +23,12 @@ public class FoodServiceImpl implements FoodService {
 
     private final FoodRepository foodRepository;
 
+    private final FoodMapper foodMapper;
+
     @Override
     public ApiResponse<FoodDto> getFoodById(UUID foodId) {
         FoodDto foodDto = foodRepository.findById(foodId)
-                .map(FoodMapper.INSTANCE::convertToFoodDto)
+                .map(foodMapper::convertToFoodDto)
                 .orElseThrow(() -> new ResourceNotFoundException("Food not found with ID: " + foodId));
 
         // Return response
@@ -63,7 +65,7 @@ public class FoodServiceImpl implements FoodService {
         Map<String, Object> metadata = new HashMap<>();
         metadata.put("pagination", pagination);
 
-        Page<FoodDto> foodPageDto = foodPage.map(FoodMapper.INSTANCE::convertToFoodDto);
+        Page<FoodDto> foodPageDto = foodPage.map(foodMapper::convertToFoodDto);
 
         // Create response
         return ApiResponse.<List<FoodDto>>builder()
