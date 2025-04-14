@@ -5,8 +5,7 @@ import com.hcmus.userservice.model.type.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.UuidGenerator;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,6 +18,9 @@ import java.util.UUID;
 
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
@@ -33,12 +35,10 @@ public class User implements UserDetails {
     @Column(name = "age", nullable = false)
     private Integer age;
 
-    @Size(max = 255)
     @NotNull
     @Column(name = "email", nullable = false)
     private String email;
 
-    @Size(max = 10)
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "gender", nullable = false, length = 10)
@@ -48,21 +48,17 @@ public class User implements UserDetails {
     @Column(name = "height", nullable = false)
     private Integer height;
 
-    @Size(max = 255)
     @Column(name = "image_url")
     private String imageUrl;
 
-    @Size(max = 255)
     @NotNull
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Size(max = 255)
     @NotNull
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Size(max = 255)
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)

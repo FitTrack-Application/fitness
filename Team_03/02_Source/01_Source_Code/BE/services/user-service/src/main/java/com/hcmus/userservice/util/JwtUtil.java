@@ -1,6 +1,7 @@
 package com.hcmus.userservice.util;
 
 import com.hcmus.userservice.exception.InvalidTokenException;
+import com.hcmus.userservice.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -40,7 +41,7 @@ public class JwtUtil {
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
         if (userDetails instanceof User user) {
-            claims.put("userId", user.getUserId().toString());
+            claims.put("userId", user.getId().toString());
             claims.put("name", user.getName());
             claims.put("role", user.getRole().name());
         }
@@ -50,7 +51,7 @@ public class JwtUtil {
     public String generateRefreshToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
         if (userDetails instanceof User user) {
-            claims.put("userId", user.getUserId().toString());
+            claims.put("userId", user.getId().toString());
             claims.put("tokenType", "refresh");
         }
         return generateToken(claims, userDetails, refreshTokenExpiration);

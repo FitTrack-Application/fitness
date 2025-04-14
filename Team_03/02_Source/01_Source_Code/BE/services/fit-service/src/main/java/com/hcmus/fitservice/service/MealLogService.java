@@ -2,16 +2,17 @@ package com.hcmus.fitservice.service;
 
 import com.hcmus.fitservice.dto.MealEntryDto;
 import com.hcmus.fitservice.dto.MealLogDto;
+import com.hcmus.fitservice.dto.response.ApiResponse;
 
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 public interface MealLogService {
-    void createMealLog(UUID userId, Date date, String mealType);
 
-    MealEntryDto addMealEntry(UUID mealLogId, UUID foodId, String servingUnit, Double numberOfServings);
+    ApiResponse<Void> createMealLog(UUID userId, Date date, String mealType);
 
-    // Get meal log by user id and date
-    List<MealLogDto> getMealLogsByUserIdAndDate(UUID userId, Date date);
+    ApiResponse<MealEntryDto> addMealEntry(UUID mealLogId, UUID foodId, String servingUnit, Double numberOfServings);
+
+    ApiResponse<List<MealLogDto>> getMealLogsByUserIdAndDate(UUID userId, Date date);
 }
