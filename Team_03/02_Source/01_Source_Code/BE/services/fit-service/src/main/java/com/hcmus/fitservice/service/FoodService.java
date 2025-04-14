@@ -1,6 +1,7 @@
 package com.hcmus.fitservice.service;
 
 import com.hcmus.fitservice.dto.FoodDto;
+import com.hcmus.fitservice.dto.FoodScanDto;
 import com.hcmus.fitservice.dto.response.ApiResponse;
 import org.springframework.data.domain.Pageable;
 
@@ -14,4 +15,6 @@ public interface FoodService {
     ApiResponse<FoodDto> getFoodById(UUID foodId);
 
     ApiResponse<List<FoodDto>> searchFoodsByName(String query, Pageable pageable);
+
+    ApiResponse<FoodScanDto> scanFood(String barcode);
 }

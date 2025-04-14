@@ -1,6 +1,7 @@
 package com.hcmus.fitservice.controller;
 
 import com.hcmus.fitservice.dto.FoodDto;
+import com.hcmus.fitservice.dto.FoodScanDto;
 import com.hcmus.fitservice.dto.response.ApiResponse;
 import com.hcmus.fitservice.service.FoodService;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RequiredArgsConstructor
 @RestController
@@ -45,4 +49,12 @@ public class FoodController {
 
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/scan")
+    public ResponseEntity<ApiResponse<FoodScanDto>> getMethodName(@RequestParam String barcode) {
+        ApiResponse<FoodScanDto> response = foodService.scanFood(barcode);
+        
+        return ResponseEntity.ok(response); 
+    }
+    
 }
