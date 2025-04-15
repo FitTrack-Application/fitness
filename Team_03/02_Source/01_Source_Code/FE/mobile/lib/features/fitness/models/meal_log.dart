@@ -1,0 +1,41 @@
+import 'meal_entry.dart';
+
+enum MealType { breakfast, lunch, dinner }
+
+MealType mealTypeFromString(String value) {
+  switch (value.toUpperCase()) {
+    case 'BREAKFAST':
+      return MealType.breakfast;
+    case 'LUNCH':
+      return MealType.lunch;
+    case 'DINNER':
+      return MealType.dinner;
+    default:
+      throw Exception("Unknown MealType: $value");
+  }
+}
+
+class MealLog {
+  final String id;
+  final DateTime date;
+  final MealType mealType;
+  final List<MealEntry> mealEntries;
+
+  MealLog({
+    required this.id,
+    required this.date,
+    required this.mealType,
+    required this.mealEntries,
+  });
+
+  factory MealLog.fromJson(Map<String, dynamic> json) {
+    return MealLog(
+      id: json['id'],
+      date: DateTime.parse(json['date']),
+      mealType: mealTypeFromString(json['mealType']),
+      mealEntries: (json['mealEntries'] as List<dynamic>)
+          .map((e) => MealEntry.fromJson(e))
+          .toList(),
+    );
+  }
+}

@@ -234,7 +234,7 @@ class _DiaryScreenState extends State<DiaryScreen>
     BuildContext context,
     String mealTitle,
     List<Food> foodItems,
-    int calories,
+      double calories,
     MealType mealType,
   ) {
     final textTheme = Theme.of(context).textTheme;

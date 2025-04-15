@@ -31,17 +31,17 @@ class Diary {
   }
 
   /// Tính tổng lượng calories từ thức ăn
-  int get caloriesConsumed {
+  double get caloriesConsumed {
     return foodItems.fold(0, (sum, item) => sum + item.calories);
   }
 
   /// Tính tổng lượng calories đã đốt cháy từ tập thể dục
-  int get caloriesBurned {
+  double get caloriesBurned {
     return exerciseItems.fold(0, (sum, item) => sum + item.calories);
   }
 
   /// Tính lượng calories còn lại
-  int get caloriesRemaining {
+  double get caloriesRemaining {
     return calorieGoal - caloriesConsumed + caloriesBurned;
   }
 }

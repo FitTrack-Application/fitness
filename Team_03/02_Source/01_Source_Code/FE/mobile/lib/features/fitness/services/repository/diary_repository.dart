@@ -1,17 +1,7 @@
-import 'package:mobile/features/fitness/viewmodels/diary_viewmodel.dart';
-
 import '../../models/diary.dart';
 import '../../models/food.dart';
-import '../api_client.dart';
 
 class DiaryRepository {
-  final ApiClient _apiClient;
-
-  DiaryRepository({
-    String baseUrl =
-    "https://abf1f370-fb74-44fe-a48a-8a4d4b4ecce0.mock.pstmn.io/api/diary",
-  }) : _apiClient = ApiClient(baseUrl);
-
   final String jwtToken = "abc";
 
   Map<String, String> get _headers => {

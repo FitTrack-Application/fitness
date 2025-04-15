@@ -50,13 +50,13 @@ class DiaryViewModel extends ChangeNotifier {
   int get calorieGoal => _currentDiaryDay?.calorieGoal ?? 0;
 
   // Calo tiêu thụ theo từng bữa
-  int get breakfastCalories => breakfastItems.fold(0, (sum, item) => sum + item.calories);
-  int get lunchCalories => lunchItems.fold(0, (sum, item) => sum + item.calories);
-  int get dinnerCalories => dinnerItems.fold(0, (sum, item) => sum + item.calories);
+  double get breakfastCalories => breakfastItems.fold(0, (sum, item) => sum + item.calories);
+  double get lunchCalories => lunchItems.fold(0, (sum, item) => sum + item.calories);
+  double get dinnerCalories => dinnerItems.fold(0, (sum, item) => sum + item.calories);
 
-  int get caloriesConsumed => _currentDiaryDay?.caloriesConsumed ?? 0;
-  int get caloriesBurned => _currentDiaryDay?.caloriesBurned ?? 0;
-  int get caloriesRemaining => _currentDiaryDay?.caloriesRemaining ?? 0;
+  double get caloriesConsumed => _currentDiaryDay?.caloriesConsumed ?? 0;
+  double get caloriesBurned => _currentDiaryDay?.caloriesBurned ?? 0;
+  double get caloriesRemaining => _currentDiaryDay?.caloriesRemaining ?? 0;
   int get diaryId => _currentDiaryDay?.diaryId ?? 0;
 
   // Kiểm tra xem ngày đã chọn có phải là hôm nay không

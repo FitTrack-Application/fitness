@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import '../../../../../cores/constants/colors.dart';
 
 class CalorieSummary extends StatelessWidget {
-  final int calories;
-  final int carbs;
-  final int fat;
-  final int protein;
+  final double calories;
+  final double carbs;
+  final double fat;
+  final double protein;
 
   const CalorieSummary({
     super.key,
@@ -77,7 +77,7 @@ class CalorieSummary extends StatelessWidget {
   }
 
   // Tính phần trăm dựa trên calo tổng cộng
-  String _calculatePercentage(int nutrientValue) {
+  String _calculatePercentage(double nutrientValue) {
     if (calories == 0) return "0%"; // Tránh chia cho 0
     double percentage = (nutrientValue / calories) * 100;
     return "${percentage.toStringAsFixed(1)}%"; // Chuyển đổi thành chuỗi với 1 chữ số thập phân
