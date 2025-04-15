@@ -10,12 +10,12 @@ import '../../viewmodels/search_food_viewmodel.dart';
 import 'widget/food_item.dart';
 
 class SearchFoodScreen extends StatefulWidget {
-  final int diaryId;
+  final String mealLogId;
   final String mealType;
 
   const SearchFoodScreen({
     super.key,
-    required this.diaryId,
+    required this.mealLogId,
     required this.mealType,
   });
 
@@ -108,7 +108,6 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
           controller: _tabController,
           tabs: const [
             Tab(text: 'All'),
-            Tab(text: 'My Food'),
             Tab(text: 'My Recipes')
           ],
         ),
@@ -226,7 +225,7 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
           return FoodItemWidget(
             food: food,
             onTap: () {
-              context.push('/food/${widget.diaryId}/${food.id}/add');
+              context.push('/food/${widget.mealLogId}/${food.id}/add');
             },
           );
         }

@@ -36,32 +36,28 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => const MainScreen(child: DiaryScreen()),
     ),
     GoRoute(
-      path: '/search/:diaryId',
+      path: '/search/:mealLogId',
       builder: (context, state) {
-        final diaryIdStr = state.pathParameters['diaryId']!;
-        final diaryId = int.tryParse(diaryIdStr) ?? 0;
-
+        final mealLogStr = state.pathParameters['mealLogId']!;
         final mealType = state.uri.queryParameters['mealType'] ?? 'Unknown';
 
         return SearchFoodScreen(
-          diaryId: diaryId,
+          mealLogId: mealLogStr,
           mealType: mealType,
         );
       },
     ),
     GoRoute(
-      path: '/food/:diaryId/:foodId/:mode',
+      path: '/food/:mealLogId/:foodId/:mode',
       builder: (context, state) {
-        final diaryIdStr = state.pathParameters['diaryId'] ?? '';
+        final mealLogStr = state.pathParameters['mealLogId'] ?? '';
         final foodId = state.pathParameters['foodId'] ?? '';
         final mode = state.pathParameters['mode'];
-
-        final diaryId = int.tryParse(diaryIdStr) ?? 0;
         final isEdit = (mode == 'edit');
 
         return FoodDetailScreen(
           foodId: foodId,
-          diaryId: diaryId,
+          mealLogId: mealLogStr,
           isEdit: isEdit,
         );
       },

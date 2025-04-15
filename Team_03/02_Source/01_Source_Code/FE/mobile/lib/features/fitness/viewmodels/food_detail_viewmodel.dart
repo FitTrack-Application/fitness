@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../models/food.dart';
+import '../models/meal_log.dart';
 import '../services/repository/food_repository.dart';
 
 // Define possible loading states
@@ -12,7 +13,7 @@ class FoodDetailViewModel extends ChangeNotifier {
   Food? food;
   int servings = 1;
   DateTime selectedDate = DateTime.now();
-  MealType selectedMealType = MealType.Breakfast;
+  MealType selectedMealType = MealType.breakfast;
 
   LoadState loadState = LoadState.initial;
   String? errorMessage;

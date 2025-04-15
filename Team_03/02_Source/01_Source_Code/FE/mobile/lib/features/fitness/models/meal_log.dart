@@ -15,21 +15,21 @@ MealType mealTypeFromString(String value) {
   }
 }
 
-class MealLog {
+class MealLogFitness {
   final String id;
   final DateTime date;
   final MealType mealType;
   final List<MealEntry> mealEntries;
 
-  MealLog({
+  MealLogFitness({
     required this.id,
     required this.date,
     required this.mealType,
     required this.mealEntries,
   });
 
-  factory MealLog.fromJson(Map<String, dynamic> json) {
-    return MealLog(
+  factory MealLogFitness.fromJson(Map<String, dynamic> json) {
+    return MealLogFitness(
       id: json['id'],
       date: DateTime.parse(json['date']),
       mealType: mealTypeFromString(json['mealType']),

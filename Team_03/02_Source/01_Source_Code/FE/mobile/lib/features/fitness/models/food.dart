@@ -1,3 +1,5 @@
+import 'meal_log.dart';
+
 class Food {
   final String id;
   final String name;
@@ -7,7 +9,6 @@ class Food {
   final double fat;
   final double protein;
   final String unit;
-  final String description;
   final MealType mealType;
 
   Food({
@@ -19,8 +20,7 @@ class Food {
     required this.fat,
     required this.protein,
     required this.unit,
-    required this.description,
-    this.mealType = MealType.Breakfast,
+    this.mealType = MealType.breakfast,
   });
 
   factory Food.fromJson(Map<String, dynamic> json) {
@@ -33,13 +33,6 @@ class Food {
       fat: (json['fat'] ?? 0).toDouble(),
       servingSize: 100.0, // Mặc định
       unit: 'grams', // Mặc định
-      description: '', // Mặc định
     );
   }
-}
-
-enum MealType {
-  breakfast,
-  lunch,
-  dinner,
 }

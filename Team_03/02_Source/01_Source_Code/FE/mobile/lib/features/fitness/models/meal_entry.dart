@@ -1,12 +1,14 @@
+import 'package:mobile/features/fitness/models/food.dart';
+
 class MealEntry {
   final String id;
-  final String foodId;
+  final Food food;
   final String servingUnit;
   final double numberOfServings;
 
   MealEntry({
     required this.id,
-    required this.foodId,
+    required this.food,
     required this.servingUnit,
     required this.numberOfServings,
   });
@@ -14,7 +16,7 @@ class MealEntry {
   factory MealEntry.fromJson(Map<String, dynamic> json) {
     return MealEntry(
       id: json['id'],
-      foodId: json['foodId'],
+      food: json['foodId'],
       servingUnit: json['servingUnit'],
       numberOfServings: (json['numberOfServings'] as num).toDouble(),
     );

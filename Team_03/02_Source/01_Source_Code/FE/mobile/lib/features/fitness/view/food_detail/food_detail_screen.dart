@@ -6,20 +6,20 @@ import 'package:mobile/features/fitness/view/food_detail/widget/custom_divider.d
 import 'package:mobile/features/fitness/view/food_detail/widget/food_info_section.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/meal_log.dart';
 import '../../services/repository/food_repository.dart';
 import '../../viewmodels/diary_viewmodel.dart';
 import '../../viewmodels/food_detail_viewmodel.dart';
-import '../../models/food.dart';
 
 class FoodDetailScreen extends StatelessWidget {
   final String foodId;
-  final int diaryId;
+  final String mealLogId;
   final bool isEdit;
 
   const FoodDetailScreen({
     super.key,
     required this.foodId,
-    required this.diaryId,
+    required this.mealLogId,
     required this.isEdit,
   });
 
@@ -27,6 +27,8 @@ class FoodDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
+
+    print('mealId: $mealLogId');
 
     return ChangeNotifierProvider(
       create: (context) =>
@@ -218,14 +220,6 @@ class FoodDetailScreen extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 8),
-          if (food.description.isNotEmpty)
-            Text(
-              food.description,
-              style: textTheme.bodyMedium?.copyWith(
-                color: colorScheme.onSurfaceVariant,
-              ),
-            ),
           const SizedBox(height: 16),
           const CustomDivider(),
           FoodInfoSection(
@@ -271,11 +265,11 @@ class FoodDetailScreen extends StatelessWidget {
 
   String _getMealTypeDisplayName(MealType mealType) {
     switch (mealType) {
-      case MealType.Breakfast:
+      case MealType.breakfast:
         return 'BREAKFAST';
-      case MealType.Lunch:
+      case MealType.lunch:
         return 'LUNCH';
-      case MealType.Dinner:
+      case MealType.dinner:
         return 'DINNER';
       default:
         return 'BREAKFAST';
@@ -301,21 +295,21 @@ class FoodDetailScreen extends StatelessWidget {
             children: [
               _buildMealTypeOption(
                 context,
-                MealType.Breakfast,
+                MealType.breakfast,
                 viewModel,
                 Icons.wb_sunny_outlined,
               ),
               const SizedBox(height: 8),
               _buildMealTypeOption(
                 context,
-                MealType.Lunch,
+                MealType.lunch,
                 viewModel,
                 Icons.restaurant_outlined,
               ),
               const SizedBox(height: 8),
               _buildMealTypeOption(
                 context,
-                MealType.Dinner,
+                MealType.dinner,
                 viewModel,
                 Icons.nights_stay_outlined,
               ),
