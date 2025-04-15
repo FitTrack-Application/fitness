@@ -14,4 +14,6 @@ public interface FoodService {
     ApiResponse<FoodDto> getFoodById(UUID foodId);
 
     ApiResponse<List<FoodDto>> searchFoodsByName(String query, Pageable pageable);
+
+    ApiResponse<?> addFood(FoodDto foodDto, UUID userId);
 }
