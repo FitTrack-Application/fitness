@@ -34,15 +34,15 @@ class DiaryViewModel extends ChangeNotifier {
 
   // Mảng thực phẩm cho từng bữa ăn
   List<Food> get breakfastItems => _currentDiaryDay?.foodItems
-      .where((food) => food.mealType == MealType.breakfast)
+      .where((food) => food.mealType == MealType.Breakfast)
       .toList() ?? [];
 
   List<Food> get lunchItems => _currentDiaryDay?.foodItems
-      .where((food) => food.mealType == MealType.lunch)
+      .where((food) => food.mealType == MealType.Lunch)
       .toList() ?? [];
 
   List<Food> get dinnerItems => _currentDiaryDay?.foodItems
-      .where((food) => food.mealType == MealType.dinner)
+      .where((food) => food.mealType == MealType.Dinner)
       .toList() ?? [];
 
   List<Food> get foodItems => _currentDiaryDay?.foodItems ?? [];

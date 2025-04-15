@@ -20,7 +20,7 @@ class Food {
     required this.protein,
     required this.unit,
     required this.description,
-    this.mealType = MealType.breakfast,
+    this.mealType = MealType.Breakfast,
   });
 
   factory Food.fromJson(Map<String, dynamic> json) {
@@ -40,7 +40,7 @@ class Food {
 
 // Thêm enum MealType nếu chưa có
 enum MealType {
-  breakfast,
-  lunch,
-  dinner
+  Breakfast,
+  Lunch,
+  Dinner
 }

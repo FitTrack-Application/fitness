@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/cores/constants/colors.dart';
 import 'package:mobile/cores/theme/widget_themes/bottom_navbar_theme.dart';
 import 'package:mobile/cores/theme/widget_themes/card_theme.dart';
 import 'package:mobile/cores/theme/widget_themes/color_scheme_theme.dart';

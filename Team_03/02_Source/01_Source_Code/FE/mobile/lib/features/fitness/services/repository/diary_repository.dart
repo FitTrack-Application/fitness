@@ -1,4 +1,3 @@
-import 'package:mobile/features/fitness/viewmodels/diary_viewmodel.dart';
 
 import '../../models/diary.dart';
 import '../../models/food.dart';
@@ -55,7 +54,7 @@ class DiaryRepository {
           fat: 15,
           unit: 'g',
           description: 'Một tô phở bò nóng hổi',
-          mealType: MealType.breakfast,
+          mealType: MealType.Breakfast,
         ),
         Food(
           id: 'f2',
@@ -67,7 +66,7 @@ class DiaryRepository {
           fat: 10,
           unit: 'g',
           description: 'Hai quả trứng gà luộc',
-          mealType: MealType.lunch,
+          mealType: MealType.Lunch,
         ),
       ],
       exerciseItems: [

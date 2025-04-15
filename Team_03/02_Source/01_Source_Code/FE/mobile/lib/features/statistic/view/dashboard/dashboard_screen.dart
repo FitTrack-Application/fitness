@@ -5,6 +5,8 @@ import 'package:mobile/features/statistic/models/weight_entry.dart' show WeightE
 import 'package:mobile/features/statistic/view/dashboard/weight_graph.dart';
 import 'package:mobile/features/statistic/view/dashboard/widget/step_graph.dart';
 import 'package:provider/provider.dart';
+import 'package:pie_chart/pie_chart.dart';
+
 
 import '../../../../cores/constants/colors.dart';
 import '../../viewmodels/dashboard_viewmodel.dart';
@@ -18,19 +20,17 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   bool _initialized = false;
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (!_initialized) {
       final viewModel = Provider.of<DashboardViewModel>(context, listen: false);
       const token = 'auth_token';
-
       viewModel.fetchDashboardData(token: token);
-
       _initialized = true;
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +38,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Dashboard'),
+        title: const Text('FitTrack'),
         centerTitle: true,
         backgroundColor: HighlightColors.highlight500,
         foregroundColor: Colors.white,
@@ -76,7 +76,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   ];
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: ListView(
+      child: SafeArea(child: ListView(
         children: [
           Text('Hi there 👋', style: theme.textTheme.headlineMedium),
           Text(today, style: theme.textTheme.titleMedium?.copyWith(color: NeutralColors.dark200)),
@@ -85,7 +85,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           const SizedBox(height: 24),
           _buildMacronutrientsCard(theme, viewModel),
           const SizedBox(height: 24),
-          _buildQuickLogCard(theme),
+          //_buildQuickLogCard(theme),
           const SizedBox(height: 24),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal, // Enable horizontal scrolling
@@ -93,7 +93,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               children: [
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 0.8, // Adjust width for each graph
-                  
+
                   child: WeightGraph(
                     entries: fixedEntries,
                     title: 'Weight History (kg)',
@@ -102,8 +102,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 const SizedBox(width: 16), // Add spacing between the graphs
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 0.8, // Adjust width for each graph
- 
-                  
+
+
                   child: StepGraph(
                     entries: stepEntries,
                     title: 'Steps Today',
@@ -114,25 +114,50 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
         ],
       ),
+      )
     );
   }
 
   Widget _buildCaloriesCard(ThemeData theme, int consumed, int goal, int remaining) {
+    final dataMap = <String, double>{
+      'Consumed': consumed.toDouble(),
+      'Remaining': remaining > 0 ? remaining.toDouble() : 0,
+    };
+
+    final colorList = <Color>[
+      NutritionColor.fat,
+      NutritionColor.cabs,
+    ];
+
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
+        child: Row(
           children: [
-            Text('Calories Today', style: theme.textTheme.titleLarge),
-            const SizedBox(height: 12),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _calorieBox('Consumed', '$consumed', NutritionColor.fat),
-                _calorieBox('Goal', '$goal', NutritionColor.protein),
-                _calorieBox('Remaining', '$remaining', NutritionColor.cabs),
-              ],
+            Expanded(
+              flex: 3,
+              child: PieChart(
+                dataMap: dataMap,
+                animationDuration: const Duration(milliseconds: 800),
+                chartType: ChartType.disc,
+                colorList: colorList,
+                chartValuesOptions: const ChartValuesOptions(showChartValuesInPercentage: true),
+                legendOptions: const LegendOptions(showLegends: false),
+              ),
+            ),
+            Expanded(
+              flex: 2,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Calories Today', style: theme.textTheme.titleLarge),
+                  const SizedBox(height: 12),
+                  _calorieBox('Goal:  ', '$goal', NutritionColor.protein),
+                  _calorieBox('Consumed: ', '$consumed', NutritionColor.fat),
+                  _calorieBox('Remaining: ', '$remaining', NutritionColor.cabs),
+                ],
+              ),
             ),
           ],
         ),
@@ -140,10 +165,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
+
   Widget _calorieBox(String label, String value, Color color) {
-    return Column(
+    return Row(
       children: [
-        Text(label, style: Theme.of(context).textTheme.bodySmall),
+        Text(label, style: Theme.of(context).textTheme.bodyLarge),
         const SizedBox(height: 4),
         Text(value, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: color)),
       ],
@@ -151,24 +177,55 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildMacronutrientsCard(ThemeData theme, DashboardViewModel viewModel) {
+    final dataMap = <String, double>{
+      'Carbs': viewModel.carbsPercent.toDouble(),
+      'Protein': viewModel.proteinPercent.toDouble(),
+      'Fat': viewModel.fatPercent.toDouble(),
+    };
+
+    final colorList = <Color>[
+      NutritionColor.cabs,
+      NutritionColor.protein,
+      NutritionColor.fat,
+    ];
+
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       elevation: 2,
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
           children: [
-            Text('Macronutrients', style: theme.textTheme.titleLarge),
-            const SizedBox(height: 12),
-            _macroRow('Carbs', viewModel.carbsPercent, NutritionColor.cabs),
-            _macroRow('Protein', viewModel.proteinPercent, NutritionColor.protein),
-            _macroRow('Fat', viewModel.fatPercent, NutritionColor.fat),
+            Expanded(
+              flex: 3,
+              child: PieChart(
+                dataMap: dataMap,
+                animationDuration: const Duration(milliseconds: 800),
+                chartType: ChartType.disc,
+                colorList: colorList,
+                chartValuesOptions: const ChartValuesOptions(showChartValuesInPercentage: true),
+                legendOptions: const LegendOptions(showLegends: false),
+              ),
+            ),
+            Expanded(
+              flex: 2,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Macro Nutrients', style: theme.textTheme.titleLarge),
+                  const SizedBox(height: 12),
+                  _macroRow('Carbs', viewModel.carbsPercent, NutritionColor.cabs),
+                  _macroRow('Protein', viewModel.proteinPercent, NutritionColor.protein),
+                  _macroRow('Fat', viewModel.fatPercent, NutritionColor.fat),
+                ],
+              ),
+            ),
           ],
         ),
       ),
     );
   }
+
 
   Widget _macroRow(String name, int percent, Color color) {
     return Padding(
@@ -176,7 +233,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('$name - $percent%', style: TextStyle(color: color)),
+          Text('$name - $percent%', style: TextStyle(color: color,)),
           const SizedBox(height: 4),
           LinearProgressIndicator(
             value: percent.toDouble() / 100.0,
@@ -189,21 +246,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildQuickLogCard(ThemeData theme) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _quickAction(Icons.fastfood, 'Food', HighlightColors.highlight500),
-            _quickAction(Icons.fitness_center, 'Exercise', AccentColors.red300),
-          ],
-        ),
-      ),
-    );
-  }
+  // Widget _buildQuickLogCard(ThemeData theme) {
+  //   return Card(
+  //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+  //     child: Padding(
+  //       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
+  //       child: Row(
+  //         mainAxisAlignment: MainAxisAlignment.spaceAround,
+  //         children: [
+  //           _quickAction(Icons.fastfood, 'Food', HighlightColors.highlight500),
+  //           _quickAction(Icons.fitness_center, 'Exercise', AccentColors.red300),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _quickAction(IconData icon, String label, Color color) {
     return Column(
