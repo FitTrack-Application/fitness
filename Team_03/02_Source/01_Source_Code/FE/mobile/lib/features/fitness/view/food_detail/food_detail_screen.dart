@@ -271,14 +271,14 @@ class FoodDetailScreen extends StatelessWidget {
 
   String _getMealTypeDisplayName(MealType mealType) {
     switch (mealType) {
-      case MealType.breakfast:
-        return 'Breakfast';
-      case MealType.lunch:
-        return 'Lunch';
-      case MealType.dinner:
-        return 'Dinner';
+      case MealType.Breakfast:
+        return 'BREAKFAST';
+      case MealType.Lunch:
+        return 'LUNCH';
+      case MealType.Dinner:
+        return 'DINNER';
       default:
-        return 'Breakfast';
+        return 'BREAKFAST';
     }
   }
 
@@ -301,21 +301,21 @@ class FoodDetailScreen extends StatelessWidget {
             children: [
               _buildMealTypeOption(
                 context,
-                MealType.breakfast,
+                MealType.Breakfast,
                 viewModel,
                 Icons.wb_sunny_outlined,
               ),
               const SizedBox(height: 8),
               _buildMealTypeOption(
                 context,
-                MealType.lunch,
+                MealType.Lunch,
                 viewModel,
                 Icons.restaurant_outlined,
               ),
               const SizedBox(height: 8),
               _buildMealTypeOption(
                 context,
-                MealType.dinner,
+                MealType.Dinner,
                 viewModel,
                 Icons.nights_stay_outlined,
               ),

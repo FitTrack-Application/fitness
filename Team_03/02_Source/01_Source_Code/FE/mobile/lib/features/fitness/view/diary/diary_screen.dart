@@ -91,7 +91,7 @@ class _DiaryScreenState extends State<DiaryScreen>
                           'Breakfast',
                           viewModel.breakfastItems,
                           viewModel.breakfastCalories,
-                          MealType.breakfast,
+                          MealType.Breakfast,
                         ),
                         // Lunch
                         _buildMealList(
@@ -100,7 +100,7 @@ class _DiaryScreenState extends State<DiaryScreen>
                           'Lunch',
                           viewModel.lunchItems,
                           viewModel.lunchCalories,
-                          MealType.lunch,
+                          MealType.Lunch,
                         ),
                         // Dinner
                         _buildMealList(
@@ -109,7 +109,7 @@ class _DiaryScreenState extends State<DiaryScreen>
                           'Dinner',
                           viewModel.dinnerItems,
                           viewModel.dinnerCalories,
-                          MealType.dinner,
+                          MealType.Dinner,
                         ),
                       ],
                     ),

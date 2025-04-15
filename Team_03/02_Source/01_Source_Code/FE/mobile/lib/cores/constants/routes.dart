@@ -12,6 +12,7 @@ import 'package:mobile/features/fitness/view/diary/diary_screen.dart';
 import 'package:mobile/features/statistic/view/dashboard/dashboard_screen.dart';
 import 'package:mobile/features/statistic/view/step/add_step.dart';
 
+import '../../features/fitness/models/food.dart';
 import '../../features/fitness/view/food_detail/food_detail_screen.dart';
 import '../../features/fitness/view/search_food/search_food_screen.dart';
 import 'package:mobile/features/statistic/view/weight/add_weight.dart';
@@ -40,7 +41,12 @@ final GoRouter appRouter = GoRouter(
         final diaryIdStr = state.pathParameters['diaryId']!;
         final diaryId = int.tryParse(diaryIdStr) ?? 0;
 
-        return SearchFoodScreen(diaryId: diaryId);
+        final mealType = state.uri.queryParameters['mealType'] ?? 'Unknown';
+
+        return SearchFoodScreen(
+          diaryId: diaryId,
+          mealType: mealType,
+        );
       },
     ),
     GoRoute(
@@ -88,15 +94,15 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/profile/edit',
-      builder: (context, state) => EditProfile(), 
+      builder: (context, state) => const EditProfile(), 
     ),
         GoRoute(
       path: '/weight/add',
-      builder: (context, state) => AddWeight(), 
+      builder: (context, state) => const AddWeight(), 
     ),
     GoRoute(
       path: '/steps/add',
-      builder: (context, state) => AddStep(),
+      builder: (context, state) => const AddStep(),
     ),
   ],
 );

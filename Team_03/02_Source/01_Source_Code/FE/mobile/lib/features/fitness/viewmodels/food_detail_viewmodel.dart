@@ -12,7 +12,7 @@ class FoodDetailViewModel extends ChangeNotifier {
   Food? food;
   int servings = 1;
   DateTime selectedDate = DateTime.now();
-  MealType selectedMealType = MealType.breakfast;
+  MealType selectedMealType = MealType.Breakfast;
 
   LoadState loadState = LoadState.initial;
   String? errorMessage;

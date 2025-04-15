@@ -1,7 +1,6 @@
 import '../../fitness/services/api_client.dart';
 import '../models/dashboard.dart';
 import '../models/weight_entry.dart';
-import 'package:http/http.dart' as http;
 class DashboardApiService {
   final ApiClient apiClient;
 

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mobile/common/widgets/elevated_button/elevated_button.dart';
 import 'package:mobile/common/widgets/outlined_button/outlined_button.dart';
 import 'package:mobile/common/widgets/status_dialog/status_dialog.dart';
 import 'package:mobile/cores/constants/colors.dart';
@@ -35,7 +34,7 @@ class _UserRegisterState extends State<UserRegister> {
         shouldShowMessage = arguments;
       } else if (arguments is Map) {
         // Nếu arguments là Map, kiểm tra xem có key 'showMessage' hay không
-        final map = arguments as Map;
+        final map = arguments;
         shouldShowMessage = map['showMessage'] == true || map['message'] == 'Session expired';
       }
 
@@ -206,8 +205,8 @@ class _UserRegisterState extends State<UserRegister> {
 
                 // Nút Continue With Google
                 OutlinedButtonCustom(
-                  icon: Image(
-                    image: const AssetImage('assets/logo/google.png'),
+                  icon: const Image(
+                    image: AssetImage('assets/logo/google.png'),
                     width: 28,
                   ),
                   onPressed: _registerGoogle,
@@ -217,8 +216,8 @@ class _UserRegisterState extends State<UserRegister> {
 
                 // Nút Continue With Facebook
                 OutlinedButtonCustom(
-                  icon: Image(
-                    image: const AssetImage('assets/logo/facebook.png'),
+                  icon: const Image(
+                    image: AssetImage('assets/logo/facebook.png'),
                     width: 30,
                   ),
                   onPressed: _registerFacebook,
@@ -237,7 +236,7 @@ class _UserRegisterState extends State<UserRegister> {
                       TextSpan(
                         text: "Already have an Account? ",
                         style: Theme.of(context).textTheme.bodyMedium,
-                        children: [
+                        children: const [
                           TextSpan(
                             text: "Login",
                             style: TextStyle(

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobile/features/fitness/models/food.dart';
 import 'package:mobile/features/fitness/view/search_food/widget/error_display.dart';
 import 'package:provider/provider.dart';
 
@@ -10,8 +11,13 @@ import 'widget/food_item.dart';
 
 class SearchFoodScreen extends StatefulWidget {
   final int diaryId;
+  final String mealType;
 
-  const SearchFoodScreen({super.key, required this.diaryId});
+  const SearchFoodScreen({
+    super.key,
+    required this.diaryId,
+    required this.mealType,
+  });
 
   @override
   State<SearchFoodScreen> createState() => _SearchFoodScreenState();
@@ -90,7 +96,8 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
           onPressed: () => Navigator.pop(context),
         ),
         centerTitle: true,
-        title: Text('Search Food', style: textTheme.titleMedium),
+        title: Text('${widget.mealType}', style: textTheme.titleMedium),
+
         actions: [
           IconButton(
             icon: const Icon(Icons.qr_code_scanner),
@@ -99,9 +106,10 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
         ],
         bottom: TabBar(
           controller: _tabController,
-          tabs: [
+          tabs: const [
             Tab(text: 'All'),
             Tab(text: 'My Food'),
+            Tab(text: 'My Recipes')
           ],
         ),
       ),

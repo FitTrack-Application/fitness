@@ -40,7 +40,7 @@ class NeutralColors {
   static const Color light200 = Color(0xFFF8F9FE); // Rất nhạt và là màu background trong Light Theme
   static const Color light100 = Color(0xFFFFFFFF); // Trắng và là màu background cho các Card ở Light Theme
 
-  // Dart
+  // Dark
   static const Color dark500 = Color(0xFF121620); // Đậm nhất và là màu background trong Dark Theme
   static const Color dark400 = Color(0xFF252E37); // Đậm vừa và là màu background cho các Card ở Dark Theme
   static const Color dark300 = Color(0xFF353F54); // Trung bình
