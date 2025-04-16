@@ -38,6 +38,7 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
+    @Override
     public ApiResponse<?> getUpdateProfileResponse(UpdateProfileRequest updateProfileRequest, UUID userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("The user is not found!"));
@@ -60,4 +61,6 @@ public class UserServiceImpl implements UserService {
                 .timestamp(LocalDateTime.now())
                 .build();
     }
+
+
 }

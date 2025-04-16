@@ -16,5 +16,9 @@ public interface FoodService {
 
     ApiResponse<List<FoodDto>> searchFoodsByName(String query, Pageable pageable);
 
+
     ApiResponse<FoodScanDto> scanFood(String barcode);
+
+    ApiResponse<?> addFood(FoodDto foodDto, UUID userId);
+
 }

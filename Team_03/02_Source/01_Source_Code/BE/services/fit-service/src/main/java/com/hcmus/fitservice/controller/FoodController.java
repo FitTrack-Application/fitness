@@ -4,7 +4,13 @@ import com.hcmus.fitservice.dto.FoodDto;
 import com.hcmus.fitservice.dto.FoodScanDto;
 import com.hcmus.fitservice.dto.response.ApiResponse;
 import com.hcmus.fitservice.service.FoodService;
+import com.hcmus.fitservice.util.JwtUtil;
+
+
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties.Jwt;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -12,8 +18,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PathVariable;
+
 
 
 @RequiredArgsConstructor
@@ -22,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class FoodController {
 
     private final FoodService foodService;
+    private final JwtUtil jwtUtil;
 
     // Get food by id
     @GetMapping("/{foodId}")
@@ -50,11 +62,20 @@ public class FoodController {
         return ResponseEntity.ok(response);
     }
 
+
     @GetMapping("/scan")
     public ResponseEntity<ApiResponse<FoodScanDto>> getMethodName(@RequestParam String barcode) {
         ApiResponse<FoodScanDto> response = foodService.scanFood(barcode);
         
         return ResponseEntity.ok(response); 
     }
-    
+
+    @PutMapping("/add")
+    public ResponseEntity<ApiResponse<?>> addFood(@Valid @RequestBody FoodDto foodDto, @RequestHeader("Authorization") String authorizationHeader) {
+        
+        UUID userId = jwtUtil.extractUserId(authorizationHeader.replace("Bearer ", ""));
+        ApiResponse<?> response = foodService.addFood(foodDto, userId);
+        return ResponseEntity.ok(response);
+    }
+
 }
