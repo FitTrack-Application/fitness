@@ -14,8 +14,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -30,13 +34,13 @@ public class StatisticServiceImpl implements StatisticService {
 
     private final NutritionGoalRepository nutritionGoalRepository;
 
-    public ApiResponse<Void> addWeight(AddWeightRequest request, UUID userId) {
-        WeightLog weightLog = new WeightLog();
-
-        weightLog.setUserId(userId);
-        weightLog.setWeight(request.getWeight());
-        weightLog.setDate(request.getUpdateDate());
-        weightLog.setImageUrl(request.getProgressPhoto());
+    public ApiResponse<Void> addWeight(AddWeightRequest addWeightRequest, UUID userId) {
+        WeightLog weightLog = WeightLog.builder()
+                .weight(addWeightRequest.getWeight())
+                .date(addWeightRequest.getUpdateDate())
+                .userId(userId)
+                .imageUrl(addWeightRequest.getProgressPhoto())
+                .build();        
 
         weightLogRepository.save(weightLog);
 
@@ -48,7 +52,7 @@ public class StatisticServiceImpl implements StatisticService {
                 .build();
     }
 
-    public ApiResponse<List<Map<String, Object>>> getWeightProcess(UUID userId) {
+    public ApiResponse<List<Map<String, Object>>> getWeightProcess(UUID userId, Integer numDays) {
         List<WeightLog> weightLogs = weightLogRepository.findByUserId(userId);
 
         if (weightLogs.isEmpty()) {
@@ -60,7 +64,27 @@ public class StatisticServiceImpl implements StatisticService {
                     .build();
         }
 
-        List<Map<String, Object>> dataList = weightLogs.stream()
+            
+        
+        long currentTime = System.currentTimeMillis();
+        long fromTime = currentTime - Duration.ofDays(numDays).toMillis();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        Map<String, WeightLog> logsPerDay = new LinkedHashMap<>();
+
+        weightLogs.stream()
+                .filter(log -> {                    
+                    long logTimestamp = log.getDate().getTime();
+                    return logTimestamp >= fromTime && logTimestamp <= currentTime;
+                })
+                .sorted(Comparator.comparing(WeightLog::getDate)) 
+                .forEach(log -> {
+                    String dayKey = sdf.format(log.getDate()); 
+                    logsPerDay.putIfAbsent(dayKey, log); 
+                });
+
+        List<Map<String, Object>> dataList = logsPerDay.values().stream()
                 .map(log -> {
                     Map<String, Object> map = new HashMap<>();
                     map.put("weight", log.getWeight());
@@ -87,6 +111,16 @@ public class StatisticServiceImpl implements StatisticService {
                 .userId(userId)
                 .build();
         weightGoalRepository.save(weightGoal);
+
+        WeightLog weightLog = WeightLog.builder()
+                .weight(initWeightGoalRequest.getStartingWeight())
+                .date(initWeightGoalRequest.getStartingDate())
+                .userId(userId)
+                .imageUrl(null)
+                .build();        
+
+        weightLogRepository.save(weightLog);
+
         return ApiResponse.builder()
                 .status(HttpStatus.CREATED.value())
                 .generalMessage("Successfully initialized weight goal!")

@@ -29,9 +29,9 @@ public class StatisticController {
     }
 
     @GetMapping("/weight")
-    public ResponseEntity<?> getWeightProcess(@RequestHeader("Authorization") String authorizationHeader) {
+    public ResponseEntity<?> getWeightProcess(@RequestHeader("Authorization") String authorizationHeader, @RequestParam(value = "days", defaultValue = "7") Integer days) {
         UUID userId = jwtUtil.extractUserId(authorizationHeader.replace("Bearer ", ""));
-        return ResponseEntity.ok(statisticService.getWeightProcess(userId));
+        return ResponseEntity.ok(statisticService.getWeightProcess(userId, days));
     }
 
     @PostMapping("/init-weight-goal")

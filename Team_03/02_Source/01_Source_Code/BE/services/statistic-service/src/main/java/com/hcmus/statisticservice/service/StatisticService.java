@@ -19,7 +19,7 @@ public interface StatisticService {
 
     ApiResponse<Void> addWeight(AddWeightRequest request, UUID userId);
 
-    ApiResponse<List<Map<String, Object>>> getWeightProcess(UUID userId);
+    ApiResponse<List<Map<String, Object>>> getWeightProcess(UUID userId, Integer numDays);
 
     ApiResponse<?> initWeightGoal(InitWeightGoalRequest initWeightGoalRequest, UUID userId);
 
