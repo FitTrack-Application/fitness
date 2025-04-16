@@ -85,6 +85,24 @@ class DiaryViewModel extends ChangeNotifier {
   }
 
   /// Lấy dữ liệu nhật ký cho ngày đã chọn
+  // Future<void> fetchDiaryForSelectedDate() async {
+  //   isLoading = true;
+  //   errorMessage = null;
+  //   notifyListeners();
+  //
+  //   try {
+  //     // TODO: Call API to fetch exercises
+  //     exerciseItems = [];
+  //     mealLogs = await _repository.fetchMealLogsForDate(selectedDate);
+  //     isLoading = false;
+  //     notifyListeners();
+  //   } catch (e) {
+  //     isLoading = false;
+  //     errorMessage = "Không thể tải dữ liệu: ${e.toString()}";
+  //     notifyListeners();
+  //   }
+  // }
+
   Future<void> fetchDiaryForSelectedDate() async {
     isLoading = true;
     errorMessage = null;
@@ -93,7 +111,19 @@ class DiaryViewModel extends ChangeNotifier {
     try {
       // TODO: Call API to fetch exercises
       exerciseItems = [];
-      mealLogs = await _repository.fetchMealLogsForDate(selectedDate);
+
+      try {
+        mealLogs = await _repository.fetchMealLogsForDate(selectedDate);
+      } catch (e) {
+        // Nếu lỗi là do không có meal log, thì tạo mới rồi fetch lại
+        if (e.toString().contains('Failed to load meal logs: 400')) {
+          await _repository.createMealLogsForDate(selectedDate);
+          mealLogs = await _repository.fetchMealLogsForDate(selectedDate);
+        } else {
+          rethrow;
+        }
+      }
+
       isLoading = false;
       notifyListeners();
     } catch (e) {
@@ -102,6 +132,7 @@ class DiaryViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
+
 
   /// Thêm thức ăn vào nhật ký
   Future<void> addFoodToDiary(Food food, int servingSize, DateTime date) async {
