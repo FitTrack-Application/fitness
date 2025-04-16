@@ -6,6 +6,8 @@ import com.hcmus.fitservice.exception.ResourceNotFoundException;
 import com.hcmus.fitservice.mapper.FoodMapper;
 import com.hcmus.fitservice.model.Food;
 import com.hcmus.fitservice.repository.FoodRepository;
+
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -73,6 +75,28 @@ public class FoodServiceImpl implements FoodService {
                 .generalMessage("Successfully retrieved foods")
                 .data(foodPageDto.getContent())
                 .metadata(metadata)
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
+
+    @Transactional
+    @Override
+    public ApiResponse<?> addFood(FoodDto foodDto, UUID userId) {
+        Food food = new Food();
+
+        food.setFoodName(foodDto.getName());
+        food.setCaloriesPer100g(foodDto.getCalories());
+        food.setProteinPer100g(foodDto.getProtein());
+        food.setCarbsPer100g(foodDto.getCarbs());
+        food.setFatPer100g(foodDto.getFat());
+        food.setImageUrl(foodDto.getImageUrl());
+        food.setUserId(userId); 
+        
+        foodRepository.save(food);
+
+        return ApiResponse.builder()
+                .status(200)
+                .generalMessage("Successfully added food!")
                 .timestamp(LocalDateTime.now())
                 .build();
     }

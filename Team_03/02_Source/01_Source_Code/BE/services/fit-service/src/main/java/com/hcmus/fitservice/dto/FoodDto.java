@@ -37,4 +37,6 @@ public class FoodDto {
     @NotNull(message = "Fat cannot be empty")
     @Positive(message = "Fat must be a positive number")
     private Double fat;
+
+    private String imageUrl;
 }
