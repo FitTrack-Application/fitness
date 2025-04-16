@@ -16,5 +16,5 @@ public class MealEntryDto {
 
     private String servingUnit;
 
-    private Integer numberOfServings;
+    private Double numberOfServings;
 }

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../models/food.dart';
+import '../models/meal_log.dart';
 import '../services/repository/food_repository.dart';
 
 // Define possible loading states

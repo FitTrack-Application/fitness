@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/cores/constants/colors.dart';
 import 'package:go_router/go_router.dart';
 
 class AddWeight extends StatelessWidget {
+  const AddWeight({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,7 +70,7 @@ class AddWeight extends StatelessWidget {
                           "Progress photo",
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
-                        CircleAvatar(
+                        const CircleAvatar(
                           radius: 20,
                           backgroundImage:
                               NetworkImage('https://example.com/avatar.jpg'),

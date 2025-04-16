@@ -15,7 +15,7 @@ class AuthViewModel extends ChangeNotifier {
   User? get user => _user;
 
   //Version
-  String _versionName = " ";
+  final String _versionName = " ";
   String get versionName => _versionName;
 
   //Remaining tokens

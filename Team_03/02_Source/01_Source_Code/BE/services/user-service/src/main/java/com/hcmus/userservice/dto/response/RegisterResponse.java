@@ -16,13 +16,7 @@ public class RegisterResponse {
 
     private String refreshToken;
 
-    private UUID userId;
-
-    private UUID goalId;
-
     private String email;
 
     private String name;
-
-    private Role role;
 }

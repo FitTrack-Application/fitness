@@ -45,6 +45,17 @@ public class GlobalExceptionHandler {
         return ResponseEntity.ok(response);
     }
 
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ApiResponse<?>> handleBadRequest(BadRequestException exception) {
+        final ApiResponse<?> response = ApiResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .generalMessage("Bad request!")
+                .errorDetails(List.of(exception.getMessage()))
+                .timestamp(LocalDateTime.now())
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ApiResponse<?>> handleAuthenticationException(AuthenticationException exception) {
         final ApiResponse<?> response = ApiResponse.builder()
@@ -179,6 +190,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ApiResponse<?>> handleGlobalException(RuntimeException exception) {
+        exception.printStackTrace();
         final ApiResponse<?> response = ApiResponse.builder()
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .generalMessage("An unexpected error occurred. Please try again later!")

@@ -5,6 +5,7 @@ import 'package:mobile/features/fitness/models/exercise.dart';
 import 'package:mobile/features/fitness/models/food.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/meal_log.dart';
 import '../../viewmodels/diary_viewmodel.dart';
 
 class DiaryScreen extends StatefulWidget {
@@ -234,12 +235,14 @@ class _DiaryScreenState extends State<DiaryScreen>
     BuildContext context,
     String mealTitle,
     List<Food> foodItems,
-    int calories,
+      double calories,
     MealType mealType,
   ) {
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
-
+    String mealLogId = viewModel.mealLogs
+        .firstWhere((log) => log.mealType == mealType)
+        .id;
     return Card(
       margin: const EdgeInsets.all(12),
       child: Column(
@@ -254,12 +257,11 @@ class _DiaryScreenState extends State<DiaryScreen>
               ],
             ),
           ),
-          ...foodItems.map((item) => _buildFoodItem(item, context, viewModel)),
+          ...foodItems.map((item) => _buildFoodItem(item, mealLogId, context, viewModel)),
           TextButton(
             onPressed: () {
-              // Truyền mealType vào màn hình tìm kiếm
               context.push(
-                  '/search/${viewModel.diaryId}?mealType=${mealType.toString().split('.').last}');
+                  '/search/$mealLogId?mealType=${mealType.toString().split('.').last}');
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -327,7 +329,7 @@ class _DiaryScreenState extends State<DiaryScreen>
   }
 
   Widget _buildFoodItem(
-      Food item, BuildContext context, DiaryViewModel viewModel) {
+      Food item, String mealLogId, BuildContext context, DiaryViewModel viewModel) {
     final textTheme = Theme.of(context).textTheme;
     final isRemoving = viewModel.isRemovingFood(item.id);
 
@@ -386,7 +388,7 @@ class _DiaryScreenState extends State<DiaryScreen>
             ],
           ),
           onTap: () {
-            context.push('/food/${viewModel.diaryId}/${item.id}/edit');
+            context.push('/food/$mealLogId/${item.id}/edit');
           },
         ),
         const Divider(
@@ -404,9 +406,7 @@ class _DiaryScreenState extends State<DiaryScreen>
     return Column(
       children: [
         ListTile(
-          title: Text(item.exerciseName),
-          subtitle: Text("${item.duration} phút - ${item.description}"),
-          trailing: Text('${item.calories}', style: textTheme.titleSmall),
+          title: Text(item.exerciseId),
         ),
         const Divider(
           height: 0.1,

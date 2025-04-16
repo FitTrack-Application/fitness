@@ -133,7 +133,7 @@ class StepGraph extends StatelessWidget {
                                       return Transform.rotate(
                                         angle: -0.5,
                                         child: Text(
-                                          '${DateFormat('MM/dd').format(date)}',
+                                          DateFormat('MM/dd').format(date),
                                           style: StepGraphTheme.titleDataStyle(context),
                                           textAlign: TextAlign.center,
                                         ),
@@ -213,7 +213,7 @@ class StepGraph extends StatelessWidget {
         barRods: [
           BarChartRodData(
             toY: data.steps.toDouble(),
-            gradient: LinearGradient(
+            gradient: const LinearGradient(
               colors: [
                 AccentColors.red300,
                 AccentColors.red200,

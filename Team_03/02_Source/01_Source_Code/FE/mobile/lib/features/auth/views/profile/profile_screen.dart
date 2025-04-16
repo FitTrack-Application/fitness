@@ -20,7 +20,7 @@ class ProfileScreen extends StatelessWidget {
                   onTap: () {
                     context.go('/profile/edit');
                   },
-                  child: CircleAvatar(
+                  child: const CircleAvatar(
                     radius: 50,
                     backgroundColor: NeutralColors.light500,
                     child: Icon(

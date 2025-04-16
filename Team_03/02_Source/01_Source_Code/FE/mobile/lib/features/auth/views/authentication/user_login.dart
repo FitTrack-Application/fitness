@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mobile/common/widgets/elevated_button/elevated_button.dart';
 import 'package:mobile/common/widgets/outlined_button/outlined_button.dart';
 import 'package:mobile/common/widgets/status_dialog/status_dialog.dart';
 import 'package:mobile/cores/constants/colors.dart';
@@ -35,7 +34,7 @@ class _UserLoginState extends State<UserLogin> {
         shouldShowMessage = arguments;
       } else if (arguments is Map) {
         // Nếu arguments là Map, kiểm tra xem có key 'showMessage' hay không
-        final map = arguments as Map;
+        final map = arguments;
         shouldShowMessage = map['showMessage'] == true || map['message'] == 'Session expired';
       }
 
@@ -229,8 +228,8 @@ class _UserLoginState extends State<UserLogin> {
 
                 // Nút Continue With Google
                 OutlinedButtonCustom(
-                  icon: Image(
-                    image: const AssetImage('assets/logo/google.png'),
+                  icon: const Image(
+                    image: AssetImage('assets/logo/google.png'),
                     width: 28,
                   ),
                   onPressed: _logInGoogle,
@@ -240,8 +239,8 @@ class _UserLoginState extends State<UserLogin> {
 
                 // Nút Continue With Facebook
                 OutlinedButtonCustom(
-                  icon: Image(
-                    image: const AssetImage('assets/logo/facebook.png'),
+                  icon: const Image(
+                    image: AssetImage('assets/logo/facebook.png'),
                     width: 30,
                   ),
                   onPressed: _logInFacebook,
@@ -260,7 +259,7 @@ class _UserLoginState extends State<UserLogin> {
                       TextSpan(
                         text: "Don't have an account? ",
                         style: Theme.of(context).textTheme.bodyMedium,
-                        children: [
+                        children: const [
                           TextSpan(
                             text: "Register",
                             style: TextStyle(
