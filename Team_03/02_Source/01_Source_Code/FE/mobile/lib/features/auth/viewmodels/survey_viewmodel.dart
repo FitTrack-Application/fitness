@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/features/auth/models/user_info.dart';
 import 'package:mobile/features/auth/services/api_service.dart';
 
 class SurveyViewModel extends ChangeNotifier {

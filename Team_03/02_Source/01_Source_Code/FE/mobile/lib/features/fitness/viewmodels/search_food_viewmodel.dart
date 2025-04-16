@@ -28,12 +28,12 @@ class SearchFoodViewModel extends ChangeNotifier {
   String get errorMessage => _errorMessage;
   String get loadMoreError => _loadMoreError;
 
-  Future<void> searchFoods({String query = ''}) async {
+  // Thêm `isMyFood` để phân biệt tìm kiếm các loại food
+  Future<void> searchFoods({String query = '', bool isMyFood = false}) async {
     if (isLoading) return;
 
     // Reset error message
     _errorMessage = '';
-
     isLoading = true;
     _searchQuery = query;
     _currentPage = 1;
@@ -41,14 +41,14 @@ class SearchFoodViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      // Add timeout for request
       final paginatedResponse = await _fetchWithTimeout(
-          () => _repository.searchFoods(query, page: _currentPage, size: 10));
+              () => isMyFood
+              ? _repository.searchMyFoods(query, page: _currentPage, size: 10)
+              : _repository.searchFoods(query, page: _currentPage, size: 10));
 
       _foods.clear();
       _foods.addAll(paginatedResponse.data);
 
-      // Update pagination info from response
       _currentPage = paginatedResponse.pagination.currentPage;
       _totalPages = paginatedResponse.pagination.totalPages;
       _hasMoreData = _currentPage < _totalPages;
@@ -61,32 +61,30 @@ class SearchFoodViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> loadMoreFoods({int size = 10}) async {
+  // Cập nhật loadMoreFoods để sử dụng cho "My Food" khi cần
+  Future<void> loadMoreFoods({int size = 10, bool isMyFood = false}) async {
     if (isFetchingMore || !_hasMoreData) return;
 
-    // Reset load more error
     _loadMoreError = '';
-
     isFetchingMore = true;
     notifyListeners();
 
     try {
       _currentPage++;
-      final paginatedResponse = await _fetchWithTimeout(() => _repository
-          .searchFoods(_searchQuery, page: _currentPage, size: size));
+      final paginatedResponse = await _fetchWithTimeout(() => isMyFood
+          ? _repository.searchMyFoods(_searchQuery, page: _currentPage, size: size)
+          : _repository.searchFoods(_searchQuery, page: _currentPage, size: size));
 
       if (paginatedResponse.data.isEmpty) {
         _hasMoreData = false;
       } else {
         _foods.addAll(paginatedResponse.data);
-
-        // Update pagination info from response
         _totalPages = paginatedResponse.pagination.totalPages;
         _hasMoreData = _currentPage < _totalPages;
       }
     } catch (e) {
       _loadMoreError = _getErrorMessage(e);
-      _currentPage--; // Rollback page increment on error
+      _currentPage--;
       debugPrint('Error fetching more foods: $e');
     }
 

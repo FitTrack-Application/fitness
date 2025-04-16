@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/common/widgets/tonal_button/tonal_button.dart';
-import 'package:mobile/cores/constants/colors.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mobile/features/auth/models/user_info.dart';
-import 'package:mobile/features/auth/services/api_service.dart';
 import 'step_one.dart';
 import 'step_two.dart';
 import 'step_three.dart';
@@ -232,7 +229,7 @@ class Summary extends StatelessWidget {
           ),
           const SizedBox(height: 50),
           Text(
-            '${calorieGoal.toStringAsFixed(2)}',
+            calorieGoal.toStringAsFixed(2),
             style: Theme.of(context).textTheme.displayLarge,
             textAlign: TextAlign.center,
           ),
@@ -286,7 +283,7 @@ class Summary extends StatelessWidget {
                         Text('Goal: ${surveyViewModel.goal}', style: Theme.of(context).textTheme.bodyMedium),
                         Text('Weight Goal: ${surveyViewModel.weightGoal} kg', style: Theme.of(context).textTheme.bodyMedium),
                         Text('Goal per Week: ${surveyViewModel.goalPerWeek.toString()} kg', style: Theme.of(context).textTheme.bodyMedium),
-                        Text(' '),
+                        const Text(' '),
                       ],
                     ),
                   ),

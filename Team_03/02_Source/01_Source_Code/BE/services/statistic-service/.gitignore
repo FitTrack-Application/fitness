@@ -1,5 +1,3 @@
-.env
-*.env
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
@@ -33,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Ignore environment variables
+.env
+
+### Bin ###
+bin/

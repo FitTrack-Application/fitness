@@ -3,8 +3,8 @@ import 'package:mobile/features/auth/viewmodels/goal_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 
-class GoalPage extends StatelessWidget {
-  const GoalPage({super.key});
+class UserGoal extends StatelessWidget {
+  const UserGoal({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +24,12 @@ class GoalPage extends StatelessWidget {
       ),
       body: Consumer<GoalViewModel>(
         builder: (context, goalViewModel, child) {
+          double progress = 0.0;
+            if (goalViewModel.startingWeight != goalViewModel.targetWeight) {
+            progress = ((goalViewModel.startingWeight - goalViewModel.currentWeight) /
+                    (goalViewModel.startingWeight - goalViewModel.targetWeight))
+                .clamp(0.0, 1.0); // Ensure progress is between 0 and 1
+          }
           return Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -95,20 +101,6 @@ class GoalPage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "Progress",
-                              style: Theme.of(context).textTheme.bodyLarge,
-                            ),
-                            Text(
-                              "${goalViewModel.progress.toStringAsFixed(1)}%",
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
-                          ],
-                        ),
-                        const Divider(),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
                               "Goal per week",
                               style: Theme.of(context).textTheme.bodyLarge,
                             ),
@@ -118,6 +110,18 @@ class GoalPage extends StatelessWidget {
                             ),
                           ],
                         ),
+                        const Divider(),
+                        const Text(
+                          "Weight Progress",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 10),
+                        LinearProgressIndicator(
+                          value: progress,
+                          backgroundColor: Colors.grey[300],
+                          color: Colors.green,
+                        ),
+                        const SizedBox(height: 10),
                       ],
                     ),
                   ),

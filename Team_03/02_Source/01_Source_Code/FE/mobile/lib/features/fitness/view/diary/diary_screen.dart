@@ -1,22 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:mobile/cores/constants/colors.dart';
 import 'package:mobile/features/fitness/models/exercise.dart';
 import 'package:mobile/features/fitness/models/food.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/meal_log.dart';
 import '../../viewmodels/diary_viewmodel.dart';
 
-class DiaryScreen extends StatelessWidget {
+class DiaryScreen extends StatefulWidget {
   const DiaryScreen({super.key});
+
+  @override
+  State<DiaryScreen> createState() => _DiaryScreenState();
+}
+
+class _DiaryScreenState extends State<DiaryScreen>
+    with TickerProviderStateMixin {
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final viewModel = Provider.of<DiaryViewModel>(context);
 
     return Scaffold(
-      body: AnimatedBuilder(
+      body: SafeArea(
+          child: AnimatedBuilder(
         animation: viewModel,
         builder: (context, child) {
           if (viewModel.isLoading) {
@@ -29,26 +50,92 @@ class DiaryScreen extends StatelessWidget {
 
           return _buildDiaryContent(viewModel, context);
         },
-      ),
+      )),
     );
   }
 
   Widget _buildDiaryContent(DiaryViewModel viewModel, BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: () async {
-        await viewModel.fetchDiaryForSelectedDate();
-      },
-      child: SingleChildScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        child: Column(
-          children: [
-            _buildDateSelector(viewModel, context),
-            _buildCaloriesCard(viewModel, context),
-            _buildFoodList(viewModel, context),
-            _buildExerciseList(viewModel, context),
+    return Column(
+      children: [
+        _buildDateSelector(viewModel, context),
+        _buildCaloriesCard(viewModel, context),
+        // Tab chính: Food và Exercise
+        TabBar(
+          controller: _tabController,
+          tabs: const [
+            Tab(text: 'FOOD'),
+            Tab(text: 'EXERCISE'),
           ],
         ),
-      ),
+        // TabBarView chính
+        Expanded(
+          child: TabBarView(
+            controller: _tabController,
+            children: [
+              // Tab Food với RefreshIndicator đã được di chuyển vào đây
+              RefreshIndicator(
+                onRefresh: () async {
+                  await viewModel.fetchDiaryForSelectedDate();
+                },
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minHeight: MediaQuery.of(context).size.height - 200,
+                    ),
+                    child: Column(
+                      children: [
+                        // Breakfast
+                        _buildMealList(
+                          viewModel,
+                          context,
+                          'Breakfast',
+                          viewModel.breakfastItems,
+                          viewModel.breakfastCalories,
+                          MealType.breakfast,
+                        ),
+                        // Lunch
+                        _buildMealList(
+                          viewModel,
+                          context,
+                          'Lunch',
+                          viewModel.lunchItems,
+                          viewModel.lunchCalories,
+                          MealType.lunch,
+                        ),
+                        // Dinner
+                        _buildMealList(
+                          viewModel,
+                          context,
+                          'Dinner',
+                          viewModel.dinnerItems,
+                          viewModel.dinnerCalories,
+                          MealType.dinner,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              // Tab Exercise với RefreshIndicator đã được di chuyển vào đây
+              RefreshIndicator(
+                onRefresh: () async {
+                  await viewModel.fetchDiaryForSelectedDate();
+                },
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minHeight: MediaQuery.of(context).size.height - 200,
+                    ),
+                    child: _buildExerciseList(viewModel, context),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -56,7 +143,7 @@ class DiaryScreen extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return Container(
-      padding: const EdgeInsets.only(top: 25),
+      padding: const EdgeInsets.only(top: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -112,9 +199,7 @@ class DiaryScreen extends StatelessWidget {
                   Text('=', style: textTheme.bodySmall),
                   const SizedBox(width: 12),
                   _buildCalorieColumn(
-                      viewModel.caloriesRemaining.toInt(),
-                      'Remaining',
-                      context,
+                      viewModel.caloriesRemaining.toInt(), 'Remaining', context,
                       bold: true),
                 ],
               ),
@@ -145,10 +230,19 @@ class DiaryScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildFoodList(DiaryViewModel viewModel, BuildContext context) {
+  Widget _buildMealList(
+    DiaryViewModel viewModel,
+    BuildContext context,
+    String mealTitle,
+    List<Food> foodItems,
+      double calories,
+    MealType mealType,
+  ) {
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
-
+    String mealLogId = viewModel.mealLogs
+        .firstWhere((log) => log.mealType == mealType)
+        .id;
     return Card(
       margin: const EdgeInsets.all(12),
       child: Column(
@@ -158,19 +252,16 @@ class DiaryScreen extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Food', style: textTheme.titleSmall),
-                Text('${viewModel.caloriesConsumed.toInt()}',
-                    style: textTheme.titleSmall),
+                Text(mealTitle, style: textTheme.titleSmall),
+                Text('$calories', style: textTheme.titleSmall),
               ],
             ),
           ),
-          ...viewModel.foodItems
-              .map((item) => _buildFoodItem(item, context, () {
-                    context.push('/food/${viewModel.diaryId}/${item.id}/edit');
-                  })),
+          ...foodItems.map((item) => _buildFoodItem(item, mealLogId, context, viewModel)),
           TextButton(
             onPressed: () {
-              context.push('/search/${viewModel.diaryId}');
+              context.push(
+                  '/search/$mealLogId?mealType=${mealType.toString().split('.').last}');
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -237,30 +328,75 @@ class DiaryScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildFoodItem(Food item, BuildContext context, VoidCallback onTap) {
+  Widget _buildFoodItem(
+      Food item, String mealLogId, BuildContext context, DiaryViewModel viewModel) {
     final textTheme = Theme.of(context).textTheme;
+    final isRemoving = viewModel.isRemovingFood(item.id);
 
-    return InkWell(
-      onTap: onTap,
-      child: Column(
-        children: [
-          ListTile(
-            title: Text(
-              item.name,
-              style: textTheme.bodyMedium,
-            ),
-            subtitle: Text(
-                "${item.calories} cal, Carbs: ${item.carbs}g, Fat: ${item.fat}g, Protein: ${item.protein}g",
-                style: textTheme.bodySmall),
-            trailing: Text('${item.calories}'),
+    return Column(
+      children: [
+        ListTile(
+          title: Text(
+            item.name,
+            style: textTheme.bodyMedium,
           ),
-          const Divider(
-            height: 0.1,
-            indent: 16,
-            endIndent: 16,
+          subtitle: Text(
+              "${item.calories} cal, Carbs: ${item.carbs}g, Fat: ${item.fat}g, Protein: ${item.protein}g",
+              style: textTheme.bodySmall),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('${item.calories}'),
+              IconButton(
+                icon: isRemoving
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.delete_outline, color: Colors.red),
+                onPressed: isRemoving
+                    ? null
+                    : () async {
+                        // Hiện hộp thoại xác nhận
+                        final shouldDelete = await showDialog<bool>(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text("Xác nhận xóa"),
+                            content: Text(
+                                "Bạn có chắc muốn xóa ${item.name} khỏi nhật ký?"),
+                            actions: [
+                              TextButton(
+                                onPressed: () =>
+                                    Navigator.of(context).pop(false),
+                                child: const Text("Hủy"),
+                              ),
+                              TextButton(
+                                onPressed: () =>
+                                    Navigator.of(context).pop(true),
+                                child: const Text("Xóa"),
+                              ),
+                            ],
+                          ),
+                        );
+
+                        if (shouldDelete == true) {
+                          await viewModel.removeFoodFromDiary(item.id);
+                        }
+                      },
+              ),
+            ],
           ),
-        ],
-      ),
+          onTap: () {
+            context.push('/food/$mealLogId/${item.id}/edit');
+          },
+        ),
+        const Divider(
+          height: 0.1,
+          indent: 16,
+          endIndent: 16,
+        ),
+      ],
     );
   }
 
@@ -270,9 +406,7 @@ class DiaryScreen extends StatelessWidget {
     return Column(
       children: [
         ListTile(
-          title: Text(item.exerciseName),
-          subtitle: Text("${item.duration} phút - ${item.description}"),
-          trailing: Text('${item.calories}', style: textTheme.titleSmall),
+          title: Text(item.exerciseId),
         ),
         const Divider(
           height: 0.1,

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="98c19c7e-9f2a-48eb-a52d-c2902983d11d" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/Team_03/02_Source/01_Source_Code/BE/services/statistic-service/src/main/java/com/hcmus/statisticserivce/StatisticSerivceApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Team_03/02_Source/01_Source_Code/BE/services/statistic-service/src/main/java/com/hcmus/statisticserivce/config/RestTemplateConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Team_03/02_Source/01_Source_Code/BE/services/statistic-service/src/main/java/com/hcmus/statisticserivce/controller/FoodLogController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Team_03/02_Source/01_Source_Code/BE/services/statistic-service/src/main/java/com/hcmus/statisticserivce/controller/GoalController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Team_03/02_Source/01_Source_Code/BE/services/statistic-service/src/main/java/com/hcmus/statisticserivce/controller/StatisticController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Team_03/02_Source/01_Source_Code/BE/services/statistic-service/src/main/java/com/hcmus/statisticserivce/exception/GlobalExceptionHandler.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Team_03/02_Source/01_Source_Code/BE/services/statistic-service/src/main/java/com/hcmus/statisticserivce/exception/InvalidTokenException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Team_03/02_Source/01_Source_Code/BE/services/statistic-service/src/main/java/com/hcmus/statisticserivce/exception/ResourceNotFoundException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Team_03/02_Source/01_Source_Code/BE/services/statistic-service/src/main/java/com/hcmus/statisticserivce/model/NutritionGoal.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Team_03/02_Source/01_Source_Code/BE/services/statistic-service/src/main/java/com/hcmus/statisticserivce/model/WeightGoal.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Team_03/02_Source/01_Source_Code/BE/services/statistic-service/src/main/java/com/hcmus/statisticserivce/model/WeightLog.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Team_03/02_Source/01_Source_Code/BE/services/statistic-service/src/main/java/com/hcmus/statisticserivce/repository/FoodLogRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Team_03/02_Source/01_Source_Code/BE/services/statistic-service/src/main/java/com/hcmus/statisticserivce/repository/GoalRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Team_03/02_Source/01_Source_Code/BE/services/statistic-service/src/main/java/com/hcmus/statisticserivce/repository/WeightRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Team_03/02_Source/01_Source_Code/BE/services/statistic-service/src/main/java/com/hcmus/statisticserivce/service/FoodLogService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Team_03/02_Source/01_Source_Code/BE/services/statistic-service/src/main/java/com/hcmus/statisticserivce/service/FoodLogServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Team_03/02_Source/01_Source_Code/BE/services/statistic-service/src/main/java/com/hcmus/statisticserivce/service/GoalService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Team_03/02_Source/01_Source_Code/BE/services/statistic-service/src/main/java/com/hcmus/statisticserivce/service/GoalServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Team_03/02_Source/01_Source_Code/BE/services/statistic-service/src/main/java/com/hcmus/statisticserivce/service/WeightService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Team_03/02_Source/01_Source_Code/BE/services/statistic-service/src/main/java/com/hcmus/statisticserivce/service/WeightServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Team_03/02_Source/01_Source_Code/BE/services/statistic-service/src/main/java/com/hcmus/statisticserivce/util/JwtUtil.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Team_03/02_Source/01_Source_Code/BE/services/user-service/src/main/java/com/hcmus/userservice/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Team_03/02_Source/01_Source_Code/BE/services/user-service/src/main/java/com/hcmus/userservice/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Team_03/02_Source/01_Source_Code/BE/services/user-service/src/main/java/com/hcmus/userservice/dto/request/AddWeightRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Team_03/02_Source/01_Source_Code/BE/services/user-service/src/main/java/com/hcmus/userservice/dto/response/GoalResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Team_03/02_Source/01_Source_Code/BE/services/user-service/src/main/java/com/hcmus/userservice/dto/response/RegisterResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/Team_03/02_Source/01_Source_Code/BE/services/user-service/src/main/java/com/hcmus/userservice/dto/response/RegisterResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Team_03/02_Source/01_Source_Code/BE/services/user-service/src/main/java/com/hcmus/userservice/repository/GoalRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Team_03/02_Source/01_Source_Code/BE/services/user-service/src/main/java/com/hcmus/userservice/service/AuthServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Team_03/02_Source/01_Source_Code/BE/services/user-service/src/main/java/com/hcmus/userservice/service/AuthServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Team_03/02_Source/01_Source_Code/BE/services/user-service/src/main/java/com/hcmus/userservice/service/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Team_03/02_Source/01_Source_Code/BE/services/user-service/src/main/java/com/hcmus/userservice/service/UserServiceImpl.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "thanhvinh-htnbt"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/FitTrack-Application/fitness.git",
+    "accountId": "2575fdeb-8c07-4a3c-8405-9be9f93a479d"
+  }
+}]]></component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "",
+  "associatedIndex": 8
+}]]></component>
+  <component name="ProjectId" id="2vgD3x8qtRXiR9YIuY0tLzFmYVb" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "be/vinh/weightlog",
+    "kotlin-language-version-configured": "true",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunManager">
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="fitness" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="fitness" />
+      <option name="filePath" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-a94e463ab2e7-intellij.indexing.shared.core-IU-243.26053.27" />
+        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.26053.27" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="98c19c7e-9f2a-48eb-a52d-c2902983d11d" name="Changes" comment="" />
+      <created>1744557634428</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1744557634428</updated>
+      <workItem from="1744557636454" duration="69000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

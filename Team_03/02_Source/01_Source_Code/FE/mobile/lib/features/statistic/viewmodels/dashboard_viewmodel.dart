@@ -49,9 +49,9 @@ class DashboardViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> fetchWeightStatistics({required String token}) async {
+  Future<void> fetchWeightStatistics() async {
     try {
-      final result = await apiService.fetchWeightStatistics(token);
+      final result = await apiService.fetchWeightStatistics();
       weightEntries = result;
       notifyListeners();
     } catch (e) {

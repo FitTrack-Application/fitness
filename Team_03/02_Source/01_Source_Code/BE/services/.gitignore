@@ -1,31 +1,39 @@
-# Ignore environment files
+HELP.md
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+
+# Ignore environment variables
 .env
 
-# Ignore build files
-target/
-build/
-*.jar
-*.war
-*.ear
-
-# Ignore logs
-logs/
-*.log
-
-# Ignore IDE files
-.idea/
-*.iml
-.vscode/
-.project
-.classpath
-.settings/
-
-# Ignore OS specific files
-.DS_Store
-Thumbs.db
-
-# Ignore Docker volumes
-docker-volumes/
-
-# Maven specific
-.mvn/wrapper/maven-wrapper.jar 
+### Bin ###
+bin/
