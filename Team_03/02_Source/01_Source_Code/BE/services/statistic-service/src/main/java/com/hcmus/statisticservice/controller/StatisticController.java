@@ -45,4 +45,5 @@ public class StatisticController {
         UUID userId = jwtUtil.extractUserId(authorizationHeader.replace("Bearer ", ""));
         return ResponseEntity.ok(statisticService.initCaloriesGoal(initCaloriesGoalRequest, userId));
     }
+    
 }

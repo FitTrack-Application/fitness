@@ -1,9 +1,14 @@
 package com.hcmus.statisticservice.service;
 
+import com.hcmus.statisticservice.client.UserClient;
 import com.hcmus.statisticservice.dto.request.AddWeightRequest;
 import com.hcmus.statisticservice.dto.request.InitWeightGoalRequest;
 import com.hcmus.statisticservice.dto.request.InitCaloriesGoalRequest;
+import com.hcmus.statisticservice.dto.request.EditGoalRequest;
+import com.hcmus.statisticservice.dto.request.UpdateProfileRequest;
+import com.hcmus.statisticservice.dto.response.UserProfileResponse;
 import com.hcmus.statisticservice.dto.response.ApiResponse;
+import com.hcmus.statisticservice.dto.response.GetGoalResponse;
 import com.hcmus.statisticservice.model.NutritionGoal;
 import com.hcmus.statisticservice.model.WeightGoal;
 import com.hcmus.statisticservice.model.WeightLog;
@@ -13,6 +18,7 @@ import com.hcmus.statisticservice.repository.NutritionGoalRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
 import java.time.Duration;
@@ -33,6 +39,8 @@ public class StatisticServiceImpl implements StatisticService {
     private final WeightGoalRepository weightGoalRepository;
 
     private final NutritionGoalRepository nutritionGoalRepository;
+
+    private final UserClient userClient;
 
     public ApiResponse<Void> addWeight(AddWeightRequest addWeightRequest, UUID userId) {
         WeightLog weightLog = WeightLog.builder()
@@ -193,4 +201,125 @@ public class StatisticServiceImpl implements StatisticService {
                 .build();
 
     }
+
+    
+    @Transactional
+    public ApiResponse<?> getGoal(UUID userId, String authorizationHeader) {
+
+        WeightGoal weightGoal = weightGoalRepository.findByUserId(userId);
+        WeightLog weightLog = weightLogRepository.findFirstByUserIdOrderByDateDesc(userId);
+
+        ApiResponse<UserProfileResponse> userProfileResponse = userClient.getUserProfile(authorizationHeader);
+
+        if (userProfileResponse.getStatus() != HttpStatus.OK.value()) {
+            return ApiResponse.builder()
+                    .status(HttpStatus.NOT_FOUND.value())
+                    .generalMessage("User not found!")
+                    .timestamp(LocalDateTime.now())
+                    .build();
+        }
+        UserProfileResponse userProfile = userProfileResponse.getData();
+
+        GetGoalResponse getGoalResponse = GetGoalResponse.builder()                
+                .startingDate(weightGoal.getStartingDate())
+                .startingWeight(weightGoal.getStartingWeight())
+                .currentWeight(weightLog.getWeight())
+                .goalWeight(weightGoal.getGoalWeight())
+                .weeklyGoal(weightGoal.getWeeklyGoal())
+                .activityLevel(userProfile.getActivityLevel())
+                .build();
+
+        return ApiResponse.builder()
+                .status(HttpStatus.OK.value())
+                .generalMessage("Successfully retrieved goal!")
+                .data(getGoalResponse)
+                .timestamp(LocalDateTime.now())
+                .build();
+        
+    }
+
+    
+    @Transactional
+    public ApiResponse<?> editGoal(EditGoalRequest editGoalRequest, UUID userId, String authorizationHeader) {
+        WeightGoal weightGoal = weightGoalRepository.findByUserId(userId);
+
+        if (weightGoal == null) {
+            return ApiResponse.builder()
+                    .status(HttpStatus.NOT_FOUND.value())
+                    .generalMessage("Weight goal not found!")
+                    .timestamp(LocalDateTime.now())
+                    .build();
+        }
+
+        weightGoal.setWeeklyGoal(editGoalRequest.getWeeklyGoal());
+        weightGoal.setStartingWeight(editGoalRequest.getStartingWeight());
+        weightGoal.setStartingDate(editGoalRequest.getStartingDate());
+        weightGoal.setGoalWeight(editGoalRequest.getGoalWeight());
+
+        weightGoalRepository.save(weightGoal);
+
+        ApiResponse<UserProfileResponse> userProfileResponse = userClient.getUserProfile(authorizationHeader);
+
+        if (userProfileResponse.getStatus() != HttpStatus.OK.value()) {
+            return ApiResponse.builder()
+                    .status(HttpStatus.NOT_FOUND.value())
+                    .generalMessage("User not found!")
+                    .timestamp(LocalDateTime.now())
+                    .build();
+        }
+        UserProfileResponse userProfile = userProfileResponse.getData();
+
+        String goalType = "";
+        if (editGoalRequest.getGoalWeight() > editGoalRequest.getCurrentWeight()) {
+            goalType = "Gain weight";
+        } else if (editGoalRequest.getGoalWeight() < editGoalRequest.getCurrentWeight()) {
+            goalType = "Lose weight";
+        } else {
+            goalType = "Maintain weight";
+        }
+
+        InitCaloriesGoalRequest initCaloriesGoalRequest = InitCaloriesGoalRequest.builder()
+                .gender(userProfile.getGender())
+                .weight(editGoalRequest.getCurrentWeight())
+                .height(userProfile.getHeight())
+                .age(userProfile.getAge())
+                .activityLevel(editGoalRequest.getActivitylevel())
+                .weeklyGoal(editGoalRequest.getWeeklyGoal())
+                .goalType(goalType)
+                .build();
+
+        ApiResponse<?> caloriesResponse = initCaloriesGoal(initCaloriesGoalRequest, userId);
+
+
+        UpdateProfileRequest updateProfileRequest = UpdateProfileRequest.builder()
+                .name(userProfile.getName())
+                .age(userProfile.getAge())
+                .gender(userProfile.getGender())
+                .height(userProfile.getHeight())
+                .weight(editGoalRequest.getCurrentWeight())
+                .activityLevel(editGoalRequest.getActivitylevel())
+                .imageUrl(userProfile.getImageUrl())
+                .build();
+
+        ApiResponse<?> updateProfileResponse = userClient.updateUserProfile(updateProfileRequest, authorizationHeader);
+
+        if (updateProfileResponse.getStatus() != HttpStatus.OK.value()) {
+            return ApiResponse.builder()
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                    .generalMessage("Failed to update user profile!")
+                    .timestamp(LocalDateTime.now())
+                    .build();
+        }
+
+        return ApiResponse.builder()
+                .status(HttpStatus.OK.value())
+                .generalMessage("Successfully updated goal!")
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
+
+
+
+
+
 }

@@ -1,10 +1,11 @@
 package com.hcmus.statisticservice.service;
 
+
 import com.hcmus.statisticservice.dto.request.InitWeightGoalRequest;
 import com.hcmus.statisticservice.dto.request.AddWeightRequest;
 import com.hcmus.statisticservice.dto.request.InitCaloriesGoalRequest;
+import com.hcmus.statisticservice.dto.request.EditGoalRequest;
 import com.hcmus.statisticservice.dto.response.ApiResponse;
-
 
 import org.springframework.stereotype.Service;
 import java.util.UUID;
@@ -24,4 +25,8 @@ public interface StatisticService {
     ApiResponse<?> initWeightGoal(InitWeightGoalRequest initWeightGoalRequest, UUID userId);
 
     ApiResponse<?> initCaloriesGoal(InitCaloriesGoalRequest initCaloriesGoalRequest, UUID userId);
+
+    ApiResponse<?> getGoal(UUID userId, String authorizationHeader);
+
+    ApiResponse<?> editGoal(EditGoalRequest editGoalRequest, UUID userId, String authorizationHeader);
 }

@@ -72,6 +72,7 @@ public class AuthServiceImpl implements AuthService {
                 .height(request.getHeight())
                 .gender(Gender.fromString(request.getGender()))
                 .weight(request.getWeight())
+                .activityLevel(request.getActivityLevel())
                 .imageUrl(request.getImageUrl())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.USER)

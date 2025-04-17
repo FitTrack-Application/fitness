@@ -21,5 +21,7 @@ public class UserProfileResponse {
 
     private String email;
 
+    private String activityLevel;
+
     private String imageUrl;
 }
