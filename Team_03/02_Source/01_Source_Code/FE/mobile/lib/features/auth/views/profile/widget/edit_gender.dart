@@ -31,11 +31,7 @@ class _EditGenderState extends State<EditGender> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text(
-            'Select Your Gender',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 10),
           RadioListTile<String>(
             title: const Text('Male'),
             value: 'Male',
@@ -56,7 +52,7 @@ class _EditGenderState extends State<EditGender> {
               });
             },
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 10),
           ElevatedButton(
             onPressed: () {
               widget.onGenderChanged(selectedGender);
