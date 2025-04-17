@@ -7,8 +7,9 @@ import '../../../viewmodels/diary_viewmodel.dart';
 class FoodItemWidget extends StatelessWidget {
   final Food food;
   final VoidCallback onTap;
+  final String mealLogId;
 
-  const FoodItemWidget({super.key, required this.food, required this.onTap});
+  const FoodItemWidget({super.key, required this.food, required this.onTap, required this.mealLogId});
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +62,11 @@ class FoodItemWidget extends StatelessWidget {
               onTap: isAddingThisFood
                   ? null
                   : () {
-                      diaryViewModel.addFoodToDiary(food, 1, DateTime.now());
+                      diaryViewModel.addFoodToDiary(
+                          mealLogId: mealLogId,
+                          foodId: food.id,
+                          servingUnit: 'GRAM',
+                          numberOfServings: 1);
                     },
               child: Padding(
                 padding: const EdgeInsets.all(8.0),

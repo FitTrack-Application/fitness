@@ -11,12 +11,10 @@ import 'widget/food_item.dart';
 
 class SearchFoodScreen extends StatefulWidget {
   final String mealLogId;
-  final String mealType;
 
   const SearchFoodScreen({
     super.key,
     required this.mealLogId,
-    required this.mealType,
   });
 
   @override
@@ -96,8 +94,7 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
           onPressed: () => Navigator.pop(context),
         ),
         centerTitle: true,
-        title: Text('${widget.mealType}', style: textTheme.titleMedium),
-
+        title: Text('Search food', style: textTheme.titleMedium),
         actions: [
           IconButton(
             icon: const Icon(Icons.qr_code_scanner),
@@ -224,6 +221,7 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
           final food = viewModel.foods[index];
           return FoodItemWidget(
             food: food,
+            mealLogId: widget.mealLogId,
             onTap: () {
               context.push('/food/${widget.mealLogId}/${food.id}/add');
             },

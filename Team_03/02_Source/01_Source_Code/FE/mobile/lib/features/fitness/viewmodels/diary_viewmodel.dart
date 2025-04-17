@@ -10,8 +10,10 @@ class DiaryViewModel extends ChangeNotifier {
 
   DateTime selectedDate = DateTime.now();
   bool isLoading = false;
+
   // Thay thế biến isAdding bằng Set các foodIds đang được thêm
   final Set<String> _addingFoodIds = {};
+
   // Thêm set để theo dõi các món ăn đang được xóa
   final Set<String> _removingFoodIds = {};
   String? errorMessage;
@@ -50,13 +52,21 @@ class DiaryViewModel extends ChangeNotifier {
       .toList();
 
   // Calo tiêu thụ theo từng bữa
-  double get breakfastCalories => breakfastItems.fold(0, (sum, item) => sum + item.calories);
-  double get lunchCalories => lunchItems.fold(0, (sum, item) => sum + item.calories);
-  double get dinnerCalories => dinnerItems.fold(0, (sum, item) => sum + item.calories);
+  double get breakfastCalories =>
+      breakfastItems.fold(0, (sum, item) => sum + item.calories);
 
-  double get caloriesConsumed => breakfastCalories + lunchCalories + dinnerCalories;
-  double get caloriesBurned =>
-      exerciseItems.fold(0, (sum, exercise) => sum + exercise.calories.toDouble());
+  double get lunchCalories =>
+      lunchItems.fold(0, (sum, item) => sum + item.calories);
+
+  double get dinnerCalories =>
+      dinnerItems.fold(0, (sum, item) => sum + item.calories);
+
+  double get caloriesConsumed =>
+      breakfastCalories + lunchCalories + dinnerCalories;
+
+  double get caloriesBurned => exerciseItems.fold(
+      0, (sum, exercise) => sum + exercise.calories.toDouble());
+
   double get caloriesRemaining => 5000 - caloriesConsumed + caloriesBurned;
 
   // Kiểm tra xem ngày đã chọn có phải là hôm nay không
@@ -133,25 +143,33 @@ class DiaryViewModel extends ChangeNotifier {
     }
   }
 
-
   /// Thêm thức ăn vào nhật ký
-  Future<void> addFoodToDiary(Food food, int servingSize, DateTime date) async {
-    // _addingFoodIds.add(food.id);
-    // notifyListeners();
-    //
-    // try {
-    //   await Future.delayed(const Duration(milliseconds: 500));
-    //   await _repository.addFoodToDiary(diaryId, food.id, servingSize, date);
-    //   // Cập nhật lại diary sau khi thêm thành công
-    //   await fetchDiaryForSelectedDate();
-    // } catch (e) {
-    //   _errorMessage = "Không thể thêm thức ăn: ${e.toString()}";
-    //   notifyListeners();
-    // } finally {
-    //   // Xóa foodId khỏi danh sách đang xử lý
-    //   _addingFoodIds.remove(food.id);
-    //   notifyListeners();
-    // }
+  Future<void> addFoodToDiary({
+    required String mealLogId,
+    required String foodId,
+    required String servingUnit,
+    required double numberOfServings,
+  }) async {
+    _addingFoodIds.add(foodId);
+    notifyListeners();
+
+    try {
+      await Future.delayed(const Duration(milliseconds: 500));
+      await _repository.addMealEntryToLog(
+          mealLogId: mealLogId,
+          foodId: foodId,
+          servingUnit: servingUnit,
+          numberOfServings: numberOfServings);
+      // Cập nhật lại diary sau khi thêm thành công
+      await fetchDiaryForSelectedDate();
+    } catch (e) {
+      errorMessage = "Không thể thêm thức ăn: ${e.toString()}";
+      notifyListeners();
+    } finally {
+      // Xóa foodId khỏi danh sách đang xử lý
+      _addingFoodIds.remove(foodId);
+      notifyListeners();
+    }
   }
 
   /// Xóa thức ăn khỏi nhật ký

@@ -242,10 +242,13 @@ class _DiaryScreenState extends State<DiaryScreen>
     final colorScheme = Theme.of(context).colorScheme;
 
     String mealLogId = "";
-    if (foodItems.isNotEmpty) {
-      mealLogId = viewModel.mealLogs
-          .firstWhere((log) => log.mealType == mealType)
-          .id;
+    if (viewModel.mealLogs.isNotEmpty) {
+      final mealLog = viewModel.mealLogs
+          .where((log) => log.mealType == mealType)
+          .firstOrNull;
+      if (mealLog != null) {
+        mealLogId = mealLog.id;
+      }
     }
 
     return Card(
@@ -265,8 +268,9 @@ class _DiaryScreenState extends State<DiaryScreen>
           ...foodItems.map((item) => _buildFoodItem(item, mealLogId, context, viewModel)),
           TextButton(
             onPressed: () {
+              print('mealLogId: $mealLogId');
               context.push(
-                  '/search/$mealLogId?mealType=${mealType.toString().split('.').last}');
+                  '/search/$mealLogId');
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,

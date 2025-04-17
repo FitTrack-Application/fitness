@@ -17,7 +17,7 @@ class SearchFoodViewModel extends ChangeNotifier {
 
   bool isLoading = false;
   bool isFetchingMore = false;
-  String _searchQuery = '';
+  String searchQuery = '';
   int _currentPage = 1;
   int _totalPages = 1;
   bool _hasMoreData = true;
@@ -35,7 +35,7 @@ class SearchFoodViewModel extends ChangeNotifier {
     // Reset error message
     _errorMessage = '';
     isLoading = true;
-    _searchQuery = query;
+    searchQuery = query;
     _currentPage = 1;
     _hasMoreData = true;
     notifyListeners();
@@ -72,8 +72,8 @@ class SearchFoodViewModel extends ChangeNotifier {
     try {
       _currentPage++;
       final paginatedResponse = await _fetchWithTimeout(() => isMyFood
-          ? _repository.searchMyFoods(_searchQuery, page: _currentPage, size: size)
-          : _repository.searchFoods(_searchQuery, page: _currentPage, size: size));
+          ? _repository.searchMyFoods(searchQuery, page: _currentPage, size: size)
+          : _repository.searchFoods(searchQuery, page: _currentPage, size: size));
 
       if (paginatedResponse.data.isEmpty) {
         _hasMoreData = false;

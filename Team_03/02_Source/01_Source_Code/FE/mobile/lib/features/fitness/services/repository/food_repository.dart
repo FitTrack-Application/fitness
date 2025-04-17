@@ -6,7 +6,7 @@ import '../../../../common/model/pagination.dart';
 import '../../models/food.dart';
 
 class FoodRepository {
-  String baseUrl = "http://192.168.1.14:8088";
+  String baseUrl = "http://192.168.1.16:8088";
 
   Future<Food> getFoodById(String foodId) async {
     final response = await http.get(Uri.parse('$baseUrl/api/foods/$foodId'));

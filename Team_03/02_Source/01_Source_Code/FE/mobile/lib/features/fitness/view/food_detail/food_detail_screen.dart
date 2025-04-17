@@ -70,11 +70,11 @@ class FoodDetailScreen extends StatelessWidget {
                     onPressed: isAdding
                         ? null
                         : () async {
-                      await diaryVM.addFoodToDiary(
-                        food,
-                        foodVM.servings,
-                        foodVM.selectedDate,
-                      );
+                      // await diaryVM.addFoodToDiary(
+                      //   food,
+                      //   foodVM.servings,
+                      //   foodVM.selectedDate,
+                      // );
                       if (context.mounted) {
                         context.pop();
                       }

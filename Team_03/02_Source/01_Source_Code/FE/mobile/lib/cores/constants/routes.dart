@@ -40,11 +40,9 @@ final GoRouter appRouter = GoRouter(
       path: '/search/:mealLogId',
       builder: (context, state) {
         final mealLogStr = state.pathParameters['mealLogId']!;
-        final mealType = state.uri.queryParameters['mealType'] ?? 'Unknown';
 
         return SearchFoodScreen(
           mealLogId: mealLogStr,
-          mealType: mealType,
         );
       },
     ),
