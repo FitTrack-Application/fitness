@@ -51,6 +51,7 @@ public class UserServiceImpl implements UserService {
         }
         user.setHeight(updateProfileRequest.getHeight() == null ? user.getHeight() : updateProfileRequest.getHeight());
         user.setWeight(updateProfileRequest.getWeight() == null ? user.getWeight() : updateProfileRequest.getWeight());
+        user.setActivityLevel(updateProfileRequest.getActivityLevel() == null ? user.getActivityLevel() : updateProfileRequest.getActivityLevel());
         user.setImageUrl(updateProfileRequest.getImageUrl() == null ? user.getImageUrl() : updateProfileRequest.getImageUrl());
 
         userRepository.save(user);

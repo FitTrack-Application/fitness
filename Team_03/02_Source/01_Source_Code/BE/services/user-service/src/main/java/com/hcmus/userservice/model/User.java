@@ -68,6 +68,10 @@ public class User implements UserDetails {
     @Column(name = "weight", nullable = false)
     private Double weight;
 
+    @NotNull
+    @Column(name = "activity_level", nullable = false)
+    private String activityLevel;
+
     @ColumnDefault("false")
     @Column(name = "enabled")
     private Boolean enabled;

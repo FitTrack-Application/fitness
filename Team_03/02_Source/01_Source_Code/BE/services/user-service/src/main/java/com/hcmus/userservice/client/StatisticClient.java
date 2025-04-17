@@ -1,5 +1,6 @@
 package com.hcmus.userservice.client;
 
+import com.hcmus.userservice.dto.request.InitCaloriesGoalRequest;
 import com.hcmus.userservice.dto.request.InitWeightGoalRequest;
 import com.hcmus.userservice.dto.response.ApiResponse;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -13,5 +14,10 @@ public interface StatisticClient {
     @PostMapping("/api/statistics/init-weight-goal")
     ApiResponse<?> initWeightGoal(
             @RequestBody InitWeightGoalRequest initWeightGoalRequest,
+            @RequestHeader("Authorization") String authorizationHeader);
+
+    @PostMapping("/api/statistics/init-calories-goal")
+    ApiResponse<?> initCaloriesGoal(
+            @RequestBody InitCaloriesGoalRequest initCaloriesGoalRequest,
             @RequestHeader("Authorization") String authorizationHeader);
 }

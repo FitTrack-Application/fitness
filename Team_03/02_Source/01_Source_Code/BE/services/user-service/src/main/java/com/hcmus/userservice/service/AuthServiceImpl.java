@@ -1,7 +1,9 @@
 package com.hcmus.userservice.service;
 
+
 import com.hcmus.userservice.client.StatisticClient;
 import com.hcmus.userservice.dto.request.InitWeightGoalRequest;
+import com.hcmus.userservice.dto.request.InitCaloriesGoalRequest;
 import com.hcmus.userservice.dto.request.LoginRequest;
 import com.hcmus.userservice.dto.request.RegisterRequest;
 import com.hcmus.userservice.dto.response.ApiResponse;
@@ -70,6 +72,7 @@ public class AuthServiceImpl implements AuthService {
                 .height(request.getHeight())
                 .gender(Gender.fromString(request.getGender()))
                 .weight(request.getWeight())
+                .activityLevel(request.getActivityLevel())
                 .imageUrl(request.getImageUrl())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.USER)
@@ -94,6 +97,24 @@ public class AuthServiceImpl implements AuthService {
 
         if (statisticResponse.getStatus() != HttpStatus.CREATED.value()) {
             throw new BadRequestException("Failed to initialize weight goal!");
+        }
+
+        InitCaloriesGoalRequest initCaloriesGoalRequest = InitCaloriesGoalRequest.builder()
+                .gender(request.getGender())
+                .weight(request.getWeight())
+                .height(request.getHeight())
+                .age(request.getAge())
+                .activityLevel(request.getActivityLevel())
+                .weeklyGoal(request.getWeeklyGoal())
+                .goalType(request.getGoalType())
+                .build();
+
+        ApiResponse<?> caloriesResponse = statisticClient.initCaloriesGoal(
+                initCaloriesGoalRequest,
+                "Bearer " + accessToken);
+
+        if (caloriesResponse.getStatus() != HttpStatus.CREATED.value()) {
+            throw new BadRequestException("Failed to initialize calories goal!");
         }
 
         RegisterResponse registerResponse = RegisterResponse.builder()

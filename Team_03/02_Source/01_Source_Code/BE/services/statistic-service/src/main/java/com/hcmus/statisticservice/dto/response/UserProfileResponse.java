@@ -1,14 +1,13 @@
-package com.hcmus.userservice.dto.request;
+package com.hcmus.statisticservice.dto.response;
 
 import lombok.*;
 
-@Setter
 @Getter
-@Builder
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateProfileRequest {
-
+@Builder
+public class UserProfileResponse {
     private String name;
 
     private Integer age;
@@ -19,7 +18,10 @@ public class UpdateProfileRequest {
 
     private Double weight;
 
+    private String email;
+
     private String activityLevel;
 
     private String imageUrl;
+    
 }

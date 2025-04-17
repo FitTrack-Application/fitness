@@ -11,4 +11,6 @@ import java.util.UUID;
 public interface WeightLogRepository extends JpaRepository<WeightLog, UUID> {
 
     List<WeightLog> findByUserId(UUID userId);
+
+    WeightLog findFirstByUserIdOrderByDateDesc(UUID userId);
 }

@@ -4,22 +4,21 @@ import lombok.*;
 
 @Setter
 @Getter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateProfileRequest {
-
-    private String name;
-
-    private Integer age;
-
+@Builder
+public class InitCaloriesGoalRequest {
     private String gender;
-
-    private Integer height;
 
     private Double weight;
 
+    private Integer height;
+
+    private Integer age;
+
     private String activityLevel;
 
-    private String imageUrl;
+    private Double weeklyGoal;
+    
+    private String goalType;
 }
