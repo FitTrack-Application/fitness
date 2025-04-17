@@ -3,8 +3,6 @@ import 'package:mobile/common/widgets/bottom_nav_bar/bottom_nav_provider.dart';
 import 'package:mobile/cores/constants/routes.dart';
 import 'package:mobile/cores/theme/theme.dart';
 import 'package:mobile/features/auth/viewmodels/auth_viewmodel.dart';
-import 'package:mobile/features/auth/viewmodels/goal_viewmodel.dart';
-import 'package:mobile/features/auth/viewmodels/profile_viewmodel.dart';
 import 'package:mobile/features/statistic/viewmodels/dashboard_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'features/fitness/services/api_client.dart';
@@ -13,6 +11,7 @@ import 'features/fitness/viewmodels/search_food_viewmodel.dart';
 import 'features/statistic/services/dashboard_api_service.dart';
 import 'package:mobile/features/auth/viewmodels/goal_viewmodel.dart';
 import 'package:mobile/features/auth/viewmodels/profile_viewmodel.dart';
+
 void main() {
   runApp(
     MultiProvider(
@@ -27,7 +26,8 @@ void main() {
           update: (_, client, __) => DashboardApiService(client),
         ),
         ChangeNotifierProxyProvider<DashboardApiService, DashboardViewModel>(
-          create: (_) => DashboardViewModel(DashboardApiService(ApiClient(''))), // Placeholder
+          create: (_) => DashboardViewModel(
+              DashboardApiService(ApiClient(''))), // Placeholder
           update: (_, api, __) => DashboardViewModel(api),
         ),
         ChangeNotifierProvider(

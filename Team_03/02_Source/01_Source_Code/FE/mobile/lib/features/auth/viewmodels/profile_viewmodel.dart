@@ -27,9 +27,10 @@ class ProfileViewModel extends ChangeNotifier {
       final profileData = await _apiService.getProfile();
 
       // Update fields with API response
-      imageURL = profileData["imageURL"] ?? "";
+      imageURL = profileData["imageUrl"] ??
+          "https://example.com/avatar.jpg"; // Handle null imageUrl
       name = profileData["name"] ?? "";
-      height = profileData["height"] ?? 0.0;
+      height = profileData["height"]?.toDouble() ?? 0.0;
       gender = profileData["gender"] ?? "";
       age = profileData["age"] ?? 0;
       email = profileData["email"] ?? "";

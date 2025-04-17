@@ -240,9 +240,14 @@ class _DiaryScreenState extends State<DiaryScreen>
   ) {
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
-    String mealLogId = viewModel.mealLogs
-        .firstWhere((log) => log.mealType == mealType)
-        .id;
+
+    String mealLogId = "";
+    if (foodItems.isNotEmpty) {
+      mealLogId = viewModel.mealLogs
+          .firstWhere((log) => log.mealType == mealType)
+          .id;
+    }
+
     return Card(
       margin: const EdgeInsets.all(12),
       child: Column(

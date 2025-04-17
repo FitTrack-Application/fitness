@@ -39,11 +39,6 @@ class _EditAvatarState extends State<EditAvatar> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text(
-            'Edit Avatar',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 20),
           CircleAvatar(
             radius: 50,
             backgroundImage: _selectedImage != null
