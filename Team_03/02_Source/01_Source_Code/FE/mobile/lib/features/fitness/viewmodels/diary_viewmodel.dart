@@ -10,10 +10,18 @@ class DiaryViewModel extends ChangeNotifier {
 
   DateTime selectedDate = DateTime.now();
   bool isLoading = false;
+  // #### Food ####
   // Thay thế biến isAdding bằng Set các foodIds đang được thêm
   final Set<String> _addingFoodIds = {};
   // Thêm set để theo dõi các món ăn đang được xóa
   final Set<String> _removingFoodIds = {};
+
+  // #### Exercise ####
+  // Thay thế biến isAdding bằng Set các exerciseIds đang được thêm
+  final Set<String> _addingExerciseIds = {};
+  // Thêm set để theo dõi các bài tập đang được xóa
+  final Set<String> _removingExerciseIds = {};
+
   String? errorMessage;
   List<MealLogFitness> mealLogs = [];
   List<Exercise> exerciseItems = [];
@@ -28,6 +36,12 @@ class DiaryViewModel extends ChangeNotifier {
 
   // Getter để kiểm tra món ăn có đang được xóa không
   bool isRemovingFood(String foodId) => _removingFoodIds.contains(foodId);
+
+  // Getters
+  bool isAddingExercise(String exerciseId) => _addingExerciseIds.contains(exerciseId);
+
+  // Getter để kiểm tra món ăn có đang được xóa không
+  bool isRemovingExercise(String exerciseId) => _removingExerciseIds.contains(exerciseId);
 
   // Getters
   // Mảng thực phẩm cho từng bữa ăn
@@ -155,5 +169,9 @@ class DiaryViewModel extends ChangeNotifier {
     //   _removingFoodIds.remove(foodId);
     //   notifyListeners();
     // }
+  }
+
+  Future<void> addExerciseToWorkout(String exerciseId, DateTime date) async {
+    /////
   }
 }
