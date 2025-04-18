@@ -18,6 +18,12 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => BottomNavProvider()),
+        ChangeNotifierProvider(
+            create: (_) => SearchFoodViewModel()..searchFoods()),
+        ChangeNotifierProvider(create: (_) => DiaryViewModel()),
+        ChangeNotifierProvider(create: (_) => ProfileViewModel()),
+        ChangeNotifierProvider(create: (_) => GoalViewModel()),
+        ChangeNotifierProvider(create: (_) => AuthViewModel()),
         Provider<ApiClient>(
             create: (_) => ApiClient(
                 'https://54efe02a-ae6e-4055-9391-3a9bd9cac8f1.mock.pstmn.io')),
@@ -28,17 +34,6 @@ void main() {
           create: (_) => DashboardViewModel(
               DashboardApiService(ApiClient(''))), // Placeholder
           update: (_, api, __) => DashboardViewModel(api),
-        ),
-        ChangeNotifierProvider(
-            create: (_) => SearchFoodViewModel()..searchFoods()),
-        ChangeNotifierProvider(
-          create: (_) => DiaryViewModel(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => ProfileViewModel(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => GoalViewModel(),
         ),
       ],
       child: const MyApp(),
