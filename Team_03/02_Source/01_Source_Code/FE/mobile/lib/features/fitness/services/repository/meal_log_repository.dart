@@ -7,8 +7,8 @@ import 'package:mobile/features/fitness/services/repository/food_repository.dart
 import '../../models/meal_log.dart' show MealLogFitness, mealTypeFromString;
 
 class MealLogRepository {
-  final String baseUrl = "http://192.168.1.16:8088";
-  final String jwtToken = "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiVVNFUiIsIm5hbWUiOiJOZ3V54buFbiBWxINuIEEiLCJ1c2VySWQiOiI0ZmY5NzM2MS04NzA3LTQzZWItYmYzYi03YmZmYWIyNzI4ZTgiLCJzdWIiOiJ0ZXN0MTRAZ21haWwuY29tIiwiaWF0IjoxNzQ0OTA0OTQ2LCJleHAiOjE3NDU1MDk3NDZ9.Lt_ESphHMq4PHVUIgF8g6_rmUJDlp2hpYh8egR9PUds";
+  final String baseUrl = "http://192.168.144.1:8088";
+  final String jwtToken = "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiVVNFUiIsIm5hbWUiOiJOZ3V54buFbiBWxINuIEEiLCJ1c2VySWQiOiI0ZmY5NzM2MS04NzA3LTQzZWItYmYzYi03YmZmYWIyNzI4ZTgiLCJzdWIiOiJ0ZXN0MTRAZ21haWwuY29tIiwiaWF0IjoxNzQ0OTUzODc2LCJleHAiOjE3NDU1NTg2NzZ9.a78RW6mvYr2NneM3wX00QXJ5TNq3EPBInEqEn3Kb3Hs";
   final FoodRepository foodRepository = FoodRepository();
 
   Map<String, String> get _headers => {
@@ -72,12 +72,6 @@ class MealLogRepository {
     required double numberOfServings,
   }) async {
     final uri = Uri.parse('$baseUrl/api/meal-logs/$mealLogId/entries');
-    print('🔗 [addMealEntryToLog] URL: $uri');
-    print('🍽️ Meal Log ID: $mealLogId');
-    print('🍔 Food ID: $foodId');
-    print('⚖️ Serving Unit: $servingUnit');
-    print('🔢 Number of Servings: $numberOfServings');
-
     final body = jsonEncode({
       'foodId': foodId,
       'servingUnit': servingUnit,
@@ -85,17 +79,11 @@ class MealLogRepository {
     });
 
     final response = await http.post(uri, headers: _headers, body: body);
-    print('📦 Response body: ${response.body}');
     if (response.statusCode == 201 || response.statusCode == 200) {
-      print('1');
       final decoded = json.decode(response.body);
-      print('2');
       final data = decoded['data'];
-      print('3');
-      print(data);
       // Gọi tới foodRepository để lấy thông tin chi tiết về món ăn
       final food = await foodRepository.getFoodById(data['foodId']);
-      print('4');
       return MealEntry(
         id: data['id'],
         food: food,
@@ -137,6 +125,25 @@ class MealLogRepository {
       } else {
         print('✔️ Successfully created meal log for $type');
       }
+    }
+  }
+
+  Future<void> deleteMealEntry(String mealEntryId) async {
+    final uri = Uri.parse('$baseUrl/api/meal-entries/$mealEntryId');
+
+    final response = await http.delete(uri, headers: _headers);
+
+    print('🗑️ [deleteMealEntry] Deleting entry with ID: $mealEntryId');
+    print('🔗 URL: $uri');
+    print('📨 Headers: $_headers');
+    print('✅ Status Code: ${response.statusCode}');
+    print('📥 Response Body: ${response.body}');
+
+    if (response.statusCode == 200 || response.statusCode == 204) {
+      print('✔️ Successfully deleted meal entry.');
+    } else {
+      print('❌ Failed to delete meal entry.');
+      throw Exception('Failed to delete meal entry: ${response.body}');
     }
   }
 }

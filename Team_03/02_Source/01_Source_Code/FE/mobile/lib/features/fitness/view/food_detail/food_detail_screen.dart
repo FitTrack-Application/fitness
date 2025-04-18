@@ -28,8 +28,6 @@ class FoodDetailScreen extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
 
-    print('mealId: $mealLogId');
-
     return ChangeNotifierProvider(
       create: (context) =>
       FoodDetailViewModel(FoodRepository())..loadFood(foodId),
@@ -70,11 +68,16 @@ class FoodDetailScreen extends StatelessWidget {
                     onPressed: isAdding
                         ? null
                         : () async {
-                      // await diaryVM.addFoodToDiary(
-                      //   food,
-                      //   foodVM.servings,
-                      //   foodVM.selectedDate,
-                      // );
+                      if (isEdit) {
+
+                      } else {
+                        final diaryViewModel = context.read<DiaryViewModel>();
+                        diaryViewModel.addFoodToDiary(
+                            mealLogId: mealLogId,
+                            foodId: food.id,
+                            servingUnit: 'GRAM',
+                            numberOfServings: foodVM.servingSize);
+                      }
                       if (context.mounted) {
                         context.pop();
                       }
@@ -224,7 +227,7 @@ class FoodDetailScreen extends StatelessWidget {
           const CustomDivider(),
           FoodInfoSection(
             label: 'Number of Servings',
-            value: viewModel.servings.toString(),
+            value: viewModel.servingSize.toString(),
             onTap: () => _editServings(context, viewModel),
           ),
           const CustomDivider(),
@@ -251,10 +254,10 @@ class FoodDetailScreen extends StatelessWidget {
           Row(
             children: [
               CalorieSummary(
-                calories: food.calories * viewModel.servings,
-                carbs: food.carbs * viewModel.servings,
-                fat: food.fat * viewModel.servings,
-                protein: food.protein * viewModel.servings,
+                calories: food.calories * viewModel.servingSize,
+                carbs: food.carbs * viewModel.servingSize,
+                fat: food.fat * viewModel.servingSize,
+                protein: food.protein * viewModel.servingSize,
               ),
             ],
           ),
@@ -385,7 +388,7 @@ class FoodDetailScreen extends StatelessWidget {
   Future<void> _editServings(
       BuildContext context, FoodDetailViewModel viewModel) async {
     TextEditingController controller =
-    TextEditingController(text: viewModel.servings.toString());
+    TextEditingController(text: viewModel.servingSize.toString());
     final colorScheme = Theme.of(context).colorScheme;
 
     await showDialog(
@@ -420,7 +423,7 @@ class FoodDetailScreen extends StatelessWidget {
           ),
           TextButton(
             onPressed: () {
-              int? newServings = int.tryParse(controller.text);
+              double? newServings = double.tryParse(controller.text);
               if (newServings != null && newServings >= 1) {
                 viewModel.updateServings(newServings);
                 Navigator.pop(context);

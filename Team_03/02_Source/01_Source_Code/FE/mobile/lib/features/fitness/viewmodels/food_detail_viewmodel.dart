@@ -11,7 +11,7 @@ enum LoadState { initial, loading, loaded, error, timeout }
 class FoodDetailViewModel extends ChangeNotifier {
   final FoodRepository _repository;
   Food? food;
-  int servings = 1;
+  double servingSize = 1;
   DateTime selectedDate = DateTime.now();
   MealType selectedMealType = MealType.breakfast;
 
@@ -53,9 +53,9 @@ class FoodDetailViewModel extends ChangeNotifier {
     }
   }
 
-  void updateServings(int newServings) {
+  void updateServings(double newServings) {
     if (newServings >= 1 && newServings <= 10000) {
-      servings = newServings;
+      servingSize = newServings;
       notifyListeners();
     }
   }
