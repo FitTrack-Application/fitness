@@ -398,7 +398,7 @@ class _DiaryScreenState extends State<DiaryScreen>
             ],
           ),
           onTap: () {
-            context.push('/food/$mealLogId/${item.food.id}/edit');
+            context.push('/food/${item.id}/${item.food.id}/edit/${item.numberOfServings}');
           },
         ),
         const Divider(

@@ -66,7 +66,7 @@ class FoodItemWidget extends StatelessWidget {
                           mealLogId: mealLogId,
                           foodId: food.id,
                           servingUnit: 'GRAM',
-                          numberOfServings: 1);
+                          numberOfServings: 100);
                     },
               child: Padding(
                 padding: const EdgeInsets.all(8.0),

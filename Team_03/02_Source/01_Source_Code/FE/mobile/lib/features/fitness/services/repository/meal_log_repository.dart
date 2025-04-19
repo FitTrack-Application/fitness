@@ -7,8 +7,8 @@ import 'package:mobile/features/fitness/services/repository/food_repository.dart
 import '../../models/meal_log.dart' show MealLogFitness, mealTypeFromString;
 
 class MealLogRepository {
-  final String baseUrl = "http://192.168.144.1:8088";
-  final String jwtToken = "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiVVNFUiIsIm5hbWUiOiJOZ3V54buFbiBWxINuIEEiLCJ1c2VySWQiOiI0ZmY5NzM2MS04NzA3LTQzZWItYmYzYi03YmZmYWIyNzI4ZTgiLCJzdWIiOiJ0ZXN0MTRAZ21haWwuY29tIiwiaWF0IjoxNzQ0OTUzODc2LCJleHAiOjE3NDU1NTg2NzZ9.a78RW6mvYr2NneM3wX00QXJ5TNq3EPBInEqEn3Kb3Hs";
+  final String baseUrl = "http://localhost:8088";
+  final String jwtToken = "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiVVNFUiIsIm5hbWUiOiJOZ3V54buFbiBWxINuIEEiLCJ1c2VySWQiOiI0ZmY5NzM2MS04NzA3LTQzZWItYmYzYi03YmZmYWIyNzI4ZTgiLCJzdWIiOiJ0ZXN0MTRAZ21haWwuY29tIiwiaWF0IjoxNzQ1MDcxMzgwLCJleHAiOjE3NDU2NzYxODB9.R4w-7-t8hqsgOj1uKdvtEkQQcMwCmnnNm94ZHX3BSvM";
   final FoodRepository foodRepository = FoodRepository();
 
   Map<String, String> get _headers => {
@@ -23,6 +23,7 @@ class MealLogRepository {
   Future<List<MealLogFitness>> fetchMealLogsForDate(DateTime date) async {
     final formattedDate = _formatDate(date);
     final uri = Uri.parse("$baseUrl/api/meal-logs?date=$formattedDate");
+    print('url fetch meal logs: $uri');
 
     final response = await http.get(uri, headers: _headers);
 
@@ -72,6 +73,11 @@ class MealLogRepository {
     required double numberOfServings,
   }) async {
     final uri = Uri.parse('$baseUrl/api/meal-logs/$mealLogId/entries');
+    print('🔗 [addMealEntryToLog] URL: $uri');
+    print('  "foodId": $foodId,');
+    print('  "servingUnit": $servingUnit,');
+    print('  "numberOfServings": $numberOfServings');
+
     final body = jsonEncode({
       'foodId': foodId,
       'servingUnit': servingUnit,
@@ -144,6 +150,46 @@ class MealLogRepository {
     } else {
       print('❌ Failed to delete meal entry.');
       throw Exception('Failed to delete meal entry: ${response.body}');
+    }
+  }
+
+  Future<MealEntry> editMealEntry({
+    required String mealEntryId,
+    required String foodId,
+    required String servingUnit,
+    required double numberOfServings,
+  }) async {
+    final uri = Uri.parse('$baseUrl/api/meal-entries/$mealEntryId');
+    print('✏️ [editMealEntry] URL: $uri');
+    print('foodId: $foodId');
+    print('servingUnit: $servingUnit');
+    print('numberOfServings: $numberOfServings');
+
+    final body = jsonEncode({
+      'foodId': foodId,
+      'servingUnit': servingUnit,
+      'numberOfServings': numberOfServings,
+    });
+
+    final response = await http.put(uri, headers: _headers, body: body);
+
+    print('✅ Status Code: ${response.statusCode}');
+    print('📥 Response Body: ${response.body}');
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final decoded = json.decode(response.body);
+      final data = decoded['data'];
+
+      final food = await foodRepository.getFoodById(data['foodId']);
+      return MealEntry(
+        id: data['id'],
+        food: food,
+        servingUnit: data['servingUnit'],
+        numberOfServings: (data['numberOfServings'] as num).toDouble(),
+      );
+    } else {
+      print('❌ Failed to edit meal entry: ${response.body}');
+      throw Exception('Failed to edit meal entry: ${response.body}');
     }
   }
 }

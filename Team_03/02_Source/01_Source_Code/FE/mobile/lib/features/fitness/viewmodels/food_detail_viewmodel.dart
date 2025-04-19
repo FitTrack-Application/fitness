@@ -11,8 +11,7 @@ enum LoadState { initial, loading, loaded, error, timeout }
 class FoodDetailViewModel extends ChangeNotifier {
   final FoodRepository _repository;
   Food? food;
-  double servingSize = 1;
-  DateTime selectedDate = DateTime.now();
+  double servingSize = 100;
   MealType selectedMealType = MealType.breakfast;
 
   LoadState loadState = LoadState.initial;
@@ -35,6 +34,7 @@ class FoodDetailViewModel extends ChangeNotifier {
           });
 
       food = result;
+      print('view model servingSize: $servingSize');
 
       // If this is an edit and the food has a meal type, use it
       if (food != null) {
@@ -58,11 +58,6 @@ class FoodDetailViewModel extends ChangeNotifier {
       servingSize = newServings;
       notifyListeners();
     }
-  }
-
-  void updateSelectedDate(DateTime date) {
-    selectedDate = date;
-    notifyListeners();
   }
 
   void updateMealType(MealType mealType) {

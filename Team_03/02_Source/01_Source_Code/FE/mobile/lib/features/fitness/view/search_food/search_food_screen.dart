@@ -223,7 +223,7 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
             food: food,
             mealLogId: widget.mealLogId,
             onTap: () {
-              context.push('/food/${widget.mealLogId}/${food.id}/add');
+              context.push('/food/${widget.mealLogId}/${food.id}/add/100');
             },
           );
         }

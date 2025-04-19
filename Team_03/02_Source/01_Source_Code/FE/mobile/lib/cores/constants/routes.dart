@@ -47,18 +47,30 @@ final GoRouter appRouter = GoRouter(
       },
     ),
     GoRoute(
-      path: '/food/:mealLogId/:foodId/:mode',
+      path: '/food/:mealLogIdOrMealEntryId/:foodId/:mode/:numberOfServings',
       builder: (context, state) {
-        final mealLogStr = state.pathParameters['mealLogId'] ?? '';
+        final mealLogOrMealEntryStr = state.pathParameters['mealLogIdOrMealEntryId'] ?? '';
         final foodId = state.pathParameters['foodId'] ?? '';
         final mode = state.pathParameters['mode'];
         final isEdit = (mode == 'edit');
+        final numberOfServingsStr = state.pathParameters['numberOfServings'];
+        final numberOfServings = double.tryParse(numberOfServingsStr ?? '1') ?? 1.0;
 
-        return FoodDetailScreen(
-          foodId: foodId,
-          mealLogId: mealLogStr,
-          isEdit: isEdit,
-        );
+        if (isEdit){
+          return FoodDetailScreen(
+            foodId: foodId,
+            mealEntryId: mealLogOrMealEntryStr,
+            isEdit: isEdit,
+            numberOfServings: numberOfServings,
+          );
+        } else {
+          return FoodDetailScreen(
+            foodId: foodId,
+            mealLogId: mealLogOrMealEntryStr,
+            isEdit: isEdit,
+            numberOfServings: numberOfServings,
+          );
+        }
       },
     ),
     GoRoute(
