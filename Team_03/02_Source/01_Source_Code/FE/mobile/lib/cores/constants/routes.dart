@@ -12,7 +12,6 @@ import 'package:mobile/features/fitness/view/diary/diary_screen.dart';
 import 'package:mobile/features/statistic/view/dashboard/dashboard_screen.dart';
 import 'package:mobile/features/statistic/view/step/add_step.dart';
 
-import '../../features/fitness/models/food.dart';
 import '../../features/fitness/view/food_detail/food_detail_screen.dart';
 import '../../features/fitness/view/search_food/search_food_screen.dart';
 import 'package:mobile/features/statistic/view/weight/add_weight.dart';

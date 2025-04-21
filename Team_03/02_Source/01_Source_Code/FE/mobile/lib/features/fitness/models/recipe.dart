@@ -1,52 +1,43 @@
-import 'meal_log.dart';
+import 'food.dart';
 
-class Food {
+class Recipe {
   final String id;
   final String name;
+  final String description;
   final double servingSize;
   final double calories;
   final double carbs;
   final double fat;
   final double protein;
   final String unit;
-  final MealType mealType;
-
-  Food({
+  final List<Food> foodList;
+  Recipe({
     required this.id,
     required this.name,
+    required this.description,
     required this.servingSize,
     required this.calories,
     required this.carbs,
     required this.fat,
     required this.protein,
     required this.unit,
-    this.mealType = MealType.breakfast,
+    required this.foodList
   });
 
-  factory Food.fromJson(Map<String, dynamic> json) {
-    return Food(
+  factory Recipe.fromJson(Map<String, dynamic> json) {
+    return Recipe(
       id: json['id'] ?? '',
       name: json['name'] ?? '',
+      description: json['description'] ?? '',
       calories: (json['calories'] ?? 0).toDouble(),
       protein: (json['protein'] ?? 0).toDouble(),
       carbs: (json['carbs'] ?? 0).toDouble(),
       fat: (json['fat'] ?? 0).toDouble(),
       servingSize: 100.0, // Mặc định
       unit: 'grams', // Mặc định
+      foodList: (json['foodList'] as List<dynamic>? ?? [])
+          .map((item) => Food.fromJson(item))
+          .toList(),
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'servingSize': servingSize,
-      'calories': calories,
-      'carbs': carbs,
-      'fat': fat,
-      'protein': protein,
-      'unit': unit,
-      'mealType': mealType.name, // serialize enum as string
-    };
   }
 }

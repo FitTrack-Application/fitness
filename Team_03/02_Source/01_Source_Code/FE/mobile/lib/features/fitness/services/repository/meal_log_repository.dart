@@ -7,7 +7,7 @@ import 'package:mobile/features/fitness/services/repository/food_repository.dart
 import '../../models/meal_log.dart' show MealLogFitness, mealTypeFromString;
 
 class MealLogRepository {
-  final String baseUrl = "http://192.168.1.16:8088";
+  final String baseUrl = "http://172.20.224.1:8088";
   final String jwtToken = "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiVVNFUiIsIm5hbWUiOiJOZ3V54buFbiBWxINuIEEiLCJ1c2VySWQiOiI0ZmY5NzM2MS04NzA3LTQzZWItYmYzYi03YmZmYWIyNzI4ZTgiLCJzdWIiOiJ0ZXN0MTRAZ21haWwuY29tIiwiaWF0IjoxNzQ0OTA0OTQ2LCJleHAiOjE3NDU1MDk3NDZ9.Lt_ESphHMq4PHVUIgF8g6_rmUJDlp2hpYh8egR9PUds";
   final FoodRepository foodRepository = FoodRepository();
 

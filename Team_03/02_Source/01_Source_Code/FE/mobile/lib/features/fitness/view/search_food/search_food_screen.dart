@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mobile/features/fitness/models/food.dart';
 import 'package:mobile/features/fitness/view/search_food/widget/error_display.dart';
 import 'package:provider/provider.dart';
 
