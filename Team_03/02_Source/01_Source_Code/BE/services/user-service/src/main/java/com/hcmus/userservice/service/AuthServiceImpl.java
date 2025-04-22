@@ -106,7 +106,7 @@ public class AuthServiceImpl implements AuthService {
                 .weight(request.getWeight())
                 .height(request.getHeight())
                 .age(request.getAge())
-                .activityLevel(request.getActivityLevel())
+                .activityLevel(savedUser.getActivityLevel().getValue())
                 .weeklyGoal(request.getWeeklyGoal())
                 .goalType(Goal.valueOf(request.getGoalType()).getValue())
                 .build();
