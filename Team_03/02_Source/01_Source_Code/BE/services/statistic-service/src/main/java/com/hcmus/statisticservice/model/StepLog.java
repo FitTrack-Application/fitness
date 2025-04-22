@@ -25,7 +25,7 @@ public class StepLog {
     private UUID stepLogId;
 
     @NotNull
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     @Column(name = "date", nullable = false)
     private Date date;
 
