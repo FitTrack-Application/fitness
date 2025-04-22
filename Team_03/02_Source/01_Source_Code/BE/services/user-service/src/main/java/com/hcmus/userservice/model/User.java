@@ -1,5 +1,6 @@
 package com.hcmus.userservice.model;
 
+import com.hcmus.userservice.model.type.ActivityLevel;
 import com.hcmus.userservice.model.type.Gender;
 import com.hcmus.userservice.model.type.Role;
 import jakarta.persistence.*;
@@ -69,8 +70,9 @@ public class User implements UserDetails {
     private Double weight;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     @Column(name = "activity_level", nullable = false)
-    private String activityLevel;
+    private ActivityLevel activityLevel;
 
     @ColumnDefault("false")
     @Column(name = "enabled")

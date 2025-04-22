@@ -6,6 +6,7 @@ import com.hcmus.userservice.dto.response.UserProfileResponse;
 import com.hcmus.userservice.exception.UserNotFoundException;
 import com.hcmus.userservice.mapper.UserMapper;
 import com.hcmus.userservice.model.User;
+import com.hcmus.userservice.model.type.ActivityLevel;
 import com.hcmus.userservice.model.type.Gender;
 import com.hcmus.userservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -51,7 +52,7 @@ public class UserServiceImpl implements UserService {
         }
         user.setHeight(updateProfileRequest.getHeight() == null ? user.getHeight() : updateProfileRequest.getHeight());
         user.setWeight(updateProfileRequest.getWeight() == null ? user.getWeight() : updateProfileRequest.getWeight());
-        user.setActivityLevel(updateProfileRequest.getActivityLevel() == null ? user.getActivityLevel() : updateProfileRequest.getActivityLevel());
+        user.setActivityLevel(updateProfileRequest.getActivityLevel() == null ? user.getActivityLevel() : ActivityLevel.valueOf(updateProfileRequest.getActivityLevel()));
         user.setImageUrl(updateProfileRequest.getImageUrl() == null ? user.getImageUrl() : updateProfileRequest.getImageUrl());
 
         userRepository.save(user);
