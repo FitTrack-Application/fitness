@@ -1,7 +1,6 @@
 package com.hcmus.fitservice.controller;
 
 import com.hcmus.fitservice.dto.FoodDto;
-import com.hcmus.fitservice.dto.FoodScanDto;
 import com.hcmus.fitservice.dto.response.ApiResponse;
 import com.hcmus.fitservice.service.FoodService;
 import com.hcmus.fitservice.util.JwtUtil;
@@ -64,8 +63,8 @@ public class FoodController {
 
 
     @GetMapping("/scan")
-    public ResponseEntity<ApiResponse<FoodScanDto>> getMethodName(@RequestParam String barcode) {
-        ApiResponse<FoodScanDto> response = foodService.scanFood(barcode);
+    public ResponseEntity<ApiResponse<FoodDto>> getMethodName(@RequestParam String barcode) {
+        ApiResponse<FoodDto> response = foodService.scanFood(barcode);
         
         return ResponseEntity.ok(response); 
     }
