@@ -31,4 +31,10 @@ public class GoalController {
         UUID userId = jwtUtil.extractUserId(authorizationHeader.replace("Bearer ", ""));
         return ResponseEntity.ok(statisticService.editGoal(editGoalRequest, userId, authorizationHeader));
     }
+
+    @GetMapping("/nutrition")
+    public ResponseEntity<?> getNutritionGoal(@RequestHeader("Authorization") String authorizationHeader) {
+        UUID userId = jwtUtil.extractUserId(authorizationHeader.replace("Bearer ", ""));
+        return ResponseEntity.ok(statisticService.getNutritionGoal(userId));
+    }
 }
