@@ -17,6 +17,7 @@ import com.hcmus.userservice.exception.UserNotFoundException;
 import com.hcmus.userservice.model.User;
 import com.hcmus.userservice.model.type.ActivityLevel;
 import com.hcmus.userservice.model.type.Gender;
+import com.hcmus.userservice.model.type.Goal;
 import com.hcmus.userservice.model.type.Role;
 import com.hcmus.userservice.repository.UserRepository;
 import com.hcmus.userservice.util.JwtUtil;
@@ -107,7 +108,7 @@ public class AuthServiceImpl implements AuthService {
                 .age(request.getAge())
                 .activityLevel(request.getActivityLevel())
                 .weeklyGoal(request.getWeeklyGoal())
-                .goalType(request.getGoalType())
+                .goalType(Goal.valueOf(request.getGoalType()).getValue())
                 .build();
 
         ApiResponse<?> caloriesResponse = statisticClient.initCaloriesGoal(

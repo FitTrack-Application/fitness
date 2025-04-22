@@ -9,6 +9,7 @@ import com.hcmus.statisticservice.dto.request.UpdateProfileRequest;
 import com.hcmus.statisticservice.dto.response.UserProfileResponse;
 import com.hcmus.statisticservice.dto.response.ApiResponse;
 import com.hcmus.statisticservice.dto.response.GetGoalResponse;
+import com.hcmus.statisticservice.dto.response.GetNutritionGoalResponse;
 import com.hcmus.statisticservice.model.NutritionGoal;
 import com.hcmus.statisticservice.model.WeightGoal;
 import com.hcmus.statisticservice.model.WeightLog;
@@ -147,21 +148,21 @@ public class StatisticServiceImpl implements StatisticService {
             caloriesGoal = 10*initCaloriesGoalRequest.getWeight() + 6.25*initCaloriesGoalRequest.getHeight() - 5*initCaloriesGoalRequest.getAge() - 161;   
         }
 
-        if(initCaloriesGoalRequest.getActivityLevel() == "Sedentary") {
+        if(initCaloriesGoalRequest.getActivityLevel() == "SEDENTARY") {
             caloriesGoal = caloriesGoal * 1.2;
-        } else if(initCaloriesGoalRequest.getActivityLevel() == "Lightly active") {
+        } else if(initCaloriesGoalRequest.getActivityLevel() == "LIGHT") {
             caloriesGoal = caloriesGoal * 1.375;
-        } else if(initCaloriesGoalRequest.getActivityLevel() == "Moderately active") {
+        } else if(initCaloriesGoalRequest.getActivityLevel() == "MODERATE") {
             caloriesGoal = caloriesGoal * 1.55;
-        } else if(initCaloriesGoalRequest.getActivityLevel() == "Very active") {
+        } else if(initCaloriesGoalRequest.getActivityLevel() == "ACTIVE") {
             caloriesGoal = caloriesGoal * 1.725;
-        } else if(initCaloriesGoalRequest.getActivityLevel() == "Extra active") {
+        } else if(initCaloriesGoalRequest.getActivityLevel() == "VERY_ACTIVE") {
             caloriesGoal = caloriesGoal * 1.9;
         }
         
-        if(initCaloriesGoalRequest.getGoalType() == "Lose weight") {
+        if(initCaloriesGoalRequest.getGoalType() == "DOWN") {
             caloriesGoal = caloriesGoal - 1100*initCaloriesGoalRequest.getWeeklyGoal();
-        } else if(initCaloriesGoalRequest.getGoalType() == "Gain weight") {
+        } else if(initCaloriesGoalRequest.getGoalType() == "UP") {
             caloriesGoal = caloriesGoal + 1100*initCaloriesGoalRequest.getWeeklyGoal();
         }
 
@@ -271,9 +272,9 @@ public class StatisticServiceImpl implements StatisticService {
 
         String goalType = "";
         if (editGoalRequest.getGoalWeight() > editGoalRequest.getCurrentWeight()) {
-            goalType = "Gain weight";
+            goalType = "UP";
         } else if (editGoalRequest.getGoalWeight() < editGoalRequest.getCurrentWeight()) {
-            goalType = "Lose weight";
+            goalType = "DOWN";
         } else {
             goalType = "Maintain weight";
         }
@@ -319,7 +320,33 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
 
+    
+    public ApiResponse<?> getNutritionGoal(UUID userId) {
+        NutritionGoal nutritionGoal = nutritionGoalRepository.findByUserId(userId);
 
+        if (nutritionGoal == null) {
+            return ApiResponse.builder()
+                    .status(HttpStatus.NOT_FOUND.value())
+                    .generalMessage("Nutrition goal not found!")
+                    .timestamp(LocalDateTime.now())
+                    .build();
+        }
 
+        GetNutritionGoalResponse getNutritionGoalResponse = GetNutritionGoalResponse.builder()
+                .calories(nutritionGoal.getCalories())
+                .macronutrients(
+                GetNutritionGoalResponse.Macronutrients.builder()                    
+                    .protein(nutritionGoal.getProtein())
+                    .fat(nutritionGoal.getFat())
+                    .carbs(nutritionGoal.getCarbs())
+                    .build())
+                .build();
 
+        return ApiResponse.builder()
+                .status(HttpStatus.OK.value())
+                .generalMessage("Successfully retrieved nutrition goal!")
+                .data(getNutritionGoalResponse)
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
 }

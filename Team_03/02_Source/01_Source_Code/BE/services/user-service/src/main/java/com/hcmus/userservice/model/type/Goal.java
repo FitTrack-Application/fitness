@@ -9,6 +9,10 @@ public enum Goal {
         this.value = value;
     }
 
+    public String getValue() {
+        return value;
+    }
+
     public static Goal fromString(String genderStr) {
         for (Goal goal : Goal.values()) {
             if (genderStr.equalsIgnoreCase(goal.value)) {

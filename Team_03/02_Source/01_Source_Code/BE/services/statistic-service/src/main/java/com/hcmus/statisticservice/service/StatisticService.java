@@ -29,4 +29,6 @@ public interface StatisticService {
     ApiResponse<?> getGoal(UUID userId, String authorizationHeader);
 
     ApiResponse<?> editGoal(EditGoalRequest editGoalRequest, UUID userId, String authorizationHeader);
+
+    ApiResponse<?> getNutritionGoal(UUID userId);
 }
