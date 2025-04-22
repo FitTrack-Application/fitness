@@ -19,7 +19,7 @@ public class UserMapper {
                 .height(user.getHeight())
                 .imageUrl(user.getImageUrl())
                 .weight(user.getWeight())
-                .activityLevel(user.getActivityLevel())
+                .activityLevel(user.getActivityLevel().name())
                 .build();
     }
 }

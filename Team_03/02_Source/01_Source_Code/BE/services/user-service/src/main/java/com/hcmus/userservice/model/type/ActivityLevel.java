@@ -1,7 +1,11 @@
 package com.hcmus.userservice.model.type;
 
 public enum ActivityLevel {
-    LEVEL1("LEVEL1"), LEVEL2("LEVEL2");
+    SEDENTARY("SEDENTARY"),
+    LIGHT("LIGHT"),
+    MODERATE("MODERATE"),
+    ACTIVE("ACTIVE"),
+    VERY_ACTIVE("VERY_ACTIVE");
 
     private final String value;
 
@@ -9,9 +13,13 @@ public enum ActivityLevel {
         this.value = value;
     }
 
-    public static ActivityLevel fromString(String genderStr) {
+    public String getValue() {
+        return value;
+    }
+
+    public static ActivityLevel fromString(String levelStr) {
         for (ActivityLevel level : ActivityLevel.values()) {
-            if (genderStr.equalsIgnoreCase(level.value)) {
+            if (levelStr.equalsIgnoreCase(level.value)) {
                 return level;
             }
         }
