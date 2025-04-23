@@ -1,5 +1,6 @@
 package com.hcmus.statisticservice.controller;
 
+import com.hcmus.statisticservice.dto.request.AddStepRequest;
 import com.hcmus.statisticservice.dto.request.AddWeightRequest;
 import com.hcmus.statisticservice.dto.request.InitWeightGoalRequest;
 import com.hcmus.statisticservice.dto.request.InitCaloriesGoalRequest;
@@ -44,6 +45,18 @@ public class StatisticController {
     public ResponseEntity<?> initCaloriesGoal(@RequestBody InitCaloriesGoalRequest initCaloriesGoalRequest, @RequestHeader("Authorization") String authorizationHeader) {
         UUID userId = jwtUtil.extractUserId(authorizationHeader.replace("Bearer ", ""));
         return ResponseEntity.ok(statisticService.initCaloriesGoal(initCaloriesGoalRequest, userId));
+    }
+
+    @PostMapping("/add-steps")
+    public ResponseEntity<?> addStep(@RequestBody AddStepRequest addStepRequest, @RequestHeader("Authorization") String authorizationHeader) {
+        UUID userId = jwtUtil.extractUserId(authorizationHeader.replace("Bearer ", ""));
+        return ResponseEntity.ok(statisticService.addStep(addStepRequest, userId));
+    }
+
+    @GetMapping("/steps")
+    public ResponseEntity<?> getStepProcess(@RequestHeader("Authorization") String authorizationHeader, @RequestParam(value = "days", defaultValue = "7") Integer days) {
+        UUID userId = jwtUtil.extractUserId(authorizationHeader.replace("Bearer ", ""));
+        return ResponseEntity.ok(statisticService.getStepProcess(userId, days));
     }
     
 }

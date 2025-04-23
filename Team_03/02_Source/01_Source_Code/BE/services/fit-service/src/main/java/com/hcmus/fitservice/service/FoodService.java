@@ -1,7 +1,6 @@
 package com.hcmus.fitservice.service;
 
 import com.hcmus.fitservice.dto.FoodDto;
-import com.hcmus.fitservice.dto.FoodScanDto;
 import com.hcmus.fitservice.dto.response.ApiResponse;
 import org.springframework.data.domain.Pageable;
 
