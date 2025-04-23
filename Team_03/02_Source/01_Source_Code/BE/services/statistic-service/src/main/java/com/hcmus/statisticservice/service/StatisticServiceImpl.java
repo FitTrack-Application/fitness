@@ -6,16 +6,19 @@ import com.hcmus.statisticservice.dto.request.InitWeightGoalRequest;
 import com.hcmus.statisticservice.dto.request.InitCaloriesGoalRequest;
 import com.hcmus.statisticservice.dto.request.EditGoalRequest;
 import com.hcmus.statisticservice.dto.request.UpdateProfileRequest;
+import com.hcmus.statisticservice.dto.request.AddStepRequest;
 import com.hcmus.statisticservice.dto.response.UserProfileResponse;
 import com.hcmus.statisticservice.dto.response.ApiResponse;
 import com.hcmus.statisticservice.dto.response.GetGoalResponse;
 import com.hcmus.statisticservice.dto.response.GetNutritionGoalResponse;
 import com.hcmus.statisticservice.model.NutritionGoal;
+import com.hcmus.statisticservice.model.StepLog;
 import com.hcmus.statisticservice.model.WeightGoal;
 import com.hcmus.statisticservice.model.WeightLog;
 import com.hcmus.statisticservice.repository.WeightGoalRepository;
 import com.hcmus.statisticservice.repository.WeightLogRepository;
 import com.hcmus.statisticservice.repository.NutritionGoalRepository;
+import com.hcmus.statisticservice.repository.StepLogRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -41,9 +44,11 @@ public class StatisticServiceImpl implements StatisticService {
 
     private final NutritionGoalRepository nutritionGoalRepository;
 
+    private final StepLogRepository stepLogRepository;
+
     private final UserClient userClient;
 
-    public ApiResponse<Void> addWeight(AddWeightRequest addWeightRequest, UUID userId) {
+    public ApiResponse<?> addWeight(AddWeightRequest addWeightRequest, UUID userId) {
         WeightLog weightLog = WeightLog.builder()
                 .weight(addWeightRequest.getWeight())
                 .date(addWeightRequest.getUpdateDate())
@@ -53,10 +58,9 @@ public class StatisticServiceImpl implements StatisticService {
 
         weightLogRepository.save(weightLog);
 
-        return ApiResponse.<Void>builder()
+        return ApiResponse.builder()
                 .status(HttpStatus.OK.value())
                 .generalMessage("Successfully added weight log")
-                .data(null)
                 .timestamp(LocalDateTime.now())
                 .build();
     }
@@ -68,7 +72,6 @@ public class StatisticServiceImpl implements StatisticService {
             return ApiResponse.<List<Map<String, Object>>>builder()
                     .status(HttpStatus.NOT_FOUND.value())
                     .generalMessage("No weight logs found for this user")
-                    .data(null)
                     .timestamp(LocalDateTime.now())
                     .build();
         }
@@ -349,4 +352,72 @@ public class StatisticServiceImpl implements StatisticService {
                 .timestamp(LocalDateTime.now())
                 .build();
     }
+
+    public ApiResponse<?> addStep(AddStepRequest addStepRequest, UUID userId) {
+        StepLog stepLog = StepLog.builder()
+                .stepCount(addStepRequest.getSteps())
+                .date(addStepRequest.getUpdateDate())
+                .userId(userId)
+                .build();
+
+        stepLogRepository.save(stepLog);
+
+        return ApiResponse.builder()
+                .status(HttpStatus.OK.value())
+                .generalMessage("Successfully added step data")
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
+
+    public ApiResponse<List<Map<String, Object>>> getStepProcess(UUID userId, Integer numDays) {
+        List<StepLog> stepLogs = stepLogRepository.findByUserId(userId);
+
+        if (stepLogs.isEmpty()) {
+            return ApiResponse.<List<Map<String, Object>>>builder()
+                    .status(HttpStatus.NOT_FOUND.value())
+                    .generalMessage("No step logs found for this user")
+                    .timestamp(LocalDateTime.now())
+                    .build();
+        }
+
+            
+        
+        long currentTime = System.currentTimeMillis();
+        long fromTime = currentTime - Duration.ofDays(numDays).toMillis();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        Map<String, StepLog> logsPerDay = new LinkedHashMap<>();
+
+        stepLogs.stream()
+                .filter(log -> {                    
+                    long logTimestamp = log.getDate().getTime();
+                    return logTimestamp >= fromTime && logTimestamp <= currentTime;
+                })
+                .sorted(Comparator.comparing(StepLog::getDate)) 
+                .forEach(log -> {
+                    String dayKey = sdf.format(log.getDate()); 
+                    logsPerDay.putIfAbsent(dayKey, log); 
+                });
+
+        List<Map<String, Object>> dataList = logsPerDay.values().stream()
+                .map(log -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("steps", log.getStepCount());
+                    map.put("date", log.getDate());
+                    return map;
+                })
+                .toList();
+
+        return ApiResponse.<List<Map<String, Object>>>builder()
+                .status(HttpStatus.OK.value())
+                .generalMessage("Successfully retrieved step logs")
+                .data(dataList)
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
+
+
+
+
 }

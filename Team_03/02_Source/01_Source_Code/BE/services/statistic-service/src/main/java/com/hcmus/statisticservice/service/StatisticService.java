@@ -2,6 +2,7 @@ package com.hcmus.statisticservice.service;
 
 
 import com.hcmus.statisticservice.dto.request.InitWeightGoalRequest;
+import com.hcmus.statisticservice.dto.request.AddStepRequest;
 import com.hcmus.statisticservice.dto.request.AddWeightRequest;
 import com.hcmus.statisticservice.dto.request.InitCaloriesGoalRequest;
 import com.hcmus.statisticservice.dto.request.EditGoalRequest;
@@ -18,7 +19,7 @@ import java.lang.String;
 @Service
 public interface StatisticService {
 
-    ApiResponse<Void> addWeight(AddWeightRequest request, UUID userId);
+    ApiResponse<?> addWeight(AddWeightRequest request, UUID userId);
 
     ApiResponse<List<Map<String, Object>>> getWeightProcess(UUID userId, Integer numDays);
 
@@ -31,4 +32,8 @@ public interface StatisticService {
     ApiResponse<?> editGoal(EditGoalRequest editGoalRequest, UUID userId, String authorizationHeader);
 
     ApiResponse<?> getNutritionGoal(UUID userId);
+
+    ApiResponse<?> addStep(AddStepRequest addStepRequest, UUID userId);
+    
+    ApiResponse<List<Map<String, Object>>> getStepProcess(UUID userId, Integer numDays);
 }

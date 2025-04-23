@@ -1,0 +1,2 @@
+/app/src/main/java/com/hcmus/gatewayservice/GatewayServiceApplication.java
+/app/src/main/java/com/hcmus/gatewayservice/config/CorsConfig.java
