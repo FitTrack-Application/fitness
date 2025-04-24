@@ -1,7 +1,7 @@
 package com.hcmus.fitservice.service;
 
-import com.hcmus.fitservice.dto.MealEntryDto;
-import com.hcmus.fitservice.dto.MealLogDto;
+import com.hcmus.fitservice.dto.FoodEntryDto;
+import com.hcmus.fitservice.dto.response.MealLogResponse;
 import com.hcmus.fitservice.dto.response.ApiResponse;
 import com.hcmus.fitservice.exception.ResourceAlreadyExistsException;
 import com.hcmus.fitservice.exception.ResourceNotFoundException;
@@ -59,7 +59,7 @@ public class MealLogServiceImpl implements MealLogService {
     }
 
     @Override
-    public ApiResponse<MealEntryDto> addMealEntry(UUID mealLogId, UUID foodId, String servingUnit, Double numberOfServings) {
+    public ApiResponse<FoodEntryDto> addMealEntry(UUID mealLogId, UUID foodId, String servingUnit, Double numberOfServings) {
         // Find the meal log by ID
         MealLog mealLog = mealLogRepository.findById(mealLogId)
                 .orElseThrow(() -> new ResourceNotFoundException("Meal log not found with ID: " + mealLogId));
@@ -77,21 +77,21 @@ public class MealLogServiceImpl implements MealLogService {
 
         mealEntryRepository.save(mealEntry);
 
-        MealEntryDto mealEntryDto = new MealEntryDto(mealEntry.getMealEntryId(), food.getFoodId(), mealEntry.getServingUnit().name(), mealEntry.getNumberOfServings());
+        FoodEntryDto foodEntryDto = new FoodEntryDto(mealEntry.getMealEntryId(), food.getFoodId(), mealEntry.getServingUnit().name(), mealEntry.getNumberOfServings());
 
         // Return response
-        return ApiResponse.<MealEntryDto>builder()
+        return ApiResponse.<FoodEntryDto>builder()
                 .status(201)
                 .generalMessage("Meal entry added successfully")
-                .data(mealEntryDto)
+                .data(foodEntryDto)
                 .timestamp(LocalDateTime.now())
                 .build();
     }
 
     @Override
     @Transactional
-    public ApiResponse<List<MealLogDto>> getMealLogsByUserIdAndDate(UUID userId, Date date) {
-        // Find the meal log by user ID and date
+    public ApiResponse<List<MealLogResponse>> getMealLogsByUserIdAndDate(UUID userId, Date date) {
+        // Check if meal log exists
         List<MealLog> mealLogs = mealLogRepository.findByUserIdAndDate(userId, date);
 
         if (mealLogs.isEmpty()) {
@@ -99,13 +99,13 @@ public class MealLogServiceImpl implements MealLogService {
         }
 
         // Convert to Dto
-        List<MealLogDto> mealLogDtos = mealLogs.stream().map(
-                mealLog -> new MealLogDto(
+        List<MealLogResponse> mealLogResponses = mealLogs.stream().map(
+                mealLog -> new MealLogResponse(
                         mealLog.getMealLogId(),
                         date,
                         mealLog.getMealType().name(),
                         mealLog.getMealEntries().stream()
-                                .map(mealEntry -> new MealEntryDto(
+                                .map(mealEntry -> new FoodEntryDto(
                                         mealEntry.getMealEntryId(),
                                         mealEntry.getFood().getFoodId(),
                                         mealEntry.getServingUnit().name(),
@@ -115,10 +115,10 @@ public class MealLogServiceImpl implements MealLogService {
         ).collect(Collectors.toList());
 
         // Return response
-        return ApiResponse.<List<MealLogDto>>builder()
+        return ApiResponse.<List<MealLogResponse>>builder()
                 .status(200)
                 .generalMessage("Meal logs retrieved successfully")
-                .data(mealLogDtos)
+                .data(mealLogResponses)
                 .timestamp(LocalDateTime.now())
                 .build();
     }

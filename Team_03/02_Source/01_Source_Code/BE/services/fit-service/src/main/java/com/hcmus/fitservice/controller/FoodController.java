@@ -36,7 +36,7 @@ public class FoodController {
 
     // Get food by id
     @GetMapping("/{foodId}")
-    public ResponseEntity<ApiResponse<FoodDto>> getFoodById(@PathVariable UUID foodId) {
+        public ResponseEntity<ApiResponse<FoodDto>> getFoodById(@PathVariable UUID foodId) {
         ApiResponse<FoodDto> response = foodService.getFoodById(foodId);
         return ResponseEntity.ok(response);
     }
