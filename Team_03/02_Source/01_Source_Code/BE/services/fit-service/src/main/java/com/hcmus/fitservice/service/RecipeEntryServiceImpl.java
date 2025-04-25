@@ -3,6 +3,7 @@ package com.hcmus.fitservice.service;
 import com.hcmus.fitservice.dto.FoodEntryDto;
 import com.hcmus.fitservice.dto.request.FoodEntryRequest;
 import com.hcmus.fitservice.exception.ResourceNotFoundException;
+import com.hcmus.fitservice.mapper.FoodEntryMapper;
 import com.hcmus.fitservice.model.Food;
 import com.hcmus.fitservice.model.Recipe;
 import com.hcmus.fitservice.model.RecipeEntry;
@@ -24,6 +25,8 @@ public class RecipeEntryServiceImpl implements RecipeEntryService {
 
     private final FoodRepository foodRepository;
 
+    private final FoodEntryMapper foodEntryMapper;
+
     // Create Recipe entry
     @Override
     public FoodEntryDto createRecipeEntry(UUID recipeId, FoodEntryRequest foodEntryRequest) {
@@ -42,12 +45,39 @@ public class RecipeEntryServiceImpl implements RecipeEntryService {
         recipeEntry.setNumberOfServings(foodEntryRequest.getNumberOfServings());
         recipeEntry.setServingUnit(ServingUnit.valueOf(foodEntryRequest.getServingUnit()));
 
-        recipeEntryRepository.save(recipeEntry);
+        // Save Recipe entry
+        RecipeEntry savedRecipeEntry = recipeEntryRepository.save(recipeEntry);
 
         // Return FoodEntryDto
-        return new FoodEntryDto(recipe.getRecipeId(),
-                food.getFoodId(),
-                foodEntryRequest.getServingUnit(),
-                foodEntryRequest.getNumberOfServings());
+        return foodEntryMapper.convertToFoodEntryDto(savedRecipeEntry);
     }
+
+//    // Update Recipe entry
+//    @Override
+//    public FoodEntryDto updateRecipeEntry(UUID recipeEntryId, FoodEntryRequest foodEntryRequest) {
+//        // Check if Recipe entry exists
+//        RecipeEntry recipeEntry = recipeEntryRepository.findById(recipeEntryId)
+//                .orElseThrow(() -> new ResourceNotFoundException("Recipe entry not found with ID: " + recipeEntryId));
+//
+//        // Check if Recipe exists
+//        Recipe recipe = recipeEntry.getRecipe();
+//        if (recipe == null) {
+//            throw new ResourceNotFoundException("Recipe not found for Recipe entry ID: " + recipeEntryId);
+//        }
+//
+//        // Check if Food exists
+//        Food food = foodRepository.findById(foodEntryRequest.getFoodId())
+//                .orElseThrow(() -> new ResourceNotFoundException("Food not found with ID: " + foodEntryRequest.getFoodId()));
+//
+//        // Update Recipe entry
+//        recipeEntry.setFood(food);
+//        recipeEntry.setNumberOfServings(foodEntryRequest.getNumberOfServings());
+//        recipeEntry.setServingUnit(ServingUnit.valueOf(foodEntryRequest.getServingUnit()));
+//
+//        // Save updated Recipe entry
+//        recipeEntryRepository.save(recipeEntry);
+//
+//        // Return FoodEntryDto
+//        return foodEntryMapper.convertToFoodEntryDto(recipeEntry);
+//    }
 }

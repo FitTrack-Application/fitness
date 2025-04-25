@@ -17,4 +17,8 @@ public interface RecipeService {
 
     ApiResponse<RecipeResponse> getRecipeById (UUID recipeId, UUID userId);
 
+    ApiResponse<RecipeResponse> updateRecipeById(UUID recipeId, RecipeRequest recipeRequest, UUID userId);
+
+    ApiResponse<?> deleteRecipeById(UUID recipeId, UUID userId);
+
 }

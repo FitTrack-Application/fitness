@@ -18,7 +18,7 @@ import java.util.UUID;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/recipes")
+@RequestMapping("/api/recipes")
 public class RecipeController {
     private final RecipeService recipeService;
 
@@ -39,13 +39,21 @@ public class RecipeController {
     }
 
     // Get recipes with pagination
-    @GetMapping
+    @GetMapping("/me")
     public ResponseEntity<ApiResponse<List<RecipeResponse>>> getAllRecipes (
             @RequestHeader("Authorization") String authorization,
             @RequestParam(required = false) String query,
-            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "size", defaultValue = "10") int size
     ) {
+        // Check if page and size are valid
+        if (page < 1) {
+            throw new IllegalArgumentException("Page number must be greater than 0");
+        }
+        if (size < 1) {
+            throw new IllegalArgumentException("Size must be greater than 0");
+        }
+
         // Extract User ID from JWT token
         String token = authorization.replace("Bearer ", "");
         UUID userId = jwtUtil.extractUserId(token);
@@ -80,4 +88,32 @@ public class RecipeController {
         return ResponseEntity.ok(response);
     }
 
+    // Update recipe by ID
+    @PutMapping("/{recipeId}")
+    public ResponseEntity<ApiResponse<RecipeResponse>> updateRecipeById(
+            @RequestHeader("Authorization") String authorization,
+            @PathVariable UUID recipeId,
+            @RequestBody RecipeRequest recipeRequest
+    ) {
+        // Extract User ID from JWT token
+        String token = authorization.replace("Bearer ", "");
+        UUID userId = jwtUtil.extractUserId(token);
+
+        ApiResponse<RecipeResponse> response = recipeService.updateRecipeById(recipeId, recipeRequest, userId);
+        return ResponseEntity.ok(response);
+    }
+
+    // Delete recipe by ID
+    @DeleteMapping("/{recipeId}")
+    public ResponseEntity<ApiResponse<?>> deleteRecipeById(
+            @RequestHeader("Authorization") String authorization,
+            @PathVariable UUID recipeId
+    ) {
+        // Extract User ID from JWT token
+        String token = authorization.replace("Bearer ", "");
+        UUID userId = jwtUtil.extractUserId(token);
+
+        ApiResponse<?> response = recipeService.deleteRecipeById(recipeId, userId);
+        return ResponseEntity.ok(response);
+    }
 }

@@ -48,6 +48,14 @@ public class FoodController {
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
+        // Check if page and size are valid
+        if (page < 1) {
+            throw new IllegalArgumentException("Page number must be greater than 0");
+        }
+        if (size < 1) {
+            throw new IllegalArgumentException("Size must be greater than 0");
+        }
+
         Pageable pageable = PageRequest.of(page - 1, size);
         ApiResponse<List<FoodDto>> response;
 

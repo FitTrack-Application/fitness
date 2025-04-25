@@ -7,6 +7,7 @@ import com.hcmus.fitservice.dto.response.RecipeResponse;
 import com.hcmus.fitservice.exception.ResourceNotFoundException;
 import com.hcmus.fitservice.mapper.RecipeMapper;
 import com.hcmus.fitservice.model.Recipe;
+import com.hcmus.fitservice.repository.RecipeEntryRepository;
 import com.hcmus.fitservice.repository.RecipeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,6 +24,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class RecipeServiceImpl implements RecipeService {
     private final RecipeRepository recipeRepository;
+
+    private final RecipeEntryRepository recipeEntryRepository;
 
     private final RecipeEntryService recipeEntryService;
 
@@ -44,12 +47,8 @@ public class RecipeServiceImpl implements RecipeService {
                 .map(foodEntryRequest -> recipeEntryService.createRecipeEntry(savedRecipe.getRecipeId(), foodEntryRequest))
                 .toList();
 
-        // Build response
-        RecipeResponse recipeResponse = new RecipeResponse();
-        recipeResponse.setId(savedRecipe.getRecipeId());
-        recipeResponse.setName(savedRecipe.getRecipeName());
-        recipeResponse.setDirection(savedRecipe.getDirection());
-        recipeResponse.setRecipeEntries(foodEntryDtos);
+        // Convert to RecipeResponse
+        RecipeResponse recipeResponse = recipeMapper.convertToRecipeResponse(recipe);
 
         // Return response
         return ApiResponse.<RecipeResponse>builder()
@@ -115,6 +114,58 @@ public class RecipeServiceImpl implements RecipeService {
                 .status(200)
                 .generalMessage("Successfully retrieved recipe")
                 .data(recipeResponse)
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
+
+    // Update Recipe by ID
+    @Override
+    public ApiResponse<RecipeResponse> updateRecipeById(UUID recipeId, RecipeRequest recipeRequest, UUID userId) {
+        Recipe recipe = recipeRepository.findByRecipeIdAndUserId(recipeId, userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Recipe not found with ID: " + recipeId + "and user ID: " + userId));
+
+        // Update Recipe info
+        recipe.setRecipeName(recipeRequest.getName());
+        recipe.setDirection(recipeRequest.getDirection());
+
+        // Update Recipe entries
+        // Delete old entries
+        recipeEntryRepository.deleteAllByRecipe(recipe);
+
+        // Create new entries
+        List<FoodEntryDto> foodEntryDtos = recipeRequest.getRecipeEntries().stream()
+                .map(foodEntryRequest -> recipeEntryService.createRecipeEntry(recipe.getRecipeId(), foodEntryRequest))
+                .toList();
+
+        // Save updated Recipe
+        recipeRepository.save(recipe);
+
+        // Convert to RecipeResponse
+        RecipeResponse recipeResponse = recipeMapper.convertToRecipeResponse(recipe);
+
+        // Return response
+        return ApiResponse.<RecipeResponse>builder()
+                .status(200)
+                .generalMessage("Successfully updated recipe")
+                .data(recipeResponse)
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
+
+    // Delete Recipe by ID
+    @Override
+    public ApiResponse<?> deleteRecipeById(UUID recipeId, UUID userId) {
+        // Check Recipe exists
+        Recipe recipe = recipeRepository.findByRecipeIdAndUserId(recipeId, userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Recipe not found with ID: " + recipeId + "and user ID: " + userId));
+
+        // Delete Recipe
+        recipeRepository.delete(recipe);
+
+        // Return response
+        return ApiResponse.builder()
+                .status(200)
+                .generalMessage("Successfully deleted recipe")
                 .timestamp(LocalDateTime.now())
                 .build();
     }

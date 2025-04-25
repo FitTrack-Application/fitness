@@ -7,4 +7,6 @@ import java.util.UUID;
 
 public interface RecipeEntryService {
     FoodEntryDto createRecipeEntry(UUID recipeId, FoodEntryRequest foodEntryRequest);
+
+//    FoodEntryDto updateRecipeEntry(UUID recipeEntryId, FoodEntryRequest foodEntryRequest);
 }
