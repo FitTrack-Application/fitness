@@ -4,27 +4,17 @@ import com.hcmus.fitservice.dto.FoodDto;
 import com.hcmus.fitservice.dto.response.ApiResponse;
 import com.hcmus.fitservice.service.FoodService;
 import com.hcmus.fitservice.util.JwtUtil;
-
-
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties.Jwt;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PathVariable;
-
-
 
 @RequiredArgsConstructor
 @RestController
@@ -33,6 +23,27 @@ public class FoodController {
 
     private final FoodService foodService;
     private final JwtUtil jwtUtil;
+
+    @GetMapping("/test-user")
+    public Map<String, Object> getUserInfo(@AuthenticationPrincipal Jwt jwt) {
+        return Map.of(
+                "drUserId", jwt.getSubject(),
+                "drEmail", jwt.getClaimAsString("email"),
+                "drUsername", jwt.getClaimAsString("preferred_username"),
+                "userId", jwtUtil.getCurrentUserId(),
+                "email", jwtUtil.getCurrentUserEmail(),
+                "allClaims", jwtUtil.getAllClaims()
+        );
+    }
+
+    @GetMapping("/test-admin")
+    public Map<String, Object> getAdminInfo() {
+        return Map.of(
+                "userId", jwtUtil.getCurrentUserId(),
+                "email", jwtUtil.getCurrentUserEmail(),
+                "allClaims", jwtUtil.getAllClaims()
+        );
+    }
 
     // Get food by id
     @GetMapping("/{foodId}")
@@ -65,16 +76,16 @@ public class FoodController {
     @GetMapping("/scan")
     public ResponseEntity<ApiResponse<FoodDto>> getMethodName(@RequestParam String barcode) {
         ApiResponse<FoodDto> response = foodService.scanFood(barcode);
-        
-        return ResponseEntity.ok(response); 
-    }
 
-    @PutMapping("/add")
-    public ResponseEntity<ApiResponse<?>> addFood(@Valid @RequestBody FoodDto foodDto, @RequestHeader("Authorization") String authorizationHeader) {
-        
-        UUID userId = jwtUtil.extractUserId(authorizationHeader.replace("Bearer ", ""));
-        ApiResponse<?> response = foodService.addFood(foodDto, userId);
         return ResponseEntity.ok(response);
     }
+//
+//    @PutMapping("/add")
+//    public ResponseEntity<ApiResponse<?>> addFood(@Valid @RequestBody FoodDto foodDto, @RequestHeader("Authorization") String authorizationHeader) {
+//
+//        UUID userId = jwtUtil.extractUserId(authorizationHeader.replace("Bearer ", ""));
+//        ApiResponse<?> response = foodService.addFood(foodDto, userId);
+//        return ResponseEntity.ok(response);
+//    }
 
 }

@@ -27,18 +27,18 @@ public class MealLogController {
     private final JwtUtil jwtUtil;
 
     // Create meal log
-    @PostMapping
-    public ResponseEntity<ApiResponse<Void>> createMealLog(
-            @RequestHeader("Authorization") String authorization,
-            @RequestBody MealLogRequest mealLogRequest
-    ) {
-        UUID userId = jwtUtil.extractUserId(authorization.replace("Bearer ", ""));
-        ApiResponse<Void> response = mealLogService.createMealLog(
-                userId,
-                mealLogRequest.getDate(),
-                mealLogRequest.getMealType());
-        return ResponseEntity.ok(response);
-    }
+//    @PostMapping
+//    public ResponseEntity<ApiResponse<Void>> createMealLog(
+//            @RequestHeader("Authorization") String authorization,
+//            @RequestBody MealLogRequest mealLogRequest
+//    ) {
+//        UUID userId = jwtUtil.extractUserId(authorization.replace("Bearer ", ""));
+//        ApiResponse<Void> response = mealLogService.createMealLog(
+//                userId,
+//                mealLogRequest.getDate(),
+//                mealLogRequest.getMealType());
+//        return ResponseEntity.ok(response);
+//    }
 
     // Add meal entry
     @PostMapping("/{mealLogId}/entries")
@@ -56,13 +56,13 @@ public class MealLogController {
     }
 
     // Get meal log by user id and date
-    @GetMapping
-    public ResponseEntity<ApiResponse<List<MealLogDto>>> getMealLogsByUserIdAndDate(
-            @RequestHeader("Authorization") String authorization,
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date date
-    ) {
-        UUID userId = jwtUtil.extractUserId(authorization.replace("Bearer ", ""));
-        ApiResponse<List<MealLogDto>> response = mealLogService.getMealLogsByUserIdAndDate(userId, date);
-        return ResponseEntity.ok(response);
-    }
+//    @GetMapping
+//    public ResponseEntity<ApiResponse<List<MealLogDto>>> getMealLogsByUserIdAndDate(
+//            @RequestHeader("Authorization") String authorization,
+//            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date date
+//    ) {
+//        UUID userId = jwtUtil.extractUserId(authorization.replace("Bearer ", ""));
+//        ApiResponse<List<MealLogDto>> response = mealLogService.getMealLogsByUserIdAndDate(userId, date);
+//        return ResponseEntity.ok(response);
+//    }
 }
