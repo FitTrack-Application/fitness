@@ -3,6 +3,7 @@ import 'package:mobile/features/fitness/services/repository/meal_log_repository.
 
 import '../models/exercise.dart';
 import '../models/food.dart';
+import '../models/meal_entry.dart';
 import '../models/meal_log.dart';
 
 class DiaryViewModel extends ChangeNotifier {
@@ -32,34 +33,30 @@ class DiaryViewModel extends ChangeNotifier {
   bool isRemovingFood(String foodId) => _removingFoodIds.contains(foodId);
 
   // Getters
-  // Mảng thực phẩm cho từng bữa ăn
-  List<Food> get breakfastItems => mealLogs
+  List<MealEntry> get breakfastEntries => mealLogs
       .where((log) => log.mealType == MealType.breakfast)
       .expand((log) => log.mealEntries)
-      .map((entry) => entry.food)
       .toList();
 
-  List<Food> get lunchItems => mealLogs
+  List<MealEntry> get lunchEntries => mealLogs
       .where((log) => log.mealType == MealType.lunch)
       .expand((log) => log.mealEntries)
-      .map((entry) => entry.food)
       .toList();
 
-  List<Food> get dinnerItems => mealLogs
+  List<MealEntry> get dinnerEntries => mealLogs
       .where((log) => log.mealType == MealType.dinner)
       .expand((log) => log.mealEntries)
-      .map((entry) => entry.food)
       .toList();
 
-  // Calo tiêu thụ theo từng bữa
+// Calo tiêu thụ theo từng bữa
   double get breakfastCalories =>
-      breakfastItems.fold(0, (sum, item) => sum + item.calories);
+      breakfastEntries.fold(0, (sum, entry) => sum + entry.food.calories * entry.numberOfServings / 100);
 
   double get lunchCalories =>
-      lunchItems.fold(0, (sum, item) => sum + item.calories);
+      lunchEntries.fold(0, (sum, entry) => sum + entry.food.calories * entry.numberOfServings / 100);
 
   double get dinnerCalories =>
-      dinnerItems.fold(0, (sum, item) => sum + item.calories);
+      dinnerEntries.fold(0, (sum, entry) => sum + entry.food.calories * entry.numberOfServings / 100);
 
   double get caloriesConsumed =>
       breakfastCalories + lunchCalories + dinnerCalories;
@@ -95,24 +92,6 @@ class DiaryViewModel extends ChangeNotifier {
   }
 
   /// Lấy dữ liệu nhật ký cho ngày đã chọn
-  // Future<void> fetchDiaryForSelectedDate() async {
-  //   isLoading = true;
-  //   errorMessage = null;
-  //   notifyListeners();
-  //
-  //   try {
-  //     // TODO: Call API to fetch exercises
-  //     exerciseItems = [];
-  //     mealLogs = await _repository.fetchMealLogsForDate(selectedDate);
-  //     isLoading = false;
-  //     notifyListeners();
-  //   } catch (e) {
-  //     isLoading = false;
-  //     errorMessage = "Không thể tải dữ liệu: ${e.toString()}";
-  //     notifyListeners();
-  //   }
-  // }
-
   Future<void> fetchDiaryForSelectedDate() async {
     isLoading = true;
     errorMessage = null;
@@ -173,36 +152,52 @@ class DiaryViewModel extends ChangeNotifier {
   }
 
   /// Xóa thức ăn khỏi nhật ký
-  Future<void> removeFoodFromDiary(String foodId) async {
-    // _removingFoodIds.add(foodId);
-    // notifyListeners();
-    //
-    // try {
-    //   await _repository.removeFoodFromDiary(diaryId, foodId, _selectedDate);
-    //
-    //   // Cập nhật lại UI sau khi xóa thành công
-    //   if (_currentDiaryDay != null) {
-    //     // Tạo Diary mới với danh sách món ăn đã được cập nhật
-    //     final updatedFoodItems = _currentDiaryDay!.foodItems
-    //         .where((food) => food.id != foodId)
-    //         .toList();
-    //
-    //     _currentDiaryDay = Diary(
-    //       diaryId: _currentDiaryDay!.diaryId,
-    //       date: _currentDiaryDay!.date,
-    //       calorieGoal: _currentDiaryDay!.calorieGoal,
-    //       foodItems: updatedFoodItems,
-    //       exerciseItems: _currentDiaryDay!.exerciseItems,
-    //     );
-    //   }
-    //
-    //   notifyListeners();
-    // } catch (e) {
-    //   _errorMessage = "Không thể xóa thức ăn: ${e.toString()}";
-    //   notifyListeners();
-    // } finally {
-    //   _removingFoodIds.remove(foodId);
-    //   notifyListeners();
-    // }
+  Future<void> removeFoodFromDiary(String mealEntryId) async {
+    _removingFoodIds.add(mealEntryId);
+    notifyListeners();
+
+    try {
+      await Future.delayed(const Duration(milliseconds: 300));
+
+      //await _repository.deleteMealEntry(mealEntryId);
+
+      // Cập nhật lại UI sau khi xóa thành công
+      await fetchDiaryForSelectedDate();
+    } catch (e) {
+      errorMessage = "Không thể xóa thức ăn: ${e.toString()}";
+      notifyListeners();
+    } finally {
+      _removingFoodIds.remove(mealEntryId);
+      notifyListeners();
+    }
+  }
+
+  /// Edit meal entry in meal log
+  Future<void> editFoodInDiary({
+    required String mealEntryId,
+    required String foodId,
+    required String servingUnit,
+    required double numberOfServings,
+  }) async {
+    _addingFoodIds.add(mealEntryId); // Tạm dùng chung set để hiện trạng thái loading
+    notifyListeners();
+
+    try {
+      // await _repository.editMealEntry(
+      //   mealEntryId: mealEntryId,
+      //   numberOfServings: numberOfServings,
+      //   foodId: foodId,
+      //   servingUnit: servingUnit,
+      // );
+
+      // Cập nhật lại nhật ký sau khi chỉnh sửa
+      await fetchDiaryForSelectedDate();
+    } catch (e) {
+      errorMessage = "Không thể cập nhật món ăn: ${e.toString()}";
+      notifyListeners();
+    } finally {
+      _addingFoodIds.remove(mealEntryId);
+      notifyListeners();
+    }
   }
 }

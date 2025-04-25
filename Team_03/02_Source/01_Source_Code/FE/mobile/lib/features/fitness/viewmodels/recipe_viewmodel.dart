@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../models/meal_log.dart';
 import '../models/recipe.dart';
 import '../models/food.dart';
 import '../services/recipe_api_service.dart'; // Replace with your actual API service
@@ -137,3 +138,5 @@ class RecipeViewModel extends ChangeNotifier {
     }
   }
 }
+
+

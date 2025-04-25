@@ -38,7 +38,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('FitTrack'),
+        title: const Text('FITTRACK'),
         centerTitle: true,
         backgroundColor: HighlightColors.highlight500,
         foregroundColor: Colors.white,

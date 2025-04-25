@@ -3,23 +3,19 @@ import 'meal_log.dart';
 class Food {
   final String id;
   final String name;
-  final double servingSize;
   final double calories;
   final double carbs;
   final double fat;
   final double protein;
-  final String unit;
   final MealType mealType;
 
   Food({
     required this.id,
     required this.name,
-    required this.servingSize,
     required this.calories,
     required this.carbs,
     required this.fat,
     required this.protein,
-    required this.unit,
     this.mealType = MealType.breakfast,
   });
 
@@ -31,8 +27,6 @@ class Food {
       protein: (json['protein'] ?? 0).toDouble(),
       carbs: (json['carbs'] ?? 0).toDouble(),
       fat: (json['fat'] ?? 0).toDouble(),
-      servingSize: 100.0, // Mặc định
-      unit: 'grams', // Mặc định
     );
   }
 
@@ -40,12 +34,12 @@ class Food {
     return {
       'id': id,
       'name': name,
-      'servingSize': servingSize,
+//      'servingSize': servingSize,
       'calories': calories,
       'carbs': carbs,
       'fat': fat,
       'protein': protein,
-      'unit': unit,
+//      'unit': unit,
       'mealType': mealType.name, // serialize enum as string
     };
   }

@@ -65,4 +65,6 @@ class FoodRepository {
       ),
     );
   }
+
+ // Future<void> searchMyRecipes(String query, {required int page, required int size}) {}
 }

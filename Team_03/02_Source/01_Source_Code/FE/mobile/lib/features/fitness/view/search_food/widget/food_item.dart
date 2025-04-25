@@ -7,84 +7,69 @@ import '../../../viewmodels/diary_viewmodel.dart';
 class FoodItemWidget extends StatelessWidget {
   final Food food;
   final VoidCallback onTap;
-  final String mealLogId;
+  final VoidCallback? onAdd; // <-- New optional onAdd callback
 
-  const FoodItemWidget({super.key, required this.food, required this.onTap, required this.mealLogId});
+  const FoodItemWidget({
+    super.key,
+    required this.food,
+    required this.onTap,
+    this.onAdd, // <-- Accept from parent
+  });
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
+    final theme = Theme.of(context);
     final colorScheme = Theme.of(context).colorScheme;
     final diaryViewModel = context.watch<DiaryViewModel>();
     final isAddingThisFood = diaryViewModel.isAddingFood(food.id);
 
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-      decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: InkWell(
-              onTap: onTap,
-              borderRadius: BorderRadius.circular(12),
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      food.name,
-                      style: textTheme.bodyMedium,
-                    ),
-                    Text(
-                      "${food.calories} cal, Carbs: ${food.carbs}g, Fat: ${food.fat}g, Protein: ${food.protein}g",
-                      style: textTheme.bodySmall?.copyWith(
-                        color: colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                  ],
+    return Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        child: Row(
+          children: [
+            Expanded(
+              child: ListTile(
+                onTap: onTap,
+                contentPadding: const EdgeInsets.all(12),
+                title: Text(food.name, style: theme.textTheme.titleMedium),
+                subtitle: Text(
+                  '${food.calories.toStringAsFixed(0)} kcal • '
+                      '${food.protein.toStringAsFixed(1)}g P • '
+                      '${food.carbs.toStringAsFixed(1)}g C • '
+                      '${food.fat.toStringAsFixed(1)}g F',
+                  style: theme.textTheme.bodySmall,
                 ),
               ),
             ),
-          ),
-          Container(
-            margin: const EdgeInsets.only(right: 12),
-            decoration: BoxDecoration(
-              color: colorScheme.primaryContainer.withOpacity(0.7),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: InkWell(
-              borderRadius: BorderRadius.circular(20),
-              onTap: isAddingThisFood
-                  ? null
-                  : () {
-                      diaryViewModel.addFoodToDiary(
-                          mealLogId: mealLogId,
-                          foodId: food.id,
-                          servingUnit: 'GRAM',
-                          numberOfServings: 1);
-                    },
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: isAddingThisFood
-                    ? SizedBox(
-                        width: 24,
-                        height: 24,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2.5,
-                          color: colorScheme.onPrimaryContainer,
-                        ),
-                      )
-                    : Icon(Icons.add, color: colorScheme.onPrimaryContainer),
+            Container(
+              margin: const EdgeInsets.only(right: 12),
+              decoration: BoxDecoration(
+                color: colorScheme.primaryContainer.withOpacity(0.7),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(20),
+                onTap: isAddingThisFood ? null : onAdd, // <- Use the custom callback
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: isAddingThisFood
+                      ? SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2.5,
+                      color: colorScheme.onPrimaryContainer,
+                    ),
+                  )
+                      : Icon(Icons.add, color: colorScheme.onPrimaryContainer),
+                ),
               ),
             ),
-          ),
-        ],
-      ),
+          ],
+        )
     );
   }
 }
+
+

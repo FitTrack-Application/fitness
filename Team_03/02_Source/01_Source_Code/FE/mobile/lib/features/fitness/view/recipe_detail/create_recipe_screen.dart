@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../cores/constants/colors.dart';
 import '../../models/food.dart';
+import '../../models/recipe.dart';
 
 
 class CreateRecipeScreen extends StatefulWidget {
@@ -12,6 +14,7 @@ class CreateRecipeScreen extends StatefulWidget {
 
 class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
   final TextEditingController _recipeNameController = TextEditingController();
+  final TextEditingController _recipeDescriptionController = TextEditingController();
   List<Food> selectedFoods = [];
 
   void _addFood(Food food) {
@@ -34,7 +37,55 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
         actions: [
           TextButton(
             onPressed: () {
-              // save logic
+              final name = _recipeNameController.text.trim();
+              final description = _recipeDescriptionController.text.trim(); // You'll want a separate controller for this!
+
+              if (name.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Please enter a recipe name.')),
+                );
+                return;
+              }
+
+              if (selectedFoods.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Please add at least one ingredient.')),
+                );
+                return;
+              }
+
+              double totalCalories = 0;
+              double totalProtein = 0;
+              double totalCarbs = 0;
+              double totalFat = 0;
+
+              for (var food in selectedFoods) {
+                totalCalories += food.calories;
+                totalProtein += food.protein;
+                totalCarbs += food.carbs;
+                totalFat += food.fat;
+              }
+
+              final recipe = Recipe(
+                id: UniqueKey().toString(), // or generate UUID
+                name: name,
+                description: description,
+                servingSize: 100.0,
+                unit: 'grams',
+                calories: totalCalories,
+                protein: totalProtein,
+                carbs: totalCarbs,
+                fat: totalFat,
+                foodList: selectedFoods,
+              );
+              onRecipeCreated(Recipe recipe) async {
+                // Navigate to the detail screen
+                await context.push('/recipe_detail', extra: recipe);
+
+                // Then return the recipe to previous screen (e.g., after viewing/editing)
+                context.pop(recipe);
+              }
+              onRecipeCreated(recipe);
             },
             child: const Text('Save', style: TextStyle(color: HighlightColors.highlight500)),
           ),
@@ -57,7 +108,7 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
             ),
             const SizedBox(height: 20),
             TextField(
-              controller: _recipeNameController,
+              controller: _recipeDescriptionController,
               decoration: InputDecoration(
                 labelText: 'Description',
                 labelStyle: Theme.of(context).textTheme.bodyMedium,
@@ -72,8 +123,11 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
               children: [
                 Text('Ingredients', style: Theme.of(context).textTheme.titleLarge),
                 ElevatedButton(
-                  onPressed: () {
-                    // Navigate to food search screen and pick food
+                  onPressed: () async {
+                    final food = await context.push<Food>('/search_food_for_recipe');
+                    if (food != null) {
+                      _addFood(food);
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: TonalButtonColors.primary,
@@ -81,6 +135,7 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                   ),
                   child: const Text('+ Add Food'),
                 ),
+
               ],
             ),
             const SizedBox(height: 10),
@@ -104,7 +159,7 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                       title: Text(food.name, style: Theme.of(context).textTheme.titleSmall),
                       subtitle: Text(
                         '${food.calories.toStringAsFixed(0)} kcal - ${food.protein}g P / ${food.carbs}g C / ${food.fat}g F',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(color: NeutralColors.light500),
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(color: NeutralColors.dark100),
                       ),
                       trailing: IconButton(
                         icon: const Icon(Icons.delete, color: AccentColors.red300),

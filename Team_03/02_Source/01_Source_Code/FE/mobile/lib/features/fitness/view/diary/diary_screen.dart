@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile/features/fitness/models/exercise.dart';
 import 'package:mobile/features/fitness/models/food.dart';
+import 'package:mobile/features/fitness/models/meal_entry.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/meal_log.dart';
@@ -90,7 +91,7 @@ class _DiaryScreenState extends State<DiaryScreen>
                           viewModel,
                           context,
                           'Breakfast',
-                          viewModel.breakfastItems,
+                          viewModel.breakfastEntries,
                           viewModel.breakfastCalories,
                           MealType.breakfast,
                         ),
@@ -99,7 +100,7 @@ class _DiaryScreenState extends State<DiaryScreen>
                           viewModel,
                           context,
                           'Lunch',
-                          viewModel.lunchItems,
+                          viewModel.lunchEntries,
                           viewModel.lunchCalories,
                           MealType.lunch,
                         ),
@@ -108,7 +109,7 @@ class _DiaryScreenState extends State<DiaryScreen>
                           viewModel,
                           context,
                           'Dinner',
-                          viewModel.dinnerItems,
+                          viewModel.dinnerEntries,
                           viewModel.dinnerCalories,
                           MealType.dinner,
                         ),
@@ -234,7 +235,7 @@ class _DiaryScreenState extends State<DiaryScreen>
     DiaryViewModel viewModel,
     BuildContext context,
     String mealTitle,
-    List<Food> foodItems,
+    List<MealEntry> mealEntryItems,
       double calories,
     MealType mealType,
   ) {
@@ -265,7 +266,7 @@ class _DiaryScreenState extends State<DiaryScreen>
               ],
             ),
           ),
-          ...foodItems.map((item) => _buildFoodItem(item, mealLogId, context, viewModel)),
+          ...mealEntryItems.map((item) => _buildFoodItem(item, mealLogId, context, viewModel)),
           TextButton(
             onPressed: () {
               print('mealLogId: $mealLogId');
@@ -338,7 +339,7 @@ class _DiaryScreenState extends State<DiaryScreen>
   }
 
   Widget _buildFoodItem(
-      Food item, String mealLogId, BuildContext context, DiaryViewModel viewModel) {
+      MealEntry item, String mealLogId, BuildContext context, DiaryViewModel viewModel) {
     final textTheme = Theme.of(context).textTheme;
     final isRemoving = viewModel.isRemovingFood(item.id);
 
@@ -346,16 +347,16 @@ class _DiaryScreenState extends State<DiaryScreen>
       children: [
         ListTile(
           title: Text(
-            item.name,
+            item.food.name,
             style: textTheme.bodyMedium,
           ),
           subtitle: Text(
-              "${item.calories} cal, Carbs: ${item.carbs}g, Fat: ${item.fat}g, Protein: ${item.protein}g",
+              "${item.food.calories} cal, Carbs: ${item.food.carbs}g, Fat: ${item.food.fat}g, Protein: ${item.food.protein}g",
               style: textTheme.bodySmall),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('${item.calories}'),
+              Text('${item.food.calories}'),
               IconButton(
                 icon: isRemoving
                     ? const SizedBox(
@@ -373,7 +374,7 @@ class _DiaryScreenState extends State<DiaryScreen>
                           builder: (context) => AlertDialog(
                             title: const Text("Xác nhận xóa"),
                             content: Text(
-                                "Bạn có chắc muốn xóa ${item.name} khỏi nhật ký?"),
+                                "Bạn có chắc muốn xóa ${item.food.name} khỏi nhật ký?"),
                             actions: [
                               TextButton(
                                 onPressed: () =>
@@ -397,7 +398,7 @@ class _DiaryScreenState extends State<DiaryScreen>
             ],
           ),
           onTap: () {
-            context.push('/food/$mealLogId/${item.id}/edit');
+            context.push('/food/${item.id}/${item.food.id}/edit/${item.numberOfServings}');
           },
         ),
         const Divider(

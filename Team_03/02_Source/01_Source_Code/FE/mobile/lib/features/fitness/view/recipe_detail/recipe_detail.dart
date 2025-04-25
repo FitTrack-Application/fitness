@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mobile/features/fitness/view/food_detail/widget/calorie_summary.dart';
 
 import '../../../../cores/constants/colors.dart';
 import '../../models/food.dart';
@@ -34,11 +35,11 @@ class RecipeDetailScreen extends StatelessWidget {
                 ),
               ),
 
-            if (recipe.name.isNotEmpty)
+            if (recipe.description.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.only(bottom: 24),
                 child: Text(
-                  recipe.name,
+                  recipe.description,
                   style: GoogleFonts.poppins(fontSize: 16),
                 ),
               ),
@@ -68,10 +69,6 @@ class RecipeDetailScreen extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 6),
       child: ListTile(
         title: Text(food.name, style: GoogleFonts.poppins(fontSize: 16)),
-        subtitle: Text(
-          "${food.servingSize} ${food.unit}",
-          style: GoogleFonts.poppins(fontSize: 14, color: NeutralColors.dark100),
-        ),
         trailing: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -98,12 +95,13 @@ class RecipeDetailScreen extends StatelessWidget {
           Text("Nutrition (per ${recipe.servingSize.toStringAsFixed(0)} ${recipe.unit})", style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
           const SizedBox(height: 12),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _nutrientItem("Calories", recipe.calories.toStringAsFixed(0), AccentColors.red300),
-              _nutrientItem("Carbs", recipe.carbs.toStringAsFixed(1), NutritionColor.cabs),
-              _nutrientItem("Fat", recipe.fat.toStringAsFixed(1), NutritionColor.fat),
-              _nutrientItem("Protein", recipe.protein.toStringAsFixed(1), NutritionColor.protein),
+              CalorieSummary(
+                calories: recipe.calories,
+                carbs: recipe.carbs,
+                fat: recipe.fat,
+                protein: recipe.protein,
+              )
             ],
           ),
         ],
@@ -111,12 +109,4 @@ class RecipeDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget _nutrientItem(String label, String value, Color color) {
-    return Column(
-      children: [
-        Text(value, style: GoogleFonts.poppins(color: color, fontSize: 16, fontWeight: FontWeight.bold)),
-        Text(label, style: GoogleFonts.poppins(fontSize: 12, color: NeutralColors.dark100)),
-      ],
-    );
-  }
 }
