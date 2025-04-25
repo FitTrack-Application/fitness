@@ -133,7 +133,7 @@ public class FoodServiceImpl implements FoodService {
     @Transactional
     @Override
     public ApiResponse<?> deleteFood(UUID foodId, UUID userId) {
-        Food food = foodRepository.findByIdAndUserId(foodId, userId);
+        Food food = foodRepository.findByFoodIdAndUserId(foodId, userId);
         if (food == null) {
             throw new ResourceNotFoundException("Food not found with ID: " + foodId + " for user ID: " + userId);
         }
@@ -149,7 +149,7 @@ public class FoodServiceImpl implements FoodService {
 
     @Override
     public ApiResponse<?> updateFood(UUID foodId, FoodDto foodDto, UUID userId) {
-        Food food = foodRepository.findByIdAndUserId(foodId, userId);
+        Food food = foodRepository.findByFoodIdAndUserId(foodId, userId);
         if (food == null) {
             throw new ResourceNotFoundException("Food not found with ID: " + foodId + " for user ID: " + userId);
         }

@@ -9,5 +9,5 @@ import java.util.UUID;
 
 public interface FoodRepository extends JpaRepository<Food, UUID> {
     Page<Food> findByFoodNameContainingIgnoreCase(String name, Pageable pageable);
-    Food findByIdAndUserId(UUID foodId, UUID userId);
+    Food findByFoodIdAndUserId(UUID foodId, UUID userId);
 }
