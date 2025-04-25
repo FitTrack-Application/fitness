@@ -77,4 +77,17 @@ public class FoodController {
         return ResponseEntity.ok(response);
     }
 
+    @DeleteMapping("/{foodId}")
+    public ResponseEntity<ApiResponse<?>> deleteFood(@PathVariable UUID foodId, @RequestHeader("Authorization") String authorizationHeader) {
+        UUID userId = jwtUtil.extractUserId(authorizationHeader.replace("Bearer ", ""));
+        ApiResponse<?> response = foodService.deleteFood(foodId, userId);
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/{foodId}")
+    public ResponseEntity<ApiResponse<?>> updateFood(@PathVariable UUID foodId, @Valid @RequestBody FoodDto foodDto, @RequestHeader("Authorization") String authorizationHeader) {
+        UUID userId = jwtUtil.extractUserId(authorizationHeader.replace("Bearer ", ""));
+        ApiResponse<?> response = foodService.updateFood(foodId, foodDto, userId);
+        return ResponseEntity.ok(response);
+    }
 }
