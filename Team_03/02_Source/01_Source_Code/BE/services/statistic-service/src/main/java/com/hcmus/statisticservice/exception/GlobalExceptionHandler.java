@@ -26,6 +26,17 @@ import java.util.List;
 })
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(NutritionException.class)
+    public ResponseEntity<ApiResponse<?>> handleNutritionException(NutritionException exception) {
+        final ApiResponse<?> response = ApiResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .generalMessage("Problem with the nutrition goal service!")
+                .errorDetails(List.of(exception.getMessage()))
+                .timestamp(LocalDateTime.now())
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse<?>> handleValidationErrors(MethodArgumentNotValidException exception) {
         List<String> errors = exception.getBindingResult().getFieldErrors()
@@ -52,11 +63,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.ok(response);
     }
 
-    @ExceptionHandler(InvalidTokenException.class)
-    ResponseEntity<ApiResponse<?>> handleInvalidTokenException(InvalidTokenException exception) {
+    @ExceptionHandler(StatisticException.class)
+    ResponseEntity<ApiResponse<?>> handleInvalidTokenException(StatisticException exception) {
         final ApiResponse<?> response = ApiResponse.builder()
-                .status(HttpStatus.UNAUTHORIZED.value())
-                .generalMessage("Invalid token!")
+                .status(HttpStatus.BAD_REQUEST.value())
+                .generalMessage("Bad request from user in statistic service!")
                 .errorDetails(List.of(exception.getMessage()))
                 .timestamp(LocalDateTime.now())
                 .build();

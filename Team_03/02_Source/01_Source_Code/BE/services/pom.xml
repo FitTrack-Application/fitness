@@ -22,7 +22,6 @@
     </properties>
 
     <modules>
-        <module>user-service</module>
         <module>fit-service</module>
         <module>statistic-service</module>
         <module>gateway-service</module>

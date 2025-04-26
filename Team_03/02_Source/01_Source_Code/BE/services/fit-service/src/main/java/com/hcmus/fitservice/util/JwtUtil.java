@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 
 @Component
@@ -16,8 +17,8 @@ public class JwtUtil {
     private static final String EMAIL_CLAIM = "email";
     private static final String USERNAME_CLAIM = "preferred_username";
 
-    public String getCurrentUserId() {
-        return getClaimFromToken(USER_ID_CLAIM).orElse(null);
+    public UUID getCurrentUserId() {
+        return UUID.fromString(getClaimFromToken(USER_ID_CLAIM).orElse(""));
     }
 
     public String getCurrentUserEmail() {
@@ -45,5 +46,11 @@ public class JwtUtil {
             return Optional.of((Jwt) authentication.getPrincipal());
         }
         return Optional.empty();
+    }
+
+    public String getToken() {
+        return getCurrentJwt()
+                .map(Jwt::getTokenValue)
+                .orElse(null);
     }
 }

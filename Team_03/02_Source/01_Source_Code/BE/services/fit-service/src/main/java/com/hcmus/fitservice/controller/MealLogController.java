@@ -23,29 +23,33 @@ import java.util.UUID;
 public class MealLogController {
 
     private final MealLogService mealLogService;
-
     private final JwtUtil jwtUtil;
 
-    // Create meal log
-//    @PostMapping
-//    public ResponseEntity<ApiResponse<Void>> createMealLog(
-//            @RequestHeader("Authorization") String authorization,
-//            @RequestBody MealLogRequest mealLogRequest
-//    ) {
-//        UUID userId = jwtUtil.extractUserId(authorization.replace("Bearer ", ""));
-//        ApiResponse<Void> response = mealLogService.createMealLog(
-//                userId,
-//                mealLogRequest.getDate(),
-//                mealLogRequest.getMealType());
-//        return ResponseEntity.ok(response);
-//    }
+    /**
+     * Create a meal log for the current user
+     *
+     * @param mealLogRequest the request body containing the meal log details
+     * @return a ResponseEntity containing an ApiResponse with the created MealLogDto object
+     */
+    @PostMapping
+    public ResponseEntity<ApiResponse<Void>> createMealLog(@RequestBody MealLogRequest mealLogRequest) {
+        UUID userId = jwtUtil.getCurrentUserId();
+        ApiResponse<Void> response = mealLogService.createMealLog(
+                userId,
+                mealLogRequest.getDate(),
+                mealLogRequest.getMealType());
+        return ResponseEntity.ok(response);
+    }
 
-    // Add meal entry
+    /**
+     * Add a meal entry to a meal log
+     *
+     * @param mealLogId the id of the meal log
+     * @param mealEntryRequest the request body containing the meal entry details
+     * @return a ResponseEntity containing an ApiResponse with the created MealEntryDto object
+     */
     @PostMapping("/{mealLogId}/entries")
-    public ResponseEntity<ApiResponse<MealEntryDto>> addMealEntry(
-            @PathVariable UUID mealLogId,
-            @RequestBody MealEntryRequest mealEntryRequest
-    ) {
+    public ResponseEntity<ApiResponse<MealEntryDto>> addMealEntry(@PathVariable UUID mealLogId, @RequestBody MealEntryRequest mealEntryRequest) {
         ApiResponse<MealEntryDto> response = mealLogService.addMealEntry(
                 mealLogId,
                 mealEntryRequest.getFoodId(),
@@ -55,14 +59,18 @@ public class MealLogController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    // Get meal log by user id and date
-//    @GetMapping
-//    public ResponseEntity<ApiResponse<List<MealLogDto>>> getMealLogsByUserIdAndDate(
-//            @RequestHeader("Authorization") String authorization,
-//            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date date
-//    ) {
-//        UUID userId = jwtUtil.extractUserId(authorization.replace("Bearer ", ""));
-//        ApiResponse<List<MealLogDto>> response = mealLogService.getMealLogsByUserIdAndDate(userId, date);
-//        return ResponseEntity.ok(response);
-//    }
+    /**
+     * Get all meal logs for the current user on a specific date
+     *
+     * @param date the date to filter meal logs
+     * @return a ResponseEntity containing an ApiResponse with a list of MealLogDto objects
+     */
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<MealLogDto>>> getMealLogsByUserIdAndDate(
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date date
+    ) {
+        UUID userId = jwtUtil.getCurrentUserId();
+        ApiResponse<List<MealLogDto>> response = mealLogService.getMealLogsByUserIdAndDate(userId, date);
+        return ResponseEntity.ok(response);
+    }
 }

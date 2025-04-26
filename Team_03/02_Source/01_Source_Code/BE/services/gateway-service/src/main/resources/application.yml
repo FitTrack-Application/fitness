@@ -6,18 +6,14 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: user_service
-          uri: ${USER_SERVICE_HOST}
-          predicates:
-            - Path=/api/auth/**,/api/users/**,/api/roles/**,/api/permissions/**,/api/clients/**
         - id: fit_service
           uri: ${FIT_SERVICE_HOST}
           predicates:
-            - Path=/api/fit/**,/api/fitness/**,/api/foods/**,/api/meal-entries/**,/api/meal-logs/**
+            - Path=/api/foods/**,/api/meal-entries/**,/api/meal-logs/**
         - id: statistic_service
           uri: ${STATISTIC_SERVICE_HOST}
           predicates:
-            - Path=/api/statistics/**,/api/statistic/**,/api/goal/**
+            - Path=/api/statistics/**,/api/fit-profiles/**,/api/nutritional-goals/**,/api/step-logs/**,/api/weight-logs/**,/api/weight-goals/**,/api/surveys/**
 
 keycloak:
   introspection-uri: ${KEYCLOAK_AUTH_SERVER_HOST}/realms/${KEYCLOAK_REALM}/protocol/openid-connect/token/introspect
