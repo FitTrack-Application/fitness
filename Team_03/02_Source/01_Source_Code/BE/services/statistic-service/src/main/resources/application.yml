@@ -19,6 +19,15 @@ spring:
     init:
       mode: always
       continue-on-error: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_AUTH_SERVER_HOST}/realms/${KEYCLOAK_REALM}
+          jwk-set-uri: ${KEYCLOAK_AUTH_SERVER_HOST}/realms/${KEYCLOAK_REALM}/protocol/openid-connect/certs
+
+keycloak:
+  jwk-set-uri: ${KEYCLOAK_AUTH_SERVER_HOST}/realms/${KEYCLOAK_REALM}/protocol/openid-connect/certs
 
 server:
   port: 8081
@@ -31,9 +40,3 @@ logging:
         orm:
           jdbc:
             bind: TRACE
-
-host:
-  statistic-service: ${STATISTIC_SERVICE_HOST}
-  user-service: ${USER_SERVICE_HOST}
-  fit-service: ${FIT_SERVICE_HOST}
-  gateway-service: ${GATEWAY_SERVICE_HOST}

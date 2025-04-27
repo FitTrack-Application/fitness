@@ -1,9 +1,9 @@
 package com.hcmus.statisticservice.service;
 
-import com.hcmus.statisticservice.model.NutritionData;
 import com.hcmus.statisticservice.dto.response.ApiResponse;
 import com.hcmus.statisticservice.dto.response.GetNutritionGoalResponse;
 import com.hcmus.statisticservice.model.FitProfile;
+import com.hcmus.statisticservice.model.NutritionData;
 import com.hcmus.statisticservice.model.NutritionGoal;
 import com.hcmus.statisticservice.model.WeightGoal;
 import com.hcmus.statisticservice.model.type.ActivityLevel;

@@ -23,9 +23,3 @@ keycloak:
 server:
   port: 8088
 
-host:
-  statistic-service: ${STATISTIC_SERVICE_HOST}
-  user-service: ${USER_SERVICE_HOST}
-  fit-service: ${FIT_SERVICE_HOST}
-  gateway-service: ${GATEWAY_SERVICE_HOST}
-

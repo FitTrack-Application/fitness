@@ -1,9 +1,8 @@
 package com.hcmus.gatewayservice.security;
 
-import com.hcmus.gatewayservice.dto.response.ApiResponse;
+import com.hcmus.gatewayservice.dto.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
@@ -14,26 +13,25 @@ import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 @Slf4j
 @Component
-public class JwtAuthenticationEntryPoint implements ServerAuthenticationEntryPoint {
+public class CustomAuthenticationEntryPoint implements ServerAuthenticationEntryPoint {
 
     @Override
-    public Mono<Void> commence(ServerWebExchange exchange, AuthenticationException ex) {
+    public Mono<Void> commence(ServerWebExchange exchange, AuthenticationException exception) {
+        log.warn("Unauthorized error: {}", exception.getMessage());
         ApiResponse<Object> response = ApiResponse.builder()
-                .status(401)
-                .generalMessage("Unauthorized")
-                .errorDetails(List.of("[GW] You are not authorized to access this resource."))
-                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.UNAUTHORIZED.value())
+                .generalMessage("[API Gate Way] Unauthorized")
+                .errorDetails(List.of("You are not authorized to access this resource."))
+                .timestamp(LocalDateTime.now(ZoneId.of("UTC+7")))
                 .build();
-
-        byte[] bytes = response.toJson().getBytes(StandardCharsets.UTF_8);
         exchange.getResponse().setStatusCode(HttpStatus.OK);
         exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON);
-        DataBuffer buffer = exchange.getResponse().bufferFactory().wrap(bytes);
-
+        DataBuffer buffer = exchange.getResponse().bufferFactory().wrap(response.toJson().getBytes(StandardCharsets.UTF_8));
         return exchange.getResponse().writeWith(Mono.just(buffer));
     }
 }

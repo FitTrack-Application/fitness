@@ -1,4 +1,4 @@
-package com.hcmus.gatewayservice.dto.response;
+package com.hcmus.gatewayservice.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;

@@ -44,7 +44,7 @@ public class MealLogController {
     /**
      * Add a meal entry to a meal log
      *
-     * @param mealLogId the id of the meal log
+     * @param mealLogId        the id of the meal log
      * @param mealEntryRequest the request body containing the meal entry details
      * @return a ResponseEntity containing an ApiResponse with the created MealEntryDto object
      */
