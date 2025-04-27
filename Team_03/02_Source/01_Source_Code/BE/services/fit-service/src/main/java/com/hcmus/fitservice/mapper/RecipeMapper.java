@@ -20,6 +20,14 @@ public class RecipeMapper {
 
     // From Recipe to RecipeResponse
     public RecipeResponse convertToRecipeResponse(Recipe recipe) {
+//        if (recipe.getRecipeEntries() == null || recipe.getRecipeEntries().isEmpty()) {
+//            return RecipeResponse.builder()
+//                    .id(recipe.getRecipeId())
+//                    .name(recipe.getRecipeName())
+//                    .direction(recipe.getDirection())
+//                    .recipeEntries(List.of())
+//                    .build();
+//        }
         List<FoodEntryDto> foodEntryDtos = recipe.getRecipeEntries().stream()
                 .map(foodEntryMapper::convertToFoodEntryDto)
                 .toList();

@@ -9,7 +9,7 @@ spring:
         - id: fit_service
           uri: ${FIT_SERVICE_HOST}
           predicates:
-            - Path=/api/foods/**,/api/meal-entries/**,/api/meal-logs/**
+            - Path=/api/foods/**,/api/meal-entries/**,/api/meal-logs/**,/api/recipes/**
         - id: statistic_service
           uri: ${STATISTIC_SERVICE_HOST}
           predicates:

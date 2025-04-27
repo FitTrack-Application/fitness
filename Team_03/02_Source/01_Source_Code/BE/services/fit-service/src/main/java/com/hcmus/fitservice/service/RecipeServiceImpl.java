@@ -9,6 +9,7 @@ import com.hcmus.fitservice.mapper.RecipeMapper;
 import com.hcmus.fitservice.model.Recipe;
 import com.hcmus.fitservice.repository.RecipeEntryRepository;
 import com.hcmus.fitservice.repository.RecipeRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -41,14 +42,20 @@ public class RecipeServiceImpl implements RecipeService {
 
         // Save and get the recipe
         Recipe savedRecipe = recipeRepository.save(recipe);
+        UUID savedRecipeId = savedRecipe.getRecipeId();
 
         // Create Recipe entries
         List<FoodEntryDto> foodEntryDtos = recipeRequest.getRecipeEntries().stream()
-                .map(foodEntryRequest -> recipeEntryService.createRecipeEntry(savedRecipe.getRecipeId(), foodEntryRequest))
+                .map(foodEntryRequest -> recipeEntryService.createRecipeEntry(savedRecipeId, foodEntryRequest))
                 .toList();
 
-        // Convert to RecipeResponse
-        RecipeResponse recipeResponse = recipeMapper.convertToRecipeResponse(recipe);
+        // Create RecipeResponse
+        RecipeResponse recipeResponse = new RecipeResponse(
+                savedRecipeId,
+                savedRecipe.getRecipeName(),
+                savedRecipe.getDirection(),
+                foodEntryDtos
+        );
 
         // Return response
         return ApiResponse.<RecipeResponse>builder()
@@ -120,6 +127,7 @@ public class RecipeServiceImpl implements RecipeService {
 
     // Update Recipe by ID
     @Override
+    @Transactional
     public ApiResponse<RecipeResponse> updateRecipeById(UUID recipeId, RecipeRequest recipeRequest, UUID userId) {
         Recipe recipe = recipeRepository.findByRecipeIdAndUserId(recipeId, userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Recipe not found with ID: " + recipeId + "and user ID: " + userId));
@@ -140,8 +148,13 @@ public class RecipeServiceImpl implements RecipeService {
         // Save updated Recipe
         recipeRepository.save(recipe);
 
-        // Convert to RecipeResponse
-        RecipeResponse recipeResponse = recipeMapper.convertToRecipeResponse(recipe);
+        // Create RecipeResponse
+        RecipeResponse recipeResponse = new RecipeResponse(
+                recipe.getRecipeId(),
+                recipe.getRecipeName(),
+                recipe.getDirection(),
+                foodEntryDtos
+        );
 
         // Return response
         return ApiResponse.<RecipeResponse>builder()

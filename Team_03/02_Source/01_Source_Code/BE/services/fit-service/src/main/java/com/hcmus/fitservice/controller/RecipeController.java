@@ -27,12 +27,10 @@ public class RecipeController {
     // Create Recipe
     @PostMapping
     public ResponseEntity<ApiResponse<RecipeResponse>> createRecipe(
-            @RequestHeader("Authorization") String authorization,
             @RequestBody RecipeRequest recipeRequest
     ) {
         // Extract User ID from JWT token
-        String token = authorization.replace("Bearer ", "");
-        UUID userId = jwtUtil.extractUserId(token);
+        UUID userId = jwtUtil.getCurrentUserId();
 
         ApiResponse<RecipeResponse> response = recipeService.createRecipe(recipeRequest, userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -41,7 +39,6 @@ public class RecipeController {
     // Get recipes with pagination
     @GetMapping("/me")
     public ResponseEntity<ApiResponse<List<RecipeResponse>>> getAllRecipes (
-            @RequestHeader("Authorization") String authorization,
             @RequestParam(required = false) String query,
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "size", defaultValue = "10") int size
@@ -55,8 +52,7 @@ public class RecipeController {
         }
 
         // Extract User ID from JWT token
-        String token = authorization.replace("Bearer ", "");
-        UUID userId = jwtUtil.extractUserId(token);
+        UUID userId = jwtUtil.getCurrentUserId();
 
         Pageable pageable = PageRequest.of(page - 1, size);
 
@@ -77,12 +73,10 @@ public class RecipeController {
     // Get recipe by ID
     @GetMapping("/{recipeId}")
     public ResponseEntity<ApiResponse<RecipeResponse>> getRecipeById(
-            @RequestHeader("Authorization") String authorization,
             @PathVariable UUID recipeId
     ) {
         // Extract User ID from JWT token
-        String token = authorization.replace("Bearer ", "");
-        UUID userId = jwtUtil.extractUserId(token);
+        UUID userId = jwtUtil.getCurrentUserId();
 
         ApiResponse<RecipeResponse> response = recipeService.getRecipeById(recipeId, userId);
         return ResponseEntity.ok(response);
@@ -91,13 +85,11 @@ public class RecipeController {
     // Update recipe by ID
     @PutMapping("/{recipeId}")
     public ResponseEntity<ApiResponse<RecipeResponse>> updateRecipeById(
-            @RequestHeader("Authorization") String authorization,
             @PathVariable UUID recipeId,
             @RequestBody RecipeRequest recipeRequest
     ) {
         // Extract User ID from JWT token
-        String token = authorization.replace("Bearer ", "");
-        UUID userId = jwtUtil.extractUserId(token);
+        UUID userId = jwtUtil.getCurrentUserId();
 
         ApiResponse<RecipeResponse> response = recipeService.updateRecipeById(recipeId, recipeRequest, userId);
         return ResponseEntity.ok(response);
@@ -106,12 +98,10 @@ public class RecipeController {
     // Delete recipe by ID
     @DeleteMapping("/{recipeId}")
     public ResponseEntity<ApiResponse<?>> deleteRecipeById(
-            @RequestHeader("Authorization") String authorization,
             @PathVariable UUID recipeId
     ) {
         // Extract User ID from JWT token
-        String token = authorization.replace("Bearer ", "");
-        UUID userId = jwtUtil.extractUserId(token);
+        UUID userId = jwtUtil.getCurrentUserId();
 
         ApiResponse<?> response = recipeService.deleteRecipeById(recipeId, userId);
         return ResponseEntity.ok(response);

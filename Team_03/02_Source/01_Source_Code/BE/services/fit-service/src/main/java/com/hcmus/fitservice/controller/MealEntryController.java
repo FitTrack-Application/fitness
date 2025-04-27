@@ -33,7 +33,7 @@ public class MealEntryController {
      * Update a meal entry by its id
      *
      * @param mealEntryId      the id of the meal entry
-     * @param mealEntryRequest the request body containing the updated meal entry details
+     * @param foodEntryRequest the request body containing the updated meal entry details
      * @return a ResponseEntity containing an ApiResponse with the updated MealEntryDto object
      */
     @PutMapping("/{mealEntryId}")
