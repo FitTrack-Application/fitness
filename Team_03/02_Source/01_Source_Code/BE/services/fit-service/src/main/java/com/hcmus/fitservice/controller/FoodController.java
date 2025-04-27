@@ -59,7 +59,6 @@ public class FoodController {
         return ResponseEntity.ok(response);
     }
 
-
     @GetMapping("/scan")
     public ResponseEntity<ApiResponse<FoodDto>> getMethodName(@RequestParam String barcode) {
         ApiResponse<FoodDto> response = foodService.scanFood(barcode);
@@ -75,14 +74,14 @@ public class FoodController {
 
     @DeleteMapping("/{foodId}")
     public ResponseEntity<ApiResponse<?>> deleteFood(@PathVariable UUID foodId, @RequestHeader("Authorization") String authorizationHeader) {
-        UUID userId = jwtUtil.extractUserId(authorizationHeader.replace("Bearer ", ""));
+        UUID userId = jwtUtil.getCurrentUserId();
         ApiResponse<?> response = foodService.deleteFood(foodId, userId);
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{foodId}")
     public ResponseEntity<ApiResponse<?>> updateFood(@PathVariable UUID foodId, @Valid @RequestBody FoodDto foodDto, @RequestHeader("Authorization") String authorizationHeader) {
-        UUID userId = jwtUtil.extractUserId(authorizationHeader.replace("Bearer ", ""));
+        UUID userId = jwtUtil.getCurrentUserId();
         ApiResponse<?> response = foodService.updateFood(foodId, foodDto, userId);
         return ResponseEntity.ok(response);
     }

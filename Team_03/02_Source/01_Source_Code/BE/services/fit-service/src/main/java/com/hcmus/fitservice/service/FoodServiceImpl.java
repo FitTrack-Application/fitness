@@ -8,7 +8,6 @@ import com.hcmus.fitservice.exception.ResourceNotFoundException;
 import com.hcmus.fitservice.mapper.FoodMapper;
 import com.hcmus.fitservice.model.Food;
 import com.hcmus.fitservice.repository.FoodRepository;
-
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -85,10 +84,9 @@ public class FoodServiceImpl implements FoodService {
 
 
     @Override
-    public ApiResponse<FoodDto> scanFood(String barcode)
-    {
+    public ApiResponse<FoodDto> scanFood(String barcode) {
         JsonNode response = openFoodFactClient.getProductByBarcode(barcode);
-        
+
         JsonNode product = response.get("product");
 
 
@@ -119,8 +117,8 @@ public class FoodServiceImpl implements FoodService {
         food.setCarbsPer100g(foodDto.getCarbs());
         food.setFatPer100g(foodDto.getFat());
         food.setImageUrl(foodDto.getImageUrl());
-        food.setUserId(userId); 
-        
+        food.setUserId(userId);
+
         foodRepository.save(food);
 
         return ApiResponse.builder()
@@ -137,7 +135,7 @@ public class FoodServiceImpl implements FoodService {
         if (food == null) {
             throw new ResourceNotFoundException("Food not found with ID: " + foodId + " for user ID: " + userId);
         }
-                
+
         foodRepository.delete(food);
 
         return ApiResponse.builder()
