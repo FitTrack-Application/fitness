@@ -8,7 +8,6 @@ import com.hcmus.fitservice.exception.ResourceNotFoundException;
 import com.hcmus.fitservice.mapper.FoodMapper;
 import com.hcmus.fitservice.model.Food;
 import com.hcmus.fitservice.repository.FoodRepository;
-
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -85,10 +84,9 @@ public class FoodServiceImpl implements FoodService {
 
 
     @Override
-    public ApiResponse<FoodDto> scanFood(String barcode)
-    {
+    public ApiResponse<FoodDto> scanFood(String barcode) {
         JsonNode response = openFoodFactClient.getProductByBarcode(barcode);
-        
+
         JsonNode product = response.get("product");
 
 
@@ -119,13 +117,53 @@ public class FoodServiceImpl implements FoodService {
         food.setCarbsPer100g(foodDto.getCarbs());
         food.setFatPer100g(foodDto.getFat());
         food.setImageUrl(foodDto.getImageUrl());
-        food.setUserId(userId); 
-        
+        food.setUserId(userId);
+
         foodRepository.save(food);
 
         return ApiResponse.builder()
                 .status(200)
                 .generalMessage("Successfully added food!")
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
+
+    @Transactional
+    @Override
+    public ApiResponse<?> deleteFood(UUID foodId, UUID userId) {
+        Food food = foodRepository.findByFoodIdAndUserId(foodId, userId);
+        if (food == null) {
+            throw new ResourceNotFoundException("Food not found with ID: " + foodId + " for user ID: " + userId);
+        }
+
+        foodRepository.delete(food);
+
+        return ApiResponse.builder()
+                .status(200)
+                .generalMessage("Successfully deleted food!")
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
+
+    @Override
+    public ApiResponse<?> updateFood(UUID foodId, FoodDto foodDto, UUID userId) {
+        Food food = foodRepository.findByFoodIdAndUserId(foodId, userId);
+        if (food == null) {
+            throw new ResourceNotFoundException("Food not found with ID: " + foodId + " for user ID: " + userId);
+        }
+
+        food.setFoodName(foodDto.getName() == null ? food.getFoodName() : foodDto.getName());
+        food.setCaloriesPer100g(foodDto.getCalories() == null ? food.getCaloriesPer100g() : foodDto.getCalories());
+        food.setProteinPer100g(foodDto.getProtein() == null ? food.getProteinPer100g() : foodDto.getProtein());
+        food.setCarbsPer100g(foodDto.getCarbs() == null ? food.getCarbsPer100g() : foodDto.getCarbs());
+        food.setFatPer100g(foodDto.getFat() == null ? food.getFatPer100g() : foodDto.getFat());
+        food.setImageUrl(foodDto.getImageUrl() == null ? food.getImageUrl() : foodDto.getImageUrl());
+
+        foodRepository.save(food);
+
+        return ApiResponse.builder()
+                .status(200)
+                .generalMessage("Successfully updated food!")
                 .timestamp(LocalDateTime.now())
                 .build();
     }

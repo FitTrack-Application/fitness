@@ -17,8 +17,6 @@ public class UpdateProfileRequest {
 
     private Integer height;
 
-    private Double weight;
-
     private String activityLevel;
 
     private String imageUrl;
