@@ -1,6 +1,6 @@
 package com.hcmus.fitservice.service;
 
-import com.hcmus.fitservice.dto.MealEntryDto;
+import com.hcmus.fitservice.dto.FoodEntryDto;
 import com.hcmus.fitservice.dto.response.ApiResponse;
 import com.hcmus.fitservice.exception.ResourceNotFoundException;
 import com.hcmus.fitservice.model.Food;
@@ -38,7 +38,7 @@ public class MealEntryServiceImpl implements MealEntryService {
     }
 
     @Override
-    public ApiResponse<MealEntryDto> updateMealEntry(UUID mealEntryId, UUID foodId, String servingUnit, Double numberOfServings) {
+    public ApiResponse<FoodEntryDto> updateMealEntry(UUID mealEntryId, UUID foodId, String servingUnit, Double numberOfServings) {
         // Find the meal entry by ID
         MealEntry mealEntry = mealEntryRepository.findById(mealEntryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Meal entry not found with ID: " + mealEntryId));
@@ -54,12 +54,12 @@ public class MealEntryServiceImpl implements MealEntryService {
 
         mealEntryRepository.save(mealEntry);
 
-        MealEntryDto mealEntryDto = new MealEntryDto(mealEntryId, foodId, servingUnit, numberOfServings);
+        FoodEntryDto foodEntryDto = new FoodEntryDto(mealEntryId, foodId, servingUnit, numberOfServings);
 
-        return ApiResponse.<MealEntryDto>builder()
+        return ApiResponse.<FoodEntryDto>builder()
                 .status(200)
                 .generalMessage("Successfully updated meal entry")
-                .data(mealEntryDto)
+                .data(foodEntryDto)
                 .timestamp(LocalDateTime.now())
                 .build();
     }

@@ -29,7 +29,7 @@ public class FoodController {
      * @return a ResponseEntity containing an ApiResponse with a FoodDto object
      */
     @GetMapping("/{foodId}")
-    public ResponseEntity<ApiResponse<FoodDto>> getFoodById(@PathVariable UUID foodId) {
+        public ResponseEntity<ApiResponse<FoodDto>> getFoodById(@PathVariable UUID foodId) {
         ApiResponse<FoodDto> response = foodService.getFoodById(foodId);
         return ResponseEntity.ok(response);
     }
@@ -49,6 +49,14 @@ public class FoodController {
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
+        // Check if page and size are valid
+        if (page < 1) {
+            throw new IllegalArgumentException("Page number must be greater than 0");
+        }
+        if (size < 1) {
+            throw new IllegalArgumentException("Size must be greater than 0");
+        }
+
         Pageable pageable = PageRequest.of(page - 1, size);
         ApiResponse<List<FoodDto>> response;
         if (query == null || query.isEmpty()) {

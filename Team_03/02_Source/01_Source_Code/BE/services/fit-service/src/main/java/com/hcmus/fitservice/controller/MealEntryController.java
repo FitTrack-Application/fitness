@@ -1,7 +1,7 @@
 package com.hcmus.fitservice.controller;
 
-import com.hcmus.fitservice.dto.MealEntryDto;
-import com.hcmus.fitservice.dto.request.MealEntryRequest;
+import com.hcmus.fitservice.dto.FoodEntryDto;
+import com.hcmus.fitservice.dto.request.FoodEntryRequest;
 import com.hcmus.fitservice.dto.response.ApiResponse;
 import com.hcmus.fitservice.service.MealEntryService;
 import lombok.RequiredArgsConstructor;
@@ -33,19 +33,19 @@ public class MealEntryController {
      * Update a meal entry by its id
      *
      * @param mealEntryId      the id of the meal entry
-     * @param mealEntryRequest the request body containing the updated meal entry details
+     * @param foodEntryRequest the request body containing the updated meal entry details
      * @return a ResponseEntity containing an ApiResponse with the updated MealEntryDto object
      */
     @PutMapping("/{mealEntryId}")
-    public ResponseEntity<ApiResponse<MealEntryDto>> updateMealEntry(
+    public ResponseEntity<ApiResponse<FoodEntryDto>> updateMealEntry(
             @PathVariable UUID mealEntryId,
-            @RequestBody MealEntryRequest mealEntryRequest
+            @RequestBody FoodEntryRequest foodEntryRequest
     ) {
-        ApiResponse<MealEntryDto> response = mealEntryService.updateMealEntry(
+        ApiResponse<FoodEntryDto> response = mealEntryService.updateMealEntry(
                 mealEntryId,
-                mealEntryRequest.getFoodId(),
-                mealEntryRequest.getServingUnit(),
-                mealEntryRequest.getNumberOfServings()
+                foodEntryRequest.getFoodId(),
+                foodEntryRequest.getServingUnit(),
+                foodEntryRequest.getNumberOfServings()
         );
         return ResponseEntity.ok(response);
     }

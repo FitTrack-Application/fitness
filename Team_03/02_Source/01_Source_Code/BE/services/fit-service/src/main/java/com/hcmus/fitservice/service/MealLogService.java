@@ -1,7 +1,7 @@
 package com.hcmus.fitservice.service;
 
-import com.hcmus.fitservice.dto.MealEntryDto;
-import com.hcmus.fitservice.dto.MealLogDto;
+import com.hcmus.fitservice.dto.FoodEntryDto;
+import com.hcmus.fitservice.dto.response.MealLogResponse;
 import com.hcmus.fitservice.dto.response.ApiResponse;
 
 import java.util.Date;
@@ -12,7 +12,7 @@ public interface MealLogService {
 
     ApiResponse<Void> createMealLog(UUID userId, Date date, String mealType);
 
-    ApiResponse<MealEntryDto> addMealEntry(UUID mealLogId, UUID foodId, String servingUnit, Double numberOfServings);
+    ApiResponse<FoodEntryDto> addMealEntry(UUID mealLogId, UUID foodId, String servingUnit, Double numberOfServings);
 
-    ApiResponse<List<MealLogDto>> getMealLogsByUserIdAndDate(UUID userId, Date date);
+    ApiResponse<List<MealLogResponse>> getMealLogsByUserIdAndDate(UUID userId, Date date);
 }

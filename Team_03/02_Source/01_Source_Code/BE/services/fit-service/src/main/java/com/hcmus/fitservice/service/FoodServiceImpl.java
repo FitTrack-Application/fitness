@@ -48,18 +48,18 @@ public class FoodServiceImpl implements FoodService {
     @Override
     public ApiResponse<List<FoodDto>> getAllFoods(Pageable pageable) {
         Page<Food> foodPage = foodRepository.findAll(pageable);
-        return buildFoodDtoListResponse(foodPage);
+        return buildFoodListResponse(foodPage);
     }
 
 
     @Override
     public ApiResponse<List<FoodDto>> searchFoodsByName(String query, Pageable pageable) {
         Page<Food> foodPage = foodRepository.findByFoodNameContainingIgnoreCase(query, pageable);
-        return buildFoodDtoListResponse(foodPage);
+        return buildFoodListResponse(foodPage);
     }
 
-    // Convert Food entity to FoodDto
-    private ApiResponse<List<FoodDto>> buildFoodDtoListResponse(Page<Food> foodPage) {
+    // Helper method to build ApiResponse for food list
+    private ApiResponse<List<FoodDto>> buildFoodListResponse(Page<Food> foodPage) {
         // Pagination info
         Map<String, Object> pagination = new HashMap<>();
         pagination.put("currentPage", foodPage.getNumber() + 1); // Page number start at 1

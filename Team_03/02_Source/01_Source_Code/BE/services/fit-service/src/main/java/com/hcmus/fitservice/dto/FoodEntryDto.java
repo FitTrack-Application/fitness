@@ -1,15 +1,14 @@
 package com.hcmus.fitservice.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.UUID;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MealEntryDto {
+public class FoodEntryDto {
     private UUID id;
 
     private UUID foodId;

@@ -1,10 +1,11 @@
 package com.hcmus.fitservice.controller;
 
-import com.hcmus.fitservice.dto.MealEntryDto;
-import com.hcmus.fitservice.dto.MealLogDto;
-import com.hcmus.fitservice.dto.request.MealEntryRequest;
+import com.hcmus.fitservice.dto.FoodEntryDto;
+import com.hcmus.fitservice.dto.response.MealLogResponse;
+import com.hcmus.fitservice.dto.request.FoodEntryRequest;
 import com.hcmus.fitservice.dto.request.MealLogRequest;
 import com.hcmus.fitservice.dto.response.ApiResponse;
+import com.hcmus.fitservice.dto.response.MealLogResponse;
 import com.hcmus.fitservice.service.MealLogService;
 import com.hcmus.fitservice.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ import java.util.UUID;
 public class MealLogController {
 
     private final MealLogService mealLogService;
+
     private final JwtUtil jwtUtil;
 
     /**
@@ -38,23 +40,26 @@ public class MealLogController {
                 userId,
                 mealLogRequest.getDate(),
                 mealLogRequest.getMealType());
-        return ResponseEntity.ok(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     /**
      * Add a meal entry to a meal log
      *
      * @param mealLogId        the id of the meal log
-     * @param mealEntryRequest the request body containing the meal entry details
+     * @param foodEntryRequest the request body containing the meal entry details
      * @return a ResponseEntity containing an ApiResponse with the created MealEntryDto object
      */
     @PostMapping("/{mealLogId}/entries")
-    public ResponseEntity<ApiResponse<MealEntryDto>> addMealEntry(@PathVariable UUID mealLogId, @RequestBody MealEntryRequest mealEntryRequest) {
-        ApiResponse<MealEntryDto> response = mealLogService.addMealEntry(
+    public ResponseEntity<ApiResponse<FoodEntryDto>> addMealEntry(
+            @PathVariable UUID mealLogId,
+            @RequestBody FoodEntryRequest foodEntryRequest
+    ) {
+        ApiResponse<FoodEntryDto> response = mealLogService.addMealEntry(
                 mealLogId,
-                mealEntryRequest.getFoodId(),
-                mealEntryRequest.getServingUnit(),
-                mealEntryRequest.getNumberOfServings()
+                foodEntryRequest.getFoodId(),
+                foodEntryRequest.getServingUnit(),
+                foodEntryRequest.getNumberOfServings()
         );
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -66,11 +71,11 @@ public class MealLogController {
      * @return a ResponseEntity containing an ApiResponse with a list of MealLogDto objects
      */
     @GetMapping
-    public ResponseEntity<ApiResponse<List<MealLogDto>>> getMealLogsByUserIdAndDate(
+    public ResponseEntity<ApiResponse<List<MealLogResponse>>> getMealLogsByUserIdAndDate(
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date date
     ) {
         UUID userId = jwtUtil.getCurrentUserId();
-        ApiResponse<List<MealLogDto>> response = mealLogService.getMealLogsByUserIdAndDate(userId, date);
+        ApiResponse<List<MealLogResponse>> response = mealLogService.getMealLogsByUserIdAndDate(userId, date);
         return ResponseEntity.ok(response);
     }
 }
