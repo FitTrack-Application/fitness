@@ -1,0 +1,25 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  application:
+    name: gateway-service
+  cloud:
+    gateway:
+      routes:
+        - id: fit_service
+          uri: ${FIT_SERVICE_HOST}
+          predicates:
+            - Path=/api/foods/**,/api/meal-entries/**,/api/meal-logs/**
+        - id: statistic_service
+          uri: ${STATISTIC_SERVICE_HOST}
+          predicates:
+            - Path=/api/statistics/**,/api/fit-profiles/**,/api/nutrition-goals/**,/api/step-logs/**,/api/weight-logs/**,/api/weight-goals/**,/api/surveys/**
+
+keycloak:
+  introspection-uri: ${KEYCLOAK_AUTH_SERVER_HOST}/realms/${KEYCLOAK_REALM}/protocol/openid-connect/token/introspect
+  client-id: ${KEYCLOAK_CLIENT_ID}
+  client-secret: ${KEYCLOAK_CLIENT_SECRET}
+
+server:
+  port: 8088
+

@@ -1,7 +1,5 @@
 package com.hcmus.statisticservice.dto.response;
 
-
-
 import lombok.*;
 
 @Getter
@@ -19,7 +17,7 @@ public class GetNutritionGoalResponse {
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    public static class Macronutrients {        
+    public static class Macronutrients {
 
         private Double protein;
 

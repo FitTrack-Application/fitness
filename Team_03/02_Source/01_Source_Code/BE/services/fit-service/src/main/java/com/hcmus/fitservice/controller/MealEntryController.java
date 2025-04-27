@@ -17,14 +17,25 @@ public class MealEntryController {
 
     private final MealEntryService mealEntryService;
 
-    // Delete meal entry
+    /**
+     * Delete a meal entry by its id
+     *
+     * @param mealEntryId the id of the meal entry
+     * @return a ResponseEntity containing an ApiResponse with info message
+     */
     @DeleteMapping("/{mealEntryId}")
     public ResponseEntity<ApiResponse<Void>> deleteMealEntry(@PathVariable UUID mealEntryId) {
         ApiResponse<Void> response = mealEntryService.deleteMealEntry(mealEntryId);
         return ResponseEntity.ok(response);
     }
 
-    // Update meal entry
+    /**
+     * Update a meal entry by its id
+     *
+     * @param mealEntryId      the id of the meal entry
+     * @param mealEntryRequest the request body containing the updated meal entry details
+     * @return a ResponseEntity containing an ApiResponse with the updated MealEntryDto object
+     */
     @PutMapping("/{mealEntryId}")
     public ResponseEntity<ApiResponse<MealEntryDto>> updateMealEntry(
             @PathVariable UUID mealEntryId,

@@ -2,8 +2,6 @@ package com.hcmus.fitservice.mapper;
 
 import com.hcmus.fitservice.dto.FoodDto;
 import com.hcmus.fitservice.model.Food;
-import org.mapstruct.*;
-import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
 
 @Component
