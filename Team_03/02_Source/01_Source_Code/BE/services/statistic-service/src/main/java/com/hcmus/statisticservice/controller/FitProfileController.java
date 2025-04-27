@@ -32,7 +32,7 @@ public class FitProfileController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/me")
+    @PostMapping("/me")
     public ResponseEntity<ApiResponse<?>> updateFitProfile(@Valid @RequestBody UpdateProfileRequest updateProfileRequest) {
         UUID userId = jwtUtil.getCurrentUserId();
 

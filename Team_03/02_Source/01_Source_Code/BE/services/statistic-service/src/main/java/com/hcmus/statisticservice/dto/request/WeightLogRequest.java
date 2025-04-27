@@ -1,6 +1,6 @@
 package com.hcmus.statisticservice.dto.request;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.Date;
@@ -12,10 +12,10 @@ import java.util.Date;
 @NoArgsConstructor
 public class WeightLogRequest {
 
-    @NotBlank(message = "Weight is required")
+    @NotNull(message = "Weight is required")
     private Double weight;
 
-    @NotBlank(message = "Update date is required")
+    @NotNull(message = "Update date is required")
     private Date updateDate;
 
     private String progressPhoto;

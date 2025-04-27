@@ -45,9 +45,6 @@ public class FitProfile {
     @Column(name = "height", nullable = false)
     private Integer height;
 
-    @Column(name = "weight", nullable = false)
-    private Double weight = 0.0;
-
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "activity_level", nullable = false)
