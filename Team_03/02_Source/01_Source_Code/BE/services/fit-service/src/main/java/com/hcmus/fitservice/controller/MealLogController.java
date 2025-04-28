@@ -1,6 +1,7 @@
 package com.hcmus.fitservice.controller;
 
 import com.hcmus.fitservice.dto.FoodEntryDto;
+import com.hcmus.fitservice.dto.request.DailyMealLogRequest;
 import com.hcmus.fitservice.dto.response.MealLogResponse;
 import com.hcmus.fitservice.dto.request.FoodEntryRequest;
 import com.hcmus.fitservice.dto.request.MealLogRequest;
@@ -30,16 +31,16 @@ public class MealLogController {
     /**
      * Create a meal log for the current user
      *
-     * @param mealLogRequest the request body containing the meal log details
+     * @param dailyMealLogRequest the request body containing the meal log details
      * @return a ResponseEntity containing an ApiResponse with the created MealLogDto object
      */
-    @PostMapping
-    public ResponseEntity<ApiResponse<Void>> createMealLog(@RequestBody MealLogRequest mealLogRequest) {
+    @PostMapping("/daily")
+    public ResponseEntity<ApiResponse<?>> createDailyMealLogs(@RequestBody DailyMealLogRequest dailyMealLogRequest) {
         UUID userId = jwtUtil.getCurrentUserId();
-        ApiResponse<Void> response = mealLogService.createMealLog(
+        ApiResponse<?>
+                response = mealLogService.createDailyMealLogs(
                 userId,
-                mealLogRequest.getDate(),
-                mealLogRequest.getMealType());
+                dailyMealLogRequest.getDate());
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 

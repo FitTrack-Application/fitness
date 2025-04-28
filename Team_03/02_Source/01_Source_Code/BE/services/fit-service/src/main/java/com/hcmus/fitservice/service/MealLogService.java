@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public interface MealLogService {
 
-    ApiResponse<Void> createMealLog(UUID userId, Date date, String mealType);
+    ApiResponse<?> createDailyMealLogs(UUID userId, Date date);
 
     ApiResponse<FoodEntryDto> addMealEntry(UUID mealLogId, UUID foodId, String servingUnit, Double numberOfServings);
 
