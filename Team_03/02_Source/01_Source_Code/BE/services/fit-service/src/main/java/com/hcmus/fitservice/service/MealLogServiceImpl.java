@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -34,26 +35,33 @@ public class MealLogServiceImpl implements MealLogService {
     private final MealEntryRepository mealEntryRepository;
 
     @Override
-    public ApiResponse<Void> createMealLog(UUID userId, Date date, String mealType) {
-        // Check if meal log is already existed
-        MealLog existingMealLog = mealLogRepository.findByUserIdAndDateAndMealType(userId, date, MealType.valueOf(mealType));
+    public ApiResponse<?> createDailyMealLogs(UUID userId, Date date) {
+        // Check if meal logs is already existed
+        List<MealLog> existingMealLogs = mealLogRepository.findByUserIdAndDate(userId, date);
 
-        if (existingMealLog != null) {
-            throw new ResourceAlreadyExistsException("Meal log already exists at this date and meal");
+        if (existingMealLogs != null && !existingMealLogs.isEmpty()) {
+            throw new ResourceAlreadyExistsException("Daily meal logs already exists at this date");
         }
 
-        // Create new meal log
-        MealLog mealLog = new MealLog();
-        mealLog.setUserId(userId);
-        mealLog.setDate(date);
-        mealLog.setMealType(MealType.valueOf(mealType));
+        // Create new meal logs
+        List<MealLog> mealLogs = new ArrayList<>();
 
-        mealLogRepository.save(mealLog);
+        for(MealType mealType : MealType.values()) {
+            MealLog mealLog = new MealLog();
+            mealLog.setDate(date);
+            mealLog.setMealType(mealType);
+            mealLog.setUserId(userId);
+            mealLog.setMealEntries(new ArrayList<>());
+
+            mealLogs.add(mealLog);
+        }
+
+        mealLogRepository.saveAll(mealLogs);
 
         // Return response
-        return ApiResponse.<Void>builder()
+        return ApiResponse.builder()
                 .status(201)
-                .generalMessage("Meal log created successfully")
+                .generalMessage("Meal logs created successfully")
                 .timestamp(LocalDateTime.now())
                 .build();
     }

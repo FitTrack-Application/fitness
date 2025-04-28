@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.UUID;
 
 public interface MealLogRepository extends JpaRepository<MealLog, UUID> {
-    MealLog findByUserIdAndDateAndMealType(UUID userId, Date date, MealType mealType);
 
     List<MealLog> findByUserIdAndDate(UUID userId, Date date);
 }
