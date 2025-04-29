@@ -3,6 +3,7 @@ package com.hcmus.fitservice.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.hcmus.fitservice.client.OpenFoodFactClient;
 import com.hcmus.fitservice.dto.FoodDto;
+import com.hcmus.fitservice.dto.request.AddFoodRequest;
 import com.hcmus.fitservice.dto.response.ApiResponse;
 import com.hcmus.fitservice.exception.ResourceNotFoundException;
 import com.hcmus.fitservice.mapper.FoodMapper;
@@ -108,7 +109,7 @@ public class FoodServiceImpl implements FoodService {
 
     @Transactional
     @Override
-    public ApiResponse<?> addFood(FoodDto foodDto, UUID userId) {
+    public ApiResponse<?> addFood(AddFoodRequest foodDto, UUID userId) {
         Food food = new Food();
 
         food.setFoodName(foodDto.getName());
