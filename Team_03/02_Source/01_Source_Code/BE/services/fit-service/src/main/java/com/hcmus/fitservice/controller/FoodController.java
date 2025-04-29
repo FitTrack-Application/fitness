@@ -1,6 +1,7 @@
 package com.hcmus.fitservice.controller;
 
 import com.hcmus.fitservice.dto.FoodDto;
+import com.hcmus.fitservice.dto.request.AddFoodRequest;
 import com.hcmus.fitservice.dto.response.ApiResponse;
 import com.hcmus.fitservice.service.FoodService;
 import com.hcmus.fitservice.util.JwtUtil;
@@ -73,8 +74,8 @@ public class FoodController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/add")
-    public ResponseEntity<ApiResponse<?>> addFood(@Valid @RequestBody FoodDto foodDto) {
+    @PostMapping("/add")
+    public ResponseEntity<ApiResponse<?>> addFood(@Valid @RequestBody AddFoodRequest foodDto) {
         UUID userId = jwtUtil.getCurrentUserId();
         ApiResponse<?> response = foodService.addFood(foodDto, userId);
         return ResponseEntity.ok(response);
