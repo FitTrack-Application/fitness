@@ -8,7 +8,7 @@ import '../../models/meal_log.dart' show MealLogFitness, mealTypeFromString;
 
 class MealLogRepository {
   final String baseUrl = "http://localhost:8088";
-  final String jwtToken = "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiVVNFUiIsIm5hbWUiOiJOZ3V54buFbiBWxINuIEEiLCJ1c2VySWQiOiI0ZmY5NzM2MS04NzA3LTQzZWItYmYzYi03YmZmYWIyNzI4ZTgiLCJzdWIiOiJ0ZXN0MTRAZ21haWwuY29tIiwiaWF0IjoxNzQ1MDcxMzgwLCJleHAiOjE3NDU2NzYxODB9.R4w-7-t8hqsgOj1uKdvtEkQQcMwCmnnNm94ZHX3BSvM";
+  final String jwtToken = "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiVVNFUiIsIm5hbWUiOiJOZ3V54buFbiBWxINuIEEiLCJ1c2VySWQiOiI0ZmY5NzM2MS04NzA3LTQzZWItYmYzYi03YmZmYWIyNzI4ZTgiLCJzdWIiOiJ0ZXN0MTRAZ21haWwuY29tIiwiaWF0IjoxNzQ1NTk0OTA1LCJleHAiOjE3NDYxOTk3MDV9.j_9jWM2KhvgYO_acATl-Xeby501KZTDAiKKT5PAeLnI";
   final FoodRepository foodRepository = FoodRepository();
 
   Map<String, String> get _headers => {
