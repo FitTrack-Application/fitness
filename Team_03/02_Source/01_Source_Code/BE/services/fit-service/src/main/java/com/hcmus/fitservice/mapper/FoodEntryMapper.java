@@ -1,0 +1,49 @@
+package com.hcmus.fitservice.mapper;
+
+import com.hcmus.fitservice.dto.response.FoodEntryResponse;
+import com.hcmus.fitservice.mapper.helper.Macros;
+import com.hcmus.fitservice.mapper.helper.MacrosCalculatorHelper;
+import com.hcmus.fitservice.model.MealEntry;
+import com.hcmus.fitservice.model.RecipeEntry;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+
+@RequiredArgsConstructor
+@Component
+public class FoodEntryMapper {
+
+    // From RecipeEntry to FoodEntryDto
+    public FoodEntryResponse convertToFoodEntryDto(RecipeEntry recipeEntry) {
+
+        // Calculate macros
+        Macros macros = MacrosCalculatorHelper.calculateMacros(recipeEntry.getFood(), recipeEntry.getServingUnit(), recipeEntry.getNumberOfServings());
+
+        return FoodEntryResponse.builder()
+                .id(recipeEntry.getRecipeEntryId())
+                .foodId(recipeEntry.getFood().getFoodId())
+                .servingUnit(recipeEntry.getServingUnit().getUnitName())
+                .numberOfServings(recipeEntry.getNumberOfServings())
+                .calories(macros.getCalories())
+                .protein(macros.getProtein())
+                .carbs(macros.getCarbs())
+                .fat(macros.getFat())
+                .build();
+    }
+
+    // From MealEntry to FoodEntryDto
+    public FoodEntryResponse convertToFoodEntryDto(MealEntry mealEntry) {
+        // Calculate macros
+        Macros macros = MacrosCalculatorHelper.calculateMacros(mealEntry.getFood(), mealEntry.getServingUnit(), mealEntry.getNumberOfServings());
+
+        return FoodEntryResponse.builder()
+                .id(mealEntry.getMealEntryId())
+                .foodId(mealEntry.getFood().getFoodId())
+                .servingUnit(mealEntry.getServingUnit().getUnitName())
+                .numberOfServings(mealEntry.getNumberOfServings())
+                .calories(macros.getCalories())
+                .protein(macros.getProtein())
+                .carbs(macros.getCarbs())
+                .fat(macros.getFat())
+                .build();
+    }
+}

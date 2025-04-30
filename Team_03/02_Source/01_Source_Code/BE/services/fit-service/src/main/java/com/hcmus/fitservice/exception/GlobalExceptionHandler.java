@@ -104,7 +104,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<?>> handleIllegalArgumentException(IllegalArgumentException exception) {
         final ApiResponse<?> response = ApiResponse.builder()
                 .status(HttpStatus.BAD_REQUEST.value())
-                .generalMessage("Incorrect email or password!")
+                .generalMessage("Invalid input parameters!")
                 .errorDetails(List.of(exception.getMessage()))
                 .timestamp(LocalDateTime.now())
                 .build();

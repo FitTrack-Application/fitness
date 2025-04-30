@@ -1,13 +1,16 @@
 package com.hcmus.fitservice.service;
 
-import com.hcmus.fitservice.dto.MealEntryDto;
+import com.hcmus.fitservice.dto.response.FoodEntryResponse;
+import com.hcmus.fitservice.dto.request.FoodEntryRequest;
 import com.hcmus.fitservice.dto.response.ApiResponse;
 import com.hcmus.fitservice.exception.ResourceNotFoundException;
+import com.hcmus.fitservice.mapper.FoodEntryMapper;
 import com.hcmus.fitservice.model.Food;
 import com.hcmus.fitservice.model.MealEntry;
-import com.hcmus.fitservice.model.type.ServingUnit;
+import com.hcmus.fitservice.model.ServingUnit;
 import com.hcmus.fitservice.repository.FoodRepository;
 import com.hcmus.fitservice.repository.MealEntryRepository;
+import com.hcmus.fitservice.repository.ServingUnitRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +23,10 @@ public class MealEntryServiceImpl implements MealEntryService {
     private final MealEntryRepository mealEntryRepository;
 
     private final FoodRepository foodRepository;
+
+    private final ServingUnitRepository servingUnitRepository;
+
+    private final FoodEntryMapper foodEntryMapper;
 
     @Override
     public ApiResponse<Void> deleteMealEntry(UUID mealEntryId) {
@@ -38,28 +45,33 @@ public class MealEntryServiceImpl implements MealEntryService {
     }
 
     @Override
-    public ApiResponse<MealEntryDto> updateMealEntry(UUID mealEntryId, UUID foodId, String servingUnit, Double numberOfServings) {
-        // Find the meal entry by ID
+    public ApiResponse<FoodEntryResponse> updateMealEntry(UUID mealEntryId, FoodEntryRequest foodEntryRequest) {
+        // Check if meal entry exists
         MealEntry mealEntry = mealEntryRepository.findById(mealEntryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Meal entry not found with ID: " + mealEntryId));
 
-        // Find food by ID
-        Food food = foodRepository.findById(foodId)
-                .orElseThrow(() -> new ResourceNotFoundException("Food not found with ID: " + foodId));
+        // Check if food exists
+        Food food = foodRepository.findById(foodEntryRequest.getFoodId())
+                .orElseThrow(() -> new ResourceNotFoundException("Food not found with ID: " + foodEntryRequest.getFoodId()));
+
+        // Check if serving unit is valid
+        ServingUnit servingUnit = servingUnitRepository.findById(foodEntryRequest.getServingUnitId())
+                .orElseThrow(() -> new ResourceNotFoundException("Serving unit not found with ID: " + foodEntryRequest.getServingUnitId()));
 
         // Update meal entry
         mealEntry.setFood(food);
-        mealEntry.setServingUnit(ServingUnit.valueOf(servingUnit));
-        mealEntry.setNumberOfServings(numberOfServings);
+        mealEntry.setServingUnit(servingUnit);
+        mealEntry.setNumberOfServings(foodEntryRequest.getNumberOfServings());
 
         mealEntryRepository.save(mealEntry);
 
-        MealEntryDto mealEntryDto = new MealEntryDto(mealEntryId, foodId, servingUnit, numberOfServings);
+        // Convert to Dto
+        FoodEntryResponse foodEntryResponse = foodEntryMapper.convertToFoodEntryDto(mealEntry);
 
-        return ApiResponse.<MealEntryDto>builder()
+        return ApiResponse.<FoodEntryResponse>builder()
                 .status(200)
                 .generalMessage("Successfully updated meal entry")
-                .data(mealEntryDto)
+                .data(foodEntryResponse)
                 .timestamp(LocalDateTime.now())
                 .build();
     }

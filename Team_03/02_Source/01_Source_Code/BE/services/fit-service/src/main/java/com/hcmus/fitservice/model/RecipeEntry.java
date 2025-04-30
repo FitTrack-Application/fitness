@@ -1,6 +1,5 @@
 package com.hcmus.fitservice.model;
 
-import com.hcmus.fitservice.model.type.ServingUnit;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -37,8 +36,7 @@ public class RecipeEntry {
     @Column(name = "number_of_servings", nullable = false)
     private Double numberOfServings;
 
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    @Column(name = "serving_unit", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "serving_unit", referencedColumnName = "serving_unit_id", nullable = false)
     private ServingUnit servingUnit;
 }
