@@ -2,7 +2,10 @@ package com.hcmus.fitservice.controller;
 
 import com.hcmus.fitservice.dto.FoodDto;
 import com.hcmus.fitservice.dto.request.AddFoodRequest;
+import com.hcmus.fitservice.dto.request.FoodEntryRequest;
+import com.hcmus.fitservice.dto.request.FoodMacrosDetailsRequest;
 import com.hcmus.fitservice.dto.response.ApiResponse;
+import com.hcmus.fitservice.dto.response.FoodMacrosDetailsResponse;
 import com.hcmus.fitservice.service.FoodService;
 import com.hcmus.fitservice.util.JwtUtil;
 import jakarta.validation.Valid;
@@ -32,6 +35,21 @@ public class FoodController {
     @GetMapping("/{foodId}")
         public ResponseEntity<ApiResponse<FoodDto>> getFoodById(@PathVariable UUID foodId) {
         ApiResponse<FoodDto> response = foodService.getFoodById(foodId);
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Retrieves the macros details of food by its id, serving unit id, and number of servings
+     *
+     * @param foodId the id of the food
+     * @return a ResponseEntity containing an ApiResponse with a FoodMacrosDetailsResponse object
+     */
+    @GetMapping("/{foodId}/macros-details")
+    public ResponseEntity<ApiResponse<FoodMacrosDetailsResponse>> getFoodMacrosDetails(
+            @PathVariable UUID foodId,
+            @RequestBody FoodMacrosDetailsRequest foodMacrosDetailsRequest
+    ) {
+        ApiResponse<FoodMacrosDetailsResponse> response = foodService.getFoodMacrosDetailsById(foodId, foodMacrosDetailsRequest);
         return ResponseEntity.ok(response);
     }
 
@@ -82,14 +100,14 @@ public class FoodController {
     }
 
     @DeleteMapping("/{foodId}")
-    public ResponseEntity<ApiResponse<?>> deleteFood(@PathVariable UUID foodId, @RequestHeader("Authorization") String authorizationHeader) {
+    public ResponseEntity<ApiResponse<?>> deleteFood(@PathVariable UUID foodId) {
         UUID userId = jwtUtil.getCurrentUserId();
         ApiResponse<?> response = foodService.deleteFood(foodId, userId);
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{foodId}")
-    public ResponseEntity<ApiResponse<?>> updateFood(@PathVariable UUID foodId, @Valid @RequestBody FoodDto foodDto, @RequestHeader("Authorization") String authorizationHeader) {
+    public ResponseEntity<ApiResponse<?>> updateFood(@PathVariable UUID foodId, @Valid @RequestBody FoodDto foodDto) {
         UUID userId = jwtUtil.getCurrentUserId();
         ApiResponse<?> response = foodService.updateFood(foodId, foodDto, userId);
         return ResponseEntity.ok(response);

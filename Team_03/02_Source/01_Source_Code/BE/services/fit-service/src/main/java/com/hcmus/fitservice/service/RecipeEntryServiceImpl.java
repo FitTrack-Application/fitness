@@ -1,16 +1,17 @@
 package com.hcmus.fitservice.service;
 
-import com.hcmus.fitservice.dto.FoodEntryDto;
+import com.hcmus.fitservice.dto.response.FoodEntryResponse;
 import com.hcmus.fitservice.dto.request.FoodEntryRequest;
 import com.hcmus.fitservice.exception.ResourceNotFoundException;
 import com.hcmus.fitservice.mapper.FoodEntryMapper;
 import com.hcmus.fitservice.model.Food;
 import com.hcmus.fitservice.model.Recipe;
 import com.hcmus.fitservice.model.RecipeEntry;
-import com.hcmus.fitservice.model.type.ServingUnit;
+import com.hcmus.fitservice.model.ServingUnit;
 import com.hcmus.fitservice.repository.FoodRepository;
 import com.hcmus.fitservice.repository.RecipeEntryRepository;
 import com.hcmus.fitservice.repository.RecipeRepository;
+import com.hcmus.fitservice.repository.ServingUnitRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,25 +26,31 @@ public class RecipeEntryServiceImpl implements RecipeEntryService {
 
     private final FoodRepository foodRepository;
 
+    private final ServingUnitRepository servingUnitRepository;
+
     private final FoodEntryMapper foodEntryMapper;
 
     // Create Recipe entry
     @Override
-    public FoodEntryDto createRecipeEntry(UUID recipeId, FoodEntryRequest foodEntryRequest) {
-        // Find the Recipe by ID
+    public FoodEntryResponse createRecipeEntry(UUID recipeId, FoodEntryRequest foodEntryRequest) {
+        // Check if Recipe exists
         Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Recipe not found with ID: " + recipeId));
 
-        // Find the Food by ID
+        // Check if Food exists
         Food food = foodRepository.findById(foodEntryRequest.getFoodId())
                 .orElseThrow(() -> new ResourceNotFoundException("Food not found with ID: " + foodEntryRequest.getFoodId()));
+
+        // Check if Serving Unit is valid
+        ServingUnit servingUnit = servingUnitRepository.findById(foodEntryRequest.getServingUnitId())
+                .orElseThrow(() -> new ResourceNotFoundException("Serving unit not found with ID: " + foodEntryRequest.getServingUnitId()));
 
         // Create Recipe entry
         RecipeEntry recipeEntry = new RecipeEntry();
         recipeEntry.setRecipe(recipe);
         recipeEntry.setFood(food);
         recipeEntry.setNumberOfServings(foodEntryRequest.getNumberOfServings());
-        recipeEntry.setServingUnit(ServingUnit.valueOf(foodEntryRequest.getServingUnit()));
+        recipeEntry.setServingUnit(servingUnit);
 
         // Save Recipe entry
         RecipeEntry savedRecipeEntry = recipeEntryRepository.save(recipeEntry);

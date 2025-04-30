@@ -1,6 +1,6 @@
 package com.hcmus.fitservice.service;
 
-import com.hcmus.fitservice.dto.FoodEntryDto;
+import com.hcmus.fitservice.dto.response.FoodEntryResponse;
 import com.hcmus.fitservice.dto.request.RecipeRequest;
 import com.hcmus.fitservice.dto.response.ApiResponse;
 import com.hcmus.fitservice.dto.response.RecipeResponse;
@@ -45,7 +45,7 @@ public class RecipeServiceImpl implements RecipeService {
         UUID savedRecipeId = savedRecipe.getRecipeId();
 
         // Create Recipe entries
-        List<FoodEntryDto> foodEntryDtos = recipeRequest.getRecipeEntries().stream()
+        List<FoodEntryResponse> foodEntryResponses = recipeRequest.getRecipeEntries().stream()
                 .map(foodEntryRequest -> recipeEntryService.createRecipeEntry(savedRecipeId, foodEntryRequest))
                 .toList();
 
@@ -54,7 +54,7 @@ public class RecipeServiceImpl implements RecipeService {
                 savedRecipeId,
                 savedRecipe.getRecipeName(),
                 savedRecipe.getDirection(),
-                foodEntryDtos
+                foodEntryResponses
         );
 
         // Return response
@@ -141,7 +141,7 @@ public class RecipeServiceImpl implements RecipeService {
         recipeEntryRepository.deleteAllByRecipe(recipe);
 
         // Create new entries
-        List<FoodEntryDto> foodEntryDtos = recipeRequest.getRecipeEntries().stream()
+        List<FoodEntryResponse> foodEntryResponses = recipeRequest.getRecipeEntries().stream()
                 .map(foodEntryRequest -> recipeEntryService.createRecipeEntry(recipe.getRecipeId(), foodEntryRequest))
                 .toList();
 
@@ -153,7 +153,7 @@ public class RecipeServiceImpl implements RecipeService {
                 recipe.getRecipeId(),
                 recipe.getRecipeName(),
                 recipe.getDirection(),
-                foodEntryDtos
+                foodEntryResponses
         );
 
         // Return response

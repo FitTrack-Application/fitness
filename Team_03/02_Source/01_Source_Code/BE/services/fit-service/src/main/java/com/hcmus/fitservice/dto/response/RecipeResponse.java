@@ -1,6 +1,5 @@
 package com.hcmus.fitservice.dto.response;
 
-import com.hcmus.fitservice.dto.FoodEntryDto;
 import lombok.*;
 
 import java.util.List;
@@ -18,5 +17,6 @@ public class RecipeResponse {
 
     private String direction;
 
-    private List<FoodEntryDto> recipeEntries;
+    private List<FoodEntryResponse> recipeEntries;
+
 }

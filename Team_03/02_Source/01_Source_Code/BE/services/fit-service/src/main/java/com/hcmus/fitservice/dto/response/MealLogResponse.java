@@ -1,6 +1,5 @@
 package com.hcmus.fitservice.dto.response;
 
-import com.hcmus.fitservice.dto.FoodEntryDto;
 import lombok.*;
 
 import java.util.Date;
@@ -9,6 +8,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class MealLogResponse {
@@ -18,5 +18,6 @@ public class MealLogResponse {
 
     private String mealType;
 
-    private List<FoodEntryDto> mealEntries;
+    private List<FoodEntryResponse> mealEntries;
+
 }

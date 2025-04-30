@@ -1,12 +1,10 @@
 package com.hcmus.fitservice.controller;
 
-import com.hcmus.fitservice.dto.FoodEntryDto;
+import com.hcmus.fitservice.dto.response.FoodEntryResponse;
 import com.hcmus.fitservice.dto.request.DailyMealLogRequest;
 import com.hcmus.fitservice.dto.response.MealLogResponse;
 import com.hcmus.fitservice.dto.request.FoodEntryRequest;
-import com.hcmus.fitservice.dto.request.MealLogRequest;
 import com.hcmus.fitservice.dto.response.ApiResponse;
-import com.hcmus.fitservice.dto.response.MealLogResponse;
 import com.hcmus.fitservice.service.MealLogService;
 import com.hcmus.fitservice.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -52,15 +50,13 @@ public class MealLogController {
      * @return a ResponseEntity containing an ApiResponse with the created MealEntryDto object
      */
     @PostMapping("/{mealLogId}/entries")
-    public ResponseEntity<ApiResponse<FoodEntryDto>> addMealEntry(
+    public ResponseEntity<ApiResponse<FoodEntryResponse>> addMealEntry(
             @PathVariable UUID mealLogId,
             @RequestBody FoodEntryRequest foodEntryRequest
     ) {
-        ApiResponse<FoodEntryDto> response = mealLogService.addMealEntry(
+        ApiResponse<FoodEntryResponse> response = mealLogService.addMealEntry(
                 mealLogId,
-                foodEntryRequest.getFoodId(),
-                foodEntryRequest.getServingUnit(),
-                foodEntryRequest.getNumberOfServings()
+                foodEntryRequest
         );
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

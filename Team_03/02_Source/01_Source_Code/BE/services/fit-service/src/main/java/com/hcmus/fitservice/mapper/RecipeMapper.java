@@ -1,12 +1,9 @@
 package com.hcmus.fitservice.mapper;
 
 
-import com.hcmus.fitservice.dto.FoodEntryDto;
-import com.hcmus.fitservice.dto.request.RecipeRequest;
+import com.hcmus.fitservice.dto.response.FoodEntryResponse;
 import com.hcmus.fitservice.dto.response.RecipeResponse;
 import com.hcmus.fitservice.model.Recipe;
-import com.hcmus.fitservice.model.RecipeEntry;
-import com.hcmus.fitservice.repository.RecipeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +25,7 @@ public class RecipeMapper {
 //                    .recipeEntries(List.of())
 //                    .build();
 //        }
-        List<FoodEntryDto> foodEntryDtos = recipe.getRecipeEntries().stream()
+        List<FoodEntryResponse> foodEntryResponses = recipe.getRecipeEntries().stream()
                 .map(foodEntryMapper::convertToFoodEntryDto)
                 .toList();
 
@@ -36,7 +33,7 @@ public class RecipeMapper {
                 .id(recipe.getRecipeId())
                 .name(recipe.getRecipeName())
                 .direction(recipe.getDirection())
-                .recipeEntries(foodEntryDtos)
+                .recipeEntries(foodEntryResponses)
                 .build();
     }
 

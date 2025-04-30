@@ -1,6 +1,9 @@
 package com.hcmus.fitservice.dto.request;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.UUID;
 
@@ -8,10 +11,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class FoodEntryRequest {
-
-    private UUID foodId;
-
+public class FoodMacrosDetailsRequest {
     private UUID servingUnitId;
 
     private Double numberOfServings;
