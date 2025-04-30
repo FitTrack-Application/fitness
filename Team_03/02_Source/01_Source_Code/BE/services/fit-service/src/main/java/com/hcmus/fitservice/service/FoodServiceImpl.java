@@ -4,11 +4,16 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.hcmus.fitservice.client.OpenFoodFactClient;
 import com.hcmus.fitservice.dto.FoodDto;
 import com.hcmus.fitservice.dto.request.AddFoodRequest;
+import com.hcmus.fitservice.dto.request.FoodEntryRequest;
+import com.hcmus.fitservice.dto.request.FoodMacrosDetailsRequest;
 import com.hcmus.fitservice.dto.response.ApiResponse;
+import com.hcmus.fitservice.dto.response.FoodMacrosDetailsResponse;
 import com.hcmus.fitservice.exception.ResourceNotFoundException;
 import com.hcmus.fitservice.mapper.FoodMapper;
 import com.hcmus.fitservice.model.Food;
+import com.hcmus.fitservice.model.ServingUnit;
 import com.hcmus.fitservice.repository.FoodRepository;
+import com.hcmus.fitservice.repository.ServingUnitRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,6 +31,8 @@ import java.util.UUID;
 public class FoodServiceImpl implements FoodService {
 
     private final FoodRepository foodRepository;
+
+    private final ServingUnitRepository servingUnitRepository;
 
     private final FoodMapper foodMapper;
 
@@ -45,6 +52,30 @@ public class FoodServiceImpl implements FoodService {
                 .timestamp(LocalDateTime.now())
                 .build();
     }
+
+    @Override
+    public ApiResponse<FoodMacrosDetailsResponse> getFoodMacrosDetailsById(UUID foodId, FoodMacrosDetailsRequest foodMacrosDetailsRequest) {
+        // Get food
+        Food food = foodRepository.findById(foodId)
+                .orElseThrow(() -> new ResourceNotFoundException("Food not found with ID: " + foodId));
+        // Check if serving unit is valid
+        ServingUnit servingUnit = servingUnitRepository.findById(foodMacrosDetailsRequest.getServingUnitId())
+                .orElseThrow(() -> new ResourceNotFoundException("Serving unit not found with ID: " + foodMacrosDetailsRequest.getServingUnitId()));
+
+        // Convert to FoodMacrosDetailsResponse
+        FoodMacrosDetailsResponse foodMacrosDetailsResponse = foodMapper.converToFoodMacrosDetailsResponse(
+                food,
+                servingUnit,
+                foodMacrosDetailsRequest.getNumberOfServings());
+
+        return ApiResponse.<FoodMacrosDetailsResponse>builder()
+                .status(200)
+                .generalMessage("Successfully retrieved food macros details!")
+                .data(foodMacrosDetailsResponse)
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
+
 
     @Override
     public ApiResponse<List<FoodDto>> getAllFoods(Pageable pageable) {

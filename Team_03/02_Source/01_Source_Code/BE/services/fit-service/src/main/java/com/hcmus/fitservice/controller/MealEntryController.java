@@ -1,6 +1,6 @@
 package com.hcmus.fitservice.controller;
 
-import com.hcmus.fitservice.dto.FoodEntryDto;
+import com.hcmus.fitservice.dto.response.FoodEntryResponse;
 import com.hcmus.fitservice.dto.request.FoodEntryRequest;
 import com.hcmus.fitservice.dto.response.ApiResponse;
 import com.hcmus.fitservice.service.MealEntryService;
@@ -37,15 +37,13 @@ public class MealEntryController {
      * @return a ResponseEntity containing an ApiResponse with the updated MealEntryDto object
      */
     @PutMapping("/{mealEntryId}")
-    public ResponseEntity<ApiResponse<FoodEntryDto>> updateMealEntry(
+    public ResponseEntity<ApiResponse<FoodEntryResponse>> updateMealEntry(
             @PathVariable UUID mealEntryId,
             @RequestBody FoodEntryRequest foodEntryRequest
     ) {
-        ApiResponse<FoodEntryDto> response = mealEntryService.updateMealEntry(
+        ApiResponse<FoodEntryResponse> response = mealEntryService.updateMealEntry(
                 mealEntryId,
-                foodEntryRequest.getFoodId(),
-                foodEntryRequest.getServingUnit(),
-                foodEntryRequest.getNumberOfServings()
+                foodEntryRequest
         );
         return ResponseEntity.ok(response);
     }

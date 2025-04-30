@@ -1,6 +1,5 @@
 package com.hcmus.fitservice.dto.request;
 
-import com.hcmus.fitservice.dto.FoodEntryDto;
 import lombok.Getter;
 import lombok.Setter;
 

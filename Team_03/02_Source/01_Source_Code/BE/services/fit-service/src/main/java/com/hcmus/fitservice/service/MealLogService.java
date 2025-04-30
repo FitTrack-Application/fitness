@@ -1,6 +1,7 @@
 package com.hcmus.fitservice.service;
 
-import com.hcmus.fitservice.dto.FoodEntryDto;
+import com.hcmus.fitservice.dto.response.FoodEntryResponse;
+import com.hcmus.fitservice.dto.request.FoodEntryRequest;
 import com.hcmus.fitservice.dto.response.MealLogResponse;
 import com.hcmus.fitservice.dto.response.ApiResponse;
 
@@ -12,7 +13,7 @@ public interface MealLogService {
 
     ApiResponse<?> createDailyMealLogs(UUID userId, Date date);
 
-    ApiResponse<FoodEntryDto> addMealEntry(UUID mealLogId, UUID foodId, String servingUnit, Double numberOfServings);
+    ApiResponse<FoodEntryResponse> addMealEntry(UUID mealLogId, FoodEntryRequest foodEntryRequest);
 
     ApiResponse<List<MealLogResponse>> getMealLogsByUserIdAndDate(UUID userId, Date date);
 }
