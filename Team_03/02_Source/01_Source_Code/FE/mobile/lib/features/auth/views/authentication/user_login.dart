@@ -4,6 +4,7 @@ import 'package:mobile/common/widgets/outlined_button/outlined_button.dart';
 import 'package:mobile/common/widgets/status_dialog/status_dialog.dart';
 import 'package:mobile/cores/constants/colors.dart';
 import 'package:mobile/cores/constants/enums/status_enum.dart';
+import 'package:mobile/features/auth/services/keycloak_service.dart';
 import 'package:mobile/features/auth/viewmodels/auth_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -116,6 +117,30 @@ class _UserLoginState extends State<UserLogin> {
     // Để trống theo yêu cầu
   }
 
+  Future<void> _loginWithKeycloak(BuildContext context) async {
+    final authService = KeycloakService();
+    print(">>>>> A");
+    final success = await authService.login();
+    print(">>>>> B");
+    if (success) {
+      // Gọi API sau khi đăng nhập thành công
+      try {
+        print(">>>>> C");
+        // final data = await authService.callApi('http://your-backend/api/protected-resource');
+        // print('API Response: $data');
+        // Điều hướng đến màn hình chính
+        GoRouter.of(context).go('/dashboard');
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Login failed')),
+      );
+    }  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -187,9 +212,13 @@ class _UserLoginState extends State<UserLogin> {
                 SizedBox(
                   width: 280,
                   child: ElevatedButton(
-                    onPressed: context.watch<AuthViewModel>().isLoading
-                        ? null
-                        : _login,
+                    // onPressed: context.watch<AuthViewModel>().isLoading
+                    //     ? null
+                    //     : _login,
+                    onPressed: () {
+                      // Gọi hàm đăng nhập với Keycloak
+                      _loginWithKeycloak(context);
+                    },
                     child: context.watch<AuthViewModel>().isLoading
                         ? const CircularProgressIndicator()
                         : const Text('Log In'),
