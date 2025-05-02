@@ -2,21 +2,21 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mobile/features/fitness/models/food.dart';
 import 'package:mobile/features/fitness/view/search_food/widget/error_display.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/recipe.dart';
+import '../../viewmodels/diary_viewmodel.dart';
 import '../../viewmodels/search_food_viewmodel.dart';
+import 'widget/recipe_item.dart';
 import 'widget/food_item.dart';
 
 class SearchFoodScreen extends StatefulWidget {
   final String mealLogId;
-  final String mealType;
 
   const SearchFoodScreen({
     super.key,
     required this.mealLogId,
-    required this.mealType,
   });
 
   @override
@@ -26,7 +26,10 @@ class SearchFoodScreen extends StatefulWidget {
 class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerProviderStateMixin {
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _searchController = TextEditingController();
-  Timer? _debounceTimer;
+  Timer? _allDebounce;
+  late TextEditingController _allController;
+  late TextEditingController _myRecipesController;
+  Timer? _myRecipesDebounce;
   late TabController _tabController;
 
   @override
@@ -34,26 +37,40 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(_onTabChanged);
-
     _scrollController.addListener(_scrollListener);
 
-    // Automatically load foods list when screen opens
+    _allController = TextEditingController();
+    _myRecipesController = TextEditingController();
+
+    _allController.addListener(() => _debounceSearch(isMyFood: false));
+    _myRecipesController.addListener(() => _debounceSearch(isMyFood: true));
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<SearchFoodViewModel>().searchFoods(query: '', isMyFood: _tabController.index == 1);
-    });
-
-    // Use debounce to avoid calling API too many times when user is typing
-    _searchController.addListener(_debounceSearch);
-  }
-
-  void _debounceSearch() {
-    if (_debounceTimer?.isActive ?? false) _debounceTimer!.cancel();
-
-    _debounceTimer = Timer(const Duration(milliseconds: 500), () {
-      context.read<SearchFoodViewModel>()
-          .searchFoods(query: _searchController.text, isMyFood: _tabController.index == 1);
+      context.read<SearchFoodViewModel>().searchFoods(query: '', isMyFood: false);
     });
   }
+
+
+  void _debounceSearch({required bool isMyFood}) {
+    final timer = isMyFood ? _myRecipesDebounce : _allDebounce;
+    timer?.cancel();
+
+    final controller = isMyFood ? _myRecipesController : _allController;
+
+    final newTimer = Timer(const Duration(milliseconds: 500), () {
+      context.read<SearchFoodViewModel>().searchFoods(
+        query: controller.text,
+        isMyFood: isMyFood,
+      );
+    });
+
+    if (isMyFood) {
+      _myRecipesDebounce = newTimer;
+    } else {
+      _allDebounce = newTimer;
+    }
+  }
+
 
   void _onTabChanged() {
     final isMyFood = _tabController.index == 1;
@@ -63,11 +80,14 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
   @override
   void dispose() {
     _scrollController.dispose();
-    _searchController.dispose();
-    _debounceTimer?.cancel();
+    _allController.dispose();
+    _myRecipesController.dispose();
+    _allDebounce?.cancel();
+    _myRecipesDebounce?.cancel();
     _tabController.dispose();
     super.dispose();
   }
+
 
   void _scrollListener() {
     final viewModel = context.read<SearchFoodViewModel>();
@@ -80,8 +100,15 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
   }
 
   void _retrySearch() {
-    context.read<SearchFoodViewModel>().searchFoods(query: _searchController.text, isMyFood: _tabController.index == 1);
+    final isMyFood = _tabController.index == 1;
+    final controller = isMyFood ? _myRecipesController : _allController;
+
+    context.read<SearchFoodViewModel>().searchFoods(
+      query: controller.text,
+      isMyFood: isMyFood,
+    );
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -96,8 +123,7 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
           onPressed: () => Navigator.pop(context),
         ),
         centerTitle: true,
-        title: Text('${widget.mealType}', style: textTheme.titleMedium),
-
+        title: Text('Search food', style: textTheme.titleMedium),
         actions: [
           IconButton(
             icon: const Icon(Icons.qr_code_scanner),
@@ -116,48 +142,12 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-            child: SizedBox(
-              height: 50,
-              child: TextField(
-                controller: _searchController,
-                decoration: InputDecoration(
-                  hintText: 'Search for food',
-                  hintStyle: theme.textTheme.bodyMedium,
-                  prefixIcon: viewModel.isLoading
-                      ? const SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                      ),
-                    ),
-                  )
-                      : const Icon(Icons.search),
-                  contentPadding: const EdgeInsets.symmetric(vertical: 10),
-                  suffixIcon: _searchController.text.isNotEmpty
-                      ? IconButton(
-                    icon: const Icon(Icons.clear),
-                    onPressed: () {
-                      _searchController.clear();
-                      // When clearing text, still search with empty query rather than clearing results
-                      viewModel.searchFoods(query: '', isMyFood: _tabController.index == 1);
-                    },
-                  )
-                      : null,
-                ),
-              ),
-            ),
-          ),
           Expanded(
             child: TabBarView(
               controller: _tabController,
               children: [
-                _buildBody(viewModel, isMyFood: false),
                 _buildBody(viewModel, isMyFood: true),
+                _buildBody(viewModel, isMyFood: false),
               ],
             ),
           ),
@@ -167,10 +157,120 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
   }
 
   Widget _buildBody(SearchFoodViewModel viewModel, {required bool isMyFood}) {
+    final theme = Theme.of(context);
+    final textTheme = Theme.of(context).textTheme;
+
+    return Column(
+      children: [
+        if (isMyFood)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+            child: SizedBox(
+              height: 50,
+              child: TextField(
+                controller: _allController,
+                decoration: InputDecoration(
+                  hintText: 'Search for food',
+                  hintStyle: theme.textTheme.bodyMedium,
+                  prefixIcon: viewModel.isLoading
+                      ? const SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                  )
+                      : const Icon(Icons.search),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 10),
+                  suffixIcon: _allController.text.isNotEmpty
+                      ? IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: () {
+                      _allController.clear();
+                      context.read<SearchFoodViewModel>().searchFoods(query: '', isMyFood: false);
+                    },
+                  )
+                      : null,
+                ),
+              ),
+            ),
+          ),
+        if(!isMyFood)
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                child: SizedBox(
+                  height: 50,
+                  child: TextField(
+                    controller: _allController,
+                    decoration: InputDecoration(
+                      hintText: 'Search for recipe',
+                      hintStyle: theme.textTheme.bodyMedium,
+                      prefixIcon: viewModel.isLoading
+                          ? const SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                      )
+                          : const Icon(Icons.search),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 10),
+                      suffixIcon: _allController.text.isNotEmpty
+                          ? IconButton(
+                        icon: const Icon(Icons.clear),
+                        onPressed: () {
+                          _allController.clear();
+                          context.read<SearchFoodViewModel>().searchFoods(query: '', isMyFood: false);
+                        },
+                      )
+                          : null,
+                    ),
+                  ),
+                ),
+              ),
+
+              TextButton(
+                onPressed: () async {
+                  final Recipe? newRecipe = await context.push('/create_recipe');
+
+                  if (newRecipe != null && context.mounted) {
+                    context.read<SearchFoodViewModel>().addRecipeToList(newRecipe);
+                  }
+
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: Text(
+                        '+ CREATE RECIPE',
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          //color: colorScheme.primary,
+                        ),
+
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        Expanded(
+          child: _buildListView(viewModel, isMyFood: isMyFood),
+        ),
+      ],
+    );
+  }
+
+
+  Widget _buildListView(SearchFoodViewModel viewModel, {required bool isMyFood}) {
     if (viewModel.isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+      return const Center(child: CircularProgressIndicator());
     }
 
     if (viewModel.errorMessage.isNotEmpty) {
@@ -190,9 +290,9 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
             const Icon(Icons.no_food, size: 64, color: Colors.grey),
             const SizedBox(height: 16),
             Text(
-              _searchController.text.isEmpty
+              (_allController.text).isEmpty
                   ? 'No foods available'
-                  : 'No foods found for "${_searchController.text}"',
+                  : 'No foods found for "${_allController.text}"',
             ),
           ],
         ),
@@ -220,16 +320,37 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
           );
         }
 
-        if (viewModel.foods.isEmpty) {
-          return const SizedBox.shrink();
+        if (!isMyFood) {
+          final recipe = viewModel.recipes[index];
+          return RecipeItemWidget(
+            recipe: recipe,
+            onTap: () => context.push('/recipe_detail', extra: recipe),
+            onAdd: (){
+              final diaryViewModel = context.read<DiaryViewModel>();
+              diaryViewModel.addFoodToDiary(
+                mealLogId: widget.mealLogId,
+                foodId: recipe.id,
+                servingUnit: 'GRAM',
+                numberOfServings: 100,
+              );
+            },
+          );
         } else {
           final food = viewModel.foods[index];
           return FoodItemWidget(
             food: food,
-            onTap: () {
-              context.push('/food/${widget.mealLogId}/${food.id}/add');
+            onTap: () =>context.push('/food/${widget.mealLogId}/${food.id}/add/100'),
+            onAdd: () {
+              final diaryViewModel = context.read<DiaryViewModel>();
+              diaryViewModel.addFoodToDiary(
+                mealLogId: widget.mealLogId,
+                foodId: food.id,
+                servingUnit: 'GRAM',
+                numberOfServings: 100,
+              );
             },
           );
+          ;
         }
       },
     );

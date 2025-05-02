@@ -1,13 +1,14 @@
 import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 import 'package:mobile/features/fitness/models/meal_entry.dart';
 import 'package:mobile/features/fitness/services/repository/food_repository.dart';
 
-import '../../models/meal_log.dart' show MealLogFitness, MealType, mealTypeFromString;
+import '../../models/meal_log.dart' show MealLogFitness, mealTypeFromString;
 
 class MealLogRepository {
-  final String baseUrl = "http://192.168.1.14:8088";
-  final String jwtToken = "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiVVNFUiIsIm5hbWUiOiJKb2huIEFsZXgiLCJ1c2VySWQiOiI4YmQ5MWFhNy0wMWFhLTRmMGYtYWY1Mi04OWRiNjEzMzllYjEiLCJzdWIiOiJ0ZXN0NDRAZ21haWwuY29tIiwiaWF0IjoxNzQ0NzI4MjAzLCJleHAiOjE3NDUzMzMwMDN9.PyUfe4fDKtoZZ82M3Ydl_nYVxoxXelmUsqPAnRubAmc";
+  final String baseUrl = "http://172.20.224.1:8088";
+  final String jwtToken = "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiVVNFUiIsIm5hbWUiOiJOZ3V54buFbiBWxINuIEEiLCJ1c2VySWQiOiI0ZmY5NzM2MS04NzA3LTQzZWItYmYzYi03YmZmYWIyNzI4ZTgiLCJzdWIiOiJ0ZXN0MTRAZ21haWwuY29tIiwiaWF0IjoxNzQ0OTA0OTQ2LCJleHAiOjE3NDU1MDk3NDZ9.Lt_ESphHMq4PHVUIgF8g6_rmUJDlp2hpYh8egR9PUds";
   final FoodRepository foodRepository = FoodRepository();
 
   Map<String, String> get _headers => {
@@ -25,32 +26,40 @@ class MealLogRepository {
 
     final response = await http.get(uri, headers: _headers);
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 || response.statusCode == 201) {
       final decoded = json.decode(response.body);
       final List<dynamic> data = decoded['data'];
 
-      // Parse mỗi meal log
-      return Future.wait(data.map((mealLogJson) async {
-        // Parse từng meal entry
-        final List<MealEntry> entries = await Future.wait(
-          (mealLogJson['mealEntries'] as List<dynamic>).map((entryJson) async {
-            final food = await foodRepository.getFoodById(entryJson['foodId']);
-            return MealEntry(
-              id: entryJson['id'],
-              food: food,
-              servingUnit: entryJson['servingUnit'],
-              numberOfServings: (entryJson['numberOfServings'] as num).toDouble(),
-            );
-          }),
-        );
+      final futures = data.map((mealLogJson) async {
+        try {
+          final mealType = mealTypeFromString(mealLogJson['mealType']);
 
-        return MealLogFitness(
-          id: mealLogJson['id'],
-          date: DateTime.parse(mealLogJson['date']),
-          mealType: mealTypeFromString(mealLogJson['mealType']),
-          mealEntries: entries,
-        );
-      }));
+          final entries = await Future.wait(
+            (mealLogJson['mealEntries'] as List<dynamic>).map((entryJson) async {
+              final food = await foodRepository.getFoodById(entryJson['foodId']);
+              return MealEntry(
+                id: entryJson['id'],
+                food: food,
+                servingUnit: entryJson['servingUnit'],
+                numberOfServings: (entryJson['numberOfServings'] as num).toDouble(),
+              );
+            }),
+          );
+
+          return MealLogFitness(
+            id: mealLogJson['id'],
+            date: DateTime.parse(mealLogJson['date']),
+            mealType: mealType,
+            mealEntries: entries,
+          );
+        } catch (e) {
+          print("❌ Skipping ${mealLogJson['mealType']} due to error: $e");
+          return null;
+        }
+      }).toList();
+
+      final result = await Future.wait(futures);
+      return result.whereType<MealLogFitness>().toList();
     } else {
       throw Exception('Failed to load meal logs: ${response.statusCode}');
     }
@@ -63,6 +72,12 @@ class MealLogRepository {
     required double numberOfServings,
   }) async {
     final uri = Uri.parse('$baseUrl/api/meal-logs/$mealLogId/entries');
+    print('🔗 [addMealEntryToLog] URL: $uri');
+    print('🍽️ Meal Log ID: $mealLogId');
+    print('🍔 Food ID: $foodId');
+    print('⚖️ Serving Unit: $servingUnit');
+    print('🔢 Number of Servings: $numberOfServings');
+
     final body = jsonEncode({
       'foodId': foodId,
       'servingUnit': servingUnit,
@@ -70,14 +85,17 @@ class MealLogRepository {
     });
 
     final response = await http.post(uri, headers: _headers, body: body);
-
-    if (response.statusCode == 201) {
+    print('📦 Response body: ${response.body}');
+    if (response.statusCode == 201 || response.statusCode == 200) {
+      print('1');
       final decoded = json.decode(response.body);
+      print('2');
       final data = decoded['data'];
-
+      print('3');
+      print(data);
       // Gọi tới foodRepository để lấy thông tin chi tiết về món ăn
       final food = await foodRepository.getFoodById(data['foodId']);
-
+      print('4');
       return MealEntry(
         id: data['id'],
         food: food,
@@ -85,7 +103,7 @@ class MealLogRepository {
         numberOfServings: (data['numberOfServings'] as num).toDouble(),
       );
     } else {
-      throw Exception('Failed to add meal entry: ${response.statusCode}');
+      throw Exception('Failed to add meal entry: ${response.body}');
     }
   }
 

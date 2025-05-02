@@ -9,11 +9,13 @@ import 'package:mobile/features/auth/views/profile/user_goal.dart';
 import 'package:mobile/features/auth/views/splash/splash_screen.dart';
 import 'package:mobile/features/auth/views/survey/user_survey.dart';
 import 'package:mobile/features/fitness/view/diary/diary_screen.dart';
-import 'package:mobile/features/fitness/view/scan_barcode/scan_barcode_screen.dart';
+import 'package:mobile/features/fitness/view/recipe_detail/create_recipe_screen.dart';
+import 'package:mobile/features/fitness/view/recipe_detail/recipe_detail.dart';
+import 'package:mobile/features/fitness/view/recipe_detail/search_food_for_recipe.dart';
 import 'package:mobile/features/statistic/view/dashboard/dashboard_screen.dart';
 import 'package:mobile/features/statistic/view/step/add_step.dart';
 
-import '../../features/fitness/models/food.dart';
+import '../../features/fitness/models/recipe.dart';
 import '../../features/fitness/view/food_detail/food_detail_screen.dart';
 import '../../features/fitness/view/search_food/search_food_screen.dart';
 import 'package:mobile/features/statistic/view/weight/add_weight.dart';
@@ -41,28 +43,56 @@ final GoRouter appRouter = GoRouter(
       path: '/search/:mealLogId',
       builder: (context, state) {
         final mealLogStr = state.pathParameters['mealLogId']!;
-        final mealType = state.uri.queryParameters['mealType'] ?? 'Unknown';
 
         return SearchFoodScreen(
           mealLogId: mealLogStr,
-          mealType: mealType,
         );
       },
     ),
     GoRoute(
-      path: '/food/:mealLogId/:foodId/:mode',
+      path: '/food/:mealLogIdOrMealEntryId/:foodId/:mode/:numberOfServings',
       builder: (context, state) {
-        final mealLogStr = state.pathParameters['mealLogId'] ?? '';
+        final mealLogOrMealEntryStr = state.pathParameters['mealLogIdOrMealEntryId'] ?? '';
         final foodId = state.pathParameters['foodId'] ?? '';
         final mode = state.pathParameters['mode'];
         final isEdit = (mode == 'edit');
+        final numberOfServingsStr = state.pathParameters['numberOfServings'];
+        final numberOfServings = double.tryParse(numberOfServingsStr ?? '1') ?? 1.0;
 
-        return FoodDetailScreen(
-          foodId: foodId,
-          mealLogId: mealLogStr,
-          isEdit: isEdit,
-        );
+        if (isEdit){
+          return FoodDetailScreen(
+            foodId: foodId,
+            mealEntryId: mealLogOrMealEntryStr,
+            isEdit: isEdit,
+            numberOfServings: numberOfServings,
+          );
+        } else {
+          return FoodDetailScreen(
+            foodId: foodId,
+            mealLogId: mealLogOrMealEntryStr,
+            isEdit: isEdit,
+            numberOfServings: numberOfServings,
+          );
+        }
       },
+    ),
+    GoRoute(
+      path: '/recipe_detail',
+      builder: (context, state) {
+        final recipe = state.extra as Recipe;
+        return RecipeDetailScreen(recipe: recipe);
+      },
+    ),
+    GoRoute(
+      path: '/search_food_for_recipe',
+      builder: (context, state){
+        final recipeId = state.pathParameters['recipeId'] ?? '';
+        return SearchFoodForRecipeScreen();
+      } ,
+    ),
+    GoRoute(
+      path: '/create_recipe',
+      builder: (context, state) => const CreateRecipeScreen(),
     ),
     GoRoute(
       path: '/profile',
