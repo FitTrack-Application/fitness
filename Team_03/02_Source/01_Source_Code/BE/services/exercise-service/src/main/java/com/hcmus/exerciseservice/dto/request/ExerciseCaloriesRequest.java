@@ -1,4 +1,4 @@
-package com.hcmus.fitservice.dto.request;
+package com.hcmus.exerciseservice.dto.request;
 
 import lombok.*;
 

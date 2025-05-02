@@ -1,12 +1,12 @@
-package com.hcmus.fitservice.controller;
+package com.hcmus.exerciseservice.controller;
 
 
-import com.hcmus.fitservice.dto.ExerciseDto;
-import com.hcmus.fitservice.dto.request.ExerciseCaloriesRequest;
-import com.hcmus.fitservice.dto.request.ExerciseRequest;
-import com.hcmus.fitservice.dto.response.ApiResponse;
-import com.hcmus.fitservice.service.ExerciseService;
-import com.hcmus.fitservice.util.JwtUtil;
+import com.hcmus.exerciseservice.dto.ExerciseDto;
+import com.hcmus.exerciseservice.dto.request.ExerciseCaloriesRequest;
+import com.hcmus.exerciseservice.dto.request.ExerciseRequest;
+import com.hcmus.exerciseservice.dto.response.ApiResponse;
+import com.hcmus.exerciseservice.service.ExerciseService;
+import com.hcmus.exerciseservice.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

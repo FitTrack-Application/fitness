@@ -1,14 +1,14 @@
-package com.hcmus.fitservice.service;
+package com.hcmus.exerciseservice.service;
 
-import com.hcmus.fitservice.dto.ExerciseDto;
-import com.hcmus.fitservice.dto.request.ExerciseCaloriesRequest;
-import com.hcmus.fitservice.dto.request.ExerciseRequest;
-import com.hcmus.fitservice.dto.response.ApiResponse;
-import com.hcmus.fitservice.dto.response.ExerciseCaloriesResponse;
-import com.hcmus.fitservice.exception.ResourceNotFoundException;
-import com.hcmus.fitservice.mapper.ExerciseMapper;
-import com.hcmus.fitservice.model.Exercise;
-import com.hcmus.fitservice.repository.ExerciseRepository;
+import com.hcmus.exerciseservice.dto.ExerciseDto;
+import com.hcmus.exerciseservice.dto.request.ExerciseCaloriesRequest;
+import com.hcmus.exerciseservice.dto.request.ExerciseRequest;
+import com.hcmus.exerciseservice.dto.response.ApiResponse;
+import com.hcmus.exerciseservice.dto.response.ExerciseCaloriesResponse;
+import com.hcmus.exerciseservice.exception.ResourceNotFoundException;
+import com.hcmus.exerciseservice.mapper.ExerciseMapper;
+import com.hcmus.exerciseservice.model.Exercise;
+import com.hcmus.exerciseservice.repository.ExerciseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -45,7 +45,7 @@ public class ExerciseServiceImpl implements ExerciseService{
         // Create response
         return ApiResponse.<List<ExerciseDto>>builder()
                 .status(200)
-                .generalMessage("Successfully retrieved foods")
+                .generalMessage("Successfully retrieved exercises")
                 .data(exercisePageDto.getContent())
                 .metadata(metadata)
                 .timestamp(LocalDateTime.now())

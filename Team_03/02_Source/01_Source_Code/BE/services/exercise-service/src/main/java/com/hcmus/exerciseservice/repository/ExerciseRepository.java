@@ -1,6 +1,6 @@
-package com.hcmus.fitservice.repository;
+package com.hcmus.exerciseservice.repository;
 
-import com.hcmus.fitservice.model.Exercise;
+import com.hcmus.exerciseservice.model.Exercise;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

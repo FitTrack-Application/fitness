@@ -1,4 +1,4 @@
-package com.hcmus.fitservice.model;
+package com.hcmus.exerciseservice.model;
 
 
 import jakarta.persistence.*;

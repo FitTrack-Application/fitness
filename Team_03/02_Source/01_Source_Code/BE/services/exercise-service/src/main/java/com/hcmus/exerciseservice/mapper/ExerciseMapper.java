@@ -1,7 +1,7 @@
-package com.hcmus.fitservice.mapper;
+package com.hcmus.exerciseservice.mapper;
 
-import com.hcmus.fitservice.dto.ExerciseDto;
-import com.hcmus.fitservice.model.Exercise;
+import com.hcmus.exerciseservice.dto.ExerciseDto;
+import com.hcmus.exerciseservice.model.Exercise;
 import org.springframework.stereotype.Component;
 
 @Component

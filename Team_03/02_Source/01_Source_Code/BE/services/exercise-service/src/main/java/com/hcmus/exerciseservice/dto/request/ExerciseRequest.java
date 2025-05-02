@@ -1,17 +1,13 @@
-package com.hcmus.fitservice.dto.response;
+package com.hcmus.exerciseservice.dto.request;
 
 import lombok.*;
-
-import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Builder
-public class ExerciseCaloriesResponse {
-
-    private UUID id;
+public class ExerciseRequest {
 
     private String name;
 

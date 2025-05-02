@@ -1,10 +1,10 @@
-package com.hcmus.fitservice.service;
+package com.hcmus.exerciseservice.service;
 
-import com.hcmus.fitservice.dto.ExerciseDto;
-import com.hcmus.fitservice.dto.request.ExerciseCaloriesRequest;
-import com.hcmus.fitservice.dto.request.ExerciseRequest;
-import com.hcmus.fitservice.dto.response.ApiResponse;
-import com.hcmus.fitservice.dto.response.ExerciseCaloriesResponse;
+import com.hcmus.exerciseservice.dto.ExerciseDto;
+import com.hcmus.exerciseservice.dto.request.ExerciseCaloriesRequest;
+import com.hcmus.exerciseservice.dto.request.ExerciseRequest;
+import com.hcmus.exerciseservice.dto.response.ApiResponse;
+import com.hcmus.exerciseservice.dto.response.ExerciseCaloriesResponse;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
