@@ -1,6 +1,5 @@
-package com.hcmus.fitservice.config;
+package com.hcmus.statisticservice.infrastructure.security;
 
-import com.hcmus.fitservice.security.*;
 import jakarta.annotation.Priority;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
