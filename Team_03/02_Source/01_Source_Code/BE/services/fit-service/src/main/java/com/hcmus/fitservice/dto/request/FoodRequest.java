@@ -1,7 +1,5 @@
 package com.hcmus.fitservice.dto.request;
 
-import java.util.UUID;
-
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
@@ -16,7 +14,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class AddFoodRequest {
+public class FoodRequest {
 
     @NotNull(message = "Food name cannot be empty")
     @Size(max = 255, message = "Food name cannot exceed 255 characters")

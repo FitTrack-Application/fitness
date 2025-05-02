@@ -1,8 +1,7 @@
 package com.hcmus.fitservice.service;
 
 import com.hcmus.fitservice.dto.FoodDto;
-import com.hcmus.fitservice.dto.request.AddFoodRequest;
-import com.hcmus.fitservice.dto.request.FoodEntryRequest;
+import com.hcmus.fitservice.dto.request.FoodRequest;
 import com.hcmus.fitservice.dto.request.FoodMacrosDetailsRequest;
 import com.hcmus.fitservice.dto.response.ApiResponse;
 import com.hcmus.fitservice.dto.response.FoodMacrosDetailsResponse;
@@ -23,9 +22,9 @@ public interface FoodService {
 
     ApiResponse<FoodDto> scanFood(String barcode);
 
-    ApiResponse<?> addFood(AddFoodRequest foodDto, UUID userId);
+    ApiResponse<?> createFood(FoodRequest foodRequest, UUID userId);
 
     ApiResponse<?> deleteFood(UUID foodId, UUID userId);
 
-    ApiResponse<?> updateFood(UUID foodId, FoodDto foodDto, UUID userId);
+    ApiResponse<?> updateFood(UUID foodId, FoodRequest foodRequest, UUID userId);
 }

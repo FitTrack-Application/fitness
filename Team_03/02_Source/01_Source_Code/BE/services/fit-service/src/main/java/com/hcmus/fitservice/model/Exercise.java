@@ -31,7 +31,7 @@ public class Exercise {
 
     @NotNull
     @Column(name = "calories_burned_per_minute", nullable = false)
-    private Double caloriesBurnedPerMinute;
+    private Integer caloriesBurnedPerMinute;
 
     @Column(name = "user_id")
     private UUID userId;

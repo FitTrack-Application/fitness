@@ -3,8 +3,7 @@ package com.hcmus.fitservice.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.hcmus.fitservice.client.OpenFoodFactClient;
 import com.hcmus.fitservice.dto.FoodDto;
-import com.hcmus.fitservice.dto.request.AddFoodRequest;
-import com.hcmus.fitservice.dto.request.FoodEntryRequest;
+import com.hcmus.fitservice.dto.request.FoodRequest;
 import com.hcmus.fitservice.dto.request.FoodMacrosDetailsRequest;
 import com.hcmus.fitservice.dto.response.ApiResponse;
 import com.hcmus.fitservice.dto.response.FoodMacrosDetailsResponse;
@@ -140,7 +139,7 @@ public class FoodServiceImpl implements FoodService {
 
     @Transactional
     @Override
-    public ApiResponse<?> addFood(AddFoodRequest foodDto, UUID userId) {
+    public ApiResponse<?> createFood(FoodRequest foodDto, UUID userId) {
         Food food = new Food();
 
         food.setFoodName(foodDto.getName());
@@ -155,7 +154,7 @@ public class FoodServiceImpl implements FoodService {
 
         return ApiResponse.builder()
                 .status(200)
-                .generalMessage("Successfully added food!")
+                .generalMessage("Successfully created food!")
                 .timestamp(LocalDateTime.now())
                 .build();
     }
@@ -178,18 +177,18 @@ public class FoodServiceImpl implements FoodService {
     }
 
     @Override
-    public ApiResponse<?> updateFood(UUID foodId, FoodDto foodDto, UUID userId) {
+    public ApiResponse<?> updateFood(UUID foodId, FoodRequest foodRequest, UUID userId) {
         Food food = foodRepository.findByFoodIdAndUserId(foodId, userId);
         if (food == null) {
             throw new ResourceNotFoundException("Food not found with ID: " + foodId + " for user ID: " + userId);
         }
 
-        food.setFoodName(foodDto.getName() == null ? food.getFoodName() : foodDto.getName());
-        food.setCaloriesPer100g(foodDto.getCalories() == null ? food.getCaloriesPer100g() : foodDto.getCalories());
-        food.setProteinPer100g(foodDto.getProtein() == null ? food.getProteinPer100g() : foodDto.getProtein());
-        food.setCarbsPer100g(foodDto.getCarbs() == null ? food.getCarbsPer100g() : foodDto.getCarbs());
-        food.setFatPer100g(foodDto.getFat() == null ? food.getFatPer100g() : foodDto.getFat());
-        food.setImageUrl(foodDto.getImageUrl() == null ? food.getImageUrl() : foodDto.getImageUrl());
+        food.setFoodName(foodRequest.getName() == null ? food.getFoodName() : foodRequest.getName());
+        food.setCaloriesPer100g(foodRequest.getCalories() == null ? food.getCaloriesPer100g() : foodRequest.getCalories());
+        food.setProteinPer100g(foodRequest.getProtein() == null ? food.getProteinPer100g() : foodRequest.getProtein());
+        food.setCarbsPer100g(foodRequest.getCarbs() == null ? food.getCarbsPer100g() : foodRequest.getCarbs());
+        food.setFatPer100g(foodRequest.getFat() == null ? food.getFatPer100g() : foodRequest.getFat());
+        food.setImageUrl(foodRequest.getImageUrl() == null ? food.getImageUrl() : foodRequest.getImageUrl());
 
         foodRepository.save(food);
 
