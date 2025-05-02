@@ -1,61 +1,56 @@
 package com.hcmus.fitservice.util;
 
-import com.hcmus.fitservice.exception.InvalidTokenException;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Component;
 
-import java.security.Key;
-import java.util.Date;
+import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Function;
+
 
 @Component
 public class JwtUtil {
 
-    @Value("${jwt.secret}")
-    private String jwtSecretKey;
+    private static final String USER_ID_CLAIM = "sub";
+    private static final String EMAIL_CLAIM = "email";
+    private static final String USERNAME_CLAIM = "preferred_username";
 
-    public UUID extractUserId(String token) {
-        isTokenValid(token);
-        final Claims claims = extractAllClaims(token);
-        return UUID.fromString(claims.getOrDefault("userId", "").toString());
+    public UUID getCurrentUserId() {
+        return UUID.fromString(getClaimFromToken(USER_ID_CLAIM).orElse(""));
     }
 
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = extractAllClaims(token);
-        return claimsResolver.apply(claims);
+    public String getCurrentUserEmail() {
+        return getClaimFromToken(EMAIL_CLAIM).orElse(null);
     }
 
-    public boolean isTokenValid(String token) {
-        try {
-            return !isTokenExpired(token);
-        } catch (RuntimeException exception) {
-            throw new InvalidTokenException("Invalid token: " + exception.getMessage() + "!");
+    public String getCurrentUsername() {
+        return getClaimFromToken(USERNAME_CLAIM).orElse(null);
+    }
+
+    public Map<String, Object> getAllClaims() {
+        return getCurrentJwt()
+                .map(Jwt::getClaims)
+                .orElse(Map.of());
+    }
+
+    public Optional<String> getClaimFromToken(String claimName) {
+        return getCurrentJwt()
+                .map(jwt -> jwt.getClaimAsString(claimName));
+    }
+
+    private Optional<Jwt> getCurrentJwt() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof Jwt) {
+            return Optional.of((Jwt) authentication.getPrincipal());
         }
+        return Optional.empty();
     }
 
-    private boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
-    }
-
-    private Key getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(jwtSecretKey);
-        return Keys.hmacShaKeyFor(keyBytes);
-    }
-
-    private Claims extractAllClaims(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(getSignInKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-    }
-
-    private Date extractExpiration(String token) {
-        return extractClaim(token, Claims::getExpiration);
+    public String getToken() {
+        return getCurrentJwt()
+                .map(Jwt::getTokenValue)
+                .orElse(null);
     }
 }
