@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.hcmus.fitservice.client.OpenFoodFactClient;
 import com.hcmus.fitservice.dto.FoodDto;
 import com.hcmus.fitservice.dto.request.FoodRequest;
-import com.hcmus.fitservice.dto.request.FoodMacrosDetailsRequest;
 import com.hcmus.fitservice.dto.response.ApiResponse;
 import com.hcmus.fitservice.dto.response.FoodMacrosDetailsResponse;
 import com.hcmus.fitservice.exception.ResourceNotFoundException;
@@ -53,19 +52,19 @@ public class FoodServiceImpl implements FoodService {
     }
 
     @Override
-    public ApiResponse<FoodMacrosDetailsResponse> getFoodMacrosDetailsById(UUID foodId, FoodMacrosDetailsRequest foodMacrosDetailsRequest) {
+    public ApiResponse<FoodMacrosDetailsResponse> getFoodMacrosDetailsById(UUID foodId, UUID servingUnitId, double numberOfServings) {
         // Get food
         Food food = foodRepository.findById(foodId)
                 .orElseThrow(() -> new ResourceNotFoundException("Food not found with ID: " + foodId));
         // Check if serving unit is valid
-        ServingUnit servingUnit = servingUnitRepository.findById(foodMacrosDetailsRequest.getServingUnitId())
-                .orElseThrow(() -> new ResourceNotFoundException("Serving unit not found with ID: " + foodMacrosDetailsRequest.getServingUnitId()));
+        ServingUnit servingUnit = servingUnitRepository.findById(servingUnitId)
+                .orElseThrow(() -> new ResourceNotFoundException("Serving unit not found with ID: " + servingUnitId));
 
         // Convert to FoodMacrosDetailsResponse
         FoodMacrosDetailsResponse foodMacrosDetailsResponse = foodMapper.converToFoodMacrosDetailsResponse(
                 food,
                 servingUnit,
-                foodMacrosDetailsRequest.getNumberOfServings());
+                numberOfServings);
 
         return ApiResponse.<FoodMacrosDetailsResponse>builder()
                 .status(200)

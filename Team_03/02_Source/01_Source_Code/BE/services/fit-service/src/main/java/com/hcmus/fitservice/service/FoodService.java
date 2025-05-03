@@ -2,7 +2,6 @@ package com.hcmus.fitservice.service;
 
 import com.hcmus.fitservice.dto.FoodDto;
 import com.hcmus.fitservice.dto.request.FoodRequest;
-import com.hcmus.fitservice.dto.request.FoodMacrosDetailsRequest;
 import com.hcmus.fitservice.dto.response.ApiResponse;
 import com.hcmus.fitservice.dto.response.FoodMacrosDetailsResponse;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +15,7 @@ public interface FoodService {
 
     ApiResponse<FoodDto> getFoodById(UUID foodId);
 
-    ApiResponse<FoodMacrosDetailsResponse> getFoodMacrosDetailsById(UUID foodId, FoodMacrosDetailsRequest foodMacrosDetailsRequest);
+    ApiResponse<FoodMacrosDetailsResponse> getFoodMacrosDetailsById(UUID foodId, UUID servingUnitId, double numberOfServings);
 
     ApiResponse<List<FoodDto>> searchFoodsByName(String query, Pageable pageable);
 

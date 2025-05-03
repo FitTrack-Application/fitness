@@ -1,7 +1,6 @@
 package com.hcmus.exerciseservice.service;
 
 import com.hcmus.exerciseservice.dto.ExerciseDto;
-import com.hcmus.exerciseservice.dto.request.ExerciseCaloriesRequest;
 import com.hcmus.exerciseservice.dto.request.ExerciseRequest;
 import com.hcmus.exerciseservice.dto.response.ApiResponse;
 import com.hcmus.exerciseservice.dto.response.ExerciseCaloriesResponse;
@@ -21,5 +20,5 @@ public interface ExerciseService {
 
     ApiResponse<?> deleteExerciseById(UUID exerciseId);
 
-    ApiResponse<ExerciseCaloriesResponse> getExerciseCaloriesById(UUID exerciseId, ExerciseCaloriesRequest exerciseCaloriesRequest);
+    ApiResponse<ExerciseCaloriesResponse> getExerciseCaloriesById(UUID exerciseId,  int duration);
 }
