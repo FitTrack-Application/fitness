@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:mobile/features/auth/utils/dio/interceptor/interceptor.dart';
+import 'package:mobile/cores/utils/dio/interceptor/interceptor.dart';
 
 class DioClient {
   static final DioClient _instance = DioClient._internal();

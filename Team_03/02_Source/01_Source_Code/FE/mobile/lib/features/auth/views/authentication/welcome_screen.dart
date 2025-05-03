@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobile/features/auth/viewmodels/auth_viewmodel.dart';
+import 'package:provider/provider.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final authViewModel = context.read<AuthViewModel>();
     return Scaffold(
       body: SafeArea(
         child: Center(
@@ -45,8 +48,22 @@ class WelcomeScreen extends StatelessWidget {
               SizedBox(
                 width: 330,
                 child: ElevatedButton(
-                  onPressed: () {
-                    GoRouter.of(context).push('/auth/register');
+                  onPressed: () async {
+                    final success = await authViewModel.login();
+                    if (success) {
+                      // Gọi API sau khi đăng nhập thành công
+                      try {
+                        GoRouter.of(context).go('/dashboard');
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Error: $e')),
+                        );
+                      }
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Login failed')),
+                      );
+                    }
                   },
                   child: const Text('Sign Up For Free'),
                   // text: 'Sign Up For Free',
@@ -55,8 +72,22 @@ class WelcomeScreen extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               GestureDetector(
-                onTap: () {
-                  GoRouter.of(context).push('/auth/login');
+                onTap: () async {
+                  final success = await authViewModel.login();
+                  if (success) {
+                    // Gọi API sau khi đăng nhập thành công
+                    try {
+                      GoRouter.of(context).go('/dashboard');
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Error: $e')),
+                      );
+                    }
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Login failed')),
+                    );
+                  }
                 },
                 child: Text(
                   'Log In',

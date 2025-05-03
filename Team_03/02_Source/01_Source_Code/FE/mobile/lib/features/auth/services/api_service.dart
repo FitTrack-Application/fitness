@@ -47,11 +47,11 @@ class ApiService {
 
   Future<Map<String, dynamic>> getProfile() async {
     final response = await http.get(
-      Uri.parse("http://10.0.2.2:8088/api/users/me"),
+      Uri.parse("http://10.0.2.2:8088/api/fit-profiles/me"),
       headers: {
         "Content-Type": "application/json",
         "Authorization":
-            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiVVNFUiIsIm5hbWUiOiJKb2huIEFsZXgiLCJ1c2VySWQiOiI4YmQ5MWFhNy0wMWFhLTRmMGYtYWY1Mi04OWRiNjEzMzllYjEiLCJzdWIiOiJ0ZXN0NDRAZ21haWwuY29tIiwiaWF0IjoxNzQ0ODA4MjQ3LCJleHAiOjE3NDU0MTMwNDd9.TcoxQYr9fkjH9i0GCNzI-9S_y_SDnjvIfuCucQBqtWI",
+            "Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJtdWVVN1BCcEtENFA5LXhpNjQtSUZMNUtXaDhrTV93M19JS1lDck02bW5ZIn0.eyJleHAiOjE3NDYyODc0NDEsImlhdCI6MTc0NjI4Mzg0MSwiYXV0aF90aW1lIjoxNzQ2MjgzODQwLCJqdGkiOiJvbnJ0YWM6NmRjNGNmOWEtNWUwMi00MDIxLWEwZDktNTM2NTZiZWIzZGVkIiwiaXNzIjoiaHR0cDovLzEwLjAuMi4yOjg4ODgvcmVhbG1zL215LWZpdG5lc3MiLCJhdWQiOiJhY2NvdW50Iiwic3ViIjoiNDJjMTljZjQtNjFmYS00YzFkLWI4YjItYmQ4NmI5MGU5MTI3IiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiZmx1dHRlci1hcHAtY2xpZW50Iiwic2lkIjoiZWM4OTYzNDctZmE3Yi00OGNjLWIwZGItZTg3NDA4NzNmZGQ0IiwiYWNyIjoiMSIsInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJkZWZhdWx0LXJvbGVzLW15LWZpdG5lc3MiLCJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIiwiVVNFUiJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZW1haWwiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsInByZWZlcnJlZF91c2VybmFtZSI6InF1b2NAZ21haWwuY29tIiwiZW1haWwiOiJxdW9jQGdtYWlsLmNvbSJ9.cy5cRWhXKV8ugSWSoDf3_hhk2i_epWuxzEIiLM8NbSmKGSYudmwfxgV0u4B8",
       },
     );
 

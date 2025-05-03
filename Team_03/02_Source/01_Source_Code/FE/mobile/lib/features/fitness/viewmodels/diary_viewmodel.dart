@@ -45,11 +45,11 @@ class DiaryViewModel extends ChangeNotifier {
   // Getter để kiểm tra món ăn có đang được xóa không
   bool isRemovingExercise(String exerciseId) => _removingExerciseIds.contains(exerciseId);
 
-  // Getters
-  bool isAddingExercise(String exerciseId) => _addingExerciseIds.contains(exerciseId);
-
-  // Getter để kiểm tra món ăn có đang được xóa không
-  bool isRemovingExercise(String exerciseId) => _removingExerciseIds.contains(exerciseId);
+  // // Getters
+  // bool isAddingExercise(String exerciseId) => _addingExerciseIds.contains(exerciseId);
+  //
+  // // Getter để kiểm tra món ăn có đang được xóa không
+  // bool isRemovingExercise(String exerciseId) => _removingExerciseIds.contains(exerciseId);
 
   // Getters
   List<MealEntry> get breakfastEntries => mealLogs

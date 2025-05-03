@@ -1,5 +1,5 @@
 import 'dart:developer';
-import 'package:mobile/features/auth/utils/dio/dio_client.dart';
+import 'package:mobile/cores/utils/dio/dio_client.dart';
 import '../models/user_model.dart';
 import '../models/response/api_response.dart';
 import 'package:dio/dio.dart';
