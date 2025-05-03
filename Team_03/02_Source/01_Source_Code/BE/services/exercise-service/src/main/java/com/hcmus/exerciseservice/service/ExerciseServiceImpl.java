@@ -1,7 +1,6 @@
 package com.hcmus.exerciseservice.service;
 
 import com.hcmus.exerciseservice.dto.ExerciseDto;
-import com.hcmus.exerciseservice.dto.request.ExerciseCaloriesRequest;
 import com.hcmus.exerciseservice.dto.request.ExerciseRequest;
 import com.hcmus.exerciseservice.dto.response.ApiResponse;
 import com.hcmus.exerciseservice.dto.response.ExerciseCaloriesResponse;
@@ -123,19 +122,19 @@ public class ExerciseServiceImpl implements ExerciseService{
     }
 
     @Override
-    public ApiResponse<ExerciseCaloriesResponse> getExerciseCaloriesById(UUID exerciseId, ExerciseCaloriesRequest exerciseCaloriesRequest) {
+    public ApiResponse<ExerciseCaloriesResponse> getExerciseCaloriesById(UUID exerciseId,  int duration) {
         // Find the exercise by id
         Exercise exercise = exerciseRepository.findById(exerciseId)
                 .orElseThrow(() -> new ResourceNotFoundException("Exercise not found with ID: " + exerciseId));
 
         // Calculate calories burned
-        int caloriesBurned = exercise.getCaloriesBurnedPerMinute() * exerciseCaloriesRequest.getDuration();
+        int caloriesBurned = exercise.getCaloriesBurnedPerMinute() * duration;
 
         // Create response
         ExerciseCaloriesResponse response = new ExerciseCaloriesResponse();
         response.setId(exerciseId);
         response.setName(exercise.getExerciseName());
-        response.setDuration(exerciseCaloriesRequest.getDuration());
+        response.setDuration(duration);
         response.setCaloriesBurned(caloriesBurned);
 
         return ApiResponse.<ExerciseCaloriesResponse>builder()

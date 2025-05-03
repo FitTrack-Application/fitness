@@ -2,7 +2,6 @@ package com.hcmus.exerciseservice.controller;
 
 
 import com.hcmus.exerciseservice.dto.ExerciseDto;
-import com.hcmus.exerciseservice.dto.request.ExerciseCaloriesRequest;
 import com.hcmus.exerciseservice.dto.request.ExerciseRequest;
 import com.hcmus.exerciseservice.dto.response.ApiResponse;
 import com.hcmus.exerciseservice.service.ExerciseService;
@@ -74,9 +73,14 @@ public class ExerciseController {
     @GetMapping("/{exerciseId}/calories")
     public ResponseEntity<ApiResponse<?>> getExerciseCaloriesById(
             @PathVariable UUID exerciseId,
-            @RequestBody ExerciseCaloriesRequest exerciseCaloriesRequest
-            ) {
-        ApiResponse<?> response = exerciseService.getExerciseCaloriesById(exerciseId, exerciseCaloriesRequest);
+            @RequestParam int duration
+    ) {
+        // Check if duration is valid
+        if (duration < 1) {
+            throw new IllegalArgumentException("Duration must be greater than 0");
+        }
+
+        ApiResponse<?> response = exerciseService.getExerciseCaloriesById(exerciseId, duration);
         return ResponseEntity.ok(response);
     }
 }
