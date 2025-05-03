@@ -29,4 +29,18 @@ class Food {
       fat: (json['fat'] ?? 0).toDouble(),
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+//      'servingSize': servingSize,
+      'calories': calories,
+      'carbs': carbs,
+      'fat': fat,
+      'protein': protein,
+//      'unit': unit,
+      'mealType': mealType.name, // serialize enum as string
+    };
+  }
 }

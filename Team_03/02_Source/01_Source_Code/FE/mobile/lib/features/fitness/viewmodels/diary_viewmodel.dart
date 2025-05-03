@@ -11,12 +11,19 @@ class DiaryViewModel extends ChangeNotifier {
 
   DateTime selectedDate = DateTime.now();
   bool isLoading = false;
-
+  // #### Food ####
   // Thay thế biến isAdding bằng Set các foodIds đang được thêm
   final Set<String> _addingFoodIds = {};
 
   // Thêm set để theo dõi các món ăn đang được xóa
   final Set<String> _removingFoodIds = {};
+
+  // #### Exercise ####
+  // Thay thế biến isAdding bằng Set các exerciseIds đang được thêm
+  final Set<String> _addingExerciseIds = {};
+  // Thêm set để theo dõi các bài tập đang được xóa
+  final Set<String> _removingExerciseIds = {};
+
   String? errorMessage;
   List<MealLogFitness> mealLogs = [];
   List<Exercise> exerciseItems = [];
@@ -31,6 +38,18 @@ class DiaryViewModel extends ChangeNotifier {
 
   // Getter để kiểm tra món ăn có đang được xóa không
   bool isRemovingFood(String foodId) => _removingFoodIds.contains(foodId);
+
+  // Getters
+  bool isAddingExercise(String exerciseId) => _addingExerciseIds.contains(exerciseId);
+
+  // Getter để kiểm tra món ăn có đang được xóa không
+  bool isRemovingExercise(String exerciseId) => _removingExerciseIds.contains(exerciseId);
+
+  // Getters
+  bool isAddingExercise(String exerciseId) => _addingExerciseIds.contains(exerciseId);
+
+  // Getter để kiểm tra món ăn có đang được xóa không
+  bool isRemovingExercise(String exerciseId) => _removingExerciseIds.contains(exerciseId);
 
   // Getters
   List<MealEntry> get breakfastEntries => mealLogs
@@ -159,7 +178,7 @@ class DiaryViewModel extends ChangeNotifier {
     try {
       await Future.delayed(const Duration(milliseconds: 300));
 
-      await _repository.deleteMealEntry(mealEntryId);
+      //await _repository.deleteMealEntry(mealEntryId);
 
       // Cập nhật lại UI sau khi xóa thành công
       await fetchDiaryForSelectedDate();
@@ -183,12 +202,12 @@ class DiaryViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await _repository.editMealEntry(
-        mealEntryId: mealEntryId,
-        numberOfServings: numberOfServings,
-        foodId: foodId,
-        servingUnit: servingUnit,
-      );
+      // await _repository.editMealEntry(
+      //   mealEntryId: mealEntryId,
+      //   numberOfServings: numberOfServings,
+      //   foodId: foodId,
+      //   servingUnit: servingUnit,
+      // );
 
       // Cập nhật lại nhật ký sau khi chỉnh sửa
       await fetchDiaryForSelectedDate();
@@ -200,4 +219,9 @@ class DiaryViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<void> addExerciseToWorkout(String exerciseId, DateTime date) async {
+    /////
+  }
+
 }

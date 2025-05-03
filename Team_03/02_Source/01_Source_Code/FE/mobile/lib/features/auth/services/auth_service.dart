@@ -61,7 +61,7 @@ class AuthService {
   Future<ApiResponse> checkAccount(String email) async {
     try {
       final response = await dio.post(
-        '/api/auth/checkemail',
+        '/api/auth/check-email',
         data: {
           'email': email,
         },
@@ -120,6 +120,8 @@ class AuthService {
           'password': password,
         },
       );
+
+
       print(">>>>>>>>>>>>>>>>>>>>>>>>>");
       print(response.data['data']);
 

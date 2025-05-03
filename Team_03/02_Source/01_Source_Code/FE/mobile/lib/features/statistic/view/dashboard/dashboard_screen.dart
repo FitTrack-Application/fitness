@@ -37,12 +37,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final viewModel = Provider.of<DashboardViewModel>(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('FitTrack'),
-        centerTitle: true,
-        backgroundColor: HighlightColors.highlight500,
-        foregroundColor: Colors.white,
-      ),
       body: viewModel.isLoading
           ? const Center(child: CircularProgressIndicator())
           : viewModel.errorMessage != null
@@ -141,9 +135,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
               child: PieChart(
                 dataMap: dataMap,
                 animationDuration: const Duration(milliseconds: 800),
-                chartType: ChartType.disc,
+                chartType: ChartType.ring,
                 colorList: colorList,
-                chartValuesOptions: const ChartValuesOptions(showChartValuesInPercentage: true),
+                chartRadius: MediaQuery.of(context).size.width / 3,
+                chartValuesOptions: const ChartValuesOptions(showChartValues: false),
+                centerText: goal.toString(),
+                initialAngleInDegree: 270,
+                centerTextStyle: const TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
+                  color: AccentColors.yellow200,
+                ),
                 legendOptions: const LegendOptions(showLegends: false),
               ),
             ),
@@ -204,6 +206,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 animationDuration: const Duration(milliseconds: 800),
                 chartType: ChartType.disc,
                 colorList: colorList,
+                chartRadius: MediaQuery.of(context).size.width / 2.5,
                 chartValuesOptions: const ChartValuesOptions(showChartValuesInPercentage: true),
                 legendOptions: const LegendOptions(showLegends: false),
               ),
@@ -276,3 +279,4 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 }
+

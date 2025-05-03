@@ -45,7 +45,19 @@ dependencies:
   fl_chart: ^0.65.0
   intl: ^0.20.2
   fluttertoast: ^8.2.12
+#  permission_handler: ^11.3.1
+  simple_barcode_scanner: ^0.1.0
+#  camera: ^0.10.6
+# flutter_barcode_scanner: ^2.0.0
+#  barcode_scan2: ^4.2.4
   image_picker: ^0.8.7+3
+  flutter_appauth: ^9.0.0
+  flutter_secure_storage: ^9.0.0
+  url_launcher: ^6.2.5
+  openid_client: ^0.4.7
+#  app_links: ^6.4.0
+  crypto: ^3.0.3
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

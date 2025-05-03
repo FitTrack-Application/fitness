@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.fittrack.mobile"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 35
     ndkVersion = "25.1.8937393"
 
     compileOptions {
@@ -28,6 +28,10 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+
+        manifestPlaceholders = [
+            appAuthRedirectScheme: "com.fittrack.mobile",
+        ]
     }
 
     buildTypes {
