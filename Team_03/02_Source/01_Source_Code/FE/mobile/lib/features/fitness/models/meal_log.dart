@@ -1,6 +1,6 @@
 import 'meal_entry.dart';
 
-enum MealType { breakfast, lunch, dinner }
+enum MealType { breakfast, lunch, dinner, snack }
 
 MealType mealTypeFromString(String value) {
   switch (value.toUpperCase()) {
@@ -10,6 +10,8 @@ MealType mealTypeFromString(String value) {
       return MealType.lunch;
     case 'DINNER':
       return MealType.dinner;
+    case 'SNACK':
+      return MealType.snack;
     default:
       throw Exception("Unknown MealType: $value");
   }

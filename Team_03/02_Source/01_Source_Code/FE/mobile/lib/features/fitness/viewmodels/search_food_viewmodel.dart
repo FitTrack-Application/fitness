@@ -39,12 +39,58 @@ class SearchFoodViewModel extends ChangeNotifier {
   String get loadMoreError => _loadMoreError;
 
   /// Main search function supporting All Foods and My Recipes
-  Future<void> searchFoods({
-    String query = '',
-    bool isMyFood = true,
-  }) async {
+  // Future<void> searchFoods({
+  //   String query = '',
+  //   bool isMyFood = true,
+  // }) async {
+  //   if (isLoading) return;
+  //
+  //   _errorMessage = '';
+  //   isLoading = true;
+  //   searchQuery = query;
+  //   _currentPage = 1;
+  //   _hasMoreData = true;
+  //   notifyListeners();
+  //
+  //   try {
+  //     if (!isMyFood) {
+  //       // final paginatedResponse = await _fetchWithTimeout(() =>
+  //       //     _recipeRepository.searchMyRecipes(query, page: _currentPage, size: 10));
+  //       //
+  //       // _recipes.clear();
+  //       // _recipes.addAll(paginatedResponse.data);
+  //       // _totalPages = paginatedResponse.pagination.totalPages;
+  //
+  //       //Mock data
+  //       _recipes.clear();
+  //       _recipes.addAll(_getMockRecipes);
+  //       _totalPages = 1;
+  //
+  //     } else {
+  //       final paginatedResponse = await _fetchWithTimeout(() =>
+  //           _foodRepository.searchFoods(query, page: _currentPage, size: 10));
+  //
+  //       _foods.clear();
+  //       _foods.addAll(paginatedResponse.data);
+  //       _totalPages = paginatedResponse.pagination.totalPages;
+  //     }
+  //
+  //     _currentPage = 1;
+  //
+  //     _hasMoreData = _currentPage < _totalPages;
+  //   } catch (e) {
+  //     _errorMessage = _getErrorMessage(e);
+  //     debugPrint('Error searching: $e');
+  //   }
+  //
+  //   isLoading = false;
+  //   notifyListeners();
+  // }
+
+  Future<void> searchFoods({String query = '', bool isMyFood = false}) async {
     if (isLoading) return;
 
+    // Reset error message
     _errorMessage = '';
     isLoading = true;
     searchQuery = query;
@@ -53,34 +99,20 @@ class SearchFoodViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      if (!isMyFood) {
-        // final paginatedResponse = await _fetchWithTimeout(() =>
-        //     _recipeRepository.searchMyRecipes(query, page: _currentPage, size: 10));
-        //
-        // _recipes.clear();
-        // _recipes.addAll(paginatedResponse.data);
-        // _totalPages = paginatedResponse.pagination.totalPages;
+      final paginatedResponse = await _fetchWithTimeout(
+              () => isMyFood
+              ? _foodRepository.searchMyFoods(query, page: _currentPage, size: 10)
+              : _foodRepository.searchFoods(query, page: _currentPage, size: 10));
 
-        //Mock data
-        _recipes.clear();
-        _recipes.addAll(_getMockRecipes);
-        _totalPages = 1;
+      _foods.clear();
+      _foods.addAll(paginatedResponse.data);
 
-      } else {
-        final paginatedResponse = await _fetchWithTimeout(() =>
-            _foodRepository.searchFoods(query, page: _currentPage, size: 10));
-
-        _foods.clear();
-        _foods.addAll(paginatedResponse.data);
-        _totalPages = paginatedResponse.pagination.totalPages;
-      }
-
-      _currentPage = 1;
-
+      _currentPage = paginatedResponse.pagination.currentPage;
+      _totalPages = paginatedResponse.pagination.totalPages;
       _hasMoreData = _currentPage < _totalPages;
     } catch (e) {
       _errorMessage = _getErrorMessage(e);
-      debugPrint('Error searching: $e');
+      debugPrint('Error fetching foods: $e');
     }
 
     isLoading = false;
@@ -88,10 +120,59 @@ class SearchFoodViewModel extends ChangeNotifier {
   }
 
   /// Load more items for pagination
-  Future<void> loadMoreFoods({
-    int size = 10,
-    bool isMyFood = true,
-  }) async {
+  // Future<void> loadMoreFoods({
+  //   int size = 10,
+  //   bool isMyFood = true,
+  // }) async {
+  //   if (isFetchingMore || !_hasMoreData) return;
+  //
+  //   _loadMoreError = '';
+  //   isFetchingMore = true;
+  //   notifyListeners();
+  //
+  //   try {
+  //     _currentPage++;
+  //     if (!isMyFood) {
+  //       // final paginatedResponse = await _fetchWithTimeout(() =>
+  //       //     _recipeRepository.searchMyRecipes(searchQuery, page: _currentPage, size: size));
+  //       //
+  //       // if (paginatedResponse.data.isEmpty) {
+  //       //   _hasMoreData = false;
+  //       // } else {
+  //       //   _recipes.addAll(paginatedResponse.data);
+  //       //   _totalPages = paginatedResponse.pagination.totalPages;
+  //       //   _hasMoreData = _currentPage < _totalPages;
+  //       // }
+  //
+  //       //Mock data
+  //
+  //       _hasMoreData = false; // Simulate no pagination for mock
+  //       _recipes.addAll(_getMockRecipes);
+  //
+  //     } else {
+  //       final paginatedResponse = await _fetchWithTimeout(() =>
+  //           _foodRepository.searchFoods(searchQuery, page: _currentPage, size: size));
+  //
+  //       if (paginatedResponse.data.isEmpty) {
+  //         _hasMoreData = false;
+  //       } else {
+  //         _foods.addAll(paginatedResponse.data);
+  //         _totalPages = paginatedResponse.pagination.totalPages;
+  //         _hasMoreData = _currentPage < _totalPages;
+  //       }
+  //     }
+  //   } catch (e) {
+  //     _loadMoreError = _getErrorMessage(e);
+  //     _currentPage--;
+  //     debugPrint('Error loading more: $e');
+  //   }
+  //
+  //   isFetchingMore = false;
+  //   notifyListeners();
+  // }
+
+  // Cập nhật loadMoreFoods để sử dụng cho "My Food" khi cần
+  Future<void> loadMoreFoods({int size = 10, bool isMyFood = false}) async {
     if (isFetchingMore || !_hasMoreData) return;
 
     _loadMoreError = '';
@@ -100,39 +181,21 @@ class SearchFoodViewModel extends ChangeNotifier {
 
     try {
       _currentPage++;
-      if (!isMyFood) {
-        // final paginatedResponse = await _fetchWithTimeout(() =>
-        //     _recipeRepository.searchMyRecipes(searchQuery, page: _currentPage, size: size));
-        //
-        // if (paginatedResponse.data.isEmpty) {
-        //   _hasMoreData = false;
-        // } else {
-        //   _recipes.addAll(paginatedResponse.data);
-        //   _totalPages = paginatedResponse.pagination.totalPages;
-        //   _hasMoreData = _currentPage < _totalPages;
-        // }
+      final paginatedResponse = await _fetchWithTimeout(() => isMyFood
+          ? _foodRepository.searchMyFoods(searchQuery, page: _currentPage, size: size)
+          : _foodRepository.searchFoods(searchQuery, page: _currentPage, size: size));
 
-        //Mock data
-
-        _hasMoreData = false; // Simulate no pagination for mock
-        _recipes.addAll(_getMockRecipes);
-
+      if (paginatedResponse.data.isEmpty) {
+        _hasMoreData = false;
       } else {
-        final paginatedResponse = await _fetchWithTimeout(() =>
-            _foodRepository.searchFoods(searchQuery, page: _currentPage, size: size));
-
-        if (paginatedResponse.data.isEmpty) {
-          _hasMoreData = false;
-        } else {
-          _foods.addAll(paginatedResponse.data);
-          _totalPages = paginatedResponse.pagination.totalPages;
-          _hasMoreData = _currentPage < _totalPages;
-        }
+        _foods.addAll(paginatedResponse.data);
+        _totalPages = paginatedResponse.pagination.totalPages;
+        _hasMoreData = _currentPage < _totalPages;
       }
     } catch (e) {
       _loadMoreError = _getErrorMessage(e);
       _currentPage--;
-      debugPrint('Error loading more: $e');
+      debugPrint('Error fetching more foods: $e');
     }
 
     isFetchingMore = false;
@@ -144,7 +207,8 @@ class SearchFoodViewModel extends ChangeNotifier {
     try {
       return await fetchFunction().timeout(_timeout);
     } on TimeoutException {
-      throw TimeoutException('Request timed out. Please check your connection and try again.');
+      throw TimeoutException(
+          'Request timed out. Please check your connection and try again.');
     }
   }
 
