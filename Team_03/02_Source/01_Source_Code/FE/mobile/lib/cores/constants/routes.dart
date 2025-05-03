@@ -17,11 +17,13 @@ import 'package:mobile/features/statistic/view/step/add_step.dart';
 
 import '../../features/fitness/models/recipe.dart';
 import '../../features/fitness/view/food_detail/food_detail_screen.dart';
+import '../../features/fitness/view/scan_barcode/scan_barcode_screen.dart';
 import '../../features/fitness/view/search_food/search_food_screen.dart';
 import 'package:mobile/features/statistic/view/weight/add_weight.dart';
 
 final GoRouter appRouter = GoRouter(
-  initialLocation: '/auth/login',
+  // initialLocation: '/auth/login',
+  initialLocation: '/dashboard',
   routes: [
     GoRoute(
       path: '/',

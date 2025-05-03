@@ -7,8 +7,8 @@ import 'package:mobile/features/fitness/services/repository/food_repository.dart
 import '../../models/meal_log.dart' show MealLogFitness, mealTypeFromString;
 
 class MealLogRepository {
-  final String baseUrl = "http://localhost:8088";
-  final String jwtToken = "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiVVNFUiIsIm5hbWUiOiJOZ3V54buFbiBWxINuIEEiLCJ1c2VySWQiOiI0ZmY5NzM2MS04NzA3LTQzZWItYmYzYi03YmZmYWIyNzI4ZTgiLCJzdWIiOiJ0ZXN0MTRAZ21haWwuY29tIiwiaWF0IjoxNzQ1MDcxMzgwLCJleHAiOjE3NDU2NzYxODB9.R4w-7-t8hqsgOj1uKdvtEkQQcMwCmnnNm94ZHX3BSvM";
+  final String baseUrl = "http://192.168.1.8:8088";
+  final String jwtToken = "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJtdWVVN1BCcEtENFA5LXhpNjQtSUZMNUtXaDhrTV93M19JS1lDck02bW5ZIn0.eyJleHAiOjE3NDYyNjM4NzYsImlhdCI6MTc0NjI2MDI3NiwianRpIjoib25ydHJvOjEwZDFkNjI3LTY1YTMtNDQ1Zi04NDk4LTk3ZWE0MmUyNjk4MyIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODg4OC9yZWFsbXMvbXktZml0bmVzcyIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiJmMWNlNWU2Mi0xZjM3LTRjNDYtOTA4Yy05MzVjOTFmZWVjN2UiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJ0ZXN0LXdpdGgtdWkiLCJzaWQiOiJjYmFkNjkyYi1iZTYzLTQwZGUtODAyZi1iMDEyOTllMTAzMDciLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbImh0dHA6Ly9sb2NhbGhvc3Q6MzAwMCJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiZGVmYXVsdC1yb2xlcy1teS1maXRuZXNzIiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiIsIlVTRVIiXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6Im9wZW5pZCBwcm9maWxlIGVtYWlsIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJkZW1vQGdtYWlsLmNvbSIsImVtYWlsIjoiZGVtb0BnbWFpbC5jb20ifQ.Omd5Gcf6LjlEaVP9nSxE5qXdltbVGDbGkWg8x451qaFF3CRezYZr22spSZ7J2TjPvo_Jmp-X5S4xs27XgaWZNL5h256so4t4kO0s8SpQuXnPU3wYaXaNsrgX7MRfkfowFB7KoR0cVpx27Mow_3khqJp3eWEHqAdoipt_kE0y2lREx7KkNUzVwR8CQiyaDOUx45qViPUK4JobpS0T4ZpxlPLXUvFcEj7PCoxhzSyIfqJ8fJjbAsqkOsntpjdjl6e50KBlyAut049NUBV2y__RGr0NgB3C_HhuMrKmVxL3Vv5XOtN5nfw5WUgeJH7Fze90YsOWkNtGV5RXiRvbcZzKOA";
   final FoodRepository foodRepository = FoodRepository();
 
   Map<String, String> get _headers => {
@@ -23,46 +23,65 @@ class MealLogRepository {
   Future<List<MealLogFitness>> fetchMealLogsForDate(DateTime date) async {
     final formattedDate = _formatDate(date);
     final uri = Uri.parse("$baseUrl/api/meal-logs?date=$formattedDate");
-    print('url fetch meal logs: $uri');
+    print('🌐 [fetchMealLogsForDate] URL: $uri');
 
-    final response = await http.get(uri, headers: _headers);
+    try {
+      final response = await http.get(uri, headers: _headers);
+      print('📩 Response Status Code: ${response.statusCode}');
+      print('📩 Response Body: ${response.body}');
 
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      final decoded = json.decode(response.body);
-      final List<dynamic> data = decoded['data'];
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final decoded = json.decode(response.body);
+        final List<dynamic> data = decoded['data'];
+        print('📊 Total Meal Logs Found: ${data.length}');
 
-      final futures = data.map((mealLogJson) async {
-        try {
-          final mealType = mealTypeFromString(mealLogJson['mealType']);
+        final futures = data.map((mealLogJson) async {
+          try {
+            print('🔍 Processing Meal Log: ${mealLogJson['mealType']}');
+            final mealType = mealTypeFromString(mealLogJson['mealType']);
+            final entriesJson = mealLogJson['mealEntries'] as List<dynamic>;
 
-          final entries = await Future.wait(
-            (mealLogJson['mealEntries'] as List<dynamic>).map((entryJson) async {
-              final food = await foodRepository.getFoodById(entryJson['foodId']);
-              return MealEntry(
-                id: entryJson['id'],
-                food: food,
-                servingUnit: entryJson['servingUnit'],
-                numberOfServings: (entryJson['numberOfServings'] as num).toDouble(),
-              );
-            }),
-          );
+            print('📦 Found ${entriesJson.length} entries for $mealType');
 
-          return MealLogFitness(
-            id: mealLogJson['id'],
-            date: DateTime.parse(mealLogJson['date']),
-            mealType: mealType,
-            mealEntries: entries,
-          );
-        } catch (e) {
-          print("❌ Skipping ${mealLogJson['mealType']} due to error: $e");
-          return null;
-        }
-      }).toList();
+            final entries = await Future.wait(
+              entriesJson.map((entryJson) async {
+                print('📦 Fetching food by ID: ${entryJson['foodId']}');
+                final food = await foodRepository.getFoodById(entryJson['foodId']);
+                print('🍽️ Food Fetched: ${food.name}');
 
-      final result = await Future.wait(futures);
-      return result.whereType<MealLogFitness>().toList();
-    } else {
-      throw Exception('Failed to load meal logs: ${response.statusCode}');
+                return MealEntry(
+                  id: entryJson['id'],
+                  food: food,
+                  servingUnit: entryJson['servingUnit'],
+                  numberOfServings: (entryJson['numberOfServings'] as num).toDouble(),
+                );
+              }),
+            );
+
+            return MealLogFitness(
+              id: mealLogJson['id'],
+              date: DateTime.parse(mealLogJson['date']),
+              mealType: mealType,
+              mealEntries: entries,
+            );
+          } catch (e) {
+            print("❌ Error while processing meal log: $e");
+            return null;
+          }
+        }).toList();
+
+        final result = await Future.wait(futures);
+        final filtered = result.whereType<MealLogFitness>().toList();
+        print('✅ Successfully processed ${filtered.length} meal logs.');
+        return filtered;
+      } else {
+        print('❗ Server returned error: ${response.statusCode} ${response.reasonPhrase}');
+        throw Exception('Failed to load meal logs: ${response.statusCode}');
+      }
+    } catch (e, stack) {
+      print('🔥 Exception during fetchMealLogsForDate: $e');
+      print('📉 Stacktrace:\n$stack');
+      rethrow;
     }
   }
 
@@ -102,38 +121,65 @@ class MealLogRepository {
     }
   }
 
+  // Future<void> createMealLogsForDate(DateTime date) async {
+  //   final formattedDate = _formatDate(date);
+  //   final uri = Uri.parse('$baseUrl/api/meal-logs');
+  //   final mealTypes = ['BREAKFAST', 'LUNCH', 'DINNER'];
+  //
+  //   print('🔗 [createMealLogsForDate] URL: $uri');
+  //   print('📅 Formatted Date: $formattedDate');
+  //
+  //   for (final type in mealTypes) {
+  //     final body = jsonEncode({
+  //       'date': formattedDate,
+  //       'mealType': type,
+  //     });
+  //
+  //     print('\n➡️ Creating meal log...');
+  //     print('🍽️ Meal Type: $type');
+  //     print('📤 Request Body: $body');
+  //     print('📨 Headers: $_headers');
+  //
+  //     final response = await http.post(uri, headers: _headers, body: body);
+  //
+  //     print('✅ Status Code: ${response.statusCode}');
+  //     print('📥 Response Body: ${response.body}');
+  //
+  //     if (response.statusCode != 200 && response.statusCode != 201) {
+  //       print('❌ Failed to create meal log for $type');
+  //       throw Exception('Failed to create meal log for $type');
+  //     } else {
+  //       print('✔️ Successfully created meal log for $type');
+  //     }
+  //   }
+  // }
+
   Future<void> createMealLogsForDate(DateTime date) async {
     final formattedDate = _formatDate(date);
-    final uri = Uri.parse('$baseUrl/api/meal-logs');
-    final mealTypes = ['BREAKFAST', 'LUNCH', 'DINNER'];
+    final uri = Uri.parse('$baseUrl/api/meal-logs/daily');
+
+    final body = jsonEncode({
+      'date': formattedDate,
+    });
 
     print('🔗 [createMealLogsForDate] URL: $uri');
     print('📅 Formatted Date: $formattedDate');
+    print('📤 Request Body: $body');
+    print('📨 Headers: $_headers');
 
-    for (final type in mealTypes) {
-      final body = jsonEncode({
-        'date': formattedDate,
-        'mealType': type,
-      });
+    final response = await http.post(uri, headers: _headers, body: body);
 
-      print('\n➡️ Creating meal log...');
-      print('🍽️ Meal Type: $type');
-      print('📤 Request Body: $body');
-      print('📨 Headers: $_headers');
+    print('✅ Status Code: ${response.statusCode}');
+    print('📥 Response Body: ${response.body}');
 
-      final response = await http.post(uri, headers: _headers, body: body);
-
-      print('✅ Status Code: ${response.statusCode}');
-      print('📥 Response Body: ${response.body}');
-
-      if (response.statusCode != 200 && response.statusCode != 201) {
-        print('❌ Failed to create meal log for $type');
-        throw Exception('Failed to create meal log for $type');
-      } else {
-        print('✔️ Successfully created meal log for $type');
-      }
+    if (response.statusCode != 200 && response.statusCode != 201) {
+      print('❌ Failed to create meal logs');
+      throw Exception('Failed to create meal logs');
+    } else {
+      print('✔️ Successfully created meal logs');
     }
   }
+
 
   Future<void> deleteMealEntry(String mealEntryId) async {
     final uri = Uri.parse('$baseUrl/api/meal-entries/$mealEntryId');
