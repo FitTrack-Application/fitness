@@ -36,7 +36,7 @@ class _SearchFoodForRecipeScreenState extends State<SearchFoodForRecipeScreen> w
     _controller.addListener(() => _debounceSearch());
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<SearchFoodViewModel>().searchFoods(query: '', isMyFood: false);
+      context.read<SearchFoodViewModel>().searchFoods(query: '', isInMyRecipesTab: false);
     });
   }
 
@@ -143,7 +143,7 @@ class _SearchFoodForRecipeScreenState extends State<SearchFoodForRecipeScreen> w
                     icon: const Icon(Icons.clear),
                     onPressed: () {
                       _controller.clear();
-                      context.read<SearchFoodViewModel>().searchFoods(query: '', isMyFood: false);
+                      context.read<SearchFoodViewModel>().searchFoods(query: '', isInMyRecipesTab: false);
                     },
                   )
                       : null,

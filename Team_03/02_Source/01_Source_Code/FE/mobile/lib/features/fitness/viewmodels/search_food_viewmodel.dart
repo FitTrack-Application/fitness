@@ -41,7 +41,7 @@ class SearchFoodViewModel extends ChangeNotifier {
   /// Main search function supporting All Foods and My Recipes
   Future<void> searchFoods({
     String query = '',
-    bool isMyFood = true,
+    bool isInMyRecipesTab = true,
   }) async {
     if (isLoading) return;
 
@@ -53,7 +53,7 @@ class SearchFoodViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      if (!isMyFood) {
+      if (isInMyRecipesTab) {
         // final paginatedResponse = await _fetchWithTimeout(() =>
         //     _recipeRepository.searchMyRecipes(query, page: _currentPage, size: 10));
         //
@@ -100,7 +100,7 @@ class SearchFoodViewModel extends ChangeNotifier {
 
     try {
       _currentPage++;
-      if (!isMyFood) {
+      if (isMyFood) {
         // final paginatedResponse = await _fetchWithTimeout(() =>
         //     _recipeRepository.searchMyRecipes(searchQuery, page: _currentPage, size: size));
         //
@@ -144,7 +144,8 @@ class SearchFoodViewModel extends ChangeNotifier {
     try {
       return await fetchFunction().timeout(_timeout);
     } on TimeoutException {
-      throw TimeoutException('Request timed out. Please check your connection and try again.');
+      throw TimeoutException(
+          'Request timed out. Please check your connection and try again.');
     }
   }
 
@@ -188,7 +189,8 @@ final List<Recipe> _getMockRecipes = [
         carbs: 0,
         fat: 6,
         protein: 32,
-        mealType: MealType.lunch,
+        imageUrl: ''
+        // mealType: MealType.lunch,
       ),
       Food(
         id: 'f002',
@@ -197,7 +199,8 @@ final List<Recipe> _getMockRecipes = [
         carbs: 4,
         fat: 0.5,
         protein: 2,
-        mealType: MealType.lunch,
+          imageUrl: ''
+        // mealType: MealType.lunch,
       ),
       Food(
         id: 'f003',
@@ -206,7 +209,8 @@ final List<Recipe> _getMockRecipes = [
         carbs: 0,
         fat: 9,
         protein: 0,
-        mealType: MealType.lunch,
+          imageUrl: ''
+        // mealType: MealType.lunch,
       ),
     ],
   ),
@@ -228,7 +232,8 @@ final List<Recipe> _getMockRecipes = [
         carbs: 33,
         fat: 3.5,
         protein: 5,
-        mealType: MealType.breakfast,
+          imageUrl: ''
+        // mealType: MealType.breakfast,
       ),
       Food(
         id: 'f005',
@@ -237,7 +242,8 @@ final List<Recipe> _getMockRecipes = [
         carbs: 23,
         fat: 0.3,
         protein: 1.1,
-        mealType: MealType.breakfast,
+          imageUrl: ''
+        // mealType: MealType.breakfast,
       ),
     ],
   ),
@@ -259,7 +265,8 @@ final List<Recipe> _getMockRecipes = [
         carbs: 3,
         fat: 2,
         protein: 24,
-        mealType: MealType.breakfast,
+          imageUrl: ''
+        // mealType: MealType.breakfast,
       ),
       Food(
         id: 'f007',
@@ -268,7 +275,8 @@ final List<Recipe> _getMockRecipes = [
         carbs: 1,
         fat: 10,
         protein: 12,
-        mealType: MealType.breakfast,
+        imageUrl: ''
+        // mealType: MealType.breakfast,
       ),
     ],
   ),
@@ -290,7 +298,8 @@ final List<Recipe> _getMockRecipes = [
         carbs: 0,
         fat: 20,
         protein: 30,
-        mealType: MealType.dinner,
+        imageUrl: ''
+        // mealType: MealType.dinner,
       ),
       Food(
         id: 'f009',
@@ -299,7 +308,8 @@ final List<Recipe> _getMockRecipes = [
         carbs: 9,
         fat: 0.5,
         protein: 1,
-        mealType: MealType.dinner,
+          imageUrl: ''
+        // mealType: MealType.dinner,
       ),
     ],
   ),
@@ -321,7 +331,8 @@ final List<Recipe> _getMockRecipes = [
         carbs: 28,
         fat: 4,
         protein: 9,
-        mealType: MealType.lunch,
+        imageUrl: ''
+        // mealType: MealType.lunch,
       ),
       Food(
         id: 'f011',
@@ -330,7 +341,8 @@ final List<Recipe> _getMockRecipes = [
         carbs: 2,
         fat: 8,
         protein: 16,
-        mealType: MealType.lunch,
+        imageUrl: ''
+        // mealType: MealType.lunch,
       ),
     ],
   ),

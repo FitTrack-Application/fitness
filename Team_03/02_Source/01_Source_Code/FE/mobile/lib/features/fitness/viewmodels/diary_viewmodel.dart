@@ -45,12 +45,6 @@ class DiaryViewModel extends ChangeNotifier {
   // Getter để kiểm tra món ăn có đang được xóa không
   bool isRemovingExercise(String exerciseId) => _removingExerciseIds.contains(exerciseId);
 
-  // // Getters
-  // bool isAddingExercise(String exerciseId) => _addingExerciseIds.contains(exerciseId);
-  //
-  // // Getter để kiểm tra món ăn có đang được xóa không
-  // bool isRemovingExercise(String exerciseId) => _removingExerciseIds.contains(exerciseId);
-
   // Getters
   List<MealEntry> get breakfastEntries => mealLogs
       .where((log) => log.mealType == MealType.breakfast)
@@ -67,6 +61,11 @@ class DiaryViewModel extends ChangeNotifier {
       .expand((log) => log.mealEntries)
       .toList();
 
+  List<MealEntry> get snackEntries => mealLogs
+      .where((log) => log.mealType == MealType.snack)
+      .expand((log) => log.mealEntries)
+      .toList();
+
 // Calo tiêu thụ theo từng bữa
   double get breakfastCalories =>
       breakfastEntries.fold(0, (sum, entry) => sum + entry.food.calories * entry.numberOfServings / 100);
@@ -77,8 +76,12 @@ class DiaryViewModel extends ChangeNotifier {
   double get dinnerCalories =>
       dinnerEntries.fold(0, (sum, entry) => sum + entry.food.calories * entry.numberOfServings / 100);
 
+  double get snackCalories =>
+      snackEntries.fold(0, (sum, entry) => sum + entry.food.calories * entry.numberOfServings / 100);
+
+
   double get caloriesConsumed =>
-      breakfastCalories + lunchCalories + dinnerCalories;
+      breakfastCalories + lunchCalories + dinnerCalories + snackCalories;
 
   double get caloriesBurned => exerciseItems.fold(
       0, (sum, exercise) => sum + exercise.calories.toDouble());

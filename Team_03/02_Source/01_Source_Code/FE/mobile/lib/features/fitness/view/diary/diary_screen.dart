@@ -113,6 +113,14 @@ class _DiaryScreenState extends State<DiaryScreen>
                           viewModel.dinnerCalories,
                           MealType.dinner,
                         ),
+                        _buildMealList(
+                          viewModel,
+                          context,
+                          'Snack',
+                          viewModel.snackEntries,
+                          viewModel.snackCalories,
+                          MealType.snack,
+                        ),
                       ],
                     ),
                   ),
@@ -266,12 +274,11 @@ class _DiaryScreenState extends State<DiaryScreen>
               ],
             ),
           ),
-          ...mealEntryItems.map((item) => _buildFoodItem(item, mealLogId, context, viewModel)),
+          ...mealEntryItems.map((item) => _buildFoodItem(item, mealLogId, mealTitle, context, viewModel)),
           TextButton(
             onPressed: () {
-              print('mealLogId: $mealLogId');
               context.push(
-                  '/search/$mealLogId');
+                  '/search/$mealLogId?mealType=${mealTypeToString(mealType)}');
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -339,7 +346,7 @@ class _DiaryScreenState extends State<DiaryScreen>
   }
 
   Widget _buildFoodItem(
-      MealEntry item, String mealLogId, BuildContext context, DiaryViewModel viewModel) {
+      MealEntry item, String mealLogId, String mealTitle, BuildContext context, DiaryViewModel viewModel) {
     final textTheme = Theme.of(context).textTheme;
     final isRemoving = viewModel.isRemovingFood(item.id);
 
@@ -398,7 +405,7 @@ class _DiaryScreenState extends State<DiaryScreen>
             ],
           ),
           onTap: () {
-            context.push('/food/${item.id}/${item.food.id}/edit/${item.numberOfServings}');
+            context.push('/food/${item.id}/${item.food.id}/edit/${item.numberOfServings}?mealType=$mealTitle');
           },
         ),
         const Divider(
