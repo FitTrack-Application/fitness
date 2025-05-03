@@ -17,6 +17,19 @@ MealType mealTypeFromString(String value) {
   }
 }
 
+String mealTypeToString(MealType mealType) {
+  switch (mealType) {
+    case MealType.breakfast:
+      return 'Breakfast';
+    case MealType.lunch:
+      return 'Lunch';
+    case MealType.dinner:
+      return 'Dinner';
+    case MealType.snack:
+      return 'Snack';
+  }
+}
+
 class MealLogFitness {
   final String id;
   final DateTime date;

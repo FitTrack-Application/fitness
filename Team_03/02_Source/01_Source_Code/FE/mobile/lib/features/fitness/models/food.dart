@@ -1,5 +1,3 @@
-import 'meal_log.dart';
-
 class Food {
   final String id;
   final String name;
@@ -7,7 +5,7 @@ class Food {
   final double carbs;
   final double fat;
   final double protein;
-  final MealType mealType;
+  final String imageUrl;
 
   Food({
     required this.id,
@@ -16,7 +14,7 @@ class Food {
     required this.carbs,
     required this.fat,
     required this.protein,
-    this.mealType = MealType.breakfast,
+    required this.imageUrl,
   });
 
   factory Food.fromJson(Map<String, dynamic> json) {
@@ -27,6 +25,7 @@ class Food {
       protein: (json['protein'] ?? 0).toDouble(),
       carbs: (json['carbs'] ?? 0).toDouble(),
       fat: (json['fat'] ?? 0).toDouble(),
+      imageUrl: json['imageUrl'] ?? '',
     );
   }
 
@@ -34,13 +33,11 @@ class Food {
     return {
       'id': id,
       'name': name,
-//      'servingSize': servingSize,
       'calories': calories,
       'carbs': carbs,
       'fat': fat,
       'protein': protein,
-//      'unit': unit,
-      'mealType': mealType.name, // serialize enum as string
+      'imageUrl': imageUrl,
     };
   }
 }

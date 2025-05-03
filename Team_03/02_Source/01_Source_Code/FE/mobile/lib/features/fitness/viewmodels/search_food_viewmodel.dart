@@ -39,58 +39,12 @@ class SearchFoodViewModel extends ChangeNotifier {
   String get loadMoreError => _loadMoreError;
 
   /// Main search function supporting All Foods and My Recipes
-  // Future<void> searchFoods({
-  //   String query = '',
-  //   bool isMyFood = true,
-  // }) async {
-  //   if (isLoading) return;
-  //
-  //   _errorMessage = '';
-  //   isLoading = true;
-  //   searchQuery = query;
-  //   _currentPage = 1;
-  //   _hasMoreData = true;
-  //   notifyListeners();
-  //
-  //   try {
-  //     if (!isMyFood) {
-  //       // final paginatedResponse = await _fetchWithTimeout(() =>
-  //       //     _recipeRepository.searchMyRecipes(query, page: _currentPage, size: 10));
-  //       //
-  //       // _recipes.clear();
-  //       // _recipes.addAll(paginatedResponse.data);
-  //       // _totalPages = paginatedResponse.pagination.totalPages;
-  //
-  //       //Mock data
-  //       _recipes.clear();
-  //       _recipes.addAll(_getMockRecipes);
-  //       _totalPages = 1;
-  //
-  //     } else {
-  //       final paginatedResponse = await _fetchWithTimeout(() =>
-  //           _foodRepository.searchFoods(query, page: _currentPage, size: 10));
-  //
-  //       _foods.clear();
-  //       _foods.addAll(paginatedResponse.data);
-  //       _totalPages = paginatedResponse.pagination.totalPages;
-  //     }
-  //
-  //     _currentPage = 1;
-  //
-  //     _hasMoreData = _currentPage < _totalPages;
-  //   } catch (e) {
-  //     _errorMessage = _getErrorMessage(e);
-  //     debugPrint('Error searching: $e');
-  //   }
-  //
-  //   isLoading = false;
-  //   notifyListeners();
-  // }
-
-  Future<void> searchFoods({String query = '', bool isMyFood = false}) async {
+  Future<void> searchFoods({
+    String query = '',
+    bool isInMyRecipesTab = true,
+  }) async {
     if (isLoading) return;
 
-    // Reset error message
     _errorMessage = '';
     isLoading = true;
     searchQuery = query;
@@ -99,20 +53,34 @@ class SearchFoodViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final paginatedResponse = await _fetchWithTimeout(
-              () => isMyFood
-              ? _foodRepository.searchMyFoods(query, page: _currentPage, size: 10)
-              : _foodRepository.searchFoods(query, page: _currentPage, size: 10));
+      if (isInMyRecipesTab) {
+        // final paginatedResponse = await _fetchWithTimeout(() =>
+        //     _recipeRepository.searchMyRecipes(query, page: _currentPage, size: 10));
+        //
+        // _recipes.clear();
+        // _recipes.addAll(paginatedResponse.data);
+        // _totalPages = paginatedResponse.pagination.totalPages;
 
-      _foods.clear();
-      _foods.addAll(paginatedResponse.data);
+        //Mock data
+        _recipes.clear();
+        _recipes.addAll(_getMockRecipes);
+        _totalPages = 1;
 
-      _currentPage = paginatedResponse.pagination.currentPage;
-      _totalPages = paginatedResponse.pagination.totalPages;
+      } else {
+        final paginatedResponse = await _fetchWithTimeout(() =>
+            _foodRepository.searchFoods(query, page: _currentPage, size: 10));
+
+        _foods.clear();
+        _foods.addAll(paginatedResponse.data);
+        _totalPages = paginatedResponse.pagination.totalPages;
+      }
+
+      _currentPage = 1;
+
       _hasMoreData = _currentPage < _totalPages;
     } catch (e) {
       _errorMessage = _getErrorMessage(e);
-      debugPrint('Error fetching foods: $e');
+      debugPrint('Error searching: $e');
     }
 
     isLoading = false;
@@ -120,59 +88,10 @@ class SearchFoodViewModel extends ChangeNotifier {
   }
 
   /// Load more items for pagination
-  // Future<void> loadMoreFoods({
-  //   int size = 10,
-  //   bool isMyFood = true,
-  // }) async {
-  //   if (isFetchingMore || !_hasMoreData) return;
-  //
-  //   _loadMoreError = '';
-  //   isFetchingMore = true;
-  //   notifyListeners();
-  //
-  //   try {
-  //     _currentPage++;
-  //     if (!isMyFood) {
-  //       // final paginatedResponse = await _fetchWithTimeout(() =>
-  //       //     _recipeRepository.searchMyRecipes(searchQuery, page: _currentPage, size: size));
-  //       //
-  //       // if (paginatedResponse.data.isEmpty) {
-  //       //   _hasMoreData = false;
-  //       // } else {
-  //       //   _recipes.addAll(paginatedResponse.data);
-  //       //   _totalPages = paginatedResponse.pagination.totalPages;
-  //       //   _hasMoreData = _currentPage < _totalPages;
-  //       // }
-  //
-  //       //Mock data
-  //
-  //       _hasMoreData = false; // Simulate no pagination for mock
-  //       _recipes.addAll(_getMockRecipes);
-  //
-  //     } else {
-  //       final paginatedResponse = await _fetchWithTimeout(() =>
-  //           _foodRepository.searchFoods(searchQuery, page: _currentPage, size: size));
-  //
-  //       if (paginatedResponse.data.isEmpty) {
-  //         _hasMoreData = false;
-  //       } else {
-  //         _foods.addAll(paginatedResponse.data);
-  //         _totalPages = paginatedResponse.pagination.totalPages;
-  //         _hasMoreData = _currentPage < _totalPages;
-  //       }
-  //     }
-  //   } catch (e) {
-  //     _loadMoreError = _getErrorMessage(e);
-  //     _currentPage--;
-  //     debugPrint('Error loading more: $e');
-  //   }
-  //
-  //   isFetchingMore = false;
-  //   notifyListeners();
-  // }
-
-  // Cập nhật loadMoreFoods để sử dụng cho "My Food" khi cần
-  Future<void> loadMoreFoods({int size = 10, bool isMyFood = false}) async {
+  Future<void> loadMoreFoods({
+    int size = 10,
+    bool isMyFood = true,
+  }) async {
     if (isFetchingMore || !_hasMoreData) return;
 
     _loadMoreError = '';
@@ -181,21 +100,39 @@ class SearchFoodViewModel extends ChangeNotifier {
 
     try {
       _currentPage++;
-      final paginatedResponse = await _fetchWithTimeout(() => isMyFood
-          ? _foodRepository.searchMyFoods(searchQuery, page: _currentPage, size: size)
-          : _foodRepository.searchFoods(searchQuery, page: _currentPage, size: size));
+      if (isMyFood) {
+        // final paginatedResponse = await _fetchWithTimeout(() =>
+        //     _recipeRepository.searchMyRecipes(searchQuery, page: _currentPage, size: size));
+        //
+        // if (paginatedResponse.data.isEmpty) {
+        //   _hasMoreData = false;
+        // } else {
+        //   _recipes.addAll(paginatedResponse.data);
+        //   _totalPages = paginatedResponse.pagination.totalPages;
+        //   _hasMoreData = _currentPage < _totalPages;
+        // }
 
-      if (paginatedResponse.data.isEmpty) {
-        _hasMoreData = false;
+        //Mock data
+
+        _hasMoreData = false; // Simulate no pagination for mock
+        _recipes.addAll(_getMockRecipes);
+
       } else {
-        _foods.addAll(paginatedResponse.data);
-        _totalPages = paginatedResponse.pagination.totalPages;
-        _hasMoreData = _currentPage < _totalPages;
+        final paginatedResponse = await _fetchWithTimeout(() =>
+            _foodRepository.searchFoods(searchQuery, page: _currentPage, size: size));
+
+        if (paginatedResponse.data.isEmpty) {
+          _hasMoreData = false;
+        } else {
+          _foods.addAll(paginatedResponse.data);
+          _totalPages = paginatedResponse.pagination.totalPages;
+          _hasMoreData = _currentPage < _totalPages;
+        }
       }
     } catch (e) {
       _loadMoreError = _getErrorMessage(e);
       _currentPage--;
-      debugPrint('Error fetching more foods: $e');
+      debugPrint('Error loading more: $e');
     }
 
     isFetchingMore = false;
@@ -252,7 +189,8 @@ final List<Recipe> _getMockRecipes = [
         carbs: 0,
         fat: 6,
         protein: 32,
-        mealType: MealType.lunch,
+        imageUrl: ''
+        // mealType: MealType.lunch,
       ),
       Food(
         id: 'f002',
@@ -261,7 +199,8 @@ final List<Recipe> _getMockRecipes = [
         carbs: 4,
         fat: 0.5,
         protein: 2,
-        mealType: MealType.lunch,
+          imageUrl: ''
+        // mealType: MealType.lunch,
       ),
       Food(
         id: 'f003',
@@ -270,7 +209,8 @@ final List<Recipe> _getMockRecipes = [
         carbs: 0,
         fat: 9,
         protein: 0,
-        mealType: MealType.lunch,
+          imageUrl: ''
+        // mealType: MealType.lunch,
       ),
     ],
   ),
@@ -292,7 +232,8 @@ final List<Recipe> _getMockRecipes = [
         carbs: 33,
         fat: 3.5,
         protein: 5,
-        mealType: MealType.breakfast,
+          imageUrl: ''
+        // mealType: MealType.breakfast,
       ),
       Food(
         id: 'f005',
@@ -301,7 +242,8 @@ final List<Recipe> _getMockRecipes = [
         carbs: 23,
         fat: 0.3,
         protein: 1.1,
-        mealType: MealType.breakfast,
+          imageUrl: ''
+        // mealType: MealType.breakfast,
       ),
     ],
   ),
@@ -323,7 +265,8 @@ final List<Recipe> _getMockRecipes = [
         carbs: 3,
         fat: 2,
         protein: 24,
-        mealType: MealType.breakfast,
+          imageUrl: ''
+        // mealType: MealType.breakfast,
       ),
       Food(
         id: 'f007',
@@ -332,7 +275,8 @@ final List<Recipe> _getMockRecipes = [
         carbs: 1,
         fat: 10,
         protein: 12,
-        mealType: MealType.breakfast,
+        imageUrl: ''
+        // mealType: MealType.breakfast,
       ),
     ],
   ),
@@ -354,7 +298,8 @@ final List<Recipe> _getMockRecipes = [
         carbs: 0,
         fat: 20,
         protein: 30,
-        mealType: MealType.dinner,
+        imageUrl: ''
+        // mealType: MealType.dinner,
       ),
       Food(
         id: 'f009',
@@ -363,7 +308,8 @@ final List<Recipe> _getMockRecipes = [
         carbs: 9,
         fat: 0.5,
         protein: 1,
-        mealType: MealType.dinner,
+          imageUrl: ''
+        // mealType: MealType.dinner,
       ),
     ],
   ),
@@ -385,7 +331,8 @@ final List<Recipe> _getMockRecipes = [
         carbs: 28,
         fat: 4,
         protein: 9,
-        mealType: MealType.lunch,
+        imageUrl: ''
+        // mealType: MealType.lunch,
       ),
       Food(
         id: 'f011',
@@ -394,7 +341,8 @@ final List<Recipe> _getMockRecipes = [
         carbs: 2,
         fat: 8,
         protein: 16,
-        mealType: MealType.lunch,
+        imageUrl: ''
+        // mealType: MealType.lunch,
       ),
     ],
   ),

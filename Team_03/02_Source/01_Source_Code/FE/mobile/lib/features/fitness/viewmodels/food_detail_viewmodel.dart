@@ -12,7 +12,17 @@ class FoodDetailViewModel extends ChangeNotifier {
   final FoodRepository _repository;
   Food? food;
   double servingSize = 100;
-  MealType selectedMealType = MealType.breakfast;
+
+  MealType _selectedMealType = MealType.breakfast;
+
+  MealType get selectedMealType => _selectedMealType;
+
+  set selectedMealType(MealType value) {
+    if (_selectedMealType != value) {
+      _selectedMealType = value;
+      notifyListeners();
+    }
+  }
 
   LoadState loadState = LoadState.initial;
   String? errorMessage;
@@ -37,9 +47,9 @@ class FoodDetailViewModel extends ChangeNotifier {
       print('view model servingSize: $servingSize');
 
       // If this is an edit and the food has a meal type, use it
-      if (food != null) {
-        selectedMealType = food!.mealType;
-      }
+      // if (food != null) {
+      //   selectedMealType = food!.mealType;
+      // }
 
       loadState = LoadState.loaded;
     } on TimeoutException catch (e) {

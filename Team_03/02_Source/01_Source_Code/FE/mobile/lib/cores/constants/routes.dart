@@ -15,6 +15,7 @@ import 'package:mobile/features/fitness/view/recipe_detail/search_food_for_recip
 import 'package:mobile/features/statistic/view/dashboard/dashboard_screen.dart';
 import 'package:mobile/features/statistic/view/step/add_step.dart';
 
+import '../../features/fitness/models/meal_log.dart';
 import '../../features/fitness/models/recipe.dart';
 import '../../features/fitness/view/food_detail/food_detail_screen.dart';
 import '../../features/fitness/view/scan_barcode/scan_barcode_screen.dart';
@@ -46,8 +47,21 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) {
         final mealLogStr = state.pathParameters['mealLogId']!;
 
+        final mealTypeStr = state.uri.queryParameters['mealType'];
+        print('search mealTypeStr: $mealTypeStr');
+        MealType mealType = MealType.breakfast;
+        if (mealTypeStr != null) {
+          try {
+            mealType = mealTypeFromString(mealTypeStr);
+            print('✅ Parsed mealType: $mealType');
+          } catch (e) {
+            print('⚠️ Invalid mealType: $mealTypeStr');
+          }
+        }
+
         return SearchFoodScreen(
           mealLogId: mealLogStr,
+          mealType: mealType,
         );
       },
     ),
@@ -61,23 +75,32 @@ final GoRouter appRouter = GoRouter(
         final numberOfServingsStr = state.pathParameters['numberOfServings'];
         final numberOfServings = double.tryParse(numberOfServingsStr ?? '1') ?? 1.0;
 
-        if (isEdit){
-          return FoodDetailScreen(
-            foodId: foodId,
-            mealEntryId: mealLogOrMealEntryStr,
-            isEdit: isEdit,
-            numberOfServings: numberOfServings,
-          );
-        } else {
-          return FoodDetailScreen(
-            foodId: foodId,
-            mealLogId: mealLogOrMealEntryStr,
-            isEdit: isEdit,
-            numberOfServings: numberOfServings,
-          );
+        // Parse query param
+        final mealTypeStr = state.uri.queryParameters['mealType'];
+
+        MealType mealType = MealType.breakfast;
+        print('mealTypeStr: $mealTypeStr');
+        if (mealTypeStr != null) {
+          try {
+            mealType = mealTypeFromString(mealTypeStr);
+          } catch (e) {
+            print('⚠️ Invalid mealType: $mealTypeStr');
+          }
         }
+
+        print('mealType route: $mealType');
+
+        return FoodDetailScreen(
+          foodId: foodId,
+          mealLogId: isEdit ? '' : mealLogOrMealEntryStr,
+          mealEntryId: isEdit ? mealLogOrMealEntryStr : '',
+          isEdit: isEdit,
+          numberOfServings: numberOfServings,
+          mealType: mealType,
+        );
       },
     ),
+
     GoRoute(
       path: '/recipe_detail',
       builder: (context, state) {

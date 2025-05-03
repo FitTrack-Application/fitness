@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobile/features/fitness/models/meal_log.dart';
 import 'package:mobile/features/fitness/view/search_food/widget/error_display.dart';
 import 'package:provider/provider.dart';
 
@@ -13,10 +14,12 @@ import 'widget/food_item.dart';
 
 class SearchFoodScreen extends StatefulWidget {
   final String mealLogId;
+  final MealType mealType;
 
   const SearchFoodScreen({
     super.key,
     required this.mealLogId,
+    required this.mealType,
   });
 
   @override
@@ -46,7 +49,7 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
     _myRecipesController.addListener(() => _debounceSearch(isMyFood: true));
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<SearchFoodViewModel>().searchFoods(query: '', isMyFood: false);
+      context.read<SearchFoodViewModel>().searchFoods(query: '', isInMyRecipesTab: false);
     });
   }
 
@@ -60,7 +63,7 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
     final newTimer = Timer(const Duration(milliseconds: 500), () {
       context.read<SearchFoodViewModel>().searchFoods(
         query: controller.text,
-        isMyFood: isMyFood,
+        isInMyRecipesTab: isMyFood,
       );
     });
 
@@ -74,7 +77,7 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
 
   void _onTabChanged() {
     final isMyFood = _tabController.index == 1;
-    context.read<SearchFoodViewModel>().searchFoods(query: _searchController.text, isMyFood: isMyFood);
+    context.read<SearchFoodViewModel>().searchFoods(query: _searchController.text, isInMyRecipesTab: isMyFood);
   }
 
   @override
@@ -105,7 +108,7 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
 
     context.read<SearchFoodViewModel>().searchFoods(
       query: controller.text,
-      isMyFood: isMyFood,
+      isInMyRecipesTab: isMyFood,
     );
   }
 
@@ -188,7 +191,7 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
                     icon: const Icon(Icons.clear),
                     onPressed: () {
                       _allController.clear();
-                      context.read<SearchFoodViewModel>().searchFoods(query: '', isMyFood: false);
+                      context.read<SearchFoodViewModel>().searchFoods(query: '', isInMyRecipesTab: false);
                     },
                   )
                       : null,
@@ -224,7 +227,7 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
                         icon: const Icon(Icons.clear),
                         onPressed: () {
                           _allController.clear();
-                          context.read<SearchFoodViewModel>().searchFoods(query: '', isMyFood: false);
+                          context.read<SearchFoodViewModel>().searchFoods(query: '', isInMyRecipesTab: false);
                         },
                       )
                           : null,
@@ -339,7 +342,7 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
           final food = viewModel.foods[index];
           return FoodItemWidget(
             food: food,
-            onTap: () =>context.push('/food/${widget.mealLogId}/${food.id}/add/100'),
+            onTap: () =>context.push('/food/${widget.mealLogId}/${food.id}/add/100?mealType=${mealTypeToString(widget.mealType)}'),
             onAdd: () {
               final diaryViewModel = context.read<DiaryViewModel>();
               diaryViewModel.addFoodToDiary(

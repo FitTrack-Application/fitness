@@ -17,6 +17,7 @@ class FoodDetailScreen extends StatefulWidget {
   final bool isEdit;
   final double numberOfServings;
   final String mealEntryId;
+  final MealType mealType;
 
   const FoodDetailScreen({
     super.key,
@@ -25,6 +26,7 @@ class FoodDetailScreen extends StatefulWidget {
     this.mealEntryId = '',
     required this.isEdit,
     this.numberOfServings = 100,
+    required this.mealType,
   });
 
   @override
@@ -39,6 +41,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
     super.initState();
     _foodVM = FoodDetailViewModel(FoodRepository())..loadFood(widget.foodId);
     _foodVM.servingSize = widget.numberOfServings;
+    _foodVM.selectedMealType = widget.mealType;
   }
 
   @override
@@ -240,6 +243,17 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          if (food.imageUrl.isNotEmpty)
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.network(
+                food.imageUrl,
+                width: double.infinity,
+                height: 200,
+                fit: BoxFit.cover,
+              ),
+            ),
+          const SizedBox(height: 16),
           Text(
             food.name,
             style: textTheme.titleSmall?.copyWith(
@@ -290,9 +304,9 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
         return 'LUNCH';
       case MealType.dinner:
         return 'DINNER';
-      default:
-        return 'BREAKFAST';
-    }
+      case MealType.snack:
+        return 'SNACK';
+      }
   }
 
   Future<void> _selectMealType(
@@ -331,6 +345,13 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                 MealType.dinner,
                 viewModel,
                 Icons.nights_stay_outlined,
+              ),
+              const SizedBox(height: 8),
+              _buildMealTypeOption(
+                context,
+                MealType.snack,
+                viewModel,
+                Icons.fastfood_outlined,
               ),
             ],
           ),
