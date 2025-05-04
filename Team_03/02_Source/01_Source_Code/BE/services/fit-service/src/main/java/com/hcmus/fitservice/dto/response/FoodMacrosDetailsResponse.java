@@ -17,7 +17,7 @@ public class FoodMacrosDetailsResponse {
 
     private String imageUrl;
 
-    private String servingUnit;
+    private ServingUnitResponse servingUnit;
 
     private Double numberOfServings;
     // Macros
