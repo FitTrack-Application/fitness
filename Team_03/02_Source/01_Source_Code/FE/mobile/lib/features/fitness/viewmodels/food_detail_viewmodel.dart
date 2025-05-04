@@ -12,9 +12,11 @@ enum LoadState { initial, loading, loaded, error, timeout }
 class FoodDetailViewModel extends ChangeNotifier {
   final FoodRepository _repository;
   Food? food;
-  double servingSize = 100;
+  double _servingSize = 100;
+  double get servingSize => _servingSize;
 
   List<ServingUnit> _servingUnits = [];
+
   List<ServingUnit> get servingUnits => _servingUnits;
 
   MealType _selectedMealType = MealType.breakfast;
@@ -32,28 +34,36 @@ class FoodDetailViewModel extends ChangeNotifier {
 
   void updateServingUnit(ServingUnit unit) {
     selectedServingUnit = unit;
+    print('_servingSize: $_servingSize');
+    print('selectedServingUnit.name: ${selectedServingUnit?.unitName}');
+    loadFood(food?.id ?? '', servingUnitId: unit.id, numberOfServings: servingSize);
     notifyListeners();
   }
 
+  void updateServingSize(double size) {
+    if (size >= 1 && size <= 1000000) {
+      _servingSize = size;
+      print('_servingSize: $_servingSize');
+      print('selectedServingUnit.name: ${selectedServingUnit?.unitName}');
+      loadFood(food?.id ?? '', servingUnitId: selectedServingUnit?.id ?? '9b0f9cf0-1c6e-4c1e-a3a1-8a9fddc20a0b', numberOfServings: _servingSize);
+      notifyListeners();
+    }
+  }
+
   void updateServingUnitByName(String name) {
-    print('🔍 Tìm đơn vị với tên: $name');
     try {
       final matchedUnit = _servingUnits.firstWhere(
-            (unit) => unit.unitName.toLowerCase() == name.toLowerCase(),
+        (unit) => unit.unitName.toLowerCase() == name.toLowerCase(),
       );
       selectedServingUnit = matchedUnit;
-      print('✅ Tìm thấy đơn vị: ${matchedUnit.unitName}');
     } catch (e) {
-      print('❗ Không tìm thấy đơn vị "$name", lỗi: $e');
       if (_servingUnits.isNotEmpty) {
         selectedServingUnit = _servingUnits.first;
-        print('➡️ Sử dụng đơn vị mặc định: ${selectedServingUnit!.unitName}');
       } else {
         print('🚫 Không có đơn vị nào trong danh sách.');
       }
     }
-
-    print('selectedServingUnit: ${selectedServingUnit?.unitName}');
+    // loadFood(food?.id ?? '', servingUnitId: selectedServingUnit?.id ?? '9b0f9cf0-1c6e-4c1e-a3a1-8a9fddc20a0b', numberOfServings: servingSize);
     notifyListeners();
   }
 
@@ -65,16 +75,30 @@ class FoodDetailViewModel extends ChangeNotifier {
 
   FoodDetailViewModel(this._repository);
 
-  Future<void> loadFood(String id) async {
+  Future<void> loadFood(
+    String foodId, {
+    String servingUnitId = "9b0f9cf0-1c6e-4c1e-a3a1-8a9fddc20a0b",
+        String servingUnitName = "",
+    double numberOfServings = 100,
+  }) async {
     loadState = LoadState.loading;
     errorMessage = null;
     notifyListeners();
 
     try {
-      final result = await _repository.getFoodById(id).timeout(_timeoutDuration,
-          onTimeout: () {
-            throw TimeoutException('Connection timed out. Please try again.');
-          });
+      if (servingUnitName.isNotEmpty){
+        final matchedUnit = _servingUnits.firstWhere(
+              (unit) => unit.unitName.toLowerCase() == servingUnitName.toLowerCase(),
+        );
+        servingUnitId = matchedUnit.id;
+      }
+
+      final result = await _repository
+          .getFoodById(foodId,
+              servingUnitId: servingUnitId, numberOfServings: numberOfServings)
+          .timeout(_timeoutDuration, onTimeout: () {
+        throw TimeoutException('Connection timed out. Please try again.');
+      });
 
       food = result;
 
@@ -86,21 +110,15 @@ class FoodDetailViewModel extends ChangeNotifier {
       loadState = LoadState.error;
       errorMessage = e.toString();
     } finally {
+      print('new calories: ${food?.calories}');
       notifyListeners();
     }
   }
 
-  void updateServings(double newServings) {
-    if (newServings >= 1 && newServings <= 10000) {
-      servingSize = newServings;
-      notifyListeners();
-    }
-  }
-
-  void updateMealType(MealType mealType) {
-    selectedMealType = mealType;
-    notifyListeners();
-  }
+  // void updateMealType(MealType mealType) {
+  //   selectedMealType = mealType;
+  //   notifyListeners();
+  // }
 
   Future<void> fetchAllServingUnits(String? servingUnit) async {
     loadState = LoadState.loading;
@@ -109,9 +127,6 @@ class FoodDetailViewModel extends ChangeNotifier {
     try {
       _servingUnits = await _repository.getAllServingUnits();
       updateServingUnitByName(servingUnit ?? 'Gram');
-      // if (_servingUnits.isNotEmpty && selectedServingUnit == null) {
-      //   selectedServingUnit = _servingUnits[0];
-      // }
       loadState = LoadState.loaded;
     } catch (e) {
       errorMessage = e.toString();

@@ -333,7 +333,7 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
               diaryViewModel.addFoodToDiary(
                 mealLogId: widget.mealLogId,
                 foodId: recipe.id,
-                servingUnit: 'GRAM',
+                servingUnitId: 'GRAM',
                 numberOfServings: 100,
               );
             },
@@ -348,7 +348,7 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
               diaryViewModel.addFoodToDiary(
                 mealLogId: widget.mealLogId,
                 foodId: food.id,
-                servingUnit: 'GRAM',
+                servingUnitId:'9b0f9cf0-1c6e-4c1e-a3a1-8a9fddc20a0b',
                 numberOfServings: 100,
               );
             },

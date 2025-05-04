@@ -8,13 +8,14 @@ import '../../models/meal_log.dart' show MealLogFitness, mealTypeFromString;
 
 class MealLogRepository {
   final String baseUrl = "http://192.168.1.11:8088";
-  final String jwtToken = "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJtdWVVN1BCcEtENFA5LXhpNjQtSUZMNUtXaDhrTV93M19JS1lDck02bW5ZIn0.eyJleHAiOjE3NDYzNDY3NzAsImlhdCI6MTc0NjM0MzE3MCwianRpIjoib25ydHJvOjBjZDk4NDc2LTM0YmYtNDc2MC1hMmFlLTY4MGViYWVlMzc0YyIsImlzcyI6Imh0dHA6Ly8xMC4wLjIuMjo4ODg4L3JlYWxtcy9teS1maXRuZXNzIiwiYXVkIjoiYWNjb3VudCIsInN1YiI6ImYxY2U1ZTYyLTFmMzctNGM0Ni05MDhjLTkzNWM5MWZlZWM3ZSIsInR5cCI6IkJlYXJlciIsImF6cCI6InRlc3Qtd2l0aC11aSIsInNpZCI6IjE1ZTE4OWM2LTk5NWMtNGRkNS04NGRlLTYyZmY1NTViOGEyYSIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cDovL2xvY2FsaG9zdDozMDAwIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJkZWZhdWx0LXJvbGVzLW15LWZpdG5lc3MiLCJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIiwiVVNFUiJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZW1haWwiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsInByZWZlcnJlZF91c2VybmFtZSI6ImRlbW9AZ21haWwuY29tIiwiZW1haWwiOiJkZW1vQGdtYWlsLmNvbSJ9.A6nHpUu4NB0nYjP4E7SSOGxvGF9NIMtasdO0vfqdS8f7TLG09J32JZfKBdImrQWtS-JsYZO96aesG-iBxiXulmOh-vqRaJpvqklmkNQCe1-WrJCt8WJ9g6f_EG3B1d6rIYjohUKBWiLGQzl57ANUc-niG8y0chyzMdZ1WHqb3j40BDXcMwDzWbxciJOQeboeU249W-WAymoOX7lZHdJcMyz5kPDV8-53LwkXLjldBinWkKnhK_qvHDEjFjKwSO4hJ5X9CbBfxYmOqdRT129AQ3xXMF3hQXb013DwH3X2hJ1qUVtSTqNpyzbY5lttIUk4glhnoOC_RqDp5dnTMkxiMA";
+  final String jwtToken =
+      "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJtdWVVN1BCcEtENFA5LXhpNjQtSUZMNUtXaDhrTV93M19JS1lDck02bW5ZIn0.eyJleHAiOjE3NDYzNTQwNDEsImlhdCI6MTc0NjM1MDQ0MSwianRpIjoib25ydHJvOmVhMGFkNzViLWExNTEtNDMwZC05YTQzLTU0MDBhMTZmZGQ4NiIsImlzcyI6Imh0dHA6Ly8xMC4wLjIuMjo4ODg4L3JlYWxtcy9teS1maXRuZXNzIiwiYXVkIjoiYWNjb3VudCIsInN1YiI6ImYxY2U1ZTYyLTFmMzctNGM0Ni05MDhjLTkzNWM5MWZlZWM3ZSIsInR5cCI6IkJlYXJlciIsImF6cCI6InRlc3Qtd2l0aC11aSIsInNpZCI6IjBlMWNhZmFiLTU1MWMtNGQ2Zi1iY2U1LTUwNTRlNTc5MjA5ZSIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cDovL2xvY2FsaG9zdDozMDAwIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJkZWZhdWx0LXJvbGVzLW15LWZpdG5lc3MiLCJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIiwiVVNFUiJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZW1haWwiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsInByZWZlcnJlZF91c2VybmFtZSI6ImRlbW9AZ21haWwuY29tIiwiZW1haWwiOiJkZW1vQGdtYWlsLmNvbSJ9.Pp9j53nsJsXAuTLKfiFUoGiEQzSzOKO5y9UGnpyrUE_qAtG9dJwkkjDow7m9NrjBti00fjuUSGFRwcshawLwzxyjymiSzWSMI27IWhm1_Ha1SHujNrGoOXlA4ZxjV7YHwXyZOg25VxnYUPWktq_tDtOlr4-XVz4Eqn75PPY80giVHbPNZMIDJd5yd2KgoFzhXVGHAnCZHI9SQ1q-aIQCDZ-o-u7LSJPHNEU2tCSrQPMcaxYzg2e2A96Vi6rTUqeHTOD8lu_LF8a5JgnxOCIlN2yGicBFGzAX8tp4-Dcbka8LVl32UWrLxRsZXT7mq1g4SdF5NZLy54xgzXdZP-UXsQ";
   final FoodRepository foodRepository = FoodRepository();
 
   Map<String, String> get _headers => {
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer $jwtToken',
-  };
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $jwtToken',
+      };
 
   String _formatDate(DateTime date) {
     return "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
@@ -46,14 +47,18 @@ class MealLogRepository {
             final entries = await Future.wait(
               entriesJson.map((entryJson) async {
                 print('📦 Fetching food by ID: ${entryJson['foodId']}');
-                final food = await foodRepository.getFoodById(entryJson['foodId']);
+                final food = await foodRepository.getFoodById(
+                    entryJson['foodId'],
+                    servingUnitId: '9b0f9cf0-1c6e-4c1e-a3a1-8a9fddc20a0b',
+                    numberOfServings: entryJson['numberOfServings']);
                 print('🍽️ Food Fetched: ${food.name}');
 
                 return MealEntry(
                   id: entryJson['id'],
                   food: food,
                   servingUnit: entryJson['servingUnit'],
-                  numberOfServings: (entryJson['numberOfServings'] as num).toDouble(),
+                  numberOfServings:
+                      (entryJson['numberOfServings'] as num).toDouble(),
                   calories: (entryJson['calories'] as num).toDouble(),
                   protein: (entryJson['protein'] as num).toDouble(),
                   carbs: (entryJson['carbs'] as num).toDouble(),
@@ -79,7 +84,8 @@ class MealLogRepository {
         print('✅ Successfully processed ${filtered.length} meal logs.');
         return filtered;
       } else {
-        print('❗ Server returned error: ${response.statusCode} ${response.reasonPhrase}');
+        print(
+            '❗ Server returned error: ${response.statusCode} ${response.reasonPhrase}');
         throw Exception('Failed to load meal logs: ${response.statusCode}');
       }
     } catch (e, stack) {
@@ -92,19 +98,19 @@ class MealLogRepository {
   Future<MealEntry> addMealEntryToLog({
     required String mealLogId,
     required String foodId,
-    required String servingUnit,
+    required String servingUnitId,
     required double numberOfServings,
   }) async {
     final uri = Uri.parse('$baseUrl/api/meal-logs/$mealLogId/entries');
     print('🔗 [addMealEntryToLog] URL: $uri');
     print('🍽️ Meal Log ID: $mealLogId');
     print('🍔 Food ID: $foodId');
-    print('⚖️ Serving Unit: $servingUnit');
+    print('⚖️ Serving Unit ID: $servingUnitId');
     print('🔢 Number of Servings: $numberOfServings');
 
     final body = jsonEncode({
       'foodId': foodId,
-      'servingUnit': servingUnit,
+      'servingUnitId': servingUnitId,
       'numberOfServings': numberOfServings,
     });
 
@@ -113,7 +119,8 @@ class MealLogRepository {
       final decoded = json.decode(response.body);
       final data = decoded['data'];
       // Gọi tới foodRepository để lấy thông tin chi tiết về món ăn
-      final food = await foodRepository.getFoodById(data['foodId']);
+      final food = await foodRepository.getFoodById(data['foodId'],
+          servingUnitId: servingUnitId, numberOfServings: numberOfServings);
       return MealEntry(
         id: data['id'],
         food: food,
@@ -128,39 +135,6 @@ class MealLogRepository {
       throw Exception('Failed to add meal entry: ${response.body}');
     }
   }
-
-  // Future<void> createMealLogsForDate(DateTime date) async {
-  //   final formattedDate = _formatDate(date);
-  //   final uri = Uri.parse('$baseUrl/api/meal-logs');
-  //   final mealTypes = ['BREAKFAST', 'LUNCH', 'DINNER'];
-  //
-  //   print('🔗 [createMealLogsForDate] URL: $uri');
-  //   print('📅 Formatted Date: $formattedDate');
-  //
-  //   for (final type in mealTypes) {
-  //     final body = jsonEncode({
-  //       'date': formattedDate,
-  //       'mealType': type,
-  //     });
-  //
-  //     print('\n➡️ Creating meal log...');
-  //     print('🍽️ Meal Type: $type');
-  //     print('📤 Request Body: $body');
-  //     print('📨 Headers: $_headers');
-  //
-  //     final response = await http.post(uri, headers: _headers, body: body);
-  //
-  //     print('✅ Status Code: ${response.statusCode}');
-  //     print('📥 Response Body: ${response.body}');
-  //
-  //     if (response.statusCode != 200 && response.statusCode != 201) {
-  //       print('❌ Failed to create meal log for $type');
-  //       throw Exception('Failed to create meal log for $type');
-  //     } else {
-  //       print('✔️ Successfully created meal log for $type');
-  //     }
-  //   }
-  // }
 
   Future<void> createMealLogsForDate(DateTime date) async {
     final formattedDate = _formatDate(date);
@@ -188,7 +162,6 @@ class MealLogRepository {
     }
   }
 
-
   Future<void> deleteMealEntry(String mealEntryId) async {
     final uri = Uri.parse('$baseUrl/api/meal-entries/$mealEntryId');
 
@@ -211,18 +184,18 @@ class MealLogRepository {
   Future<MealEntry> editMealEntry({
     required String mealEntryId,
     required String foodId,
-    required String servingUnit,
+    required String servingUnitId,
     required double numberOfServings,
   }) async {
     final uri = Uri.parse('$baseUrl/api/meal-entries/$mealEntryId');
     print('✏️ [editMealEntry] URL: $uri');
     print('foodId: $foodId');
-    print('servingUnit: $servingUnit');
+    print('servingUnitId: $servingUnitId');
     print('numberOfServings: $numberOfServings');
 
     final body = jsonEncode({
       'foodId': foodId,
-      'servingUnit': servingUnit,
+      'servingUnitId': servingUnitId,
       'numberOfServings': numberOfServings,
     });
 
@@ -235,7 +208,8 @@ class MealLogRepository {
       final decoded = json.decode(response.body);
       final data = decoded['data'];
 
-      final food = await foodRepository.getFoodById(data['foodId']);
+      final food = await foodRepository.getFoodById(data['foodId'],
+          servingUnitId: servingUnitId, numberOfServings: numberOfServings);
       return MealEntry(
         id: data['id'],
         food: food,
@@ -270,5 +244,4 @@ class MealLogRepository {
       throw Exception('Failed to load nutrition goal');
     }
   }
-
 }

@@ -66,18 +66,17 @@ class DiaryViewModel extends ChangeNotifier {
       .expand((log) => log.mealEntries)
       .toList();
 
-// Calo tiêu thụ theo từng bữa
   double get breakfastCalories =>
-      breakfastEntries.fold(0, (sum, entry) => sum + entry.food.calories * entry.numberOfServings / 100);
+      breakfastEntries.fold(0, (sum, entry) => sum + entry.food.calories);
 
   double get lunchCalories =>
-      lunchEntries.fold(0, (sum, entry) => sum + entry.food.calories * entry.numberOfServings / 100);
+      lunchEntries.fold(0, (sum, entry) => sum + entry.food.calories);
 
   double get dinnerCalories =>
-      dinnerEntries.fold(0, (sum, entry) => sum + entry.food.calories * entry.numberOfServings / 100);
+      dinnerEntries.fold(0, (sum, entry) => sum + entry.food.calories);
 
   double get snackCalories =>
-      snackEntries.fold(0, (sum, entry) => sum + entry.food.calories * entry.numberOfServings / 100);
+      snackEntries.fold(0, (sum, entry) => sum + entry.food.calories);
 
 
   double get caloriesConsumed =>
@@ -86,7 +85,7 @@ class DiaryViewModel extends ChangeNotifier {
   double get caloriesBurned => exerciseItems.fold(
       0, (sum, exercise) => sum + exercise.calories.toDouble());
 
-  double get caloriesRemaining => 5000 - caloriesConsumed + caloriesBurned;
+  double get caloriesRemaining => calorieGoal - caloriesConsumed + caloriesBurned;
 
   // Kiểm tra xem ngày đã chọn có phải là hôm nay không
   bool get isSelectedDateToday {
@@ -148,7 +147,7 @@ class DiaryViewModel extends ChangeNotifier {
   Future<void> addFoodToDiary({
     required String mealLogId,
     required String foodId,
-    required String servingUnit,
+    required String servingUnitId,
     required double numberOfServings,
   }) async {
     _addingFoodIds.add(foodId);
@@ -158,7 +157,7 @@ class DiaryViewModel extends ChangeNotifier {
       await _repository.addMealEntryToLog(
           mealLogId: mealLogId,
           foodId: foodId,
-          servingUnit: servingUnit,
+          servingUnitId: servingUnitId,
           numberOfServings: numberOfServings);
       // Cập nhật lại diary sau khi thêm thành công
       await fetchDiaryForSelectedDate();
@@ -195,19 +194,19 @@ class DiaryViewModel extends ChangeNotifier {
   Future<void> editFoodInDiary({
     required String mealEntryId,
     required String foodId,
-    required String servingUnit,
+    required String servingUnitId,
     required double numberOfServings,
   }) async {
     _addingFoodIds.add(mealEntryId); // Tạm dùng chung set để hiện trạng thái loading
     notifyListeners();
 
     try {
-      // await _repository.editMealEntry(
-      //   mealEntryId: mealEntryId,
-      //   numberOfServings: numberOfServings,
-      //   foodId: foodId,
-      //   servingUnit: servingUnit,
-      // );
+      await _repository.editMealEntry(
+        mealEntryId: mealEntryId,
+        numberOfServings: numberOfServings,
+        foodId: foodId,
+        servingUnitId: servingUnitId,
+      );
 
       // Cập nhật lại nhật ký sau khi chỉnh sửa
       await fetchDiaryForSelectedDate();
