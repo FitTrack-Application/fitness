@@ -35,6 +35,28 @@ class FoodDetailViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateServingUnitByName(String name) {
+    print('🔍 Tìm đơn vị với tên: $name');
+    try {
+      final matchedUnit = _servingUnits.firstWhere(
+            (unit) => unit.unitName.toLowerCase() == name.toLowerCase(),
+      );
+      selectedServingUnit = matchedUnit;
+      print('✅ Tìm thấy đơn vị: ${matchedUnit.unitName}');
+    } catch (e) {
+      print('❗ Không tìm thấy đơn vị "$name", lỗi: $e');
+      if (_servingUnits.isNotEmpty) {
+        selectedServingUnit = _servingUnits.first;
+        print('➡️ Sử dụng đơn vị mặc định: ${selectedServingUnit!.unitName}');
+      } else {
+        print('🚫 Không có đơn vị nào trong danh sách.');
+      }
+    }
+
+    print('selectedServingUnit: ${selectedServingUnit?.unitName}');
+    notifyListeners();
+  }
+
   LoadState loadState = LoadState.initial;
   String? errorMessage;
 
@@ -55,7 +77,6 @@ class FoodDetailViewModel extends ChangeNotifier {
           });
 
       food = result;
-      print('view model servingSize: $servingSize');
 
       loadState = LoadState.loaded;
     } on TimeoutException catch (e) {
@@ -81,12 +102,16 @@ class FoodDetailViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> fetchAllServingUnits() async {
+  Future<void> fetchAllServingUnits(String? servingUnit) async {
     loadState = LoadState.loading;
     notifyListeners();
 
     try {
       _servingUnits = await _repository.getAllServingUnits();
+      updateServingUnitByName(servingUnit ?? 'Gram');
+      // if (_servingUnits.isNotEmpty && selectedServingUnit == null) {
+      //   selectedServingUnit = _servingUnits[0];
+      // }
       loadState = LoadState.loaded;
     } catch (e) {
       errorMessage = e.toString();

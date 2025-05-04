@@ -8,7 +8,7 @@ import '../../models/serving_unit.dart';
 
 class FoodRepository {
   String baseUrl = "http://192.168.1.11:8088";
-  final String jwtToken = "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJtdWVVN1BCcEtENFA5LXhpNjQtSUZMNUtXaDhrTV93M19JS1lDck02bW5ZIn0.eyJleHAiOjE3NDYzNDIyNzgsImlhdCI6MTc0NjMzODY3OCwianRpIjoib25ydHJvOmY4MTg1MDZlLWY3N2QtNDk0Ni1hODI2LTY0YTAxZTZmN2NmYiIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODg4OC9yZWFsbXMvbXktZml0bmVzcyIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiJmMWNlNWU2Mi0xZjM3LTRjNDYtOTA4Yy05MzVjOTFmZWVjN2UiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJ0ZXN0LXdpdGgtdWkiLCJzaWQiOiJlMTM3ZmVmMy0wYWI3LTQyNGUtYjI2MC1jNTJmYjRjNThkMDEiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbImh0dHA6Ly9sb2NhbGhvc3Q6MzAwMCJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiZGVmYXVsdC1yb2xlcy1teS1maXRuZXNzIiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiIsIlVTRVIiXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6Im9wZW5pZCBwcm9maWxlIGVtYWlsIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJkZW1vQGdtYWlsLmNvbSIsImVtYWlsIjoiZGVtb0BnbWFpbC5jb20ifQ.Lm0GBESHSnl_gfTQj0PHb3MYuAnhD8WVMVWeh0q1N84VgrxLb5X2dfN8sKuhPlzTJXpS9UR9NXbadcgnes4mN5wW0x9nw0zDiVyBpYrlPtl3B6J2_9tzl_uQa9_QfK_Br6w-fZPxYKMNWsSf0NgEJ8Wtnorg1_oLVKZcssliNhb43yFmi2UHTBSK8cLrs5RUxM48LiDR132frlhZAZVIpziVHCDfxDuQ-HLIxG6tKxl6NlgRsaUgfXobvi9_7yaCVabvnq3cQOrKjmAbtQuE-VM0ruqQrlXlA4xrgyqxir6xdqmAmaq3hHT2Q5nKjWNGeTX2RLNa0rZ46FkcRiak1g";
+  final String jwtToken = "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJtdWVVN1BCcEtENFA5LXhpNjQtSUZMNUtXaDhrTV93M19JS1lDck02bW5ZIn0.eyJleHAiOjE3NDYzNDY3NzAsImlhdCI6MTc0NjM0MzE3MCwianRpIjoib25ydHJvOjBjZDk4NDc2LTM0YmYtNDc2MC1hMmFlLTY4MGViYWVlMzc0YyIsImlzcyI6Imh0dHA6Ly8xMC4wLjIuMjo4ODg4L3JlYWxtcy9teS1maXRuZXNzIiwiYXVkIjoiYWNjb3VudCIsInN1YiI6ImYxY2U1ZTYyLTFmMzctNGM0Ni05MDhjLTkzNWM5MWZlZWM3ZSIsInR5cCI6IkJlYXJlciIsImF6cCI6InRlc3Qtd2l0aC11aSIsInNpZCI6IjE1ZTE4OWM2LTk5NWMtNGRkNS04NGRlLTYyZmY1NTViOGEyYSIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cDovL2xvY2FsaG9zdDozMDAwIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJkZWZhdWx0LXJvbGVzLW15LWZpdG5lc3MiLCJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIiwiVVNFUiJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZW1haWwiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsInByZWZlcnJlZF91c2VybmFtZSI6ImRlbW9AZ21haWwuY29tIiwiZW1haWwiOiJkZW1vQGdtYWlsLmNvbSJ9.A6nHpUu4NB0nYjP4E7SSOGxvGF9NIMtasdO0vfqdS8f7TLG09J32JZfKBdImrQWtS-JsYZO96aesG-iBxiXulmOh-vqRaJpvqklmkNQCe1-WrJCt8WJ9g6f_EG3B1d6rIYjohUKBWiLGQzl57ANUc-niG8y0chyzMdZ1WHqb3j40BDXcMwDzWbxciJOQeboeU249W-WAymoOX7lZHdJcMyz5kPDV8-53LwkXLjldBinWkKnhK_qvHDEjFjKwSO4hJ5X9CbBfxYmOqdRT129AQ3xXMF3hQXb013DwH3X2hJ1qUVtSTqNpyzbY5lttIUk4glhnoOC_RqDp5dnTMkxiMA";
 
   Map<String, String> get _headers => {
     'Content-Type': 'application/json',
@@ -16,56 +16,43 @@ class FoodRepository {
   };
 
   Future<Food> getFoodById(String foodId) async {
-    final response = await http.get(Uri.parse('$baseUrl/api/foods/$foodId'), headers: _headers);
+    const servingUnitId = "9b0f9cf0-1c6e-4c1e-a3a1-8a9fddc20a0b";
+    const numberOfServings = 100;
 
-    if (response.statusCode == 200) {
-      final jsonBody = json.decode(response.body);
-      final data = jsonBody['data'];
-      return Food.fromJson(data);
-    } else {
-      throw Exception('Failed to load food data');
+    final url = Uri.parse(
+      '$baseUrl/api/foods/$foodId/macros-details'
+          '?servingUnitId=$servingUnitId&numberOfServings=$numberOfServings',
+    );
+
+    print('🌐 [getFoodById] URL: $url');
+
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          ..._headers,
+          'Content-Type': 'application/json',
+        },
+      );
+
+      print('📩 Response Status: ${response.statusCode}');
+      print('📩 Response Body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final jsonBody = json.decode(response.body);
+        final data = jsonBody['data'];
+        print('🥗 Fetched Food: ${data['name']} (${data['calories']} kcal)');
+        return Food.fromJson(data);
+      } else {
+        print('❗ Server error: ${response.statusCode}');
+        throw Exception('Failed to load food macros details');
+      }
+    } catch (e, stack) {
+      print('🔥 Exception during getFoodById: $e');
+      print('📉 Stacktrace:\n$stack');
+      rethrow;
     }
   }
-
-  // Future<Food> getFoodById(
-  //     String foodId
-  //     ) async {
-  //   final url = Uri.parse('$baseUrl/api/foods/$foodId/macros-details');
-  //   print('🌐 [getFoodById] URL: $url');
-  //
-  //   final body = jsonEncode({
-  //     'servingUnitId': "27ccecf3-44e2-4a48-83de-1e7f415b1839",
-  //     'numberOfServings': 4.5,
-  //   });
-  //
-  //   try {
-  //     final response = await http.post(
-  //       url,
-  //       headers: {
-  //         ..._headers,
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: body,
-  //     );
-  //
-  //     print('📩 Response Status: ${response.statusCode}');
-  //     print('📩 Response Body: ${response.body}');
-  //
-  //     if (response.statusCode == 200) {
-  //       final jsonBody = json.decode(response.body);
-  //       final data = jsonBody['data'];
-  //       print('🥗 Fetched Food: ${data['name']} (${data['calories']} kcal)');
-  //       return Food.fromJson(data);
-  //     } else {
-  //       print('❗ Server error: ${response.statusCode}');
-  //       throw Exception('Failed to load food macros details');
-  //     }
-  //   } catch (e, stack) {
-  //     print('🔥 Exception during getFoodById: $e');
-  //     print('📉 Stacktrace:\n$stack');
-  //     rethrow;
-  //   }
-  // }
 
   Future<PaginatedResponse<Food>> searchFoods(String name,
       {int page = 1, int size = 10}) async {

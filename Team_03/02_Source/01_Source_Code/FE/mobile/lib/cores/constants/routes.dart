@@ -24,7 +24,8 @@ import '../../features/fitness/view/search_food/search_food_screen.dart';
 import 'package:mobile/features/statistic/view/weight/add_weight.dart';
 
 final GoRouter appRouter = GoRouter(
-  initialLocation: '/',
+  // initialLocation: '/',
+  initialLocation: '/dashboard',
   routes: [
     GoRoute(
       path: '/',
@@ -77,9 +78,7 @@ final GoRouter appRouter = GoRouter(
 
         // Parse query param
         final mealTypeStr = state.uri.queryParameters['mealType'];
-
         MealType mealType = MealType.breakfast;
-        print('mealTypeStr: $mealTypeStr');
         if (mealTypeStr != null) {
           try {
             mealType = mealTypeFromString(mealTypeStr);
@@ -88,7 +87,8 @@ final GoRouter appRouter = GoRouter(
           }
         }
 
-        print('mealType route: $mealType');
+        // Parse query param
+        final servingUnit = state.uri.queryParameters['servingUnit'];
 
         return FoodDetailScreen(
           foodId: foodId,
@@ -97,6 +97,7 @@ final GoRouter appRouter = GoRouter(
           isEdit: isEdit,
           numberOfServings: numberOfServings,
           mealType: mealType,
+          servingUnit: servingUnit,
         );
       },
     ),

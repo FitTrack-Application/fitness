@@ -8,7 +8,7 @@ import '../../models/meal_log.dart' show MealLogFitness, mealTypeFromString;
 
 class MealLogRepository {
   final String baseUrl = "http://192.168.1.11:8088";
-  final String jwtToken = "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJtdWVVN1BCcEtENFA5LXhpNjQtSUZMNUtXaDhrTV93M19JS1lDck02bW5ZIn0.eyJleHAiOjE3NDYzNDIyNzgsImlhdCI6MTc0NjMzODY3OCwianRpIjoib25ydHJvOmY4MTg1MDZlLWY3N2QtNDk0Ni1hODI2LTY0YTAxZTZmN2NmYiIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODg4OC9yZWFsbXMvbXktZml0bmVzcyIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiJmMWNlNWU2Mi0xZjM3LTRjNDYtOTA4Yy05MzVjOTFmZWVjN2UiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJ0ZXN0LXdpdGgtdWkiLCJzaWQiOiJlMTM3ZmVmMy0wYWI3LTQyNGUtYjI2MC1jNTJmYjRjNThkMDEiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbImh0dHA6Ly9sb2NhbGhvc3Q6MzAwMCJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiZGVmYXVsdC1yb2xlcy1teS1maXRuZXNzIiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiIsIlVTRVIiXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6Im9wZW5pZCBwcm9maWxlIGVtYWlsIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJkZW1vQGdtYWlsLmNvbSIsImVtYWlsIjoiZGVtb0BnbWFpbC5jb20ifQ.Lm0GBESHSnl_gfTQj0PHb3MYuAnhD8WVMVWeh0q1N84VgrxLb5X2dfN8sKuhPlzTJXpS9UR9NXbadcgnes4mN5wW0x9nw0zDiVyBpYrlPtl3B6J2_9tzl_uQa9_QfK_Br6w-fZPxYKMNWsSf0NgEJ8Wtnorg1_oLVKZcssliNhb43yFmi2UHTBSK8cLrs5RUxM48LiDR132frlhZAZVIpziVHCDfxDuQ-HLIxG6tKxl6NlgRsaUgfXobvi9_7yaCVabvnq3cQOrKjmAbtQuE-VM0ruqQrlXlA4xrgyqxir6xdqmAmaq3hHT2Q5nKjWNGeTX2RLNa0rZ46FkcRiak1g";
+  final String jwtToken = "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJtdWVVN1BCcEtENFA5LXhpNjQtSUZMNUtXaDhrTV93M19JS1lDck02bW5ZIn0.eyJleHAiOjE3NDYzNDY3NzAsImlhdCI6MTc0NjM0MzE3MCwianRpIjoib25ydHJvOjBjZDk4NDc2LTM0YmYtNDc2MC1hMmFlLTY4MGViYWVlMzc0YyIsImlzcyI6Imh0dHA6Ly8xMC4wLjIuMjo4ODg4L3JlYWxtcy9teS1maXRuZXNzIiwiYXVkIjoiYWNjb3VudCIsInN1YiI6ImYxY2U1ZTYyLTFmMzctNGM0Ni05MDhjLTkzNWM5MWZlZWM3ZSIsInR5cCI6IkJlYXJlciIsImF6cCI6InRlc3Qtd2l0aC11aSIsInNpZCI6IjE1ZTE4OWM2LTk5NWMtNGRkNS04NGRlLTYyZmY1NTViOGEyYSIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cDovL2xvY2FsaG9zdDozMDAwIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJkZWZhdWx0LXJvbGVzLW15LWZpdG5lc3MiLCJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIiwiVVNFUiJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZW1haWwiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsInByZWZlcnJlZF91c2VybmFtZSI6ImRlbW9AZ21haWwuY29tIiwiZW1haWwiOiJkZW1vQGdtYWlsLmNvbSJ9.A6nHpUu4NB0nYjP4E7SSOGxvGF9NIMtasdO0vfqdS8f7TLG09J32JZfKBdImrQWtS-JsYZO96aesG-iBxiXulmOh-vqRaJpvqklmkNQCe1-WrJCt8WJ9g6f_EG3B1d6rIYjohUKBWiLGQzl57ANUc-niG8y0chyzMdZ1WHqb3j40BDXcMwDzWbxciJOQeboeU249W-WAymoOX7lZHdJcMyz5kPDV8-53LwkXLjldBinWkKnhK_qvHDEjFjKwSO4hJ5X9CbBfxYmOqdRT129AQ3xXMF3hQXb013DwH3X2hJ1qUVtSTqNpyzbY5lttIUk4glhnoOC_RqDp5dnTMkxiMA";
   final FoodRepository foodRepository = FoodRepository();
 
   Map<String, String> get _headers => {
@@ -54,6 +54,10 @@ class MealLogRepository {
                   food: food,
                   servingUnit: entryJson['servingUnit'],
                   numberOfServings: (entryJson['numberOfServings'] as num).toDouble(),
+                  calories: (entryJson['calories'] as num).toDouble(),
+                  protein: (entryJson['protein'] as num).toDouble(),
+                  carbs: (entryJson['carbs'] as num).toDouble(),
+                  fat: (entryJson['fat'] as num).toDouble(),
                 );
               }),
             );
@@ -115,6 +119,10 @@ class MealLogRepository {
         food: food,
         servingUnit: data['servingUnit'],
         numberOfServings: (data['numberOfServings'] as num).toDouble(),
+        calories: (data['calories'] as num).toDouble(),
+        protein: (data['protein'] as num).toDouble(),
+        carbs: (data['carbs'] as num).toDouble(),
+        fat: (data['fat'] as num).toDouble(),
       );
     } else {
       throw Exception('Failed to add meal entry: ${response.body}');
@@ -233,10 +241,34 @@ class MealLogRepository {
         food: food,
         servingUnit: data['servingUnit'],
         numberOfServings: (data['numberOfServings'] as num).toDouble(),
+        calories: (data['calories'] as num).toDouble(),
+        protein: (data['protein'] as num).toDouble(),
+        carbs: (data['carbs'] as num).toDouble(),
+        fat: (data['fat'] as num).toDouble(),
       );
     } else {
       print('❌ Failed to edit meal entry: ${response.body}');
       throw Exception('Failed to edit meal entry: ${response.body}');
     }
   }
+
+  Future<int> fetchCaloriesGoal() async {
+    final uri = Uri.parse('http://192.168.1.11:8088/api/nutrition-goals/me');
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $jwtToken',
+    };
+
+    final response = await http.get(uri, headers: headers);
+
+    if (response.statusCode == 200) {
+      final decoded = json.decode(response.body);
+      final calories = decoded['data']['calories'];
+      print('🔥 Calories goal: $calories');
+      return calories;
+    } else {
+      throw Exception('Failed to load nutrition goal');
+    }
+  }
+
 }

@@ -6,6 +6,8 @@ class Food {
   final double fat;
   final double protein;
   final String imageUrl;
+  final String servingUnit;
+  final double numberOfServings;
 
   Food({
     required this.id,
@@ -15,6 +17,8 @@ class Food {
     required this.fat,
     required this.protein,
     required this.imageUrl,
+    this.servingUnit = 'Gram',
+    this.numberOfServings = 1.0,
   });
 
   factory Food.fromJson(Map<String, dynamic> json) {
@@ -25,6 +29,8 @@ class Food {
       protein: (json['protein'] ?? 0).toDouble(),
       carbs: (json['carbs'] ?? 0).toDouble(),
       fat: (json['fat'] ?? 0).toDouble(),
+      servingUnit: json['servingUnit'] ?? 'Gram',
+      numberOfServings: (json['numberOfServings'] ?? 1).toDouble(),
       imageUrl: json['imageUrl'] ?? '',
     );
   }
@@ -38,6 +44,8 @@ class Food {
       'fat': fat,
       'protein': protein,
       'imageUrl': imageUrl,
+      'servingUnit': servingUnit,
+      'numberOfServings': numberOfServings,
     };
   }
 }

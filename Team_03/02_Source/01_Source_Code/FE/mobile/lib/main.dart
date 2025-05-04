@@ -25,7 +25,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => BottomNavProvider()),
         ChangeNotifierProvider(
             create: (_) => SearchFoodViewModel()..searchFoods()),
-        ChangeNotifierProvider(create: (_) => DiaryViewModel()),
+        ChangeNotifierProvider(create: (_) => DiaryViewModel()..fetchCaloriesGoal()),
         ChangeNotifierProvider(create: (_) => ProfileViewModel()),
         ChangeNotifierProvider(create: (_) => GoalViewModel()),
         ChangeNotifierProvider(create: (_) => AuthViewModel()),

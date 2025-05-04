@@ -19,6 +19,7 @@ class FoodDetailScreen extends StatefulWidget {
   final double numberOfServings;
   final String mealEntryId;
   final MealType mealType;
+  final String? servingUnit;
 
   const FoodDetailScreen({
     super.key,
@@ -28,6 +29,7 @@ class FoodDetailScreen extends StatefulWidget {
     required this.isEdit,
     this.numberOfServings = 100,
     required this.mealType,
+    this.servingUnit,
   });
 
   @override
@@ -43,7 +45,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
     _foodVM = FoodDetailViewModel(FoodRepository())..loadFood(widget.foodId);
     _foodVM.servingSize = widget.numberOfServings;
     _foodVM.selectedMealType = widget.mealType;
-    _foodVM.fetchAllServingUnits();
+    _foodVM.fetchAllServingUnits(widget.servingUnit);
   }
 
   @override
@@ -272,7 +274,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
           const CustomDivider(),
           FoodInfoSection(
             label: 'Serving Size',
-            value: viewModel.selectedServingUnit?.unitName ?? 'grams',
+            value: viewModel.selectedServingUnit?.unitName ?? 'Grams',
             onTap: () => _selectServingUnit(context, viewModel),
           ),
           const CustomDivider(),

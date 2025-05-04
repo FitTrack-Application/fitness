@@ -27,7 +27,7 @@ class DiaryViewModel extends ChangeNotifier {
   String? errorMessage;
   List<MealLogFitness> mealLogs = [];
   List<Exercise> exerciseItems = [];
-  int calorieGoal = 5000;
+  int calorieGoal = 0;
 
   DiaryViewModel() : _repository = MealLogRepository() {
     fetchDiaryForSelectedDate();
@@ -155,7 +155,6 @@ class DiaryViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await Future.delayed(const Duration(milliseconds: 500));
       await _repository.addMealEntryToLog(
           mealLogId: mealLogId,
           foodId: foodId,
@@ -179,9 +178,7 @@ class DiaryViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await Future.delayed(const Duration(milliseconds: 300));
-
-      //await _repository.deleteMealEntry(mealEntryId);
+      await _repository.deleteMealEntry(mealEntryId);
 
       // Cập nhật lại UI sau khi xóa thành công
       await fetchDiaryForSelectedDate();
@@ -227,4 +224,13 @@ class DiaryViewModel extends ChangeNotifier {
     /////
   }
 
+  Future<void> fetchCaloriesGoal() async {
+    try {
+      calorieGoal = await _repository.fetchCaloriesGoal();
+      notifyListeners();
+    } catch (e) {
+      errorMessage = "Không thể lấy calorie goal: ${e.toString()}";
+      notifyListeners();
+    }
+  }
 }
