@@ -13,8 +13,8 @@ import jakarta.validation.constraints.Positive;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AddWeightLogRequest {
-    @NotNull(message = "Cân nặng không được để trống")
-    @Positive(message = "Cân nặng phải là số dương")
+    @NotNull(message = "Weight cannot be empty")
+    @Positive(message = "Weight must be a positive number")
     private Double weight;
 
     private String imageUrl;

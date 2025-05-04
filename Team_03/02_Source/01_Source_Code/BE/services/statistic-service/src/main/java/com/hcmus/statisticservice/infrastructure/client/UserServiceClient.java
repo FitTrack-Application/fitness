@@ -18,18 +18,18 @@ public class UserServiceClient {
 
     private final RestTemplate restTemplate;
 
-    // Sử dụng giá trị mặc định thay vì @Value để tránh lỗi
-    private String userServiceUrl = "http://user-service:8080";
+    @Value("${app.gateway-service.host:http://gateway-service:8088}")
+    private String gatewayServiceHost;
 
     /**
-     * Kiểm tra xem người dùng có tồn tại không
+     * Check if a user exists
      * 
-     * @param userId ID của người dùng
-     * @return true nếu người dùng tồn tại
+     * @param userId User ID to check
+     * @return true if the user exists
      */
     public boolean checkUserExists(UUID userId) {
         try {
-            String url = userServiceUrl + "/api/users/" + userId + "/exists";
+            String url = gatewayServiceHost + "/api/users/" + userId + "/exists";
             ResponseEntity<Map> response = restTemplate.getForEntity(url, Map.class);
 
             if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
@@ -43,14 +43,14 @@ public class UserServiceClient {
     }
 
     /**
-     * Lấy thông tin cơ bản của người dùng
+     * Get basic user information
      * 
-     * @param userId ID của người dùng
-     * @return Thông tin người dùng dưới dạng Map hoặc null nếu không tìm thấy
+     * @param userId User ID
+     * @return User information as a Map or null if not found
      */
     public Map<String, Object> getUserBasicInfo(UUID userId) {
         try {
-            String url = userServiceUrl + "/api/users/" + userId + "/basic-info";
+            String url = gatewayServiceHost + "/api/users/" + userId + "/basic-info";
             ResponseEntity<Map> response = restTemplate.getForEntity(url, Map.class);
 
             if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {

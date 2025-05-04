@@ -15,18 +15,18 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateWeightGoalRequest {
-    @NotNull(message = "Cân nặng hiện tại không được để trống")
-    @Positive(message = "Cân nặng hiện tại phải là số dương")
+    @NotNull(message = "Current weight cannot be empty")
+    @Positive(message = "Current weight must be a positive number")
     private Double startWeight;
 
-    @NotNull(message = "Cân nặng mục tiêu không được để trống")
-    @Positive(message = "Cân nặng mục tiêu phải là số dương")
+    @NotNull(message = "Target weight cannot be empty")
+    @Positive(message = "Target weight must be a positive number")
     private Double targetWeight;
 
-    @NotNull(message = "Ngày bắt đầu không được để trống")
+    @NotNull(message = "Start date cannot be empty")
     private LocalDate startDate;
 
-    @NotNull(message = "Ngày mục tiêu không được để trống")
-    @Future(message = "Ngày mục tiêu phải trong tương lai")
+    @NotNull(message = "Target date cannot be empty")
+    @Future(message = "Target date must be in the future")
     private LocalDate targetDate;
 }

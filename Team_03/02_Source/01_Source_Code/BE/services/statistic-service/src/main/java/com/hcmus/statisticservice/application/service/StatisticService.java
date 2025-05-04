@@ -1,7 +1,12 @@
 package com.hcmus.statisticservice.application.service;
 
+/**
+ * General service for statistics operations
+ * This is a placeholder interface that may be implemented in the future if
+ * needed
+ * Currently all functionality is split into specialized services
+ */
 public interface StatisticService {
-    // Hiện tại chưa có phương thức được triển khai (tất cả đều được comment trong
-    // service cũ)
-    // Các phương thức có thể được triển khai trong tương lai khi cần
+    // No methods are currently implemented
+    // All functionality has been moved to specialized services
 }
