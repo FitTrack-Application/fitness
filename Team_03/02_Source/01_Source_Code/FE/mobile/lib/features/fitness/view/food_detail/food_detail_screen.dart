@@ -7,6 +7,7 @@ import 'package:mobile/features/fitness/view/food_detail/widget/food_info_sectio
 import 'package:provider/provider.dart';
 
 import '../../models/meal_log.dart';
+import '../../models/serving_unit.dart';
 import '../../services/repository/food_repository.dart';
 import '../../viewmodels/diary_viewmodel.dart';
 import '../../viewmodels/food_detail_viewmodel.dart';
@@ -42,6 +43,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
     _foodVM = FoodDetailViewModel(FoodRepository())..loadFood(widget.foodId);
     _foodVM.servingSize = widget.numberOfServings;
     _foodVM.selectedMealType = widget.mealType;
+    _foodVM.fetchAllServingUnits();
   }
 
   @override
@@ -270,8 +272,8 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
           const CustomDivider(),
           FoodInfoSection(
             label: 'Serving Size',
-            value: 'Gram',
-            onTap: () {},
+            value: viewModel.selectedServingUnit?.unitName ?? 'grams',
+            onTap: () => _selectServingUnit(context, viewModel),
           ),
           const CustomDivider(),
           FoodInfoSection(
@@ -420,6 +422,92 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
     );
   }
 
+  Future<void> _selectServingUnit(
+      BuildContext context, FoodDetailViewModel viewModel) async {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          'Select Serving Unit',
+          style: textTheme.titleMedium,
+        ),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              for (var unit in viewModel.servingUnits) ...[
+                _buildServingUnitOption(
+                  context,
+                  unit,
+                  viewModel,
+                ),
+                const SizedBox(height: 8),
+              ]
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              'Cancel',
+              style: TextStyle(color: colorScheme.primary),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildServingUnitOption(
+      BuildContext context,
+      ServingUnit servingUnit,
+      FoodDetailViewModel viewModel,
+      ) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+    final isSelected = viewModel.selectedServingUnit?.id == servingUnit.id;
+
+    return InkWell(
+      onTap: () {
+        viewModel.updateServingUnit(servingUnit);
+        Navigator.pop(context);
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        decoration: BoxDecoration(
+          color: isSelected ? colorScheme.primary.withOpacity(0.1) : Colors.transparent,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: isSelected ? colorScheme.primary : colorScheme.outline.withOpacity(0.5),
+            width: isSelected ? 2 : 1,
+          ),
+        ),
+        child: Row(
+          children: [
+            Text(
+              '${servingUnit.unitName} (${servingUnit.unitSymbol})',
+              style: textTheme.bodyMedium?.copyWith(
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                color: isSelected ? colorScheme.primary : colorScheme.onSurface,
+              ),
+            ),
+            const Spacer(),
+            if (isSelected)
+              Icon(
+                Icons.check_circle,
+                color: colorScheme.primary,
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Future<void> _editServings(
       BuildContext context, FoodDetailViewModel viewModel) async {
     final controller = TextEditingController(text: viewModel.servingSize.toString());
@@ -434,7 +522,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
           keyboardType: TextInputType.number,
           inputFormatters: [
             FilteringTextInputFormatter.digitsOnly,
-            LengthLimitingTextInputFormatter(4),
+            LengthLimitingTextInputFormatter(6),
           ],
           decoration: InputDecoration(
             hintText: 'Enter number of servings',

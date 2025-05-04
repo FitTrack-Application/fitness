@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../models/food.dart';
 import '../models/meal_log.dart';
+import '../models/serving_unit.dart';
 import '../services/repository/food_repository.dart';
 
 // Define possible loading states
@@ -13,6 +14,9 @@ class FoodDetailViewModel extends ChangeNotifier {
   Food? food;
   double servingSize = 100;
 
+  List<ServingUnit> _servingUnits = [];
+  List<ServingUnit> get servingUnits => _servingUnits;
+
   MealType _selectedMealType = MealType.breakfast;
 
   MealType get selectedMealType => _selectedMealType;
@@ -22,6 +26,13 @@ class FoodDetailViewModel extends ChangeNotifier {
       _selectedMealType = value;
       notifyListeners();
     }
+  }
+
+  ServingUnit? selectedServingUnit;
+
+  void updateServingUnit(ServingUnit unit) {
+    selectedServingUnit = unit;
+    notifyListeners();
   }
 
   LoadState loadState = LoadState.initial;
@@ -46,11 +57,6 @@ class FoodDetailViewModel extends ChangeNotifier {
       food = result;
       print('view model servingSize: $servingSize');
 
-      // If this is an edit and the food has a meal type, use it
-      // if (food != null) {
-      //   selectedMealType = food!.mealType;
-      // }
-
       loadState = LoadState.loaded;
     } on TimeoutException catch (e) {
       loadState = LoadState.timeout;
@@ -72,6 +78,21 @@ class FoodDetailViewModel extends ChangeNotifier {
 
   void updateMealType(MealType mealType) {
     selectedMealType = mealType;
+    notifyListeners();
+  }
+
+  Future<void> fetchAllServingUnits() async {
+    loadState = LoadState.loading;
+    notifyListeners();
+
+    try {
+      _servingUnits = await _repository.getAllServingUnits();
+      loadState = LoadState.loaded;
+    } catch (e) {
+      errorMessage = e.toString();
+      loadState = LoadState.error;
+    }
+
     notifyListeners();
   }
 }
