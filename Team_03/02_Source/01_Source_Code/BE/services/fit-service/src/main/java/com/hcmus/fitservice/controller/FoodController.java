@@ -2,7 +2,6 @@ package com.hcmus.fitservice.controller;
 
 import com.hcmus.fitservice.dto.FoodDto;
 import com.hcmus.fitservice.dto.request.FoodRequest;
-import com.hcmus.fitservice.dto.request.FoodMacrosDetailsRequest;
 import com.hcmus.fitservice.dto.response.ApiResponse;
 import com.hcmus.fitservice.dto.response.FoodMacrosDetailsResponse;
 import com.hcmus.fitservice.service.FoodService;
@@ -46,9 +45,15 @@ public class FoodController {
     @GetMapping("/{foodId}/macros-details")
     public ResponseEntity<ApiResponse<FoodMacrosDetailsResponse>> getFoodMacrosDetails(
             @PathVariable UUID foodId,
-            @RequestBody FoodMacrosDetailsRequest foodMacrosDetailsRequest
+            @RequestParam UUID servingUnitId,
+            @RequestParam double numberOfServings
     ) {
-        ApiResponse<FoodMacrosDetailsResponse> response = foodService.getFoodMacrosDetailsById(foodId, foodMacrosDetailsRequest);
+        // Check if numberOfServings is valid
+        if (numberOfServings <= 0) {
+            throw new IllegalArgumentException("Number of servings must be greater than 0");
+        }
+
+        ApiResponse<FoodMacrosDetailsResponse> response = foodService.getFoodMacrosDetailsById(foodId, servingUnitId, numberOfServings);
         return ResponseEntity.ok(response);
     }
 
