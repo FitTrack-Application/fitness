@@ -46,7 +46,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
     _foodVM = FoodDetailViewModel(FoodRepository())
       ..loadFood(widget.foodId,
           servingUnitId:
-          widget.servingUnitId ?? '9b0f9cf0-1c6e-4c1e-a3a1-8a9fddc20a0b',
+          widget.servingUnitId ?? '',
           numberOfServings: widget.numberOfServings);
     _foodVM.updateServingSize(widget.numberOfServings);
     _foodVM.selectedMealType = widget.mealType;
@@ -103,14 +103,14 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                   foodId: food.id,
                                   servingUnitId: foodVM
                                           .selectedServingUnit?.id ??
-                                      '9b0f9cf0-1c6e-4c1e-a3a1-8a9fddc20a0b',
+                                      '9b0f9cf0-1c6e-4c1e-a3a1-8a9fddc20a0ba',
                                   numberOfServings: foodVM.servingSize);
                             } else {
                               diaryVM.addFoodToDiary(
                                 mealLogId: widget.mealLogId,
                                 foodId: food.id,
                                 servingUnitId: foodVM.selectedServingUnit?.id ??
-                                    '9b0f9cf0-1c6e-4c1e-a3a1-8a9fddc20a0b',
+                                    '',
                                 numberOfServings: foodVM.servingSize,
                               );
                             }

@@ -5,9 +5,11 @@ import '../models/exercise.dart';
 import '../models/food.dart';
 import '../models/meal_entry.dart';
 import '../models/meal_log.dart';
+import '../services/repository/food_repository.dart';
 
 class DiaryViewModel extends ChangeNotifier {
-  final MealLogRepository _repository;
+  final MealLogRepository _mealLogRepository;
+  final FoodRepository _foodRepository;
 
   DateTime selectedDate = DateTime.now();
   bool isLoading = false;
@@ -29,7 +31,8 @@ class DiaryViewModel extends ChangeNotifier {
   List<Exercise> exerciseItems = [];
   int calorieGoal = 0;
 
-  DiaryViewModel() : _repository = MealLogRepository() {
+  DiaryViewModel() : _mealLogRepository = MealLogRepository(),
+                     _foodRepository = FoodRepository() {
     fetchDiaryForSelectedDate();
   }
 
@@ -123,12 +126,12 @@ class DiaryViewModel extends ChangeNotifier {
       exerciseItems = [];
 
       try {
-        mealLogs = await _repository.fetchMealLogsForDate(selectedDate);
+        mealLogs = await _mealLogRepository.fetchMealLogsForDate(selectedDate);
       } catch (e) {
         // Nếu lỗi là do không có meal log, thì tạo mới rồi fetch lại
         if (e.toString().contains('Failed to load meal logs: 400')) {
-          await _repository.createMealLogsForDate(selectedDate);
-          mealLogs = await _repository.fetchMealLogsForDate(selectedDate);
+          await _mealLogRepository.createMealLogsForDate(selectedDate);
+          mealLogs = await _mealLogRepository.fetchMealLogsForDate(selectedDate);
         } else {
           rethrow;
         }
@@ -154,7 +157,15 @@ class DiaryViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await _repository.addMealEntryToLog(
+      // Get default serving unit if not provided
+      if (servingUnitId.isEmpty){
+        final servingUnitList = await _foodRepository.getAllServingUnits();
+        if (servingUnitList.isNotEmpty) {
+          servingUnitId = servingUnitList.first.id;
+        }
+      }
+
+      await _mealLogRepository.addMealEntryToLog(
           mealLogId: mealLogId,
           foodId: foodId,
           servingUnitId: servingUnitId,
@@ -177,7 +188,7 @@ class DiaryViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await _repository.deleteMealEntry(mealEntryId);
+      await _mealLogRepository.deleteMealEntry(mealEntryId);
 
       // Cập nhật lại UI sau khi xóa thành công
       await fetchDiaryForSelectedDate();
@@ -201,7 +212,7 @@ class DiaryViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await _repository.editMealEntry(
+      await _mealLogRepository.editMealEntry(
         mealEntryId: mealEntryId,
         numberOfServings: numberOfServings,
         foodId: foodId,
@@ -225,7 +236,7 @@ class DiaryViewModel extends ChangeNotifier {
 
   Future<void> fetchCaloriesGoal() async {
     try {
-      calorieGoal = await _repository.fetchCaloriesGoal();
+      calorieGoal = await _mealLogRepository.fetchCaloriesGoal();
       notifyListeners();
     } catch (e) {
       errorMessage = "Không thể lấy calorie goal: ${e.toString()}";

@@ -43,9 +43,7 @@ class FoodDetailViewModel extends ChangeNotifier {
   void updateServingSize(double size) {
     if (size >= 1 && size <= 1000000) {
       _servingSize = size;
-      print('_servingSize: $_servingSize');
-      print('selectedServingUnit.name: ${selectedServingUnit?.unitName}');
-      loadFood(food?.id ?? '', servingUnitId: selectedServingUnit?.id ?? '9b0f9cf0-1c6e-4c1e-a3a1-8a9fddc20a0b', numberOfServings: _servingSize);
+      loadFood(food?.id ?? '', servingUnitId: selectedServingUnit?.id ?? '9b0f9cf0-1c6e-4c1e-a3a1-8a9fddc20a0ba', numberOfServings: _servingSize);
       notifyListeners();
     }
   }
@@ -63,7 +61,6 @@ class FoodDetailViewModel extends ChangeNotifier {
         print('🚫 Không có đơn vị nào trong danh sách.');
       }
     }
-    // loadFood(food?.id ?? '', servingUnitId: selectedServingUnit?.id ?? '9b0f9cf0-1c6e-4c1e-a3a1-8a9fddc20a0b', numberOfServings: servingSize);
     notifyListeners();
   }
 
@@ -77,15 +74,22 @@ class FoodDetailViewModel extends ChangeNotifier {
 
   Future<void> loadFood(
     String foodId, {
-    String servingUnitId = "9b0f9cf0-1c6e-4c1e-a3a1-8a9fddc20a0b",
+    String servingUnitId = "",
     double numberOfServings = 100,
   }) async {
-    print('servingUnitId loadFood: $servingUnitId');
     loadState = LoadState.loading;
     errorMessage = null;
     notifyListeners();
 
     try {
+      // Get default serving unit if not provided
+      if (servingUnitId.isEmpty){
+        final servingUnitList = await _repository.getAllServingUnits();
+        if (servingUnitList.isNotEmpty) {
+          servingUnitId = servingUnitList.first.id;
+        }
+      }
+
       final result = await _repository
           .getFoodById(foodId,
               servingUnitId: servingUnitId, numberOfServings: numberOfServings)
@@ -119,7 +123,7 @@ class FoodDetailViewModel extends ChangeNotifier {
 
     try {
       _servingUnits = await _repository.getAllServingUnits();
-      updateServingUnitById(servingUnitId ?? '9b0f9cf0-1c6e-4c1e-a3a1-8a9fddc20a0b');
+      updateServingUnitById(servingUnitId ?? _servingUnits.first.id);
       loadState = LoadState.loaded;
     } catch (e) {
       errorMessage = e.toString();
