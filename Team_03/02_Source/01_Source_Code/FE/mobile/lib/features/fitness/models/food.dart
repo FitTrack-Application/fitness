@@ -1,3 +1,5 @@
+import 'package:mobile/features/fitness/models/serving_unit.dart';
+
 class Food {
   final String id;
   final String name;
@@ -6,7 +8,7 @@ class Food {
   final double fat;
   final double protein;
   final String imageUrl;
-  final String servingUnit;
+  final ServingUnit servingUnit;
   final double numberOfServings;
 
   Food({
@@ -17,8 +19,8 @@ class Food {
     required this.fat,
     required this.protein,
     required this.imageUrl,
-    this.servingUnit = 'Gram',
-    this.numberOfServings = 1.0,
+    required this.servingUnit,
+    required this.numberOfServings,
   });
 
   factory Food.fromJson(Map<String, dynamic> json) {
@@ -29,8 +31,14 @@ class Food {
       protein: (json['protein'] ?? 0).toDouble(),
       carbs: (json['carbs'] ?? 0).toDouble(),
       fat: (json['fat'] ?? 0).toDouble(),
-      servingUnit: json['servingUnit'] ?? 'Gram',
       numberOfServings: (json['numberOfServings'] ?? 1).toDouble(),
+      servingUnit: json['servingUnit'] != null
+          ? ServingUnit.fromJson(json['servingUnit'])
+          : ServingUnit(
+        id: '',
+        unitName: 'Gram',
+        unitSymbol: 'g',
+      ),
       imageUrl: json['imageUrl'] ?? '',
     );
   }
@@ -44,7 +52,7 @@ class Food {
       'fat': fat,
       'protein': protein,
       'imageUrl': imageUrl,
-      'servingUnit': servingUnit,
+      'servingUnit': servingUnit.toJson(),
       'numberOfServings': numberOfServings,
     };
   }

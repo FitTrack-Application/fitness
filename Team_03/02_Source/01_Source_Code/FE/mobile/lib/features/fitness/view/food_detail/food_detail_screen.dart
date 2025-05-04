@@ -19,7 +19,7 @@ class FoodDetailScreen extends StatefulWidget {
   final double numberOfServings;
   final String mealEntryId;
   final MealType mealType;
-  final String? servingUnit;
+  final String? servingUnitId;
 
   const FoodDetailScreen({
     super.key,
@@ -29,7 +29,7 @@ class FoodDetailScreen extends StatefulWidget {
     required this.isEdit,
     this.numberOfServings = 100,
     required this.mealType,
-    this.servingUnit,
+    this.servingUnitId,
   });
 
   @override
@@ -42,14 +42,15 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
   @override
   void initState() {
     super.initState();
+    print('widget.servingUnitId: ${widget.servingUnitId}');
     _foodVM = FoodDetailViewModel(FoodRepository())
       ..loadFood(widget.foodId,
           servingUnitId:
-              '9b0f9cf0-1c6e-4c1e-a3a1-8a9fddc20a0b',
+          widget.servingUnitId ?? '9b0f9cf0-1c6e-4c1e-a3a1-8a9fddc20a0b',
           numberOfServings: widget.numberOfServings);
     _foodVM.updateServingSize(widget.numberOfServings);
     _foodVM.selectedMealType = widget.mealType;
-    _foodVM.fetchAllServingUnits(widget.servingUnit);
+    _foodVM.fetchAllServingUnits(widget.servingUnitId);
   }
 
   @override

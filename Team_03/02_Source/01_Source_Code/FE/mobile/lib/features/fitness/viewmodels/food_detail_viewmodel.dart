@@ -50,10 +50,10 @@ class FoodDetailViewModel extends ChangeNotifier {
     }
   }
 
-  void updateServingUnitByName(String name) {
+  void updateServingUnitById(String name) {
     try {
       final matchedUnit = _servingUnits.firstWhere(
-        (unit) => unit.unitName.toLowerCase() == name.toLowerCase(),
+        (unit) => unit.id.toLowerCase() == name.toLowerCase(),
       );
       selectedServingUnit = matchedUnit;
     } catch (e) {
@@ -78,21 +78,14 @@ class FoodDetailViewModel extends ChangeNotifier {
   Future<void> loadFood(
     String foodId, {
     String servingUnitId = "9b0f9cf0-1c6e-4c1e-a3a1-8a9fddc20a0b",
-        String servingUnitName = "",
     double numberOfServings = 100,
   }) async {
+    print('servingUnitId loadFood: $servingUnitId');
     loadState = LoadState.loading;
     errorMessage = null;
     notifyListeners();
 
     try {
-      if (servingUnitName.isNotEmpty){
-        final matchedUnit = _servingUnits.firstWhere(
-              (unit) => unit.unitName.toLowerCase() == servingUnitName.toLowerCase(),
-        );
-        servingUnitId = matchedUnit.id;
-      }
-
       final result = await _repository
           .getFoodById(foodId,
               servingUnitId: servingUnitId, numberOfServings: numberOfServings)
@@ -120,13 +113,13 @@ class FoodDetailViewModel extends ChangeNotifier {
   //   notifyListeners();
   // }
 
-  Future<void> fetchAllServingUnits(String? servingUnit) async {
+  Future<void> fetchAllServingUnits(String? servingUnitId) async {
     loadState = LoadState.loading;
     notifyListeners();
 
     try {
       _servingUnits = await _repository.getAllServingUnits();
-      updateServingUnitByName(servingUnit ?? 'Gram');
+      updateServingUnitById(servingUnitId ?? '9b0f9cf0-1c6e-4c1e-a3a1-8a9fddc20a0b');
       loadState = LoadState.loaded;
     } catch (e) {
       errorMessage = e.toString();

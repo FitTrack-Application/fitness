@@ -24,8 +24,8 @@ import '../../features/fitness/view/search_food/search_food_screen.dart';
 import 'package:mobile/features/statistic/view/weight/add_weight.dart';
 
 final GoRouter appRouter = GoRouter(
-  initialLocation: '/',
-  // initialLocation: '/dashboard',
+  // initialLocation: '/',
+  initialLocation: '/dashboard',
   routes: [
     GoRoute(
       path: '/',
@@ -88,7 +88,7 @@ final GoRouter appRouter = GoRouter(
         }
 
         // Parse query param
-        final servingUnit = state.uri.queryParameters['servingUnit'];
+        final servingUnitId = state.uri.queryParameters['servingUnitId'];
 
         return FoodDetailScreen(
           foodId: foodId,
@@ -97,7 +97,7 @@ final GoRouter appRouter = GoRouter(
           isEdit: isEdit,
           numberOfServings: numberOfServings,
           mealType: mealType,
-          servingUnit: servingUnit,
+          servingUnitId: servingUnitId,
         );
       },
     ),

@@ -4,6 +4,7 @@ import 'dart:async';
 import '../models/food.dart';
 import '../models/meal_log.dart';
 import '../models/recipe.dart';
+import '../models/serving_unit.dart';
 import '../services/repository/food_repository.dart';
 import '../services/repository/recipe_repository.dart';
 
@@ -23,6 +24,7 @@ class SearchFoodViewModel extends ChangeNotifier {
         _recipeRepository = recipeRepository ?? RecipeRepository();
 
   List<Food> get foods => _foods;
+
   List<Recipe> get recipes => _recipes;
 
   bool isLoading = false;
@@ -35,7 +37,9 @@ class SearchFoodViewModel extends ChangeNotifier {
   String _loadMoreError = '';
 
   bool get hasMoreData => _hasMoreData;
+
   String get errorMessage => _errorMessage;
+
   String get loadMoreError => _loadMoreError;
 
   /// Main search function supporting All Foods and My Recipes
@@ -65,7 +69,6 @@ class SearchFoodViewModel extends ChangeNotifier {
         _recipes.clear();
         _recipes.addAll(_getMockRecipes);
         _totalPages = 1;
-
       } else {
         final paginatedResponse = await _fetchWithTimeout(() =>
             _foodRepository.searchFoods(query, page: _currentPage, size: 10));
@@ -116,10 +119,9 @@ class SearchFoodViewModel extends ChangeNotifier {
 
         _hasMoreData = false; // Simulate no pagination for mock
         _recipes.addAll(_getMockRecipes);
-
       } else {
-        final paginatedResponse = await _fetchWithTimeout(() =>
-            _foodRepository.searchFoods(searchQuery, page: _currentPage, size: size));
+        final paginatedResponse = await _fetchWithTimeout(() => _foodRepository
+            .searchFoods(searchQuery, page: _currentPage, size: size));
 
         if (paginatedResponse.data.isEmpty) {
           _hasMoreData = false;
@@ -167,7 +169,6 @@ class SearchFoodViewModel extends ChangeNotifier {
     recipes.insert(0, recipe); // Add it to the beginning of the list
     notifyListeners();
   }
-
 }
 
 final List<Recipe> _getMockRecipes = [
@@ -183,35 +184,53 @@ final List<Recipe> _getMockRecipes = [
     unit: 'grams',
     foodList: [
       Food(
-        id: 'f001',
-        name: 'Grilled Chicken Breast',
-        calories: 220,
-        carbs: 0,
-        fat: 6,
-        protein: 32,
-        imageUrl: ''
-        // mealType: MealType.lunch,
-      ),
+          id: 'f001',
+          name: 'Grilled Chicken Breast',
+          calories: 220,
+          carbs: 0,
+          fat: 6,
+          protein: 32,
+          imageUrl: '',
+        servingUnit: ServingUnit(
+          id: '1',
+          unitName: 'Slice',
+          unitSymbol: 's',
+        ),
+        numberOfServings: 1,
+          // mealType: MealType.lunch,
+          ),
       Food(
-        id: 'f002',
-        name: 'Mixed Greens',
-        calories: 20,
-        carbs: 4,
-        fat: 0.5,
-        protein: 2,
-          imageUrl: ''
-        // mealType: MealType.lunch,
-      ),
+          id: 'f002',
+          name: 'Mixed Greens',
+          calories: 20,
+          carbs: 4,
+          fat: 0.5,
+          protein: 2,
+          imageUrl: '',
+        servingUnit: ServingUnit(
+          id: '1',
+          unitName: 'Slice',
+          unitSymbol: 's',
+        ),
+        numberOfServings: 1,
+          // mealType: MealType.lunch,
+          ),
       Food(
-        id: 'f003',
-        name: 'Olive Oil',
-        calories: 80,
-        carbs: 0,
-        fat: 9,
-        protein: 0,
-          imageUrl: ''
-        // mealType: MealType.lunch,
-      ),
+          id: 'f003',
+          name: 'Olive Oil',
+          calories: 80,
+          carbs: 0,
+          fat: 9,
+          protein: 0,
+          imageUrl: '',
+        servingUnit: ServingUnit(
+          id: '1',
+          unitName: 'Slice',
+          unitSymbol: 's',
+        ),
+        numberOfServings: 1,
+          // mealType: MealType.lunch,
+          ),
     ],
   ),
   Recipe(
@@ -226,25 +245,37 @@ final List<Recipe> _getMockRecipes = [
     unit: 'grams',
     foodList: [
       Food(
-        id: 'f004',
-        name: 'Rolled Oats',
-        calories: 190,
-        carbs: 33,
-        fat: 3.5,
-        protein: 5,
-          imageUrl: ''
-        // mealType: MealType.breakfast,
-      ),
+          id: 'f004',
+          name: 'Rolled Oats',
+          calories: 190,
+          carbs: 33,
+          fat: 3.5,
+          protein: 5,
+          imageUrl: '',
+        servingUnit: ServingUnit(
+          id: '1',
+          unitName: 'Slice',
+          unitSymbol: 's',
+        ),
+        numberOfServings: 1,
+          // mealType: MealType.breakfast,
+          ),
       Food(
-        id: 'f005',
-        name: 'Banana',
-        calories: 89,
-        carbs: 23,
-        fat: 0.3,
-        protein: 1.1,
-          imageUrl: ''
-        // mealType: MealType.breakfast,
-      ),
+          id: 'f005',
+          name: 'Banana',
+          calories: 89,
+          carbs: 23,
+          fat: 0.3,
+          protein: 1.1,
+          imageUrl: '',
+        servingUnit: ServingUnit(
+          id: '1',
+          unitName: 'Slice',
+          unitSymbol: 's',
+        ),
+        numberOfServings: 1,
+          // mealType: MealType.breakfast,
+          ),
     ],
   ),
   Recipe(
@@ -259,25 +290,37 @@ final List<Recipe> _getMockRecipes = [
     unit: 'grams',
     foodList: [
       Food(
-        id: 'f006',
-        name: 'Whey Protein',
-        calories: 120,
-        carbs: 3,
-        fat: 2,
-        protein: 24,
-          imageUrl: ''
-        // mealType: MealType.breakfast,
-      ),
+          id: 'f006',
+          name: 'Whey Protein',
+          calories: 120,
+          carbs: 3,
+          fat: 2,
+          protein: 24,
+          imageUrl: '',
+        servingUnit: ServingUnit(
+          id: '1',
+          unitName: 'Slice',
+          unitSymbol: 's',
+        ),
+        numberOfServings: 1,
+          // mealType: MealType.breakfast,
+          ),
       Food(
-        id: 'f007',
-        name: 'Eggs',
-        calories: 140,
-        carbs: 1,
-        fat: 10,
-        protein: 12,
-        imageUrl: ''
-        // mealType: MealType.breakfast,
-      ),
+          id: 'f007',
+          name: 'Eggs',
+          calories: 140,
+          carbs: 1,
+          fat: 10,
+          protein: 12,
+          imageUrl: '',
+        servingUnit: ServingUnit(
+          id: '1',
+          unitName: 'Slice',
+          unitSymbol: 's',
+        ),
+        numberOfServings: 1,
+          // mealType: MealType.breakfast,
+          ),
     ],
   ),
   Recipe(
@@ -292,25 +335,37 @@ final List<Recipe> _getMockRecipes = [
     unit: 'grams',
     foodList: [
       Food(
-        id: 'f008',
-        name: 'Beef Strips',
-        calories: 300,
-        carbs: 0,
-        fat: 20,
-        protein: 30,
-        imageUrl: ''
-        // mealType: MealType.dinner,
-      ),
+          id: 'f008',
+          name: 'Beef Strips',
+          calories: 300,
+          carbs: 0,
+          fat: 20,
+          protein: 30,
+          imageUrl: '',
+        servingUnit: ServingUnit(
+          id: '1',
+          unitName: 'Slice',
+          unitSymbol: 's',
+        ),
+        numberOfServings: 1,
+          // mealType: MealType.dinner,
+          ),
       Food(
-        id: 'f009',
-        name: 'Bell Peppers',
-        calories: 40,
-        carbs: 9,
-        fat: 0.5,
-        protein: 1,
-          imageUrl: ''
-        // mealType: MealType.dinner,
-      ),
+          id: 'f009',
+          name: 'Bell Peppers',
+          calories: 40,
+          carbs: 9,
+          fat: 0.5,
+          protein: 1,
+          imageUrl: '',
+        servingUnit: ServingUnit(
+          id: '1',
+          unitName: 'Slice',
+          unitSymbol: 's',
+        ),
+        numberOfServings: 1,
+          // mealType: MealType.dinner,
+          ),
     ],
   ),
   Recipe(
@@ -331,19 +386,31 @@ final List<Recipe> _getMockRecipes = [
         carbs: 28,
         fat: 4,
         protein: 9,
-        imageUrl: ''
+        imageUrl: '',
+        servingUnit: ServingUnit(
+          id: '1',
+          unitName: 'Slice',
+          unitSymbol: 's',
+        ),
+        numberOfServings: 1,
         // mealType: MealType.lunch,
       ),
       Food(
-        id: 'f011',
-        name: 'Canned Tuna',
-        calories: 120,
-        carbs: 2,
-        fat: 8,
-        protein: 16,
-        imageUrl: ''
-        // mealType: MealType.lunch,
-      ),
+          id: 'f011',
+          name: 'Canned Tuna',
+          calories: 120,
+          carbs: 2,
+          fat: 8,
+          protein: 16,
+          servingUnit: ServingUnit(
+            id: '1',
+            unitName: 'Slice',
+            unitSymbol: 's',
+          ),
+          numberOfServings: 1,
+          imageUrl: ''
+          // mealType: MealType.lunch,
+          ),
     ],
   ),
 ];
