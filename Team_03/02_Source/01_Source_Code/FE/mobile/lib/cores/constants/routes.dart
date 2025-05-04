@@ -12,6 +12,7 @@ import 'package:mobile/features/fitness/view/diary/diary_screen.dart';
 import 'package:mobile/features/fitness/view/recipe_detail/create_recipe_screen.dart';
 import 'package:mobile/features/fitness/view/recipe_detail/recipe_detail.dart';
 import 'package:mobile/features/fitness/view/recipe_detail/search_food_for_recipe.dart';
+import 'package:mobile/features/fitness/view/scan_barcode/scan_barcode_screen.dart';
 import 'package:mobile/features/statistic/view/dashboard/dashboard_screen.dart';
 import 'package:mobile/features/statistic/view/step/add_step.dart';
 
@@ -23,8 +24,7 @@ import '../../features/fitness/view/search_food/search_food_screen.dart';
 import 'package:mobile/features/statistic/view/weight/add_weight.dart';
 
 final GoRouter appRouter = GoRouter(
-  // initialLocation: '/auth/login',
-  initialLocation: '/dashboard',
+  initialLocation: '/',
   routes: [
     GoRoute(
       path: '/',
@@ -123,14 +123,14 @@ final GoRouter appRouter = GoRouter(
       path: '/profile',
       builder: (context, state) => const MainScreen(child: ProfileScreen()),
     ),
-    GoRoute(
-      path: '/auth/register',
-      builder: (context, state) => const UserRegister(),
-    ),
-    GoRoute(
-      path: '/auth/login',
-      builder: (context, state) => const UserLogin(),
-    ),
+    // GoRoute(
+    //   path: '/auth/register',
+    //   builder: (context, state) => const UserRegister(),
+    // ),
+    // GoRoute(
+    //   path: '/auth/login',
+    //   builder: (context, state) => const UserLogin(),
+    // ),
     GoRoute(
       path: '/survey',
       builder: (context, state) {
