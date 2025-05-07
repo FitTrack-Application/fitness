@@ -1,0 +1,19 @@
+{
+  "name": "backend_mobile",
+  "version": "1.0.0",
+  "description": "Phân hệ dành cho App Android.",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "keywords": [],
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}

@@ -1,4 +1,3 @@
-
 // -- Generic Text
 const String tLogin = "Login";
 const String tRegister = "Register";
@@ -9,14 +8,14 @@ const String tSignInWithGoogle = "Sign-In with Google";
 const String tFullName = "Full Name";
 const String tPhoneNo = "Phone No";
 
-
 // -- Splash Screen Text
 const String tAppName = "Ami";
 const String tAppTagLine = "Assistant \nManagement Intelligence";
 
 // -- Welcome Screen Text
 const String tWelcomeTitle = "Welcome to Ami!";
-const String tWelcomeSubTitle = "Your friendly AI companion for all your questions and conversations";
+const String tWelcomeSubTitle =
+    "Your friendly AI companion for all your questions and conversations";
 
 // -- Login Screen Text
 const String tLoginTitle = "Welcome Back,";

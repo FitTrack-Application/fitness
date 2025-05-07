@@ -6,10 +6,14 @@ import com.hcmus.fitservice.mapper.helper.Macros;
 import com.hcmus.fitservice.mapper.helper.MacrosCalculatorHelper;
 import com.hcmus.fitservice.model.Food;
 import com.hcmus.fitservice.model.ServingUnit;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+@RequiredArgsConstructor
 @Component
 public class FoodMapper {
+
+    private final ServingUnitMapper servingUnitMapper;
 
     public FoodDto convertToFoodDto(Food food) {
         return FoodDto.builder()
@@ -30,7 +34,7 @@ public class FoodMapper {
                 .id(food.getFoodId())
                 .name(food.getFoodName())
                 .imageUrl(food.getImageUrl())
-                .servingUnit(servingUnit.getUnitName())
+                .servingUnit(servingUnitMapper.convertToServingUnitResponse(servingUnit))
                 .numberOfServings(numberOfServings)
                 .calories(macros.getCalories())
                 .protein(macros.getProtein())

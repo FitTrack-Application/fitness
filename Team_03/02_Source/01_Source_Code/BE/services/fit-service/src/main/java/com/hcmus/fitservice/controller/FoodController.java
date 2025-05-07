@@ -1,8 +1,7 @@
 package com.hcmus.fitservice.controller;
 
 import com.hcmus.fitservice.dto.FoodDto;
-import com.hcmus.fitservice.dto.request.AddFoodRequest;
-import com.hcmus.fitservice.dto.request.FoodMacrosDetailsRequest;
+import com.hcmus.fitservice.dto.request.FoodRequest;
 import com.hcmus.fitservice.dto.response.ApiResponse;
 import com.hcmus.fitservice.dto.response.FoodMacrosDetailsResponse;
 import com.hcmus.fitservice.service.FoodService;
@@ -48,9 +47,9 @@ public class FoodController {
     @GetMapping("/{foodId}/macros-details")
     public ResponseEntity<ApiResponse<FoodMacrosDetailsResponse>> getFoodMacrosDetails(
             @PathVariable UUID foodId,
-            @RequestBody FoodMacrosDetailsRequest foodMacrosDetailsRequest) {
-        ApiResponse<FoodMacrosDetailsResponse> response = foodService.getFoodMacrosDetailsById(foodId,
-                foodMacrosDetailsRequest);
+            @RequestBody FoodMacrosDetailsRequest foodMacrosDetailsRequest
+    ) {
+        ApiResponse<FoodMacrosDetailsResponse> response = foodService.getFoodMacrosDetailsById(foodId, foodMacrosDetailsRequest);
         return ResponseEntity.ok(response);
     }
 
@@ -94,10 +93,10 @@ public class FoodController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<ApiResponse<?>> addFood(@Valid @RequestBody AddFoodRequest foodDto) {
+    @PostMapping
+    public ResponseEntity<ApiResponse<?>> addFood(@Valid @RequestBody FoodRequest foodRequest) {
         UUID userId = jwtUtil.getCurrentUserId();
-        ApiResponse<?> response = foodService.addFood(foodDto, userId);
+        ApiResponse<?> response = foodService.createFood(foodRequest, userId);
         return ResponseEntity.ok(response);
     }
 
@@ -109,9 +108,9 @@ public class FoodController {
     }
 
     @PutMapping("/{foodId}")
-    public ResponseEntity<ApiResponse<?>> updateFood(@PathVariable UUID foodId, @Valid @RequestBody FoodDto foodDto) {
+    public ResponseEntity<ApiResponse<?>> updateFood(@PathVariable UUID foodId, @Valid @RequestBody FoodRequest foodRequest) {
         UUID userId = jwtUtil.getCurrentUserId();
-        ApiResponse<?> response = foodService.updateFood(foodId, foodDto, userId);
+        ApiResponse<?> response = foodService.updateFood(foodId, foodRequest, userId);
         return ResponseEntity.ok(response);
     }
 }

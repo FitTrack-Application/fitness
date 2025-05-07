@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class FoodEntryMapper {
 
+    private final ServingUnitMapper servingUnitMapper;
+
     // From RecipeEntry to FoodEntryDto
     public FoodEntryResponse convertToFoodEntryDto(RecipeEntry recipeEntry) {
 
@@ -21,7 +23,7 @@ public class FoodEntryMapper {
         return FoodEntryResponse.builder()
                 .id(recipeEntry.getRecipeEntryId())
                 .foodId(recipeEntry.getFood().getFoodId())
-                .servingUnit(recipeEntry.getServingUnit().getUnitName())
+                .servingUnit(servingUnitMapper.convertToServingUnitResponse(recipeEntry.getServingUnit()))
                 .numberOfServings(recipeEntry.getNumberOfServings())
                 .calories(macros.getCalories())
                 .protein(macros.getProtein())
@@ -38,7 +40,7 @@ public class FoodEntryMapper {
         return FoodEntryResponse.builder()
                 .id(mealEntry.getMealEntryId())
                 .foodId(mealEntry.getFood().getFoodId())
-                .servingUnit(mealEntry.getServingUnit().getUnitName())
+                .servingUnit(servingUnitMapper.convertToServingUnitResponse(mealEntry.getServingUnit()))
                 .numberOfServings(mealEntry.getNumberOfServings())
                 .calories(macros.getCalories())
                 .protein(macros.getProtein())
