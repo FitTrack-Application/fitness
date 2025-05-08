@@ -4,9 +4,11 @@ import com.hcmus.exerciseservice.dto.request.ExerciseLogEntryRequest;
 import com.hcmus.exerciseservice.dto.request.InitiateExerciseLogRequest;
 import com.hcmus.exerciseservice.dto.response.ApiResponse;
 import com.hcmus.exerciseservice.dto.response.ExerciseLogEntryResponse;
+import com.hcmus.exerciseservice.dto.response.ExerciseLogResponse;
 import com.hcmus.exerciseservice.exception.ResourceAlreadyExistsException;
 import com.hcmus.exerciseservice.exception.ResourceNotFoundException;
 import com.hcmus.exerciseservice.mapper.ExerciseLogEntryMapper;
+import com.hcmus.exerciseservice.mapper.ExerciseLogMapper;
 import com.hcmus.exerciseservice.model.Exercise;
 import com.hcmus.exerciseservice.model.ExerciseLog;
 import com.hcmus.exerciseservice.model.ExerciseLogEntry;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,6 +35,8 @@ public class ExerciseLogServiceImpl implements ExerciseLogService {
     private final ExerciseRepository exerciseRepository;
 
     private final ExerciseLogEntryMapper exerciseLogEntryMapper;
+
+    private final ExerciseLogMapper exerciseLogMapper;
 
     @Override
     public ApiResponse<?> createExerciseLog(InitiateExerciseLogRequest initiateExerciseLogRequest, UUID userId) {
@@ -78,6 +83,21 @@ public class ExerciseLogServiceImpl implements ExerciseLogService {
                 .status(201)
                 .generalMessage("Successfully added exercise log entry")
                 .data(exerciseLogEntryResponse)
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
+
+    public ApiResponse<ExerciseLogResponse> getExerciseLogByUserIdAndDate(UUID userId, Date date) {
+        ExerciseLog exerciseLog = exerciseLogRepository.findByUserIdAndDate(userId, date)
+                .orElseThrow(() -> new ResourceNotFoundException("Exercise log not found for user ID: " + userId + " and date: " + date));
+
+        // Convert to Dto
+        ExerciseLogResponse exerciseLogResponse = exerciseLogMapper.convertToExerciseLogResponse(exerciseLog);
+
+        return ApiResponse.<ExerciseLogResponse>builder()
+                .status(200)
+                .generalMessage("Successfully retrieved exercise log")
+                .data(exerciseLogResponse)
                 .timestamp(LocalDateTime.now())
                 .build();
     }
