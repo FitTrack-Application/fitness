@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/dashboard.dart';
 import '../models/weight_entry.dart';
+import '../models/step_entry.dart';
 import '../services/dashboard_api_service.dart';
 
 class DashboardViewModel extends ChangeNotifier {
@@ -19,9 +20,12 @@ class DashboardViewModel extends ChangeNotifier {
   Macronutrients macronutrients = Macronutrients(carbs: 0, protein: 0, fat: 0);
   int caloriesGoal = 0;
 
-  List<WeightEntry> weightEntries = []; 
-
-  int get caloriesRemaining => caloriesGoal - totalCaloriesConsumed; //+ totalCaloriesBurned;
+  List<WeightEntry> weightEntries = [];
+  List<StepEntry> stepEntries = [
+    StepEntry(date: DateTime.now(), steps: 0), // Example default entr
+  ];
+  int get caloriesRemaining =>
+      caloriesGoal - totalCaloriesConsumed; //+ totalCaloriesBurned;
 
   int get carbsPercent => _calculateMacroPercent(macronutrients.carbs);
   int get proteinPercent => _calculateMacroPercent(macronutrients.protein);
@@ -59,13 +63,31 @@ class DashboardViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<void> fetchStepStatistics() async {
+    try {
+      final result = await apiService.fetchStepStatistics();
+      stepEntries = result;
+      notifyListeners();
+    } catch (e) {
+      errorMessage = e.toString();
+      stepEntries = [
+        StepEntry(date: DateTime.now(), steps: 500), // Example default entry
+        StepEntry(
+            date: DateTime.now().subtract(Duration(days: 1)), steps: 1000),
+      ];
+    } finally {
+      notifyListeners();
+    }
+  }
+
   int _calculateMacroPercent(int macroValue) {
-    final total = macronutrients.carbs + macronutrients.protein + macronutrients.fat;
+    final total =
+        macronutrients.carbs + macronutrients.protein + macronutrients.fat;
     if (total == 0) return 0;
     return ((macroValue / total) * 100).toInt();
   }
 }
-
 
 DashboardLogModel createMockData() {
   return DashboardLogModel(

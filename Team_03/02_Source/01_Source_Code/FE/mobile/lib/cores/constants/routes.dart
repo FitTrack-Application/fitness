@@ -24,7 +24,7 @@ import '../../features/fitness/view/search_food/search_food_screen.dart';
 import 'package:mobile/features/statistic/view/weight/add_weight.dart';
 
 final GoRouter appRouter = GoRouter(
-  initialLocation: '/',
+  initialLocation: '/welcome',
   routes: [
     GoRoute(
       path: '/',
@@ -68,12 +68,14 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/food/:mealLogIdOrMealEntryId/:foodId/:mode/:numberOfServings',
       builder: (context, state) {
-        final mealLogOrMealEntryStr = state.pathParameters['mealLogIdOrMealEntryId'] ?? '';
+        final mealLogOrMealEntryStr =
+            state.pathParameters['mealLogIdOrMealEntryId'] ?? '';
         final foodId = state.pathParameters['foodId'] ?? '';
         final mode = state.pathParameters['mode'];
         final isEdit = (mode == 'edit');
         final numberOfServingsStr = state.pathParameters['numberOfServings'];
-        final numberOfServings = double.tryParse(numberOfServingsStr ?? '1') ?? 1.0;
+        final numberOfServings =
+            double.tryParse(numberOfServingsStr ?? '1') ?? 1.0;
 
         // Parse query param
         final mealTypeStr = state.uri.queryParameters['mealType'];
@@ -110,10 +112,10 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/search_food_for_recipe',
-      builder: (context, state){
+      builder: (context, state) {
         final recipeId = state.pathParameters['recipeId'] ?? '';
         return SearchFoodForRecipeScreen();
-      } ,
+      },
     ),
     GoRoute(
       path: '/create_recipe',
