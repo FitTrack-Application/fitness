@@ -238,17 +238,22 @@ class MealLogRepository {
   /// 1. Fetch danh sách MealLog theo ngày
   Future<List<MealLogFitness>> fetchMealLogsForDate(DateTime date) async {
     final formattedDate = _formatDate(date);
+    print('📅 Fetching meal logs for date: $formattedDate');
     try {
       final response = await _dio.get(
         '/api/meal-logs',
         queryParameters: {'date': formattedDate},
       );
       final data = response.data['data'] as List<dynamic>;
+      print('📦 Received ${data.length} meal logs');
 
       final logs = await Future.wait(data.map((mealLogJson) async {
         final mealType = mealTypeFromString(mealLogJson['mealType']);
         final entriesJson = mealLogJson['mealEntries'] as List<dynamic>;
+        print('🍽️ Meal type: $mealType with ${entriesJson.length} entries');
+
         final entries = await Future.wait(entriesJson.map((entryJson) async {
+          print('🔍 Fetching food info for foodId: ${entryJson['foodId']}');
           final food = await foodRepository.getFoodById(
             entryJson['foodId'],
             servingUnitId: entryJson['servingUnit']['id'],
@@ -265,8 +270,12 @@ class MealLogRepository {
       }));
 
       return logs;
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       print('🔥 Error fetchMealLogsForDate: ${e.response?.statusCode} ${e.message}');
+      // Kiểm tra lỗi 400 - meal log chưa tồn tại
+      if (e.response?.statusCode == 400) {
+        throw Exception('Failed to load meal logs: 400');
+      }
       rethrow;
     }
   }
@@ -285,16 +294,19 @@ class MealLogRepository {
       'numberOfServings': numberOfServings,
     };
 
+    print('➕ Adding meal entry to log $mealLogId: $body');
     try {
       final response = await _dio.post(path, data: body);
       final data = response.data['data'];
+      print('✅ Meal entry added: ${data['id']}');
+
       final food = await foodRepository.getFoodById(
         data['foodId'],
         servingUnitId: servingUnitId,
         numberOfServings: numberOfServings,
       );
       return MealEntry.fromJsonWithFood(data, food);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       print('🔥 Error addMealEntryToLog: ${e.response?.statusCode} ${e.message}');
       rethrow;
     }
@@ -303,12 +315,14 @@ class MealLogRepository {
   /// 3. Tạo mới các MealLog cho ngày
   Future<void> createMealLogsForDate(DateTime date) async {
     final formattedDate = _formatDate(date);
+    print('🆕 Creating meal logs for date: $formattedDate');
     try {
       await _dio.post(
         '/api/meal-logs/daily',
         data: {'date': formattedDate},
       );
-    } on DioError catch (e) {
+      print('✅ Meal logs created for $formattedDate');
+    } on DioException catch (e) {
       print('🔥 Error createMealLogsForDate: ${e.response?.statusCode} ${e.message}');
       rethrow;
     }
@@ -317,9 +331,11 @@ class MealLogRepository {
   /// 4. Xóa 1 MealEntry
   Future<void> deleteMealEntry(String mealEntryId) async {
     final path = '/api/meal-entries/$mealEntryId';
+    print('❌ Deleting meal entry: $mealEntryId');
     try {
       await _dio.delete(path);
-    } on DioError catch (e) {
+      print('✅ Deleted meal entry: $mealEntryId');
+    } on DioException catch (e) {
       print('🔥 Error deleteMealEntry: ${e.response?.statusCode} ${e.message}');
       rethrow;
     }
@@ -339,16 +355,19 @@ class MealLogRepository {
       'numberOfServings': numberOfServings,
     };
 
+    print('✏️ Editing meal entry $mealEntryId: $body');
     try {
       final response = await _dio.put(path, data: body);
       final data = response.data['data'];
+      print('✅ Edited meal entry: ${data['id']}');
+
       final food = await foodRepository.getFoodById(
         data['foodId'],
         servingUnitId: servingUnitId,
         numberOfServings: numberOfServings,
       );
       return MealEntry.fromJsonWithFood(data, food);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       print('🔥 Error editMealEntry: ${e.response?.statusCode} ${e.message}');
       rethrow;
     }
@@ -356,10 +375,13 @@ class MealLogRepository {
 
   /// 6. Lấy calories goal của user
   Future<int> fetchCaloriesGoal() async {
+    print('🎯 Fetching user calories goal...');
     try {
       final response = await _dio.get('/api/nutrition-goals/me');
-      return response.data['data']['calories'] as int;
-    } on DioError catch (e) {
+      final calories = response.data['data']['calories'] as int;
+      print('✅ Calories goal: $calories');
+      return calories;
+    } on DioException catch (e) {
       print('🔥 Error fetchCaloriesGoal: ${e.response?.statusCode} ${e.message}');
       rethrow;
     }

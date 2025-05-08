@@ -194,6 +194,9 @@ class FoodRepository {
         double numberOfServings = 100,
       }) async {
     try {
+      print('📤 Requesting getFoodById with foodId: $foodId');
+      print('🔍 Query Parameters: servingUnitId=$servingUnitId, numberOfServings=$numberOfServings');
+
       final response = await _dio.get(
         '/api/foods/$foodId/macros-details',
         queryParameters: {
@@ -203,7 +206,9 @@ class FoodRepository {
       );
 
       final data = response.data['data'];
+      print('✅ Response received for getFoodById');
       print('🥗 Fetched Food: ${data['name']} (${data['calories']} kcal)');
+
       return Food.fromJson(data);
     } catch (e, stack) {
       print('🔥 Exception during getFoodById: $e');
@@ -212,9 +217,14 @@ class FoodRepository {
     }
   }
 
-  Future<PaginatedResponse<Food>> searchFoods(String name,
-      {int page = 1, int size = 10}) async {
+  Future<PaginatedResponse<Food>> searchFoods(
+      String name, {
+        int page = 1,
+        int size = 10,
+      }) async {
     try {
+      print('📤 Requesting searchFoods with name="$name", page=$page, size=$size');
+
       final response = await _dio.get(
         '/api/foods',
         queryParameters: {
@@ -225,6 +235,9 @@ class FoodRepository {
       );
 
       final data = response.data;
+      print('✅ Response received for searchFoods');
+      print('📦 Total items fetched: ${data['data']?.length ?? 0}');
+
       final List<dynamic> foodListJson = data['data'] ?? [];
       final Map<String, dynamic> paginationJson =
           data['metadata']?['pagination'] ?? {};
@@ -248,9 +261,12 @@ class FoodRepository {
     }
   }
 
-  Future<PaginatedResponse<Food>> searchMyFoods(String name,
-      {int page = 1, int size = 10}) async {
-    // Return an empty list for "My Food"
+  Future<PaginatedResponse<Food>> searchMyFoods(
+      String name, {
+        int page = 1,
+        int size = 10,
+      }) async {
+    print('ℹ️ searchMyFoods called — returning empty list by default');
     return PaginatedResponse<Food>(
       message: 'No data available for My Food',
       data: [],
@@ -265,22 +281,32 @@ class FoodRepository {
 
   Future<ServingUnit> getServingUnitById(String id) async {
     try {
+      print('📤 Requesting getServingUnitById with id=$id');
+
       final response = await _dio.get('/api/serving-units/$id');
       final data = response.data['data'];
+
+      print('✅ Serving unit fetched: ${data['name']}');
       return ServingUnit.fromJson(data);
-    } catch (e) {
+    } catch (e, stack) {
       print('🔥 Error in getServingUnitById: $e');
+      print('📉 Stacktrace:\n$stack');
       rethrow;
     }
   }
 
   Future<List<ServingUnit>> getAllServingUnits() async {
     try {
+      print('📤 Requesting getAllServingUnits');
+
       final response = await _dio.get('/api/serving-units');
       final List<dynamic> list = response.data['data'] ?? [];
+
+      print('✅ Total serving units fetched: ${list.length}');
       return list.map((item) => ServingUnit.fromJson(item)).toList();
-    } catch (e) {
+    } catch (e, stack) {
       print('🔥 Error in getAllServingUnits: $e');
+      print('📉 Stacktrace:\n$stack');
       rethrow;
     }
   }
