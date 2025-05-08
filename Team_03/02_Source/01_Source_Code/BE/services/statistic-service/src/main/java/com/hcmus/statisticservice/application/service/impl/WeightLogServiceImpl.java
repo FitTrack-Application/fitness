@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.UUID;
@@ -77,10 +78,8 @@ public class WeightLogServiceImpl implements WeightLogService {
         }
 
         public ApiResponse<List<WeightLogResponse>> getWeightProgress(UUID userId, Integer numDays) {
-                LocalDateTime startDate = LocalDate.now().minusDays(numDays).atStartOfDay(ZoneId.systemDefault())
-                                .toLocalDateTime();
-                LocalDateTime endDate = LocalDate.now().plusDays(1).atStartOfDay(ZoneId.systemDefault())
-                                .toLocalDateTime();
+                Date startDate = Date.from(LocalDate.now().minusDays(numDays).atStartOfDay(ZoneId.systemDefault()).toInstant());
+                Date endDate = Date.from(LocalDate.now().plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant());
 
                 List<WeightLog> weightLogs = weightLogRepository.findByUserIdAndDateBetweenOrderByDateDesc(
                                 userId, startDate, endDate);

@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -13,8 +14,8 @@ import java.util.UUID;
 public interface JpaWeightLogRepository extends JpaRepository<WeightLog, UUID> {
     List<WeightLog> findByUserId(UUID userId);
 
-    List<WeightLog> findByUserIdAndDateBetweenOrderByDateDesc(UUID userId, LocalDateTime startDate,
-            LocalDateTime endDate);
+    List<WeightLog> findByUserIdAndDateBetweenOrderByDateDesc(UUID userId, Date startDate,
+            Date endDate);
 
     Optional<WeightLog> findByUserIdAndDate(UUID userId, LocalDateTime date);
 

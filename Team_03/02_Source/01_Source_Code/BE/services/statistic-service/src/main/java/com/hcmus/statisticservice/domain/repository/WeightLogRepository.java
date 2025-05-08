@@ -3,6 +3,7 @@ package com.hcmus.statisticservice.domain.repository;
 import com.hcmus.statisticservice.domain.model.WeightLog;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -12,8 +13,8 @@ public interface WeightLogRepository {
 
     List<WeightLog> findByUserId(UUID userId);
 
-    List<WeightLog> findByUserIdAndDateBetweenOrderByDateDesc(UUID userId, LocalDateTime startDate,
-            LocalDateTime endDate);
+    List<WeightLog> findByUserIdAndDateBetweenOrderByDateDesc(UUID userId, Date startDate,
+            Date endDate);
 
     Optional<WeightLog> findByUserIdAndDate(UUID userId, LocalDateTime date);
 
