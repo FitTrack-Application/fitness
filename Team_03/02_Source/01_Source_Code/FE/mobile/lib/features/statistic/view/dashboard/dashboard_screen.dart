@@ -28,6 +28,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       const token = 'auth_token';
       viewModel.fetchDashboardData(token: token);
       viewModel.fetchStepStatistics();
+      viewModel.fetchWeightStatistics();
       _initialized = true;
     }
   }
@@ -54,12 +55,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final burned = viewModel.totalCaloriesBurned;
     final goal = viewModel.caloriesGoal;
     final remaining = goal - consumed; //+ burned;
-    final List<WeightEntry> fixedEntries = [
-      WeightEntry(date: DateTime(2025, 4, 20), weight: 70.0),
-      WeightEntry(date: DateTime(2025, 4, 22), weight: 72.0),
-      WeightEntry(date: DateTime(2025, 4, 26), weight: 75.0),
-      WeightEntry(date: DateTime(2025, 4, 28), weight: 73.0),
-    ];
     return Padding(
         padding: const EdgeInsets.all(16.0),
         child: SafeArea(
@@ -85,7 +80,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           0.8, // Adjust width for each graph
 
                       child: WeightGraph(
-                        entries: fixedEntries,
+                        entries: viewModel.weightEntries,
                         title: 'Weight History (kg)',
                         weightGoal: 75,
                       ),

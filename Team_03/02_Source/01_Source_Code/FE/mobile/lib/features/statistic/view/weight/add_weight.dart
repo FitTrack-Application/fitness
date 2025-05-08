@@ -1,14 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import '../../viewmodels/dashboard_viewmodel.dart';
 
-class AddWeight extends StatelessWidget {
+class AddWeight extends StatefulWidget {
   const AddWeight({super.key});
 
   @override
+  State<AddWeight> createState() => _AddWeightState();
+}
+
+class _AddWeightState extends State<AddWeight> {
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _weightController = TextEditingController();
+  DateTime? _selectedDate;
+
+  @override
   Widget build(BuildContext context) {
+    final dashboardViewModel = Provider.of<DashboardViewModel>(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Add weight"),
+        title: const Text("Add Weight"),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -18,70 +32,84 @@ class AddWeight extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.check), // Confirm button icon
-            onPressed: () {
-              context.go('/dashboard');
+            onPressed: () async {
+              if (_formKey.currentState!.validate() && _selectedDate != null) {
+                final weight = double.parse(_weightController.text);
+                final formattedDate =
+                    DateFormat('yyyy-MM-dd').format(_selectedDate!);
+
+                // Add the weight log via the ViewModel
+                await dashboardViewModel.addWeightLog(
+                  weight: weight,
+                  date: formattedDate,
+                  progressPhoto: "example.jpg", // Static photo for now
+                );
+
+                // Navigate back to the dashboard
+                context.go('/dashboard');
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Please fill in all fields')),
+                );
+              }
             },
           ),
         ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Weight",
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                        Text(
-                          "70",
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                      ],
-                    ),
-                    const Divider(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Date",
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                        Text(
-                          "20/04/2025",
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                      ],
-                    ),
-                    const Divider(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Progress photo",
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                        const CircleAvatar(
-                          radius: 20,
-                          backgroundImage:
-                              NetworkImage('https://example.com/avatar.jpg'),
-                        ),
-                      ],
-                    ),
-                  ],
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextFormField(
+                controller: _weightController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: "Weight (kg)",
+                  border: OutlineInputBorder(),
                 ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your weight';
+                  }
+                  if (double.tryParse(value) == null) {
+                    return 'Please enter a valid number';
+                  }
+                  return null;
+                },
               ),
-            ),
-          ],
+              const SizedBox(height: 16.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    _selectedDate == null
+                        ? "Select Date"
+                        : DateFormat('yyyy-MM-dd').format(_selectedDate!),
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  TextButton(
+                    onPressed: () async {
+                      final pickedDate = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime(2100),
+                      );
+                      if (pickedDate != null) {
+                        setState(() {
+                          _selectedDate = pickedDate;
+                        });
+                      }
+                    },
+                    child: const Text("Pick Date"),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -60,6 +60,12 @@ class DashboardViewModel extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       errorMessage = e.toString();
+      stepEntries = [
+        StepEntry(date: DateTime.now(), steps: 500), // Example default entry
+        StepEntry(
+            date: DateTime.now().subtract(Duration(days: 1)), steps: 1000),
+      ];
+    } finally {
       notifyListeners();
     }
   }
@@ -78,6 +84,47 @@ class DashboardViewModel extends ChangeNotifier {
       ];
     } finally {
       notifyListeners();
+    }
+  }
+
+  // Add a new weight log
+  Future<void> addWeightLog({
+    required double weight,
+    required String date,
+    String? progressPhoto,
+  }) async {
+    try {
+      await apiService.addWeightLog(
+        weight: weight,
+        date: date,
+        progressPhoto: progressPhoto,
+      );
+
+      // Update the local list and notify listeners
+      weightEntries
+          .add(WeightEntry(date: DateTime.parse(date), weight: weight));
+      notifyListeners();
+    } catch (e) {
+      print('Error adding weight log: $e');
+    }
+  }
+
+  // Add a new step log
+  Future<void> addStepLog({
+    required int steps,
+    required String date,
+  }) async {
+    try {
+      await apiService.addStepLog(
+        steps: steps,
+        date: date,
+      );
+
+      // Update the local list and notify listeners
+      stepEntries.add(StepEntry(date: DateTime.parse(date), steps: steps));
+      notifyListeners();
+    } catch (e) {
+      print('Error adding step log: $e');
     }
   }
 
