@@ -2,7 +2,7 @@ package com.hcmus.statisticservice.application.dto.response;
 
 import lombok.*;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Setter
 @Getter
@@ -13,5 +13,5 @@ public class WeightLogResponse {
 
     private Double weight;
 
-    private Date date;
+    private LocalDate date;
 }

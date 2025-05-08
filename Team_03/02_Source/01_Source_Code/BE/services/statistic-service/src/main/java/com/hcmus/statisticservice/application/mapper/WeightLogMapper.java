@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.time.ZoneId;
 
 @Component
 public class WeightLogMapper {
@@ -16,7 +17,7 @@ public class WeightLogMapper {
         return WeightLog.builder()
                 .userId(userId)
                 .weight(request.getWeight())
-                .date(request.getUpdateDate())
+                .date(request.getUpdateDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate())
                 .imageUrl(request.getProgressPhoto())
                 .build();
     }

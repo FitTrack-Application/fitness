@@ -14,8 +14,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,21 +33,21 @@ public class WeightLogServiceImpl implements WeightLogService {
         }
 
         public void trackWeight(UUID userId, WeightLogRequest weightLogRequest) {
-                LocalDateTime dateTime = weightLogRequest.getUpdateDate().toInstant()
+                LocalDate date = weightLogRequest.getUpdateDate().toInstant()
                                 .atZone(ZoneId.systemDefault())
-                                .toLocalDateTime();
+                                .toLocalDate();
 
-                WeightLog weightLog = weightLogRepository.findByUserIdAndDate(userId, dateTime).orElse(null);
+                WeightLog weightLog = weightLogRepository.findByUserIdAndDate(userId, date).orElse(null);
                 if (weightLog == null) {
                         weightLog = WeightLog.builder()
                                         .weight(weightLogRequest.getWeight())
-                                        .date(weightLogRequest.getUpdateDate())
+                                        .date(date)
                                         .userId(userId)
                                         .imageUrl(weightLogRequest.getProgressPhoto())
                                         .build();
                 } else {
                         weightLog.setWeight(weightLogRequest.getWeight());
-                        weightLog.setDate(weightLogRequest.getUpdateDate());
+                        weightLog.setDate(date);
                         weightLog.setImageUrl(weightLogRequest.getProgressPhoto() == null ? weightLog.getImageUrl()
                                         : weightLogRequest.getProgressPhoto());
                 }
@@ -57,7 +57,8 @@ public class WeightLogServiceImpl implements WeightLogService {
         public void trackWeight(UUID userId, WeightLog weightLog) {
                 WeightLogRequest weightLogRequest = WeightLogRequest.builder()
                                 .weight(weightLog.getWeight())
-                                .updateDate(weightLog.getDate())
+                                .updateDate(Date.from(
+                                                weightLog.getDate().atStartOfDay(ZoneId.systemDefault()).toInstant()))
                                 .progressPhoto(weightLog.getImageUrl())
                                 .build();
                 trackWeight(userId, weightLogRequest);
@@ -78,8 +79,8 @@ public class WeightLogServiceImpl implements WeightLogService {
         }
 
         public ApiResponse<List<WeightLogResponse>> getWeightProgress(UUID userId, Integer numDays) {
-                Date startDate = Date.from(LocalDate.now().minusDays(numDays).atStartOfDay(ZoneId.systemDefault()).toInstant());
-                Date endDate = Date.from(LocalDate.now().plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant());
+                LocalDate startDate = LocalDate.now().minusDays(numDays);
+                LocalDate endDate = LocalDate.now().plusDays(1);
 
                 List<WeightLog> weightLogs = weightLogRepository.findByUserIdAndDateBetweenOrderByDateDesc(
                                 userId, startDate, endDate);
