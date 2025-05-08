@@ -37,19 +37,23 @@ public class FoodController {
     }
 
     /**
-     * Retrieves the macros details of food by its id, serving unit id, and number
-     * of servings
+     * Retrieves the macros details of food by its id, serving unit id, and number of servings
      *
      * @param foodId the id of the food
-     * @return a ResponseEntity containing an ApiResponse with a
-     *         FoodMacrosDetailsResponse object
+     * @return a ResponseEntity containing an ApiResponse with a FoodMacrosDetailsResponse object
      */
     @GetMapping("/{foodId}/macros-details")
     public ResponseEntity<ApiResponse<FoodMacrosDetailsResponse>> getFoodMacrosDetails(
             @PathVariable UUID foodId,
-            @RequestBody FoodMacrosDetailsRequest foodMacrosDetailsRequest
+            @RequestParam UUID servingUnitId,
+            @RequestParam double numberOfServings
     ) {
-        ApiResponse<FoodMacrosDetailsResponse> response = foodService.getFoodMacrosDetailsById(foodId, foodMacrosDetailsRequest);
+        // Check if numberOfServings is valid
+        if (numberOfServings <= 0) {
+            throw new IllegalArgumentException("Number of servings must be greater than 0");
+        }
+
+        ApiResponse<FoodMacrosDetailsResponse> response = foodService.getFoodMacrosDetailsById(foodId, servingUnitId, numberOfServings);
         return ResponseEntity.ok(response);
     }
 
