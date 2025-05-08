@@ -1,25 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/common/widgets/bottom_nav_bar/bottom_nav_bar.dart';
 import 'package:mobile/common/widgets/list_item/list_item.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobile/cores/constants/colors.dart';
+import 'package:mobile/features/auth/viewmodels/auth_viewmodel.dart';
+import 'package:provider/provider.dart';
+
 class ProfileScreen extends StatelessWidget {
+  const ProfileScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
+    final authViewModel = context.read<AuthViewModel>();
     return Scaffold(
-      appBar: AppBar(title: Text("Profile")),
+      appBar: AppBar(title: const Text("Profile")),
       body: Column(
         children: [
           Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                CircleAvatar(
-                  radius: 50,
-                  backgroundColor: Colors.grey[300],
-                  child: Icon(
-                    Icons.person,
-                    size: 50,
-                    color: Colors.grey[700],
+                GestureDetector(
+                  onTap: () {
+                    context.go('/profile/edit');
+                  },
+                  child: const CircleAvatar(
+                    radius: 50,
+                    backgroundColor: NeutralColors.light500,
+                    child: Icon(
+                      Icons.person,
+                      size: 50,
+                      color: NeutralColors.dark500,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 5),
@@ -38,7 +49,7 @@ class ProfileScreen extends StatelessWidget {
             child: ListView(
               children: [
                 ListItem(
-                    leadingIcon: Icons.flag_outlined,
+                  leadingIcon: Icons.flag_outlined,
                   title: "Goals",
                   onTap: () {
                     context.go('/goal');
@@ -54,8 +65,10 @@ class ProfileScreen extends StatelessWidget {
                 ListItem(
                   leadingIcon: Icons.logout,
                   title: "Logout",
-                  onTap: () {
+                  onTap: () async {
                     // Handle Logout
+                    await authViewModel.logout();
+                    context.go('/welcome');
                   },
                 ),
               ],

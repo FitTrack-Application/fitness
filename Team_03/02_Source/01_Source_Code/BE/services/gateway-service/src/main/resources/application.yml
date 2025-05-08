@@ -18,6 +18,11 @@ spring:
           uri: ${MEDIA_SERVICE_HOST}
           predicates:
             - Path=/api/media/**
+        - id: exercise_service
+          uri: ${EXERCISE_SERVICE_HOST}
+          predicates:
+            - Path=/api/exercises/**
+
 keycloak:
   introspection-uri: ${KEYCLOAK_AUTH_SERVER_HOST}/realms/${KEYCLOAK_REALM}/protocol/openid-connect/token/introspect
   client-id: ${KEYCLOAK_CLIENT_ID}
