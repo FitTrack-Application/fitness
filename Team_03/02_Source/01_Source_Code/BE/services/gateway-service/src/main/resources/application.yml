@@ -14,7 +14,10 @@ spring:
           uri: ${STATISTIC_SERVICE_HOST}
           predicates:
             - Path=/api/statistics/**,/api/fit-profiles/**,/api/nutrition-goals/**,/api/step-logs/**,/api/weight-logs/**,/api/weight-goals/**,/api/surveys/**
-
+        - id: media_service
+          uri: ${MEDIA_SERVICE_HOST}
+          predicates:
+            - Path=/api/media/**
 keycloak:
   introspection-uri: ${KEYCLOAK_AUTH_SERVER_HOST}/realms/${KEYCLOAK_REALM}/protocol/openid-connect/token/introspect
   client-id: ${KEYCLOAK_CLIENT_ID}
