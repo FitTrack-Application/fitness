@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -27,8 +28,8 @@ public class WeightLogRepositoryAdapter implements WeightLogRepository {
     }
 
     @Override
-    public List<WeightLog> findByUserIdAndDateBetweenOrderByDateDesc(UUID userId, LocalDateTime startDate,
-            LocalDateTime endDate) {
+    public List<WeightLog> findByUserIdAndDateBetweenOrderByDateDesc(UUID userId, Date startDate,
+            Date endDate) {
         return jpaWeightLogRepository.findByUserIdAndDateBetweenOrderByDateDesc(userId, startDate, endDate);
     }
 
