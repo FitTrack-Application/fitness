@@ -40,6 +40,7 @@ class _AddStepState extends State<AddStep> {
 
                 // Add the step log via the ViewModel
                 dashboardViewModel.addStepLog(
+                  context: context,
                   steps: steps,
                   date: formattedDate,
                 );

@@ -57,21 +57,17 @@ class DashboardApiService {
       if (e.response?.statusCode == 404) {
         print('Error: Resource not found (404). Returning default list.');
         return [
-          WeightEntry(date: DateTime.now(), weight: 100), // Default entry
-          WeightEntry(
-              date: DateTime.now().subtract(Duration(days: 1)), weight: 500),
+          WeightEntry(date: DateTime.now(), weight: 0) // Default entry
         ];
       } else {
         print('DioException: ${e.message}');
         rethrow; // Re-throw for other status codes
       }
     } catch (e) {
-      print('Error fetching step statistics: $e');
+      print('Error fetching weight statistics: $e');
       // Return a default list in case of any other error
       return [
         WeightEntry(date: DateTime.now(), weight: 0),
-        WeightEntry(
-            date: DateTime.now().subtract(Duration(days: 1)), weight: 0),
       ];
     }
   }
@@ -145,7 +141,7 @@ class DashboardApiService {
       final headers = {'Authorization': 'Bearer $accessToken'};
       final body = {
         "weight": weight.toString(),
-        "date": date,
+        "updateDate": date,
         "progressPhoto": progressPhoto,
       };
 
@@ -175,9 +171,12 @@ class DashboardApiService {
 
       final headers = {'Authorization': 'Bearer $accessToken'};
       final body = {
-        "steps": steps.toString(),
+        "steps":
+            steps.toString(), // Convert steps to String as required by the API
         "date": date,
       };
+
+      print('Request Payload: $body'); // Log the payload
 
       final response = await dio.post(
         "http://10.0.2.2:8088/api/step-logs/me",

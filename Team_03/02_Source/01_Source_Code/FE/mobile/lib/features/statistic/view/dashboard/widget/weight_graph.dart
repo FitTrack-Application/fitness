@@ -26,19 +26,32 @@ class WeightGraph extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Sort entries by date to ensure proper display
-    final sortedEntries = List<WeightEntry>.from(entries)
-      ..sort((a, b) => a.date.compareTo(b.date));
+    // Handle empty entries by providing default data
+    final hasData = entries.isNotEmpty;
+    final sortedEntries = hasData
+        ? (List<WeightEntry>.from(entries)
+          ..sort((a, b) => a.date.compareTo(b.date)))
+        : [
+            WeightEntry(date: DateTime.now(), weight: 40), // Default min weight
+            WeightEntry(
+                date: DateTime.now().subtract(const Duration(days: 1)),
+                weight: 40),
+          ];
 
-    // Find min and max values for better scaling
-    double minWeight =
-        sortedEntries.map((e) => e.weight).reduce((a, b) => a < b ? a : b) - 4;
-    double maxWeight =
-        sortedEntries.map((e) => e.weight).reduce((a, b) => a > b ? a : b) + 4;
+    // Find max weight for better scaling
+    double maxWeight = hasData
+        ? sortedEntries.map((e) => e.weight).reduce((a, b) => a > b ? a : b) + 4
+        : 44;
 
-    // Round min and max to align with 4 kg intervals
-    minWeight = (minWeight / 4).floor() * 4.0;
+    // Round max to align with 4 kg intervals
     maxWeight = (maxWeight / 4).ceil() * 4.0;
+
+    // Set min weight to 40
+    const double minWeight = 40;
+
+    // Calculate optimal weight interval
+    final weightInterval =
+        _calculateOptimalWeightInterval(minWeight, maxWeight);
 
     // Find min and max dates and add padding of 3 days
     final minDate = sortedEntries.first.date.subtract(const Duration(days: 3));
@@ -73,11 +86,13 @@ class WeightGraph extends StatelessWidget {
                       ),
                       IconButton(
                         icon: const Icon(Icons.add),
-                        onPressed: onAddPressed,
+                        onPressed: () {
+                          GoRouter.of(context).push('/weight/add');
+                        },
                         padding: EdgeInsets.zero,
                         constraints: const BoxConstraints(),
                         iconSize: 24,
-                        color: HighlightColors.highlight500,
+                        color: HighlightColors.highlight300,
                       ),
                     ],
                   ),
@@ -92,7 +107,7 @@ class WeightGraph extends StatelessWidget {
                           gridData: FlGridData(
                             show: true,
                             drawVerticalLine: false,
-                            horizontalInterval: 4,
+                            horizontalInterval: weightInterval,
                             getDrawingHorizontalLine: (value) {
                               return FlLine(
                                 color: WeightGraphTheme.gridLineColor(context),
@@ -123,7 +138,7 @@ class WeightGraph extends StatelessWidget {
                               sideTitles: SideTitles(
                                 showTitles: true,
                                 reservedSize: 40,
-                                interval: 4,
+                                interval: weightInterval,
                                 getTitlesWidget:
                                     (double value, TitleMeta meta) {
                                   return Text(
@@ -134,6 +149,12 @@ class WeightGraph extends StatelessWidget {
                                 },
                               ),
                             ),
+                            topTitles: AxisTitles(
+                              sideTitles: SideTitles(showTitles: false),
+                            ),
+                            rightTitles: AxisTitles(
+                              sideTitles: SideTitles(showTitles: false),
+                            ),
                           ),
                           borderData: FlBorderData(
                             show: true,
@@ -141,7 +162,7 @@ class WeightGraph extends StatelessWidget {
                           ),
                           minX: 0,
                           maxX: totalDays.toDouble(),
-                          minY: minWeight,
+                          minY: minWeight, // Set minimum weight to 40
                           maxY: maxWeight,
                           lineBarsData: [
                             LineChartBarData(
@@ -190,16 +211,27 @@ class WeightGraph extends StatelessWidget {
   }
 
   int _calculateOptimalDaysInterval(int totalDays) {
-    if (totalDays <= 7) {
-      return 1;
+    if (totalDays <= 5) {
+      return 1; // Show every day if the total days are 5 or fewer
     } else if (totalDays <= 30) {
-      return 3;
+      return 3; // Show every 3rd day for up to 30 days
     } else if (totalDays <= 90) {
-      return 7;
+      return 7; // Show every 7th day for up to 90 days
     } else if (totalDays <= 365) {
-      return 30;
+      return 30; // Show every 30th day for up to 1 year
     } else {
-      return 90;
+      return 90; // Show every 90th day for more than 1 year
+    }
+  }
+
+  double _calculateOptimalWeightInterval(double minWeight, double maxWeight) {
+    final range = maxWeight - minWeight;
+    if (range <= 10) {
+      return 2; // Interval of 2 for small ranges
+    } else if (range <= 20) {
+      return 4; // Interval of 4 for medium ranges
+    } else {
+      return 10; // Interval of 10 for large ranges
     }
   }
 }

@@ -20,7 +20,9 @@ class DashboardViewModel extends ChangeNotifier {
   Macronutrients macronutrients = Macronutrients(carbs: 0, protein: 0, fat: 0);
   int caloriesGoal = 0;
 
-  List<WeightEntry> weightEntries = [];
+  List<WeightEntry> weightEntries = [
+    WeightEntry(date: DateTime.now(), weight: 0), // Example default entry
+  ];
   List<StepEntry> stepEntries = [
     StepEntry(date: DateTime.now(), steps: 0), // Example default entr
   ];
@@ -89,6 +91,7 @@ class DashboardViewModel extends ChangeNotifier {
 
   // Add a new weight log
   Future<void> addWeightLog({
+    required BuildContext context,
     required double weight,
     required String date,
     String? progressPhoto,
@@ -104,13 +107,30 @@ class DashboardViewModel extends ChangeNotifier {
       weightEntries
           .add(WeightEntry(date: DateTime.parse(date), weight: weight));
       notifyListeners();
+
+      // Show success notification
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Weight log added successfully!'),
+          backgroundColor: Colors.green,
+        ),
+      );
     } catch (e) {
       print('Error adding weight log: $e');
+
+      // Show error notification
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to add weight log. Please try again.'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
   // Add a new step log
   Future<void> addStepLog({
+    required BuildContext context,
     required int steps,
     required String date,
   }) async {
@@ -123,8 +143,24 @@ class DashboardViewModel extends ChangeNotifier {
       // Update the local list and notify listeners
       stepEntries.add(StepEntry(date: DateTime.parse(date), steps: steps));
       notifyListeners();
+
+      // Show success notification
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Step log added successfully!'),
+          backgroundColor: Colors.green,
+        ),
+      );
     } catch (e) {
       print('Error adding step log: $e');
+
+      // Show error notification
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to add step log. Please try again.'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 

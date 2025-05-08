@@ -8,8 +8,12 @@ class WeightEntry {
 
   factory WeightEntry.fromJson(Map<String, dynamic> json) {
     return WeightEntry(
-      weight: double.parse(json['weight']), // Parse weight as double
-      date: DateFormat('dd/MM/yyyy').parse(json['date']), // Parse date using the provided format
+      weight: json['weight'] is double
+          ? json['weight']
+          : double.parse(
+              json['weight'].toString()), // Handle both double and String
+      date: DateFormat('yyyy-MM-dd')
+          .parse(json['date']), // Parse date using the provided format
     );
   }
 }

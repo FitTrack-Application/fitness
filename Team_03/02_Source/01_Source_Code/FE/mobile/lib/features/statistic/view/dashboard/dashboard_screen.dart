@@ -81,7 +81,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
                       child: WeightGraph(
                         entries: viewModel.weightEntries,
-                        title: 'Weight History (kg)',
+                        title: 'Weights',
                         weightGoal: 75,
                       ),
                     ),
@@ -92,7 +92,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
                       child: StepGraph(
                         entries: viewModel.stepEntries,
-                        title: 'Steps Today',
+                        title: 'Steps',
                       ),
                     ),
                   ],

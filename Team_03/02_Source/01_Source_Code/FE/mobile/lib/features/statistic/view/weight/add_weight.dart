@@ -40,6 +40,7 @@ class _AddWeightState extends State<AddWeight> {
 
                 // Add the weight log via the ViewModel
                 await dashboardViewModel.addWeightLog(
+                  context: context,
                   weight: weight,
                   date: formattedDate,
                   progressPhoto: "example.jpg", // Static photo for now
