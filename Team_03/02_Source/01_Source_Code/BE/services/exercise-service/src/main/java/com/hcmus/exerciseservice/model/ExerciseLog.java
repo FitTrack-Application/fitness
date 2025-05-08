@@ -13,6 +13,7 @@ import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -36,6 +37,9 @@ public class ExerciseLog {
     @NotNull
     @Column(name = "user_id", nullable = false)
     private UUID userId;
+
+    @OneToMany(mappedBy = "exerciseLog", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ExerciseLogEntry> exerciseLogEntries;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
