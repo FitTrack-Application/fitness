@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.UUID;
 
 @Service
@@ -71,7 +72,7 @@ public class SurveyServiceImpl implements SurveyService {
 
         WeightLog weightLog = WeightLog.builder()
                 .weight(saveSurveyRequest.getWeight())
-                .date(saveSurveyRequest.getStartingDate())
+                .date(saveSurveyRequest.getStartingDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate())
                 .imageUrl(saveSurveyRequest.getImageUrl())
                 .userId(userId)
                 .build();

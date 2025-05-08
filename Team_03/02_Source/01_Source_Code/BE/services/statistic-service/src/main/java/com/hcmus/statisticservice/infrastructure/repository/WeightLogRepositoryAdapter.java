@@ -6,8 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -28,13 +28,13 @@ public class WeightLogRepositoryAdapter implements WeightLogRepository {
     }
 
     @Override
-    public List<WeightLog> findByUserIdAndDateBetweenOrderByDateDesc(UUID userId, Date startDate,
-            Date endDate) {
+    public List<WeightLog> findByUserIdAndDateBetweenOrderByDateDesc(UUID userId, LocalDate startDate,
+            LocalDate endDate) {
         return jpaWeightLogRepository.findByUserIdAndDateBetweenOrderByDateDesc(userId, startDate, endDate);
     }
 
     @Override
-    public Optional<WeightLog> findByUserIdAndDate(UUID userId, LocalDateTime date) {
+    public Optional<WeightLog> findByUserIdAndDate(UUID userId, LocalDate date) {
         return jpaWeightLogRepository.findByUserIdAndDate(userId, date);
     }
 
