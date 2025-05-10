@@ -19,8 +19,8 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 @Slf4j
 public class SecurityConfig {
 
-    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
-    private final CustomAccessDeniedHandler customAccessDeniedHandler;
+    @Value("${keycloak.jwk-set-uri}")
+    private String jwkSetUri;
 
     @Value("${keycloak.introspection-uri}")
     private String introspectionUri;
@@ -30,6 +30,9 @@ public class SecurityConfig {
 
     @Value("${keycloak.client-secret}")
     private String clientSecret;
+
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
     @Bean
     public SecurityWebFilterChain filterChain(ServerHttpSecurity http) {

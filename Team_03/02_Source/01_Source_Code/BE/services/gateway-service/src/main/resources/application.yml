@@ -1,33 +1,115 @@
+server:
+  port: 8088
+
 spring:
-  main:
-    allow-bean-definition-overriding: true
   application:
     name: gateway-service
+  main:
+    allow-bean-definition-overriding: true
   cloud:
     gateway:
+      httpclient:
+        connect-timeout: 30000 # Tăng lên 30 giây để chịu tải tốt hơn
+        response-timeout: 120s # Tăng lên 120 giây để xử lý nhiều request
       routes:
-        - id: fit_service
-          uri: ${FIT_SERVICE_HOST}
+        - id: food_service
+          uri: ${FOOD_SERVICE_HOST}
           predicates:
             - Path=/api/foods/**,/api/meal-entries/**,/api/meal-logs/**,/api/recipes/**,/api/serving-units/**
+          filters:
+            - name: Retry
+              args:
+                retries: 2
+                statuses: BAD_GATEWAY, GATEWAY_TIMEOUT, INTERNAL_SERVER_ERROR, REQUEST_TIMEOUT
+                methods: GET, POST, PUT, DELETE
+                backoff:
+                  firstBackoff: 5000ms # Tăng thời gian chờ lần retry đầu tiên
+                  maxBackoff: 30000ms # Tăng thời gian chờ tối đa giữa các lần retry
+                  factor: 2
+                  basedOnPreviousValue: false
+            - name: CircuitBreaker
+              args:
+                name: serviceCircuitBreaker
+                fallbackUri: forward:/fallback
         - id: statistic_service
           uri: ${STATISTIC_SERVICE_HOST}
           predicates:
             - Path=/api/statistics/**,/api/fit-profiles/**,/api/nutrition-goals/**,/api/step-logs/**,/api/weight-logs/**,/api/weight-goals/**,/api/surveys/**
+          filters:
+            - name: Retry
+              args:
+                retries: 2
+                statuses: BAD_GATEWAY, GATEWAY_TIMEOUT, INTERNAL_SERVER_ERROR, REQUEST_TIMEOUT
+                methods: GET, POST, PUT, DELETE
+                backoff:
+                  firstBackoff: 5000ms # Tăng thời gian chờ lần retry đầu tiên
+                  maxBackoff: 30000ms # Tăng thời gian chờ tối đa giữa các lần retry
+                  factor: 2
+                  basedOnPreviousValue: false
+            - name: CircuitBreaker
+              args:
+                name: serviceCircuitBreaker
+                fallbackUri: forward:/fallback
         - id: media_service
           uri: ${MEDIA_SERVICE_HOST}
           predicates:
             - Path=/api/media/**
+          filters:
+            - name: Retry
+              args:
+                retries: 2
+                statuses: BAD_GATEWAY, GATEWAY_TIMEOUT, INTERNAL_SERVER_ERROR, REQUEST_TIMEOUT
+                methods: GET, POST, PUT, DELETE
+                backoff:
+                  firstBackoff: 5000ms # Tăng thời gian chờ lần retry đầu tiên
+                  maxBackoff: 30000ms # Tăng thời gian chờ tối đa giữa các lần retry
+                  factor: 2
+                  basedOnPreviousValue: false
+            - name: CircuitBreaker
+              args:
+                name: serviceCircuitBreaker
+                fallbackUri: forward:/fallback
         - id: exercise_service
           uri: ${EXERCISE_SERVICE_HOST}
           predicates:
             - Path=/api/exercises/**,/api/exercise-logs/**,/api/exercise-log-entries/**
+          filters:
+            - name: Retry
+              args:
+                retries: 2
+                statuses: BAD_GATEWAY, GATEWAY_TIMEOUT, INTERNAL_SERVER_ERROR, REQUEST_TIMEOUT
+                methods: GET, POST, PUT, DELETE
+                backoff:
+                  firstBackoff: 5000ms # Tăng thời gian chờ lần retry đầu tiên
+                  maxBackoff: 30000ms # Tăng thời gian chờ tối đa giữa các lần retry
+                  factor: 2
+                  basedOnPreviousValue: false
+            - name: CircuitBreaker
+              args:
+                name: serviceCircuitBreaker
+                fallbackUri: forward:/fallback
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      serviceCircuitBreaker:
+        slidingWindowSize: 100 # Giảm xuống để phản ứng nhanh hơn
+        minimumNumberOfCalls: 30 # Giảm xuống để áp dụng circuit breaker sớm hơn
+        failureRateThreshold: 70 # Tăng lên để chấp nhận nhiều lỗi hơn
+        waitDurationInOpenState: 60s # Tăng thời gian mở circuit breaker
+        permittedNumberOfCallsInHalfOpenState: 20 # Tăng số lượng call cho phép trong trạng thái half-open
+        slowCallRateThreshold: 80 # Tăng ngưỡng chấp nhận call chậm
+        slowCallDurationThreshold: 60s # Tăng thời gian xác định một call là chậm
+        registerHealthIndicator: true
+        automaticTransitionFromOpenToHalfOpenEnabled: true # Kích hoạt chuyển đổi tự động
+  timelimiter:
+    instances:
+      serviceCircuitBreaker:
+        timeoutDuration: 90s # Thêm time limiter với thời gian dài để phù hợp với môi trường test
+        cancelRunningFuture: true
 
 keycloak:
+  jwk-set-uri: ${KEYCLOAK_AUTH_SERVER_HOST}/realms/${KEYCLOAK_REALM}/protocol/openid-connect/certs
   introspection-uri: ${KEYCLOAK_AUTH_SERVER_HOST}/realms/${KEYCLOAK_REALM}/protocol/openid-connect/token/introspect
   client-id: ${KEYCLOAK_CLIENT_ID}
   client-secret: ${KEYCLOAK_CLIENT_SECRET}
-
-server:
-  port: 8088
-
