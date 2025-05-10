@@ -55,9 +55,6 @@ target/
 **/src/test/**/target/
 
 ### Configuration files with sensitive data ###
-src/main/resources/application.properties
-src/main/resources/application-*.properties
-!src/main/resources/application.properties.example
 
 ### Environment Files ###
 .env

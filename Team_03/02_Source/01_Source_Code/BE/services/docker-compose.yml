@@ -202,7 +202,7 @@ services:
     networks:
       - fitness-network
     volumes:
-    - ./media-service:/app
+      - ./media-service:/app
       - maven-repo:/root/.m2
     healthcheck:
       test: [ "CMD-SHELL", "curl -f http://localhost:8083/actuator/health || exit 1" ]
