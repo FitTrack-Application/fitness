@@ -1,115 +1,135 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/cores/constants/colors.dart';
+import 'package:mobile/features/auth/viewmodels/goal_viewmodel.dart';
+import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
-class GoalPage extends StatelessWidget {
+
+class UserGoal extends StatelessWidget {
+  const UserGoal({super.key});
+
   @override
   Widget build(BuildContext context) {
+    // Fetch goal data when the page is built
+    final goalViewModel = Provider.of<GoalViewModel>(context, listen: false);
+    goalViewModel.fetchGoal(); // Replace "12345" with the actual user ID
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Goal"),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            context.go('/profile'); // Navigate back to the previous screen
+            context.go('/profile');
           },
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(16.0),
-              decoration: BoxDecoration(
-              color: tLightDarkColor,
-              borderRadius: BorderRadius.circular(8.0),
-              boxShadow: [
-                BoxShadow(
-                color: Colors.grey.withOpacity(0.2),
-                spreadRadius: 2,
-                blurRadius: 5,
-                offset: const Offset(0, 3),
-                ),
-              ],
-              ),
-              child: Column(
+      body: Consumer<GoalViewModel>(
+        builder: (context, goalViewModel, child) {
+          double progress = 0.0;
+            if (goalViewModel.startingWeight != goalViewModel.targetWeight) {
+            progress = ((goalViewModel.startingWeight - goalViewModel.currentWeight) /
+                    (goalViewModel.startingWeight - goalViewModel.targetWeight))
+                .clamp(0.0, 1.0); // Ensure progress is between 0 and 1
+          }
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
-                  Text(
-                  "Starting Weight",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Goal Type",
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
+                            Text(
+                              goalViewModel.goalType,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ],
+                        ),
+                        const Divider(),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Starting Weight",
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
+                            Text(
+                              "${goalViewModel.startingWeight} kg (${goalViewModel.startingDay.toLocal().toString().split(' ')[0]})",
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ],
+                        ),
+                        const Divider(),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Current Weight",
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
+                            Text(
+                              "${goalViewModel.currentWeight} kg",
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ],
+                        ),
+                        const Divider(),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Target Weight",
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
+                            Text(
+                              "${goalViewModel.targetWeight} kg",
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ],
+                        ),
+                        const Divider(),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Goal per week",
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
+                            Text(
+                              "${goalViewModel.goalPerWeek.toStringAsFixed(1)} kg",
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ],
+                        ),
+                        const Divider(),
+                        const Text(
+                          "Weight Progress",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 10),
+                        LinearProgressIndicator(
+                          value: progress,
+                          backgroundColor: Colors.grey[300],
+                          color: Colors.green,
+                        ),
+                        const SizedBox(height: 10),
+                      ],
+                    ),
                   ),
-                  Text(
-                  "70 kg (26/03/2025)", // Example placeholder text
-                  style: TextStyle(fontSize: 14, color: Colors.grey),
-                  ),
-                ],
-                ),
-                const SizedBox(height: 16),
-                Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
-                  Text(
-                  "Current Weight",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                  ),
-                  Text(
-                  "68 kg (26/04/2025)", // Example placeholder text
-                  style: TextStyle(fontSize: 14, color: Colors.grey),
-                  ),
-                ],
-                ),
-                const SizedBox(height: 16),
-                Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
-                  Text(
-                  "Goal Weight",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                  ),
-                  Text(
-                  "65 kg (26/06/2025)", // Example placeholder text
-                  style: TextStyle(fontSize: 14, color: Colors.grey),
-                  ),
-                ],
-                ),
-                const SizedBox(height: 16),
-                Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
-                  Text(
-                  "Weekly Goal",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                  ),
-                  Text(
-                  "Lose 0.5 kg per week", // Example placeholder text
-                  style: TextStyle(fontSize: 14, color: Colors.grey),
-                  ),
-                ],
-                ),
-                const SizedBox(height: 16),
-                Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
-                  Text(
-                  "Activity Level",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                  ),
-                  Text(
-                  "Moderate Activity", // Example placeholder text
-                  style: TextStyle(fontSize: 14, color: Colors.grey),
-                  ),
-                ],
                 ),
               ],
-              ),
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

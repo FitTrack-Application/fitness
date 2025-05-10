@@ -31,7 +31,7 @@ public class FoodController {
      * @return a ResponseEntity containing an ApiResponse with a FoodDto object
      */
     @GetMapping("/{foodId}")
-        public ResponseEntity<ApiResponse<FoodDto>> getFoodById(@PathVariable UUID foodId) {
+    public ResponseEntity<ApiResponse<FoodDto>> getFoodById(@PathVariable UUID foodId) {
         ApiResponse<FoodDto> response = foodService.getFoodById(foodId);
         return ResponseEntity.ok(response);
     }
@@ -58,20 +58,21 @@ public class FoodController {
     }
 
     /**
-     * Retrieves a paginated list of foods. If a query is provided, it searches for foods
+     * Retrieves a paginated list of foods. If a query is provided, it searches for
+     * foods
      * by name. Otherwise, it returns all foods.
      *
      * @param query the search query for food names (optional)
      * @param page  the page number to retrieve (default is 1)
      * @param size  the number of items per page (default is 10)
-     * @return a ResponseEntity containing an ApiResponse with a list of FoodDto objects
+     * @return a ResponseEntity containing an ApiResponse with a list of FoodDto
+     *         objects
      */
     @GetMapping
     public ResponseEntity<ApiResponse<List<FoodDto>>> getFoods(
             @RequestParam(required = false) String query,
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
+            @RequestParam(defaultValue = "10") int size) {
         // Check if page and size are valid
         if (page < 1) {
             throw new IllegalArgumentException("Page number must be greater than 0");

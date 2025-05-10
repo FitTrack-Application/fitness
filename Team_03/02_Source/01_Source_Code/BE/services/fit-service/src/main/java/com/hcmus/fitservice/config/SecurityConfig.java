@@ -1,7 +1,6 @@
 package com.hcmus.fitservice.config;
 
-import com.hcmus.fitservice.security.CustomAccessDeniedHandler;
-import com.hcmus.fitservice.security.CustomAuthenticationEntryPoint;
+import com.hcmus.fitservice.security.*;
 import jakarta.annotation.Priority;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,8 +28,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Configuration
-@EnableWebSecurity
 @RequiredArgsConstructor
+@EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
@@ -51,8 +50,7 @@ public class SecurityConfig {
                         .requestMatchers("/swagger-ui/**").permitAll()
                         .requestMatchers("/swagger-ui.html").permitAll()
                         .requestMatchers("/api/**").hasRole("USER")
-                        .anyRequest().authenticated()
-                )
+                        .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(handler -> handler
                         .authenticationEntryPoint(customAuthenticationEntryPoint)
@@ -62,8 +60,7 @@ public class SecurityConfig {
                                 .decoder(customJwtDecoder())
                                 .jwtAuthenticationConverter(jwtAuthenticationConverter()))
                         .authenticationEntryPoint(customAuthenticationEntryPoint)
-                        .accessDeniedHandler(customAccessDeniedHandler)
-                );
+                        .accessDeniedHandler(customAccessDeniedHandler));
         return http.build();
     }
 

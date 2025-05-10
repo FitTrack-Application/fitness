@@ -32,6 +32,16 @@ keycloak:
 server:
   port: 8081
 
+app:
+  fit-service:
+    host: ${FIT_SERVICE_HOST:http://fit-service:8080}
+  statistic-service:
+    host: ${STATISTIC_SERVICE_HOST:http://statistic-service:8081}
+  gateway-service:
+    host: ${GATEWAY_SERVICE_HOST:http://gateway-service:8088}
+  keycloak-auth-server:
+    host: ${KEYCLOAK_AUTH_SERVER_HOST:http://keycloak-auth-server:8888}
+
 logging:
   level:
     org:
