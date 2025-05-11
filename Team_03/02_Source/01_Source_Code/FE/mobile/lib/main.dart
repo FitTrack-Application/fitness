@@ -38,11 +38,11 @@ void main() {
             create: (_) => ApiClient(
                 'https://54efe02a-ae6e-4055-9391-3a9bd9cac8f1.mock.pstmn.io')),
         ProxyProvider<ApiClient, DashboardApiService>(
-          update: (_, client, __) => DashboardApiService(client, dio, storage),
+          update: (_, client, __) => DashboardApiService(client),
         ),
         ChangeNotifierProxyProvider<DashboardApiService, DashboardViewModel>(
           create: (_) => DashboardViewModel(
-              DashboardApiService(ApiClient(''), dio, storage)), // Placeholder
+              DashboardApiService(ApiClient(''))), // Placeholder
           update: (_, api, __) => DashboardViewModel(api),
         ),
       ],
