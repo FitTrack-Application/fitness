@@ -28,7 +28,7 @@ export const login = async (username, password) => {
     // For development/testing, you can use this mock response
     // Remove this in production and uncomment the actual API call below
     await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate network delay
-    if (username === "admin" && password === "password") {
+    if (username === "admin" && password === "123") {
       return {
         token: "mock-jwt-token",
         user: {
