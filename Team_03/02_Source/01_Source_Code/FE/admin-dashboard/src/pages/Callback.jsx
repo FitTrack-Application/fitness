@@ -1,4 +1,6 @@
-import React from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hook/useAuth";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
@@ -11,7 +13,26 @@ const Wrapper = styled.div`
 `;
 
 const Callback = () => {
-  return <Wrapper>Đang xác thực, vui lòng chờ...</Wrapper>;
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+  const { isAuthenticated, loading } = useAuth();
+
+  useEffect(() => {
+    if (!loading) {
+      if (isAuthenticated) {
+        navigate("/admin");
+      } else {
+        setError("Xác thực không thành công");
+      }
+    }
+  }, [isAuthenticated, loading, navigate]);
+
+  return (
+    <Wrapper>
+      {loading && !error && <h1>Đang xử lý đăng nhập...</h1>}
+      {error && <h1>Lỗi xác thực</h1>}
+    </Wrapper>
+  );
 };
 
 export default Callback;
