@@ -13,6 +13,7 @@ class WeightGraph extends StatelessWidget {
   final String title;
   final VoidCallback? onAddPressed;
   final double weightGoal;
+
   const WeightGraph({
     super.key,
     required this.entries,
@@ -22,42 +23,58 @@ class WeightGraph extends StatelessWidget {
     this.title = 'Weight Tracking',
     this.onAddPressed,
   });
-  
+
   @override
   Widget build(BuildContext context) {
-    // Sort entries by date to ensure proper display
-    final sortedEntries = List<WeightEntry>.from(entries)
-      ..sort((a, b) => a.date.compareTo(b.date));
-    
-    // Find min and max values for better scaling
-    double minWeight = sortedEntries.map((e) => e.weight).reduce((a, b) => a < b ? a : b) - 4;
-    double maxWeight = sortedEntries.map((e) => e.weight).reduce((a, b) => a > b ? a : b) + 4;
-    
-    // Round min and max to align with 4 kg intervals
-    minWeight = (minWeight / 4).floor() * 4.0;
+    // Handle empty entries by providing default data
+    final hasData = entries.isNotEmpty;
+    final sortedEntries = hasData
+        ? (List<WeightEntry>.from(entries)
+          ..sort((a, b) => a.date.compareTo(b.date)))
+        : [
+            WeightEntry(date: DateTime.now(), weight: 40), // Default min weight
+            WeightEntry(
+                date: DateTime.now().subtract(const Duration(days: 1)),
+                weight: 40),
+          ];
+
+    // Find max weight for better scaling
+    double maxWeight = hasData
+        ? sortedEntries.map((e) => e.weight).reduce((a, b) => a > b ? a : b) + 4
+        : 44;
+
+    // Round max to align with 4 kg intervals
     maxWeight = (maxWeight / 4).ceil() * 4.0;
-    
-    // Find min and max dates
-    final minDate = sortedEntries.first.date;
-    final maxDate = sortedEntries.last.date;
-    
+
+    // Set min weight to 40
+    const double minWeight = 40;
+
+    // Calculate optimal weight interval
+    final weightInterval =
+        _calculateOptimalWeightInterval(minWeight, maxWeight);
+
+    // Find min and max dates and add padding of 3 days
+    final minDate = sortedEntries.first.date.subtract(const Duration(days: 3));
+    final maxDate = sortedEntries.last.date.add(const Duration(days: 3));
+
     // Calculate date intervals for x-axis
     final totalDays = maxDate.difference(minDate).inDays;
     final daysInterval = _calculateOptimalDaysInterval(totalDays);
-    
+
     return Container(
-      decoration: WeightGraphTheme.containerDecoration(context), 
+      decoration: WeightGraphTheme.containerDecoration(context),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start, // Ensure left alignment
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Card(
             elevation: 4,
-            margin: EdgeInsets.zero, // Remove card margin
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            margin: EdgeInsets.zero,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start, // Ensure left alignment
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Title row with add button
                   Row(
@@ -67,7 +84,6 @@ class WeightGraph extends StatelessWidget {
                         title,
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
-                      // Add button
                       IconButton(
                         icon: const Icon(Icons.add),
                         onPressed: () {
@@ -76,7 +92,7 @@ class WeightGraph extends StatelessWidget {
                         padding: EdgeInsets.zero,
                         constraints: const BoxConstraints(),
                         iconSize: 24,
-                        color: HighlightColors.highlight500,
+                        color: HighlightColors.highlight300,
                       ),
                     ],
                   ),
@@ -84,21 +100,15 @@ class WeightGraph extends StatelessWidget {
                   AspectRatio(
                     aspectRatio: 1.7,
                     child: Padding(
-                      // Adjust padding to align with title
-                      padding: const EdgeInsets.only(right: 18, left: 0, top: 24, bottom: 12),
+                      padding: const EdgeInsets.only(
+                          right: 18, left: 0, top: 24, bottom: 12),
                       child: LineChart(
                         LineChartData(
                           gridData: FlGridData(
                             show: true,
                             drawVerticalLine: false,
-                            horizontalInterval: 4, // 4 kg intervals
+                            horizontalInterval: weightInterval,
                             getDrawingHorizontalLine: (value) {
-                              return FlLine(
-                                color: WeightGraphTheme.gridLineColor(context),
-                                strokeWidth: 1,
-                              );
-                            },
-                            getDrawingVerticalLine: (value) {
                               return FlLine(
                                 color: WeightGraphTheme.gridLineColor(context),
                                 strokeWidth: 1,
@@ -111,27 +121,16 @@ class WeightGraph extends StatelessWidget {
                               sideTitles: SideTitles(
                                 showTitles: true,
                                 reservedSize: 30,
-                                interval: 2, // Adjust interval to avoid duplicates
-                                getTitlesWidget: (double value, TitleMeta meta) {
-                                  // Convert the x-axis value to a date
-                                  final date = DateTime.fromMillisecondsSinceEpoch(
-                                    minDate.millisecondsSinceEpoch +
-                                        ((value / 10) * (maxDate.millisecondsSinceEpoch - minDate.millisecondsSinceEpoch)).toInt(),
+                                interval: daysInterval.toDouble(),
+                                getTitlesWidget:
+                                    (double value, TitleMeta meta) {
+                                  final date = minDate
+                                      .add(Duration(days: value.toInt()));
+                                  return Text(
+                                    DateFormat('MM/dd').format(date),
+                                    style: WeightGraphTheme.titleDataStyle(
+                                        context),
                                   );
-                                  
-                                  // Only show labels at specific intervals to avoid overcrowding
-                                  final daysSinceStart = date.difference(minDate).inDays;
-                                  
-                                  if (daysSinceStart % daysInterval == 0) {
-                                    return Transform.rotate(
-                                      angle: -0.5, // Slight rotation for better readability
-                                      child: Text(
-                                        DateFormat('MM/dd').format(date),
-                                        style: WeightGraphTheme.titleDataStyle(context),
-                                      ),
-                                    );
-                                  }
-                                  return const SizedBox();
                                 },
                               ),
                             ),
@@ -139,22 +138,21 @@ class WeightGraph extends StatelessWidget {
                               sideTitles: SideTitles(
                                 showTitles: true,
                                 reservedSize: 40,
-                                interval: 4, // Keep the interval for weight labels
-                                getTitlesWidget: (double value, TitleMeta meta) {
-                                  if (value % 4 == 0) {
-                                    return Text(
-                                      '${value.toInt()} ',
-                                      style: WeightGraphTheme.titleDataStyle(context),
-                                    );
-                                  }
-                                  return const SizedBox();
+                                interval: weightInterval,
+                                getTitlesWidget:
+                                    (double value, TitleMeta meta) {
+                                  return Text(
+                                    '${value.toInt()}',
+                                    style: WeightGraphTheme.titleDataStyle(
+                                        context),
+                                  );
                                 },
                               ),
                             ),
-                            topTitles: const AxisTitles(
+                            topTitles: AxisTitles(
                               sideTitles: SideTitles(showTitles: false),
                             ),
-                            rightTitles: const AxisTitles(
+                            rightTitles: AxisTitles(
                               sideTitles: SideTitles(showTitles: false),
                             ),
                           ),
@@ -163,67 +161,29 @@ class WeightGraph extends StatelessWidget {
                             border: Border.all(color: Colors.black26, width: 1),
                           ),
                           minX: 0,
-                          maxX: 10,
-                          minY: minWeight,
+                          maxX: totalDays.toDouble(),
+                          minY: minWeight, // Set minimum weight to 40
                           maxY: maxWeight,
                           lineBarsData: [
                             LineChartBarData(
-                              spots: _createSpots(sortedEntries, minDate, maxDate),
+                              spots: _createSpots(
+                                  sortedEntries, minDate, maxDate, totalDays),
                               isCurved: true,
                               color: lineColor,
                               barWidth: 3,
                               isStrokeCapRound: true,
-                              dotData: const FlDotData(
-                                show: true,
-                              ),
-                              
+                              dotData: const FlDotData(show: true),
                             ),
                           ],
                           extraLinesData: ExtraLinesData(
                             horizontalLines: [
                               HorizontalLine(
-                                y: weightGoal, // Set the y-coordinate for the weight goal
-                                color: HighlightColors.highlight200, // Color of the goal line
-                                strokeWidth: 2, // Thickness of the goal line
-                                dashArray: [5, 5], // Optional: Make the line dashed
-                
+                                y: weightGoal,
+                                color: HighlightColors.highlight200,
+                                strokeWidth: 2,
+                                dashArray: [5, 5],
                               ),
                             ],
-                          ),
-                          lineTouchData: LineTouchData(
-                            touchTooltipData: LineTouchTooltipData(
-                              // Fix: Add tooltipBgColor for fl_chart 0.70.2
-                              
-                              tooltipRoundedRadius: 8,
-                              tooltipPadding: const EdgeInsets.all(8),
-                              getTooltipItems: (List<LineBarSpot> touchedBarSpots) {
-                                return touchedBarSpots.map((barSpot) {
-                                  final date = DateTime.fromMillisecondsSinceEpoch(
-                                    minDate.millisecondsSinceEpoch +
-                                        ((barSpot.x / 10) * (maxDate.millisecondsSinceEpoch - minDate.millisecondsSinceEpoch)).toInt(),
-                                  );
-                                  
-                                  return LineTooltipItem(
-                                    '${DateFormat('MMM d, yyyy').format(date)}\n',
-                                    const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    children: [
-                                      TextSpan(
-                                        text: '${barSpot.y.toStringAsFixed(1)} kg',
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                }).toList();
-                              },
-                            ),
-                            handleBuiltInTouches: true,
-                            touchSpotThreshold: 20,
                           ),
                         ),
                       ),
@@ -237,29 +197,41 @@ class WeightGraph extends StatelessWidget {
       ),
     );
   }
-  
-  List<FlSpot> _createSpots(List<WeightEntry> entries, DateTime minDate, DateTime maxDate) {
+
+  List<FlSpot> _createSpots(List<WeightEntry> entries, DateTime minDate,
+      DateTime maxDate, int totalDays) {
     final totalDuration = maxDate.difference(minDate).inMilliseconds;
-    
+
     return entries.map((entry) {
-      // Convert date to a value between 0 and 10 for the x-axis
-      final xValue = (entry.date.difference(minDate).inMilliseconds / totalDuration) * 10;
+      final xValue = entry.date.difference(minDate).inMilliseconds /
+          totalDuration *
+          totalDays;
       return FlSpot(xValue, entry.weight);
     }).toList();
   }
-  
-  // Calculate optimal interval for date labels based on total days
+
   int _calculateOptimalDaysInterval(int totalDays) {
-    if (totalDays <= 7) {
-      return 1; // Show every day for a week or less
+    if (totalDays <= 5) {
+      return 1; // Show every day if the total days are 5 or fewer
     } else if (totalDays <= 30) {
-      return 3; // Show every 3 days for a month
+      return 3; // Show every 3rd day for up to 30 days
     } else if (totalDays <= 90) {
-      return 7; // Show weekly for 3 months
+      return 7; // Show every 7th day for up to 90 days
     } else if (totalDays <= 365) {
-      return 30; // Show monthly for a year
+      return 30; // Show every 30th day for up to 1 year
     } else {
-      return 90; // Show quarterly for more than a year
+      return 90; // Show every 90th day for more than 1 year
+    }
+  }
+
+  double _calculateOptimalWeightInterval(double minWeight, double maxWeight) {
+    final range = maxWeight - minWeight;
+    if (range <= 10) {
+      return 2; // Interval of 2 for small ranges
+    } else if (range <= 20) {
+      return 4; // Interval of 4 for medium ranges
+    } else {
+      return 10; // Interval of 10 for large ranges
     }
   }
 }

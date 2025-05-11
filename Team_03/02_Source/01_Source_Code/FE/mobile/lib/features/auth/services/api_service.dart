@@ -47,7 +47,7 @@ class ApiService {
 
   Future<Map<String, dynamic>> getProfile() async {
     final response = await http.get(
-      Uri.parse("http://10.0.2.2:8088/api/fit-profiles/me"),
+      Uri.parse("http://localhost:8088/api/fit-profiles/me"),
       headers: {
         "Content-Type": "application/json",
         "Authorization":

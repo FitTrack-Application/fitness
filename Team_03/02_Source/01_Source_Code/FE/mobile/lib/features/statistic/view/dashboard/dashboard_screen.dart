@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile/features/statistic/models/step_entry.dart';
-import 'package:mobile/features/statistic/models/weight_entry.dart' show WeightEntry;
+import 'package:mobile/features/statistic/models/weight_entry.dart'
+    show WeightEntry;
 import 'package:mobile/features/statistic/view/dashboard/widget/weight_graph.dart';
 import 'package:mobile/features/statistic/view/dashboard/widget/step_graph.dart';
 import 'package:provider/provider.dart';
 import 'package:pie_chart/pie_chart.dart';
-
 
 import '../../../../cores/constants/colors.dart';
 import '../../viewmodels/dashboard_viewmodel.dart';
@@ -27,10 +27,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
       final viewModel = Provider.of<DashboardViewModel>(context, listen: false);
       const token = 'auth_token';
       viewModel.fetchDashboardData(token: token);
+      viewModel.fetchStepStatistics();
+      viewModel.fetchWeightStatistics();
       _initialized = true;
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -40,12 +41,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
       body: viewModel.isLoading
           ? const Center(child: CircularProgressIndicator())
           : viewModel.errorMessage != null
-          ? Center(child: Text(viewModel.errorMessage!))
-          : _buildDashboardBody(context, viewModel),
+              ? Center(child: Text(viewModel.errorMessage!))
+              : _buildDashboardBody(context, viewModel),
     );
   }
 
-  Widget _buildDashboardBody(BuildContext context, DashboardViewModel viewModel) {
+  Widget _buildDashboardBody(
+      BuildContext context, DashboardViewModel viewModel) {
     final theme = Theme.of(context);
     final today = DateFormat('EEEE, MMM d').format(DateTime.now());
 
@@ -53,67 +55,56 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final burned = viewModel.totalCaloriesBurned;
     final goal = viewModel.caloriesGoal;
     final remaining = goal - consumed; //+ burned;
-    final List<WeightEntry> fixedEntries = [
-      WeightEntry(date: DateTime(2025, 4, 20), weight: 70.0),
-      WeightEntry(date: DateTime(2025, 4, 22), weight: 72.0),
-      WeightEntry(date: DateTime(2025, 4, 26), weight: 75.0),
-      WeightEntry(date: DateTime(2025, 4, 28), weight: 73.0),
-    ];
-      final List<StepEntry> stepEntries = [
-    StepEntry(date: DateTime.now().subtract(const Duration(days: 6)), steps: 8742),
-    StepEntry(date: DateTime.now().subtract(const Duration(days: 5)), steps: 10253),
-    StepEntry(date: DateTime.now().subtract(const Duration(days: 4)), steps: 7391),
-    StepEntry(date: DateTime.now().subtract(const Duration(days: 3)), steps: 12483),
-    StepEntry(date: DateTime.now().subtract(const Duration(days: 2)), steps: 5932),
-    StepEntry(date: DateTime.now().subtract(const Duration(days: 1)), steps: 9847),
-    StepEntry(date: DateTime.now(), steps: 11362),
-  ];
     return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: SafeArea(child: ListView(
-        children: [
-          Text('Hi there 👋', style: theme.textTheme.headlineMedium),
-          Text(today, style: theme.textTheme.titleMedium?.copyWith(color: NeutralColors.dark200)),
-          const SizedBox(height: 24),
-          _buildCaloriesCard(theme, consumed, goal, remaining),
-          const SizedBox(height: 24),
-          _buildMacronutrientsCard(theme, viewModel),
-          const SizedBox(height: 24),
-          //_buildQuickLogCard(theme),
-          const SizedBox(height: 24),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal, // Enable horizontal scrolling
-            child: Row(
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.8, // Adjust width for each graph
+        padding: const EdgeInsets.all(16.0),
+        child: SafeArea(
+          child: ListView(
+            children: [
+              Text('Hi there 👋', style: theme.textTheme.headlineMedium),
+              Text(today,
+                  style: theme.textTheme.titleMedium
+                      ?.copyWith(color: NeutralColors.dark200)),
+              const SizedBox(height: 24),
+              _buildCaloriesCard(theme, consumed, goal, remaining),
+              const SizedBox(height: 24),
+              _buildMacronutrientsCard(theme, viewModel),
+              const SizedBox(height: 24),
+              //_buildQuickLogCard(theme),
+              const SizedBox(height: 24),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal, // Enable horizontal scrolling
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width *
+                          0.8, // Adjust width for each graph
 
-                  child: WeightGraph(
-                    entries: fixedEntries,
-                    title: 'Weight History (kg)',
-                    weightGoal: 75,
-                  ),
+                      child: WeightGraph(
+                        entries: viewModel.weightEntries,
+                        title: 'Weights',
+                        weightGoal: 75,
+                      ),
+                    ),
+                    const SizedBox(width: 16), // Add spacing between the graphs
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width *
+                          0.8, // Adjust width for each graph
+
+                      child: StepGraph(
+                        entries: viewModel.stepEntries,
+                        title: 'Steps',
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 16), // Add spacing between the graphs
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.8, // Adjust width for each graph
-
-
-                  child: StepGraph(
-                    entries: stepEntries,
-                    title: 'Steps Today',
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
-      )
-    );
+        ));
   }
 
-  Widget _buildCaloriesCard(ThemeData theme, int consumed, int goal, int remaining) {
+  Widget _buildCaloriesCard(
+      ThemeData theme, int consumed, int goal, int remaining) {
     final dataMap = <String, double>{
       'Consumed': consumed.toDouble(),
       'Remaining': remaining > 0 ? remaining.toDouble() : 0,
@@ -138,7 +129,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 chartType: ChartType.ring,
                 colorList: colorList,
                 chartRadius: MediaQuery.of(context).size.width / 3,
-                chartValuesOptions: const ChartValuesOptions(showChartValues: false),
+                chartValuesOptions:
+                    const ChartValuesOptions(showChartValues: false),
                 centerText: goal.toString(),
                 initialAngleInDegree: 270,
                 centerTextStyle: const TextStyle(
@@ -168,18 +160,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-
   Widget _calorieBox(String label, String value, Color color) {
     return Row(
       children: [
         Text(label, style: Theme.of(context).textTheme.bodyLarge),
         const SizedBox(height: 4),
-        Text(value, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: color)),
+        Text(value,
+            style: TextStyle(
+                fontSize: 18, fontWeight: FontWeight.bold, color: color)),
       ],
     );
   }
 
-  Widget _buildMacronutrientsCard(ThemeData theme, DashboardViewModel viewModel) {
+  Widget _buildMacronutrientsCard(
+      ThemeData theme, DashboardViewModel viewModel) {
     final dataMap = <String, double>{
       'Carbs': viewModel.carbsPercent.toDouble(),
       'Protein': viewModel.proteinPercent.toDouble(),
@@ -207,7 +201,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 chartType: ChartType.disc,
                 colorList: colorList,
                 chartRadius: MediaQuery.of(context).size.width / 2.5,
-                chartValuesOptions: const ChartValuesOptions(showChartValuesInPercentage: true),
+                chartValuesOptions:
+                    const ChartValuesOptions(showChartValuesInPercentage: true),
                 legendOptions: const LegendOptions(showLegends: false),
               ),
             ),
@@ -218,8 +213,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 children: [
                   Text('Macro Nutrients', style: theme.textTheme.titleLarge),
                   const SizedBox(height: 12),
-                  _macroRow('Carbs', viewModel.carbsPercent, NutritionColor.cabs),
-                  _macroRow('Protein', viewModel.proteinPercent, NutritionColor.protein),
+                  _macroRow(
+                      'Carbs', viewModel.carbsPercent, NutritionColor.cabs),
+                  _macroRow('Protein', viewModel.proteinPercent,
+                      NutritionColor.protein),
                   _macroRow('Fat', viewModel.fatPercent, NutritionColor.fat),
                 ],
               ),
@@ -230,14 +227,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-
   Widget _macroRow(String name, int percent, Color color) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('$name - $percent%', style: TextStyle(color: color,)),
+          Text('$name - $percent%',
+              style: TextStyle(
+                color: color,
+              )),
           const SizedBox(height: 4),
           LinearProgressIndicator(
             value: percent.toDouble() / 100.0,
@@ -279,4 +278,3 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 }
-

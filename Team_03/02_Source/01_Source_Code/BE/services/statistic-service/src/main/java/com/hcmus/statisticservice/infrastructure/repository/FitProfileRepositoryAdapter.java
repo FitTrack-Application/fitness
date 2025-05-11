@@ -1,0 +1,36 @@
+package com.hcmus.statisticservice.infrastructure.repository;
+
+import com.hcmus.statisticservice.domain.model.FitProfile;
+import com.hcmus.statisticservice.domain.repository.FitProfileRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+
+import java.util.Optional;
+import java.util.UUID;
+
+@Component
+@RequiredArgsConstructor
+public class FitProfileRepositoryAdapter implements FitProfileRepository {
+
+    private final JpaFitProfileRepository jpaFitProfileRepository;
+
+    @Override
+    public FitProfile save(FitProfile fitProfile) {
+        return jpaFitProfileRepository.save(fitProfile);
+    }
+
+    @Override
+    public Optional<FitProfile> findByUserId(UUID userId) {
+        return jpaFitProfileRepository.findByUserId(userId);
+    }
+
+    @Override
+    public boolean existsByUserId(UUID userId) {
+        return jpaFitProfileRepository.existsByUserId(userId);
+    }
+
+    @Override
+    public void deleteById(UUID id) {
+        jpaFitProfileRepository.deleteById(id);
+    }
+}

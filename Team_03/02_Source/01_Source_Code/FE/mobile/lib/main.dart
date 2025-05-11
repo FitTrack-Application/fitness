@@ -17,15 +17,20 @@ import 'features/fitness/viewmodels/diary_viewmodel.dart';
 import 'features/fitness/viewmodels/search_food_viewmodel.dart';
 import 'features/statistic/services/dashboard_api_service.dart';
 import 'features/statistic/viewmodels/dashboard_viewmodel.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:dio/dio.dart';
 
 void main() {
+  final dio = Dio();
+  final storage = const FlutterSecureStorage();
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => BottomNavProvider()),
         ChangeNotifierProvider(
             create: (_) => SearchFoodViewModel()..searchFoods()),
-        ChangeNotifierProvider(create: (_) => DiaryViewModel()..fetchCaloriesGoal()),
+        ChangeNotifierProvider(
+            create: (_) => DiaryViewModel()..fetchCaloriesGoal()),
         ChangeNotifierProvider(create: (_) => ProfileViewModel()),
         ChangeNotifierProvider(create: (_) => GoalViewModel()),
         ChangeNotifierProvider(create: (_) => AuthViewModel()),
@@ -33,11 +38,11 @@ void main() {
             create: (_) => ApiClient(
                 'https://54efe02a-ae6e-4055-9391-3a9bd9cac8f1.mock.pstmn.io')),
         ProxyProvider<ApiClient, DashboardApiService>(
-          update: (_, client, __) => DashboardApiService(client),
+          update: (_, client, __) => DashboardApiService(client, dio, storage),
         ),
         ChangeNotifierProxyProvider<DashboardApiService, DashboardViewModel>(
           create: (_) => DashboardViewModel(
-              DashboardApiService(ApiClient(''))), // Placeholder
+              DashboardApiService(ApiClient(''), dio, storage)), // Placeholder
           update: (_, api, __) => DashboardViewModel(api),
         ),
       ],
