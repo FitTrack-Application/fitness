@@ -12,9 +12,6 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.List;
 
 @Slf4j
 @Component
@@ -25,11 +22,9 @@ public class CustomAccessDeniedHandler implements ServerAccessDeniedHandler {
         log.warn("Forbidden error: {}", exception.getMessage());
         ApiResponse<Object> response = ApiResponse.builder()
                 .status(HttpStatus.FORBIDDEN.value())
-                .generalMessage("[API Gate Way] Forbidden")
-                .errorDetails(List.of("You do not have permission to access this resource."))
-                .timestamp(LocalDateTime.now(ZoneId.of("UTC+7")))
+                .generalMessage("[API Gate Way] Forbidden - You do not have permission to access this resource.")
                 .build();
-        exchange.getResponse().setStatusCode(HttpStatus.OK);
+        exchange.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
         exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON);
         DataBuffer buffer = exchange.getResponse().bufferFactory().wrap(response.toJson().getBytes(StandardCharsets.UTF_8));
         return exchange.getResponse().writeWith(Mono.just(buffer));

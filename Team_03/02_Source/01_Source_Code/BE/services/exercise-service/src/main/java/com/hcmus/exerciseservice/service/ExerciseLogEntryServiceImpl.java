@@ -12,12 +12,11 @@ import com.hcmus.exerciseservice.repository.ExerciseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
-public class ExerciseLogEntryServiceImpl implements ExerciseLogEntryService{
+public class ExerciseLogEntryServiceImpl implements ExerciseLogEntryService {
 
     private final ExerciseLogEntryRepository exerciseLogEntryRepository;
 
@@ -35,7 +34,6 @@ public class ExerciseLogEntryServiceImpl implements ExerciseLogEntryService{
         return ApiResponse.builder()
                 .status(200)
                 .generalMessage("Successfully deleted exercise log entry")
-                .timestamp(LocalDateTime.now())
                 .build();
     }
 
@@ -61,7 +59,6 @@ public class ExerciseLogEntryServiceImpl implements ExerciseLogEntryService{
                 .status(200)
                 .generalMessage("Successfully updated exercise log entry")
                 .data(exerciseLogEntryResponse)
-                .timestamp(LocalDateTime.now())
                 .build();
     }
 }

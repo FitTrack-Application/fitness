@@ -29,7 +29,7 @@ public class WeightGoalMapper {
     }
 
     public WeightGoalResponse toResponse(WeightGoal weightGoal, Double currentWeight, Double progressPercentage,
-            Long estimatedDaysToTarget) {
+                                         Long estimatedDaysToTarget) {
         return WeightGoalResponse.builder()
                 .id(weightGoal.getWeightGoalId())
                 .startWeight(weightGoal.getStartingWeight())
@@ -45,7 +45,7 @@ public class WeightGoalMapper {
     }
 
     public List<WeightGoalResponse> toResponseList(List<WeightGoal> weightGoals, Double currentWeight,
-            Double progressPercentage, Long estimatedDaysToTarget) {
+                                                   Double progressPercentage, Long estimatedDaysToTarget) {
         return weightGoals.stream()
                 .map(weightGoal -> toResponse(weightGoal, currentWeight, progressPercentage, estimatedDaysToTarget))
                 .collect(Collectors.toList());
@@ -56,7 +56,7 @@ public class WeightGoalMapper {
     }
 
     private Double calculateWeeklyGoal(Double startWeight, Double targetWeight, LocalDate startDate,
-            LocalDate targetDate) {
+                                       LocalDate targetDate) {
         long weeks = startDate.until(targetDate).getDays() / 7;
         if (weeks <= 0)
             weeks = 1; // Tránh chia cho 0
@@ -64,7 +64,7 @@ public class WeightGoalMapper {
     }
 
     private LocalDate calculateTargetDate(Date startingDate, Double weeklyGoal, Double startingWeight,
-            Double goalWeight) {
+                                          Double goalWeight) {
         LocalDate startDate = toLocalDate(startingDate);
         double totalChange = Math.abs(goalWeight - startingWeight);
         int weeks = (int) Math.ceil(totalChange / weeklyGoal);

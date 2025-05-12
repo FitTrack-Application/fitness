@@ -6,7 +6,7 @@ import com.hcmus.exerciseservice.dto.response.ApiResponse;
 import com.hcmus.exerciseservice.dto.response.ExerciseLogEntryResponse;
 import com.hcmus.exerciseservice.dto.response.ExerciseLogResponse;
 import com.hcmus.exerciseservice.service.ExerciseLogService;
-import com.hcmus.exerciseservice.util.JwtUtil;
+import com.hcmus.exerciseservice.util.CustomSecurityContextHolder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -23,11 +23,9 @@ public class ExerciseLogController {
 
     private final ExerciseLogService exerciseLogService;
 
-    private final JwtUtil jwtUtil;
-
     @PostMapping
     public ResponseEntity<ApiResponse<?>> createExerciseLog(@RequestBody InitiateExerciseLogRequest initiateExerciseLogRequest) {
-        UUID userId = jwtUtil.getCurrentUserId();
+        UUID userId = CustomSecurityContextHolder.getCurrentUserId();
 
         ApiResponse<?> response = exerciseLogService.createExerciseLog(initiateExerciseLogRequest, userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -47,7 +45,7 @@ public class ExerciseLogController {
     public ResponseEntity<ApiResponse<ExerciseLogResponse>> getExerciseLogByUserIdAndDate(
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date date
     ) {
-        UUID userId = jwtUtil.getCurrentUserId();
+        UUID userId = CustomSecurityContextHolder.getCurrentUserId();
 
         ApiResponse<ExerciseLogResponse> response = exerciseLogService.getExerciseLogByUserIdAndDate(userId, date);
         return ResponseEntity.ok(response);

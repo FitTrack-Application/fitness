@@ -13,7 +13,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +20,7 @@ import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
-public class ExerciseServiceImpl implements ExerciseService{
+public class ExerciseServiceImpl implements ExerciseService {
 
     private final ExerciseRepository exerciseRepository;
 
@@ -47,7 +46,6 @@ public class ExerciseServiceImpl implements ExerciseService{
                 .generalMessage("Successfully retrieved exercises")
                 .data(exercisePageDto.getContent())
                 .metadata(metadata)
-                .timestamp(LocalDateTime.now())
                 .build();
     }
 
@@ -76,7 +74,6 @@ public class ExerciseServiceImpl implements ExerciseService{
                 .status(200)
                 .generalMessage("Successfully retrieved exercise")
                 .data(exerciseDto)
-                .timestamp(LocalDateTime.now())
                 .build();
     }
 
@@ -101,7 +98,6 @@ public class ExerciseServiceImpl implements ExerciseService{
                 .status(201)
                 .generalMessage("Successfully created exercise")
                 .data(exerciseDto)
-                .timestamp(LocalDateTime.now())
                 .build();
     }
 
@@ -117,12 +113,11 @@ public class ExerciseServiceImpl implements ExerciseService{
         return ApiResponse.builder()
                 .status(200)
                 .generalMessage("Successfully deleted exercise")
-                .timestamp(LocalDateTime.now())
                 .build();
     }
 
     @Override
-    public ApiResponse<ExerciseCaloriesResponse> getExerciseCaloriesById(UUID exerciseId,  int duration) {
+    public ApiResponse<ExerciseCaloriesResponse> getExerciseCaloriesById(UUID exerciseId, int duration) {
         // Find the exercise by id
         Exercise exercise = exerciseRepository.findById(exerciseId)
                 .orElseThrow(() -> new ResourceNotFoundException("Exercise not found with ID: " + exerciseId));
@@ -141,7 +136,6 @@ public class ExerciseServiceImpl implements ExerciseService{
                 .status(200)
                 .generalMessage("Successfully retrieved exercise calories")
                 .data(response)
-                .timestamp(LocalDateTime.now())
                 .build();
     }
 }

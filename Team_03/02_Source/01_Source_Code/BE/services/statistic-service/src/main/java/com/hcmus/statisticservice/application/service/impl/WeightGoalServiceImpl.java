@@ -18,7 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Date;
@@ -28,110 +27,108 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class WeightGoalServiceImpl implements WeightGoalService {
 
-        private final WeightGoalRepository weightGoalRepository;
-        private final WeightLogService weightLogService;
-        private final FitProfileService fitProfileService;
-        private final NutritionGoalService nutritionGoalService;
+    private final WeightGoalRepository weightGoalRepository;
+    private final WeightLogService weightLogService;
+    private final FitProfileService fitProfileService;
+    private final NutritionGoalService nutritionGoalService;
 
-        @Override
-        public WeightGoal updateWeightGoal(UUID userId, WeightGoal updateWeightGoal) {
-                WeightGoal weightGoal = findWeightGoal(userId);
+    @Override
+    public WeightGoal updateWeightGoal(UUID userId, WeightGoal updateWeightGoal) {
+        WeightGoal weightGoal = findWeightGoal(userId);
 
-                weightGoal.setStartingWeight(
-                                updateWeightGoal.getStartingWeight() != null ? updateWeightGoal.getStartingWeight()
-                                                : weightGoal.getStartingWeight());
-                weightGoal.setStartingDate(
-                                updateWeightGoal.getStartingDate() != null ? updateWeightGoal.getStartingDate()
-                                                : weightGoal.getStartingDate());
-                weightGoal.setWeeklyGoal(updateWeightGoal.getWeeklyGoal() != null ? updateWeightGoal.getWeeklyGoal()
-                                : weightGoal.getWeeklyGoal());
-                weightGoal.setGoalWeight(updateWeightGoal.getGoalWeight() != null ? updateWeightGoal.getGoalWeight()
-                                : weightGoal.getGoalWeight());
+        weightGoal.setStartingWeight(
+                updateWeightGoal.getStartingWeight() != null ? updateWeightGoal.getStartingWeight()
+                        : weightGoal.getStartingWeight());
+        weightGoal.setStartingDate(
+                updateWeightGoal.getStartingDate() != null ? updateWeightGoal.getStartingDate()
+                        : weightGoal.getStartingDate());
+        weightGoal.setWeeklyGoal(updateWeightGoal.getWeeklyGoal() != null ? updateWeightGoal.getWeeklyGoal()
+                : weightGoal.getWeeklyGoal());
+        weightGoal.setGoalWeight(updateWeightGoal.getGoalWeight() != null ? updateWeightGoal.getGoalWeight()
+                : weightGoal.getGoalWeight());
 
-                return weightGoalRepository.save(weightGoal);
+        return weightGoalRepository.save(weightGoal);
+    }
+
+    @Override
+    public WeightGoal findWeightGoal(UUID userId) {
+        return weightGoalRepository.findByUserId(userId)
+                .orElseThrow(() -> new StatisticException("Weight goal not found!"));
+    }
+
+    @Override
+    public WeightGoal addWeightGoal(UUID userId, WeightGoal addWeightGoal) {
+        if (weightGoalRepository.existsByUserId(userId)) {
+            throw new StatisticException("Weight goal already exists!");
+        }
+        WeightGoal weightGoal = WeightGoal.builder()
+                .goalWeight(addWeightGoal.getGoalWeight())
+                .weeklyGoal(addWeightGoal.getWeeklyGoal())
+                .startingWeight(addWeightGoal.getStartingWeight())
+                .startingDate(addWeightGoal.getStartingDate())
+                .userId(userId)
+                .build();
+        return weightGoalRepository.save(weightGoal);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public ApiResponse<?> getUpdateWeightGoalResponse(UUID userId,
+                                                      UpdateWeightGoalRequest updateWeightGoalRequest) {
+        WeightGoal weightGoal = WeightGoal.builder()
+                .goalWeight(updateWeightGoalRequest.getGoalWeight())
+                .weeklyGoal(updateWeightGoalRequest.getWeeklyGoal())
+                .startingWeight(updateWeightGoalRequest.getStartingWeight())
+                .startingDate(updateWeightGoalRequest.getStartingDate())
+                .userId(userId)
+                .build();
+        WeightGoal savedWeightGoal = updateWeightGoal(userId, weightGoal);
+        if (savedWeightGoal == null) {
+            throw new StatisticException("Failed to update weight goal!");
         }
 
-        @Override
-        public WeightGoal findWeightGoal(UUID userId) {
-                return weightGoalRepository.findByUserId(userId)
-                                .orElseThrow(() -> new StatisticException("Weight goal not found!"));
-        }
+        FitProfile profile = new FitProfile();
+        profile.setActivityLevel(ActivityLevel.fromString(updateWeightGoalRequest.getActivityLevel()));
+        fitProfileService.updateProfile(userId, profile);
 
-        @Override
-        public WeightGoal addWeightGoal(UUID userId, WeightGoal addWeightGoal) {
-                if (weightGoalRepository.existsByUserId(userId)) {
-                        throw new StatisticException("Weight goal already exists!");
-                }
-                WeightGoal weightGoal = WeightGoal.builder()
-                                .goalWeight(addWeightGoal.getGoalWeight())
-                                .weeklyGoal(addWeightGoal.getWeeklyGoal())
-                                .startingWeight(addWeightGoal.getStartingWeight())
-                                .startingDate(addWeightGoal.getStartingDate())
-                                .userId(userId)
-                                .build();
-                return weightGoalRepository.save(weightGoal);
-        }
+        weightLogService.trackWeight(userId,
+                WeightLogRequest.builder()
+                        .updateDate(Date.from(ZonedDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"))
+                                .toInstant()))
+                        .weight(updateWeightGoalRequest.getCurrentWeight())
+                        .build());
 
-        @Transactional(rollbackFor = Exception.class)
-        @Override
-        public ApiResponse<?> getUpdateWeightGoalResponse(UUID userId,
-                        UpdateWeightGoalRequest updateWeightGoalRequest) {
-                WeightGoal weightGoal = WeightGoal.builder()
-                                .goalWeight(updateWeightGoalRequest.getGoalWeight())
-                                .weeklyGoal(updateWeightGoalRequest.getWeeklyGoal())
-                                .startingWeight(updateWeightGoalRequest.getStartingWeight())
-                                .startingDate(updateWeightGoalRequest.getStartingDate())
-                                .userId(userId)
-                                .build();
-                WeightGoal savedWeightGoal = updateWeightGoal(userId, weightGoal);
-                if (savedWeightGoal == null) {
-                        throw new StatisticException("Failed to update weight goal!");
-                }
+        nutritionGoalService.updateNutritionGoal(
+                userId,
+                savedWeightGoal,
+                updateWeightGoalRequest.getCurrentWeight(),
+                ActivityLevel.fromString(updateWeightGoalRequest.getActivityLevel()));
 
-                FitProfile profile = new FitProfile();
-                profile.setActivityLevel(ActivityLevel.fromString(updateWeightGoalRequest.getActivityLevel()));
-                fitProfileService.updateProfile(userId, profile);
+        return ApiResponse.builder()
+                .status(HttpStatus.OK.value())
+                .generalMessage("Update weight goal successfully for " + profile.getName() + "!")
+                .build();
+    }
 
-                weightLogService.trackWeight(userId,
-                                WeightLogRequest.builder()
-                                                .updateDate(Date.from(ZonedDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"))
-                                                                .toInstant()))
-                                                .weight(updateWeightGoalRequest.getCurrentWeight())
-                                                .build());
+    @Transactional
+    public ApiResponse<GetWeightGoalResponse> getWeightGoal(UUID userId) {
+        WeightGoal weightGoal = findWeightGoal(userId);
+        Double currentWeight = weightLogService.getCurrentWeight(userId);
+        ActivityLevel activityLevel = fitProfileService.findProfile(userId).getActivityLevel();
 
-                nutritionGoalService.updateNutritionGoal(
-                                userId,
-                                savedWeightGoal,
-                                updateWeightGoalRequest.getCurrentWeight(),
-                                ActivityLevel.fromString(updateWeightGoalRequest.getActivityLevel()));
+        GetWeightGoalResponse getWeightGoalResponse = GetWeightGoalResponse.builder()
+                .startingDate(weightGoal.getStartingDate())
+                .startingWeight(weightGoal.getStartingWeight())
+                .currentWeight(currentWeight)
+                .goalWeight(weightGoal.getGoalWeight())
+                .weeklyGoal(weightGoal.getWeeklyGoal())
+                .activityLevel(activityLevel.name())
+                .build();
 
-                return ApiResponse.builder()
-                                .status(HttpStatus.OK.value())
-                                .generalMessage("Update weight goal successfully for " + profile.getName() + "!")
-                                .timestamp(LocalDateTime.now())
-                                .build();
-        }
-
-        @Transactional
-        public ApiResponse<GetWeightGoalResponse> getWeightGoal(UUID userId) {
-                WeightGoal weightGoal = findWeightGoal(userId);
-                Double currentWeight = weightLogService.getCurrentWeight(userId);
-                ActivityLevel activityLevel = fitProfileService.findProfile(userId).getActivityLevel();
-
-                GetWeightGoalResponse getWeightGoalResponse = GetWeightGoalResponse.builder()
-                                .startingDate(weightGoal.getStartingDate())
-                                .startingWeight(weightGoal.getStartingWeight())
-                                .currentWeight(currentWeight)
-                                .goalWeight(weightGoal.getGoalWeight())
-                                .weeklyGoal(weightGoal.getWeeklyGoal())
-                                .activityLevel(activityLevel.name())
-                                .build();
-
-                return ApiResponse.<GetWeightGoalResponse>builder()
-                                .status(HttpStatus.OK.value())
-                                .generalMessage("Successfully retrieved goal!")
-                                .data(getWeightGoalResponse)
-                                .timestamp(LocalDateTime.now())
-                                .build();
-        }
+        return ApiResponse.<GetWeightGoalResponse>builder()
+                .status(HttpStatus.OK.value())
+                .generalMessage("Successfully retrieved goal!")
+                .data(getWeightGoalResponse)
+                .build();
+    }
 }

@@ -22,7 +22,6 @@
     </properties>
 
     <modules>
-        <module>fit-service</module>
         <module>food-service</module>
         <module>media-service</module>
         <module>statistic-service</module>
