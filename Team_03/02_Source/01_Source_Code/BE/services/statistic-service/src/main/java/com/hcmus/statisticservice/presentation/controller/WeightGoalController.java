@@ -4,7 +4,7 @@ import com.hcmus.statisticservice.application.dto.request.UpdateWeightGoalReques
 import com.hcmus.statisticservice.application.dto.response.ApiResponse;
 import com.hcmus.statisticservice.application.dto.response.GetWeightGoalResponse;
 import com.hcmus.statisticservice.application.service.WeightGoalService;
-import com.hcmus.statisticservice.infrastructure.security.CurrentUserUtil;
+import com.hcmus.statisticservice.infrastructure.security.CustomSecurityContextHolder;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,12 +19,11 @@ import java.util.UUID;
 @RequestMapping("/api/weight-goals")
 public class WeightGoalController {
 
-    private final CurrentUserUtil currentUserUtil;
     private final WeightGoalService weightGoalService;
 
     @GetMapping("/me")
     public ResponseEntity<ApiResponse<GetWeightGoalResponse>> getWeightGoal() {
-        UUID userId = currentUserUtil.getCurrentUserId();
+        UUID userId = CustomSecurityContextHolder.getCurrentUserId();
 
         log.info("Get weight goal for user: {}", userId);
         ApiResponse<GetWeightGoalResponse> response = weightGoalService.getWeightGoal(userId);
@@ -32,10 +31,10 @@ public class WeightGoalController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/me")
+    @PutMapping("/me")
     public ResponseEntity<ApiResponse<?>> updateWeightGoal(
             @Valid @RequestBody UpdateWeightGoalRequest updateWeightGoalRequest) {
-        UUID userId = currentUserUtil.getCurrentUserId();
+        UUID userId = CustomSecurityContextHolder.getCurrentUserId();
 
         log.info("Update weight goal for user: {}", userId);
         ApiResponse<?> response = weightGoalService.getUpdateWeightGoalResponse(userId, updateWeightGoalRequest);

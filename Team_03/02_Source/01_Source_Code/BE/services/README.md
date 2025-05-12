@@ -4,9 +4,7 @@ Dự án quản lý các microservice của ứng dụng Fitness.
 
 ## Cấu trúc dự án
 
-- `fit-service`: Quản lý thông tin liên quan đến fitness
-- `statistic-service`: Quản lý thống kê dữ liệu
-- `gateway-service`: Quản lý người dùng
+- `[text]-service`: Quản lý thông tin liên quan đến [text] service
 
 ## Cài đặt và Chạy
 
@@ -42,7 +40,6 @@ cd <project-folder>
 ```
 Nếu chạy lần đầu
 docker-compose up -d --build
-
 ```
 
 ```

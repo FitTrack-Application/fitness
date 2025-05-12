@@ -4,7 +4,7 @@ import com.hcmus.statisticservice.application.dto.request.WeightLogRequest;
 import com.hcmus.statisticservice.application.dto.response.ApiResponse;
 import com.hcmus.statisticservice.application.dto.response.WeightLogResponse;
 import com.hcmus.statisticservice.application.service.WeightLogService;
-import com.hcmus.statisticservice.infrastructure.security.CurrentUserUtil;
+import com.hcmus.statisticservice.infrastructure.security.CustomSecurityContextHolder;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,13 +20,12 @@ import java.util.UUID;
 @RequestMapping("/api/weight-logs")
 public class WeightLogController {
 
-    private final CurrentUserUtil currentUserUtil;
     private final WeightLogService weightLogService;
 
     @GetMapping("/me")
     public ResponseEntity<ApiResponse<List<WeightLogResponse>>> getWeightProgress(
             @RequestParam(value = "days", defaultValue = "7") Integer days) {
-        UUID userId = currentUserUtil.getCurrentUserId();
+        UUID userId = CustomSecurityContextHolder.getCurrentUserId();
 
         log.info("Fetching weight progress for user: {}", userId);
         ApiResponse<List<WeightLogResponse>> response = weightLogService.getWeightProgress(userId, days);
@@ -36,7 +35,7 @@ public class WeightLogController {
 
     @PostMapping("/me")
     public ResponseEntity<ApiResponse<?>> trackWeight(@Valid @RequestBody WeightLogRequest weightLogRequest) {
-        UUID userId = currentUserUtil.getCurrentUserId();
+        UUID userId = CustomSecurityContextHolder.getCurrentUserId();
 
         log.info("Tracking weight log for user: {}", userId);
         ApiResponse<?> response = weightLogService.getTrackWeightResponse(userId, weightLogRequest);

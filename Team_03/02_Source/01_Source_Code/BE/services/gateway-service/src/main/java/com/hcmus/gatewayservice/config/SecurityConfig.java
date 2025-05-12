@@ -19,9 +19,6 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 @Slf4j
 public class SecurityConfig {
 
-    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
-    private final CustomAccessDeniedHandler customAccessDeniedHandler;
-
     @Value("${keycloak.introspection-uri}")
     private String introspectionUri;
 
@@ -31,30 +28,22 @@ public class SecurityConfig {
     @Value("${keycloak.client-secret}")
     private String clientSecret;
 
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
+
     @Bean
     public SecurityWebFilterChain filterChain(ServerHttpSecurity http) {
-        http
+        return http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(exchanges -> exchanges
-                        .pathMatchers("/public/**").permitAll()
-                        .pathMatchers("/actuator/**").permitAll()
-                        .pathMatchers("/v3/api-docs/**").permitAll()
-                        .pathMatchers("/swagger-ui.html").permitAll()
-                        .pathMatchers("/swagger-ui/**").permitAll()
+                        .pathMatchers("/public/**", "/actuator/**", "/fallback/**").permitAll()
                         .anyExchange().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
-                        .opaqueToken(opaqueToken -> opaqueToken
-                                .introspector(tokenIntrospector())
-                        )
+                        .opaqueToken(opaqueToken -> opaqueToken.introspector(tokenIntrospector()))
                         .authenticationEntryPoint(customAuthenticationEntryPoint)
                         .accessDeniedHandler(customAccessDeniedHandler)
-                )
-                .exceptionHandling(exceptionHandling -> exceptionHandling
-                        .authenticationEntryPoint(customAuthenticationEntryPoint)
-                        .accessDeniedHandler(customAccessDeniedHandler)
-                );
-        return http.build();
+                ).build();
     }
 
     private ReactiveOpaqueTokenIntrospector tokenIntrospector() {
