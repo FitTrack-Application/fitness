@@ -14,8 +14,6 @@ class SurveyViewModel extends ChangeNotifier {
   double weightGoal = 75;
   double goalPerWeek = 0.2;
   String activityLevel = 'Moderately active';
-  
-
 
   // Calculate daily net calorie goal
   double calculateCalorieGoal() {
@@ -76,15 +74,13 @@ class SurveyViewModel extends ChangeNotifier {
       "gender": gender,
       "height": height,
       "weight": weight,
-      "goalType": goal,
-      "weightGoal": weightGoal,
-      "goalPerWeek": goalPerWeek,
+      "goalWeight": weightGoal,
+      "weeklyGoal": goalPerWeek,
       "activityLevel": activityLevel,
-      "calorieGoal": 2000.00,
-      "imageURL": "https://example.com/avatar.jpg"
+      "imageUrl": null,
+      "startingDate":
+          "${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().day.toString().padLeft(2, '0')}",
     };
-
-    debugPrint("Sending survey data: ${userInfo.toString()}");
 
     try {
       await _apiService.userSurvey(userInfo);

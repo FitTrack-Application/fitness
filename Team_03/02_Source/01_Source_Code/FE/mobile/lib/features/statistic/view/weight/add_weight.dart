@@ -34,6 +34,15 @@ class _AddWeightState extends State<AddWeight> {
             icon: const Icon(Icons.check), // Confirm button icon
             onPressed: () async {
               if (_formKey.currentState!.validate() && _selectedDate != null) {
+                // Validate that the selected date is not in the future
+                if (_selectedDate!.isAfter(DateTime.now())) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                        content: Text('Date cannot be in the future')),
+                  );
+                  return;
+                }
+
                 final weight = double.parse(_weightController.text);
                 final formattedDate =
                     DateFormat('yyyy-MM-dd').format(_selectedDate!);
@@ -75,8 +84,12 @@ class _AddWeightState extends State<AddWeight> {
                   if (value == null || value.isEmpty) {
                     return 'Please enter your weight';
                   }
-                  if (double.tryParse(value) == null) {
+                  final weight = double.tryParse(value);
+                  if (weight == null) {
                     return 'Please enter a valid number';
+                  }
+                  if (weight > 200) {
+                    return 'Weight cannot exceed 200 kg';
                   }
                   return null;
                 },
@@ -89,7 +102,7 @@ class _AddWeightState extends State<AddWeight> {
                     _selectedDate == null
                         ? "Select Date"
                         : DateFormat('yyyy-MM-dd').format(_selectedDate!),
-                    style: Theme.of(context).textTheme.bodyMedium,
+                    style: Theme.of(context).textTheme.titleSmall,
                   ),
                   TextButton(
                     onPressed: () async {
@@ -97,7 +110,8 @@ class _AddWeightState extends State<AddWeight> {
                         context: context,
                         initialDate: DateTime.now(),
                         firstDate: DateTime(2000),
-                        lastDate: DateTime(2100),
+                        lastDate:
+                            DateTime.now(), // Prevent selecting future dates
                       );
                       if (pickedDate != null) {
                         setState(() {

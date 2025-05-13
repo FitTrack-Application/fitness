@@ -3,6 +3,7 @@ import 'package:mobile/common/widgets/list_item/list_item.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/cores/constants/colors.dart';
 import 'package:mobile/features/auth/viewmodels/auth_viewmodel.dart';
+import 'package:mobile/features/auth/viewmodels/profile_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -11,6 +12,7 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authViewModel = context.read<AuthViewModel>();
+    final profileViewModel = context.read<ProfileViewModel>();
     return Scaffold(
       appBar: AppBar(title: const Text("Profile")),
       body: Column(
@@ -34,13 +36,6 @@ class ProfileScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 5),
-                const Text(
-                  "user@example.com",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
               ],
             ),
           ),
@@ -66,9 +61,21 @@ class ProfileScreen extends StatelessWidget {
                   leadingIcon: Icons.logout,
                   title: "Logout",
                   onTap: () async {
-                    // Handle Logout
-                    await authViewModel.logout();
-                    context.go('/welcome');
+                    try {
+                      // Call the logout method from AuthViewModel
+                      await authViewModel.logout();
+                      // Show a success message after logout
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("Logout successful")),
+                      );
+                      context.go(
+                          '/welcome'); // Navigate to the welcome screen after logout
+                    } catch (e) {
+                      // Show an error message if logout fails
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Logout failed: $e")),
+                      );
+                    }
                   },
                 ),
               ],

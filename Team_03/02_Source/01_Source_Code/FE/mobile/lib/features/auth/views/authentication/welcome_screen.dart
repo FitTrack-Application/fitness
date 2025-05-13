@@ -51,13 +51,14 @@ class WelcomeScreen extends StatelessWidget {
                   onPressed: () async {
                     final success = await authViewModel.login();
                     if (success) {
-                      // Gọi API sau khi đăng nhập thành công
-                      try {
-                        GoRouter.of(context).go('/dashboard');
-                      } catch (e) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Error: $e')),
-                        );
+                      // Check if the survey is completed
+                      final hasSurvey = await authViewModel.checkSurveyStatus();
+                      if (hasSurvey) {
+                        GoRouter.of(context)
+                            .go('/dashboard'); // Navigate to dashboard
+                      } else {
+                        GoRouter.of(context)
+                            .go('/survey'); // Navigate to survey
                       }
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -75,13 +76,14 @@ class WelcomeScreen extends StatelessWidget {
                 onTap: () async {
                   final success = await authViewModel.login();
                   if (success) {
-                    // Gọi API sau khi đăng nhập thành công
-                    try {
-                      GoRouter.of(context).go('/dashboard');
-                    } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Error: $e')),
-                      );
+                    // Check if the survey is completed
+
+                    final hasSurvey = await authViewModel.checkSurveyStatus();
+                    if (hasSurvey) {
+                      GoRouter.of(context)
+                          .go('/dashboard'); // Navigate to dashboard
+                    } else {
+                      GoRouter.of(context).go('/survey'); // Navigate to survey
                     }
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(

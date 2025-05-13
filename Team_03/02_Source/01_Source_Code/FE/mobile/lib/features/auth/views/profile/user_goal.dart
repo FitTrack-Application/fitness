@@ -25,8 +25,9 @@ class UserGoal extends StatelessWidget {
       body: Consumer<GoalViewModel>(
         builder: (context, goalViewModel, child) {
           double progress = 0.0;
-            if (goalViewModel.startingWeight != goalViewModel.targetWeight) {
-            progress = ((goalViewModel.startingWeight - goalViewModel.currentWeight) /
+          if (goalViewModel.startingWeight != goalViewModel.targetWeight) {
+            progress = ((goalViewModel.startingWeight -
+                        goalViewModel.currentWeight) /
                     (goalViewModel.startingWeight - goalViewModel.targetWeight))
                 .clamp(0.0, 1.0); // Ensure progress is between 0 and 1
           }

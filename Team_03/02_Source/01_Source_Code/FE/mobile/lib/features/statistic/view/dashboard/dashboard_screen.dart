@@ -29,6 +29,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       viewModel.fetchDashboardData(token: token);
       viewModel.fetchStepStatistics();
       viewModel.fetchWeightStatistics();
+      viewModel.fetchWeightGoal();
       _initialized = true;
     }
   }
@@ -82,7 +83,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       child: WeightGraph(
                         entries: viewModel.weightEntries,
                         title: 'Weights',
-                        weightGoal: 75,
+                        weightGoal: viewModel.targetWeight ?? 75,
                       ),
                     ),
                     const SizedBox(width: 16), // Add spacing between the graphs

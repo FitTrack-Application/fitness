@@ -4,10 +4,11 @@ import '../models/dashboard.dart';
 import '../models/weight_entry.dart';
 import '../models/step_entry.dart';
 import '../services/dashboard_api_service.dart';
+import 'package:mobile/features/auth/services/api_service.dart';
 
 class DashboardViewModel extends ChangeNotifier {
   final DashboardApiService apiService;
-
+  final ApiService _apiGoalService = ApiService();
   DashboardViewModel(this.apiService);
 
   bool isLoading = false;
@@ -19,7 +20,7 @@ class DashboardViewModel extends ChangeNotifier {
   int totalCaloriesBurned = 0;
   Macronutrients macronutrients = Macronutrients(carbs: 0, protein: 0, fat: 0);
   int caloriesGoal = 0;
-
+  double targetWeight = 70;
   List<WeightEntry> weightEntries = [
     WeightEntry(date: DateTime.now(), weight: 0), // Example default entry
   ];
@@ -161,6 +162,29 @@ class DashboardViewModel extends ChangeNotifier {
           backgroundColor: Colors.red,
         ),
       );
+    }
+  }
+
+  Future<void> fetchWeightGoal() async {
+    try {
+      final response = await _apiGoalService.getGoal();
+
+      // Extract the "data" field from the response
+      if (response.containsKey('data') &&
+          response['data'] is Map<String, dynamic>) {
+        final goalData = response['data'];
+
+        targetWeight = goalData['goalWeight'];
+      } else {
+        throw Exception(
+            "Invalid response format: 'data' field is missing or invalid");
+      }
+    } catch (e) {
+      errorMessage = "Failed to fetch goal data";
+      debugPrint("Error fetching goal: $e");
+    } finally {
+      isLoading = false;
+      notifyListeners();
     }
   }
 

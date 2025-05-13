@@ -31,19 +31,45 @@ class ApiService {
     }
   }
 
+  Future<bool> checkSurvey() async {
+    try {
+      final response = await _dio.get("/api/surveys/me");
+
+      debugPrint("API Response: ${response.statusCode} - ${response.data}");
+
+      if (response.statusCode! < 200 || response.statusCode! >= 300) {
+        throw Exception('Failed to check survey: ${response.data}');
+      }
+
+      if (response.data.containsKey('data') &&
+          response.data['data']['hasSurvey'] != null) {
+        return response.data['data']['hasSurvey'];
+      } else {
+        throw Exception(
+            "Invalid response format: 'hasSurvey' field is missing");
+      }
+    } catch (e) {
+      debugPrint("Error checking survey: $e");
+      throw Exception("Failed to check survey");
+    }
+  }
+
   Future<void> userSurvey(Map<String, dynamic> user) async {
-    final response = await http.post(
-      Uri.parse(
-          "https://b542ee45-7bae-4351-aae6-fd50549da5ac.mock.pstmn.io/api/users/survey"),
-      headers: {"Content-Type": "application/json"},
-      body: json.encode(user),
-    );
+    try {
+      final response = await _dio.put(
+        "/api/surveys/me",
+        data: user,
+      );
 
-    debugPrint("API Response: ${response.statusCode} - ${response.body}");
+      debugPrint("API Response: ${response.statusCode} - ${response.data}");
 
-    // Check for success status codes (200-299)
-    if (response.statusCode < 200 || response.statusCode >= 300) {
-      throw Exception('Failed to submit survey: ${response.body}');
+      // Check for success status codes (200-299)
+      if (response.statusCode! < 200 || response.statusCode! >= 300) {
+        throw Exception('Failed to submit survey: ${response.data}');
+      }
+    } catch (e) {
+      debugPrint("Error submitting survey: $e");
+      throw Exception("Failed to submit survey");
     }
   }
 
@@ -71,7 +97,7 @@ class ApiService {
 
   Future<Map<String, dynamic>> getGoal() async {
     try {
-      final response = await _dio.get("/api/users/goals");
+      final response = await _dio.get("/api/weight-goals/me");
 
       debugPrint("API Response: ${response.statusCode} - ${response.data}");
 
