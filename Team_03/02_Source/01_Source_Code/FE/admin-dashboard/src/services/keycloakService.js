@@ -3,12 +3,11 @@ import Keycloak from "keycloak-js";
 class KeycloakService {
   static instance = null;
 
-  // Cấu hình tương tự như trong file Flutter
+  // Cấu hình cập nhật
   static KEYCLOAK_CONFIG = {
-    // Thử sử dụng localhost thay vì IP nội bộ
-    url: "http://localhost:8888/",
+    url: "http://localhost:8888", // Bỏ dấu "/" ở cuối
     realm: "my-fitness",
-    clientId: "test-with-ui", // Có thể cần thay đổi nếu bạn tạo client ID riêng cho web
+    clientId: "admin-fitness",
     redirectUri: window.location.origin + "/callback",
   };
 
@@ -42,25 +41,28 @@ class KeycloakService {
           window.location.origin + "/silent-check-sso.html",
         pkceMethod: "S256",
         checkLoginIframe: false,
-        enableLogging: true,
       });
 
-      console.log(`Người dùng ${authenticated ? "đã" : "chưa"} đăng nhập`);
-
       if (authenticated) {
-        // Lưu token vào localStorage
+        const roles = this.keycloak.tokenParsed.realm_access?.roles || [];
+
+        if (!roles.includes("ADMIN")) {
+          console.warn("Người dùng không có role ADMIN. Đăng xuất...");
+          await this.logout(); // Xoá token và chuyển hướng ra login
+          return false; // Không cho phép đăng nhập tiếp
+        }
+
         localStorage.setItem("access_token", this.keycloak.token);
         localStorage.setItem("refresh_token", this.keycloak.refreshToken);
         localStorage.setItem(
           "token_expiration",
           this.keycloak.tokenParsed.exp * 1000
         );
-        console.log("Token đã được lưu vào localStorage");
       }
 
       return authenticated;
     } catch (error) {
-      console.error("Lỗi khởi tạo Keycloak:", error);
+      console.error("Lỗi khởi tạo Keycloak ở KeycloakService:", error);
       return false;
     }
   }

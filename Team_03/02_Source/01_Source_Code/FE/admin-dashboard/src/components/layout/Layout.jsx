@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 import styled from "styled-components";
-
+import { useAuth } from "../../hook/useAuth";
 const LayoutContainer = styled.div`
   display: flex;
   min-height: 100vh;
@@ -15,11 +15,12 @@ const MainContent = styled.main`
   padding-top: calc(var(--header-height) + 20px);
 `;
 
-const Layout = ({ onLogout }) => {
+const Layout = () => {
+  const { logout } = useAuth();
   return (
     <LayoutContainer>
       <Sidebar />
-      <Header onLogout={onLogout} />
+      <Header onLogout={logout} />
       <MainContent>
         <Outlet />
       </MainContent>

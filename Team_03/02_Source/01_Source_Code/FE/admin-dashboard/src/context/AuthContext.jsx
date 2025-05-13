@@ -1,61 +1,58 @@
-import React, { createContext, useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import KeycloakService from "../services/keycloakService";
+import { AuthContext } from "../hook/useAuth";
 
-// Tạo context
-export const AuthContext = createContext(null);
+// Khởi tạo KeycloakService một lần duy nhất ở ngoài component
+const keycloakService = KeycloakService.getInstance();
+let initializationAttempted = false;
 
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const keycloakService = KeycloakService.getInstance();
+
+  const initKeycloak = async () => {
+    if (initializationAttempted) return;
+
+    initializationAttempted = true;
+    try {
+      const authenticated = await keycloakService.init();
+      setIsAuthenticated(authenticated);
+
+      if (authenticated) {
+        setUser(keycloakService.getUserInfo());
+      }
+    } catch (error) {
+      console.error("Lỗi khởi tạo Keycloak ở AuthContext:", error);
+      setIsAuthenticated(false);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const initKeycloak = async () => {
-      try {
-        setLoading(true);
-        const authenticated = await keycloakService.init();
+    const timer = setTimeout(() => {
+      initKeycloak();
+    }, 300);
 
-        if (authenticated) {
-          setIsAuthenticated(true);
-          setUser(keycloakService.getUserInfo());
-        }
-      } catch (err) {
-        console.error("Lỗi khởi tạo Keycloak:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    initKeycloak();
+    return () => clearTimeout(timer);
   }, []);
 
-  const login = async () => {
-    await keycloakService.login();
+  const login = () => {
+    keycloakService.login();
   };
 
-  const logout = async () => {
-    await keycloakService.logout();
-    setIsAuthenticated(false);
-    setUser(null);
-  };
-
-  const refreshToken = async () => {
-    return await keycloakService.refreshToken();
+  const logout = () => {
+    keycloakService.logout();
   };
 
   const value = {
     isAuthenticated,
     user,
-    loading,
     login,
     logout,
-    refreshToken,
-    getAccessToken: keycloakService.getAccessToken,
+    loading,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
-
-// Hook tiện lợi để sử dụng AuthContext
-export const useAuth = () => useContext(AuthContext);
