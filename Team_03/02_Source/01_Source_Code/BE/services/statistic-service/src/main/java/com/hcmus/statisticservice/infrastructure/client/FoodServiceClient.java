@@ -15,11 +15,11 @@ import java.util.Map;
 
 @FeignClient(
     name = "food-service",
-    url = "${FOOD_SERVICE_HOST}/api/food-reports",
+    url = "${FOOD_SERVICE_HOST}",
     configuration = FeignConfig.class
 )
 
 public interface FoodServiceClient {
-    @GetMapping
+    @GetMapping("api/food-reports")
     ApiResponse<FoodReportResponse> getFoodReport();
 }

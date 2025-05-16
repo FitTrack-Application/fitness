@@ -14,11 +14,11 @@ import java.util.Map;
 
 @FeignClient(
     name = "exercise-service",
-    url = "${EXERCISE_SERVICE_HOST}/api/exercise-reports",
+    url = "${EXERCISE_SERVICE_HOST}",
     configuration = FeignConfig.class
 )
 
 public interface ExerciseServiceClient {
-    @GetMapping
+    @GetMapping("api/exercise-reports")
     ApiResponse<ExerciseReportResponse> getExerciseReport();
 }
