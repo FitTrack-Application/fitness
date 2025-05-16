@@ -9,4 +9,8 @@ import java.util.UUID;
 
 public interface ExerciseRepository extends JpaRepository<Exercise, UUID> {
     Page<Exercise> findByExerciseNameContainingIgnoreCase(String name, Pageable pageable);
+
+    Exercise findByExerciseId(UUID exerciseId);
+
+    boolean existsByExerciseIdAndUserIdIsNotNull(UUID exerciseId);
 }

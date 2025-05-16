@@ -1,4 +1,4 @@
-package com.hcmus.foodservice.dto;
+package com.hcmus.statisticservice.application.dto;
 
 import lombok.*;
 
@@ -7,8 +7,8 @@ import lombok.*;
 @Builder
 @Getter
 @Setter
-public class TopFoodDto {
-    private String name;
+public class CustomFoodUsageDto {
+    private String label;
 
     private Integer count;
 }

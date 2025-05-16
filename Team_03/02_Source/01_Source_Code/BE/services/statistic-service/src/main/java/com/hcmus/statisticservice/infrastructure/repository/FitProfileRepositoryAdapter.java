@@ -30,6 +30,11 @@ public class FitProfileRepositoryAdapter implements FitProfileRepository {
     }
 
     @Override
+    public Integer count() {
+        return (int) jpaFitProfileRepository.count();
+    }
+
+    @Override
     public void deleteById(UUID id) {
         jpaFitProfileRepository.deleteById(id);
     }

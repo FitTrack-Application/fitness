@@ -11,5 +11,7 @@ public interface LatestLoginRepository {
 
     LatestLogin findByUserId(UUID userId);
 
+    Integer countActiveUser();
+
     void deleteById(UUID id);    
 }

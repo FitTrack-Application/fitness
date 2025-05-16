@@ -1,6 +1,7 @@
 package com.hcmus.statisticservice.infrastructure.client;
 
 import com.hcmus.statisticservice.application.dto.response.ApiResponse;
+import com.hcmus.statisticservice.application.dto.response.FoodReportResponse;
 import com.hcmus.statisticservice.infrastructure.client.FeignConfig;
 
 import org.springframework.cloud.openfeign.FeignClient;
@@ -14,11 +15,11 @@ import java.util.Map;
 
 @FeignClient(
     name = "food-service",
-    url = "${FOOD_SERVICE_HOST}/api/food-report",
+    url = "${FOOD_SERVICE_HOST}/api/food-reports",
     configuration = FeignConfig.class
 )
 
 public interface FoodServiceClient {
     @GetMapping
-    ApiResponse<Map<String, String>> getFoodReport();
+    ApiResponse<FoodReportResponse> getFoodReport();
 }

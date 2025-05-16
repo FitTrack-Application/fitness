@@ -5,6 +5,7 @@ import com.hcmus.statisticservice.domain.repository.LatestLoginRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Component
@@ -23,6 +24,11 @@ public class LatestLoginRepositoryAdapter implements LatestLoginRepository {
 
     public LatestLogin findByUserId(UUID userId) {
         return jpaLatestLoginRepository.findByUserId(userId);
+    }
+
+    public Integer countActiveUser() {
+        LocalDate twoWeeksAgo = LocalDate.now().minusWeeks(2);
+        return jpaLatestLoginRepository.countActiveUsersLastTwoWeeks(twoWeeksAgo);
     }
 
     public void deleteById(UUID id) {

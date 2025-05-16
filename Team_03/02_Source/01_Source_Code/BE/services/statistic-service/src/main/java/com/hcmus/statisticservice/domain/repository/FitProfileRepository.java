@@ -12,5 +12,7 @@ public interface FitProfileRepository {
 
     Optional<FitProfile> findByUserId(UUID userId);
 
+    Integer count();
+
     void deleteById(UUID id);
 }

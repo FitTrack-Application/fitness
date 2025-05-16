@@ -1,4 +1,4 @@
-package com.hcmus.foodservice.dto;
+package com.hcmus.statisticservice.application.dto;
 
 import lombok.*;
 
