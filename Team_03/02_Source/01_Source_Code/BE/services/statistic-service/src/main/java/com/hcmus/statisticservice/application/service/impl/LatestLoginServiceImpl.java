@@ -1,0 +1,50 @@
+package com.hcmus.statisticservice.application.service.impl;
+
+import com.hcmus.statisticservice.application.dto.response.ApiResponse;
+import com.hcmus.statisticservice.domain.exception.StatisticException;
+import com.hcmus.statisticservice.domain.model.LatestLogin;
+import com.hcmus.statisticservice.domain.repository.LatestLoginRepository;
+
+import lombok.RequiredArgsConstructor;
+import main.java.com.hcmus.statisticservice.application.service.LatestLoginService;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.time.LocalDate;
+import java.util.Map;
+import java.util.UUID;
+
+@Service
+@RequiredArgsConstructor
+public class LatestLoginServiceImpl implements LatestLoginService {
+    private final LatestLoginRepository LatestLoginRepository;
+
+    @Override
+    public ApiResponse<?> updateLatestLogin(UUID userId) {
+        LatestLogin latestLogin = latestLoginRepository.findByUserId(userId);
+        if (latestLogin == null) {
+            latestLogin = new LatestLogin();
+            latestLogin.setUserId(userId);
+            latestLogin.setDate(LocalDate.now());
+            latestLoginRepository.save(latestLogin);
+            
+            return ApiResponse.builder()
+                    .status(HttpStatus.OK.value())
+                    .generalMessage("Successfully tracked latest login!")
+                    .build();
+        }
+
+        latestLogin.setDate(LocalDate.now());
+
+        latestLoginRepository.save(latestLogin);
+        
+        return ApiResponse.builder()
+                .status(HttpStatus.OK.value())
+                .generalMessage("Successfully updated latest login!")
+                .build();
+    }
+    
+}
