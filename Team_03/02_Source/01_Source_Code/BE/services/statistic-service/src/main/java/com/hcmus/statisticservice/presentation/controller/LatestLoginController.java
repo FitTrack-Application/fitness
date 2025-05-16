@@ -1,6 +1,7 @@
 package com.hcmus.statisticservice.presentation.controller;
 
 import com.hcmus.statisticservice.application.dto.response.ApiResponse;
+import com.hcmus.statisticservice.application.service.LatestLoginService;
 import com.hcmus.statisticservice.infrastructure.security.CustomSecurityContextHolder;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @RestController
 @Slf4j
-@RequestMapping("/api/latest-login")
+@RequestMapping("/api/latest-logins")
 public class LatestLoginController {
     private final LatestLoginService latestLoginService;
 

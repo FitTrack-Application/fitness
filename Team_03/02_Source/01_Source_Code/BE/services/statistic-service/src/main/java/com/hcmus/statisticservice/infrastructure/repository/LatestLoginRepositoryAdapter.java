@@ -5,12 +5,11 @@ import com.hcmus.statisticservice.domain.repository.LatestLoginRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
-public class LatestLoginRepositoryAdapter {
+public class LatestLoginRepositoryAdapter implements LatestLoginRepository {
     
     private final JpaLatestLoginRepository jpaLatestLoginRepository;
 
@@ -22,7 +21,7 @@ public class LatestLoginRepositoryAdapter {
         return jpaLatestLoginRepository.existsByUserId(userId);
     }
 
-    public Optional<LatestLogin> findByUserId(UUID userId) {
+    public LatestLogin findByUserId(UUID userId) {
         return jpaLatestLoginRepository.findByUserId(userId);
     }
 
