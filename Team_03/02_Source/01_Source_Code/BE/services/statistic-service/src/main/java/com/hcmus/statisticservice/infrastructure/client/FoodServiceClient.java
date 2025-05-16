@@ -11,13 +11,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
 
+
 @FeignClient(
-    name = "media-service",
-    url = "${MEDIA_SERVICE_HOST}/api/media",
+    name = "food-service",
+    url = "${FOOD_SERVICE_HOST}/api/food-report",
     configuration = FeignConfig.class
 )
 
-public interface MediaServiceClient {
-    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    ApiResponse<Map<String, String>> uploadImage(@RequestPart("file") MultipartFile file);
+public interface FoodServiceClient {
+    @GetMapping
+    ApiResponse<Map<String, String>> getFoodReport();
 }

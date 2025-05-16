@@ -24,7 +24,7 @@ import java.util.UUID;
 public class AdminReportController {
     private final AdminReportService adminReportService;
 
-    @GetMapping("/report")
+    @GetMapping("/statistics")
     public ResponseEntity<ApiResponse<?>> getAdminReport() {
         ApiResponse<?> response = adminReportService.getAdminReport();
 

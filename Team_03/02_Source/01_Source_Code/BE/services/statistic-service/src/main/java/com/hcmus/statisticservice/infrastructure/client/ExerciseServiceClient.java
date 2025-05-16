@@ -12,12 +12,12 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Map;
 
 @FeignClient(
-    name = "media-service",
-    url = "${MEDIA_SERVICE_HOST}/api/media",
+    name = "exercise-service",
+    url = "${EXERCISE_SERVICE_HOST}/api/exercise-report",
     configuration = FeignConfig.class
 )
 
-public interface MediaServiceClient {
-    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    ApiResponse<Map<String, String>> uploadImage(@RequestPart("file") MultipartFile file);
+public interface ExerciseServiceClient {
+    @GetMapping
+    ApiResponse<Map<String, String>> getExerciseReport();
 }

@@ -32,7 +32,7 @@ spring:
         - id: food_service
           uri: ${FOOD_SERVICE_HOST:http://food-service:8080}
           predicates:
-            - Path=/api/foods/**,/api/meal-entries/**,/api/meal-logs/**,/api/recipes/**,/api/serving-units/**
+            - Path=/api/foods/**,/api/meal-entries/**,/api/meal-logs/**,/api/recipes/**,/api/serving-units/**,/api/food-reports/**
         - id: statistic_service
           uri: ${STATISTIC_SERVICE_HOST:http://statistic-service:8081}
           predicates:
