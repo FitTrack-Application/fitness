@@ -57,10 +57,10 @@ public class MediaService {
         expiration.setTime(expTimeMillis);
 
         // Create request to generate presigned URL
-        GeneratePresignedUrlRequest generatePresignedUrlRequest = 
+        GeneratePresignedUrlRequest generatePresignedUrlRequest =
                 new GeneratePresignedUrlRequest(bucketName, objectKey)
-                .withMethod(HttpMethod.GET)
-                .withExpiration(expiration);
+                        .withMethod(HttpMethod.GET)
+                        .withExpiration(expiration);
 
         // Generate and return presigned URL
         return amazonS3.generatePresignedUrl(generatePresignedUrlRequest).toString();

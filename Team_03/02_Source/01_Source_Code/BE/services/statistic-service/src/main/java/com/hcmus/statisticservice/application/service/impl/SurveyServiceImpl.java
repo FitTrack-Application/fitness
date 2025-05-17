@@ -3,11 +3,7 @@ package com.hcmus.statisticservice.application.service.impl;
 import com.hcmus.statisticservice.application.dto.request.SaveSurveyRequest;
 import com.hcmus.statisticservice.application.dto.response.ApiResponse;
 import com.hcmus.statisticservice.application.dto.response.CheckSurveyResponse;
-import com.hcmus.statisticservice.application.service.FitProfileService;
-import com.hcmus.statisticservice.application.service.NutritionGoalService;
-import com.hcmus.statisticservice.application.service.SurveyService;
-import com.hcmus.statisticservice.application.service.WeightGoalService;
-import com.hcmus.statisticservice.application.service.WeightLogService;
+import com.hcmus.statisticservice.application.service.*;
 import com.hcmus.statisticservice.domain.exception.StatisticException;
 import com.hcmus.statisticservice.domain.model.FitProfile;
 import com.hcmus.statisticservice.domain.model.NutritionGoal;
@@ -20,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.UUID;
 
@@ -45,7 +40,6 @@ public class SurveyServiceImpl implements SurveyService {
                 .status(HttpStatus.OK.value())
                 .generalMessage("Check survey successfully!")
                 .data(checkResponse)
-                .timestamp(LocalDateTime.now())
                 .build();
     }
 
@@ -97,7 +91,6 @@ public class SurveyServiceImpl implements SurveyService {
         return ApiResponse.builder()
                 .status(HttpStatus.CREATED.value())
                 .generalMessage("Save survey successfully!")
-                .timestamp(LocalDateTime.now())
                 .build();
     }
 }

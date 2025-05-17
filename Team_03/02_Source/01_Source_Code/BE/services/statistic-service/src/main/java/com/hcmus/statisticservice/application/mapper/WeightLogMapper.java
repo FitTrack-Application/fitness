@@ -5,10 +5,10 @@ import com.hcmus.statisticservice.application.dto.response.WeightLogResponse;
 import com.hcmus.statisticservice.domain.model.WeightLog;
 import org.springframework.stereotype.Component;
 
+import java.time.ZoneId;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import java.time.ZoneId;
 
 @Component
 public class WeightLogMapper {

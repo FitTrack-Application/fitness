@@ -4,7 +4,7 @@ import com.hcmus.statisticservice.application.dto.request.UpdateProfileRequest;
 import com.hcmus.statisticservice.application.dto.response.ApiResponse;
 import com.hcmus.statisticservice.application.dto.response.FitProfileResponse;
 import com.hcmus.statisticservice.application.service.FitProfileService;
-import com.hcmus.statisticservice.infrastructure.security.CurrentUserUtil;
+import com.hcmus.statisticservice.infrastructure.security.CustomSecurityContextHolder;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,12 +19,11 @@ import java.util.UUID;
 @RequestMapping("/api/fit-profiles")
 public class FitProfileController {
 
-    private final CurrentUserUtil currentUserUtil;
     private final FitProfileService fitProfileService;
 
     @GetMapping("/me")
     public ResponseEntity<ApiResponse<FitProfileResponse>> getFitProfile() {
-        UUID userId = currentUserUtil.getCurrentUserId();
+        UUID userId = CustomSecurityContextHolder.getCurrentUserId();
 
         log.info("Get fit profile for user: {}", userId);
         ApiResponse<FitProfileResponse> response = fitProfileService.getFindProfileResponse(userId);
@@ -32,10 +31,10 @@ public class FitProfileController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/me")
+    @PutMapping("/me")
     public ResponseEntity<ApiResponse<?>> updateFitProfile(
             @Valid @RequestBody UpdateProfileRequest updateProfileRequest) {
-        UUID userId = currentUserUtil.getCurrentUserId();
+        UUID userId = CustomSecurityContextHolder.getCurrentUserId();
 
         log.info("Update fit profile for user: {}", userId);
         ApiResponse<?> response = fitProfileService.getUpdateProfileResponse(userId, updateProfileRequest);

@@ -18,10 +18,8 @@ import com.hcmus.exerciseservice.repository.ExerciseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -56,7 +54,6 @@ public class ExerciseLogServiceImpl implements ExerciseLogService {
         return ApiResponse.builder()
                 .status(201)
                 .generalMessage("Successfully created exercise log")
-                .timestamp(LocalDateTime.now())
                 .build();
     }
 
@@ -83,7 +80,6 @@ public class ExerciseLogServiceImpl implements ExerciseLogService {
                 .status(201)
                 .generalMessage("Successfully added exercise log entry")
                 .data(exerciseLogEntryResponse)
-                .timestamp(LocalDateTime.now())
                 .build();
     }
 
@@ -98,7 +94,6 @@ public class ExerciseLogServiceImpl implements ExerciseLogService {
                 .status(200)
                 .generalMessage("Successfully retrieved exercise log")
                 .data(exerciseLogResponse)
-                .timestamp(LocalDateTime.now())
                 .build();
     }
 }

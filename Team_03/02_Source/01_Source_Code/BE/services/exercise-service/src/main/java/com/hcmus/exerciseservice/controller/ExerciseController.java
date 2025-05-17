@@ -1,11 +1,10 @@
 package com.hcmus.exerciseservice.controller;
 
-
 import com.hcmus.exerciseservice.dto.ExerciseDto;
 import com.hcmus.exerciseservice.dto.request.ExerciseRequest;
 import com.hcmus.exerciseservice.dto.response.ApiResponse;
 import com.hcmus.exerciseservice.service.ExerciseService;
-import com.hcmus.exerciseservice.util.JwtUtil;
+import com.hcmus.exerciseservice.util.CustomSecurityContextHolder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,8 +21,6 @@ import java.util.UUID;
 public class ExerciseController {
 
     private final ExerciseService exerciseService;
-
-    private final JwtUtil jwtUtil;
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<ExerciseDto>>> getExercises(
@@ -57,7 +54,7 @@ public class ExerciseController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<ExerciseDto>> createExercise(@RequestBody ExerciseRequest exerciseRequest) {
-        UUID userId = jwtUtil.getCurrentUserId();
+        UUID userId = CustomSecurityContextHolder.getCurrentUserId();
 
         ApiResponse<ExerciseDto> response = exerciseService.createExercise(exerciseRequest, userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);

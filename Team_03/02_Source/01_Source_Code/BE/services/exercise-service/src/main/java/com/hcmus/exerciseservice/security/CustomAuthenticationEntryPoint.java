@@ -10,25 +10,19 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.List;
 
-@Component
 @Slf4j
+@Component
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
-        log.warn("Unauthorized error: {} | URI: {} | Method: {} | Headers: {}",
-                exception.getMessage(), request.getRequestURI(), request.getMethod(), request.getHeaderNames());
-        response.setStatus(HttpServletResponse.SC_OK);
+        log.warn("Unauthorized error: {}", exception.getMessage());
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json");
         ApiResponse<?> apiErrorResponse = ApiResponse.builder()
                 .status(HttpStatus.UNAUTHORIZED.value())
-                .generalMessage("[Exercise Service] Unauthorized at " + request.getRequestURI() + "!")
-                .errorDetails(List.of(exception.getMessage()))
-                .timestamp(LocalDateTime.now(ZoneId.of("UTC+7")))
+                .generalMessage("[Exercise Service] Unauthorized - Missing or invalid authentication headers.")
                 .build();
         response.getWriter().write(apiErrorResponse.toJson());
     }

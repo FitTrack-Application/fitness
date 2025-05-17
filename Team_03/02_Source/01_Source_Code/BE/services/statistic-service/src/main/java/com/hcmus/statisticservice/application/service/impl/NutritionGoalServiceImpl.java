@@ -18,7 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -53,7 +52,7 @@ public class NutritionGoalServiceImpl implements NutritionGoalService {
 
     @Override
     public NutritionGoal updateNutritionGoal(UUID userId, WeightGoal weightGoal, Double currentWeight,
-            ActivityLevel activityLevel) {
+                                             ActivityLevel activityLevel) {
         FitProfile profile = fitProfileRepository.findByUserId(userId)
                 .orElseThrow(() -> new NutritionException("Fit profile not found!"));
         profile.setActivityLevel(activityLevel);
@@ -66,7 +65,7 @@ public class NutritionGoalServiceImpl implements NutritionGoalService {
 
     @Override
     public NutritionGoal updateNutritionGoal(UUID userId, FitProfile profile, WeightGoal weightGoal,
-            Double currentWeight) {
+                                             Double currentWeight) {
         NutritionData nutritionData = calculateNutritionData(
                 profile.getGender().name(),
                 currentWeight,
@@ -96,7 +95,7 @@ public class NutritionGoalServiceImpl implements NutritionGoalService {
     }
 
     public NutritionData calculateNutritionData(String gender, double curWeight, int curHeight, int curAge,
-            String activityLevel, double weeklyGoal, double goalWeight) {
+                                                String activityLevel, double weeklyGoal, double goalWeight) {
         double bmrNumber = 10 * curWeight + 6.25 * curHeight - 5 * curAge;
 
         if ("MALE".equalsIgnoreCase(gender)) {
@@ -148,7 +147,6 @@ public class NutritionGoalServiceImpl implements NutritionGoalService {
                 .status(HttpStatus.OK.value())
                 .generalMessage("Successfully retrieved nutrition goal!")
                 .data(getNutritionGoalResponse)
-                .timestamp(LocalDateTime.now())
                 .build();
     }
 }

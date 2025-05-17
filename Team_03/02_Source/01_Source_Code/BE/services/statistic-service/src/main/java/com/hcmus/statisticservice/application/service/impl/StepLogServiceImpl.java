@@ -7,13 +7,12 @@ import com.hcmus.statisticservice.application.service.StepLogService;
 import com.hcmus.statisticservice.domain.model.StepLog;
 import com.hcmus.statisticservice.domain.repository.StepLogRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
 import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -46,13 +45,11 @@ public class StepLogServiceImpl implements StepLogService {
             return ApiResponse.builder()
                     .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                     .generalMessage("Failed to track step log: " + exception.getMessage())
-                    .timestamp(LocalDateTime.now())
                     .build();
         }
         return ApiResponse.builder()
                 .status(HttpStatus.OK.value())
                 .generalMessage("Successfully tracked step log!")
-                .timestamp(LocalDateTime.now())
                 .build();
     }
 
@@ -66,7 +63,6 @@ public class StepLogServiceImpl implements StepLogService {
                     .status(HttpStatus.OK.value())
                     .generalMessage("No step logs found!")
                     .data(List.of())
-                    .timestamp(LocalDateTime.now())
                     .build();
         }
         List<StepLogResponse> stepLogResponse = stepLogs.stream()
@@ -79,7 +75,6 @@ public class StepLogServiceImpl implements StepLogService {
                 .status(HttpStatus.OK.value())
                 .generalMessage("Successfully retrieved step logs!")
                 .data(stepLogResponse)
-                .timestamp(LocalDateTime.now())
                 .build();
     }
 }
