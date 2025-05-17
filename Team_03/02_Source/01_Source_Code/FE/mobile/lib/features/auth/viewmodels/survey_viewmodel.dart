@@ -20,7 +20,7 @@ class SurveyViewModel extends ChangeNotifier {
     double calorieGoal;
 
     // Base calorie calculation using Mifflin-St Jeor Equation
-    if (gender == 'Male') {
+    if (gender == 'MALE') {
       calorieGoal = (10 * weight) + (6.25 * height) - (5 * age) + 5;
     } else {
       calorieGoal = (10 * weight) + (6.25 * height) - (5 * age) - 161;

@@ -185,6 +185,30 @@ class WeightGraph extends StatelessWidget {
                               ),
                             ],
                           ),
+                          lineTouchData: LineTouchData(
+                            touchTooltipData: LineTouchTooltipData(
+                              tooltipRoundedRadius: 8, // Add rounded corners
+                              tooltipPadding:
+                                  const EdgeInsets.all(8), // Add padding
+                              tooltipMargin:
+                                  8, // Add margin between the tooltip and the point
+                              getTooltipItems:
+                                  (List<LineBarSpot> touchedSpots) {
+                                return touchedSpots.map((spot) {
+                                  final date = minDate
+                                      .add(Duration(days: spot.x.toInt()));
+                                  return LineTooltipItem(
+                                    '${DateFormat('MM/dd').format(date)}\n ${spot.y.toStringAsFixed(1)}',
+                                    const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  );
+                                }).toList();
+                              },
+                            ),
+                            handleBuiltInTouches: true,
+                          ),
                         ),
                       ),
                     ),

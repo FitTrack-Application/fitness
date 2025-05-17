@@ -62,7 +62,7 @@ class _StepThreeState extends State<StepThree> {
                       Expanded(
                         child: SelectBox<String>(
                           title: 'Male',
-                          value: 'Male',
+                          value: 'MALE',
                           groupValue: widget.selectedGender,
                           onChanged: (value) {
                             widget.onGenderSelected(value);
@@ -74,7 +74,7 @@ class _StepThreeState extends State<StepThree> {
                       Expanded(
                         child: SelectBox<String>(
                           title: 'Female',
-                          value: 'Female',
+                          value: 'FEMALE',
                           groupValue: widget.selectedGender,
                           onChanged: (value) {
                             widget.onGenderSelected(value);

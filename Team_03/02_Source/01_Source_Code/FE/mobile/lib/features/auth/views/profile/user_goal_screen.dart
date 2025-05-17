@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:mobile/features/auth/viewmodels/goal_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobile/common/widgets/value_picker/value_picker.dart';
 
-class UserGoal extends StatelessWidget {
-  const UserGoal({super.key});
+class UserGoalScreen extends StatelessWidget {
+  const UserGoalScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,10 +26,12 @@ class UserGoal extends StatelessWidget {
       body: Consumer<GoalViewModel>(
         builder: (context, goalViewModel, child) {
           double progress = 0.0;
-          if (goalViewModel.startingWeight != goalViewModel.targetWeight) {
-            progress = ((goalViewModel.startingWeight -
-                        goalViewModel.currentWeight) /
-                    (goalViewModel.startingWeight - goalViewModel.targetWeight))
+          if (goalViewModel.userGoal.startingWeight !=
+              goalViewModel.userGoal.goalWeight) {
+            progress = ((goalViewModel.userGoal.startingWeight -
+                        goalViewModel.userGoal.currentWeight) /
+                    (goalViewModel.userGoal.startingWeight -
+                        goalViewModel.userGoal.goalWeight))
                 .clamp(0.0, 1.0); // Ensure progress is between 0 and 1
           }
           return Padding(
@@ -50,7 +53,7 @@ class UserGoal extends StatelessWidget {
                               style: Theme.of(context).textTheme.bodyLarge,
                             ),
                             Text(
-                              goalViewModel.goalType,
+                              goalViewModel.determineGoalType(),
                               style: Theme.of(context).textTheme.bodyMedium,
                             ),
                           ],
@@ -64,7 +67,21 @@ class UserGoal extends StatelessWidget {
                               style: Theme.of(context).textTheme.bodyLarge,
                             ),
                             Text(
-                              "${goalViewModel.startingWeight} kg (${goalViewModel.startingDay.toLocal().toString().split(' ')[0]})",
+                              "${goalViewModel.userGoal.startingWeight} kg",
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ],
+                        ),
+                        const Divider(),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Starting Date",
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
+                            Text(
+                              "${goalViewModel.userGoal.startingDate.toLocal().toString().split(' ')[0]}",
                               style: Theme.of(context).textTheme.bodyMedium,
                             ),
                           ],
@@ -78,24 +95,49 @@ class UserGoal extends StatelessWidget {
                               style: Theme.of(context).textTheme.bodyLarge,
                             ),
                             Text(
-                              "${goalViewModel.currentWeight} kg",
+                              "${goalViewModel.userGoal.currentWeight} kg",
                               style: Theme.of(context).textTheme.bodyMedium,
                             ),
                           ],
                         ),
                         const Divider(),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Target Weight",
-                              style: Theme.of(context).textTheme.bodyLarge,
-                            ),
-                            Text(
-                              "${goalViewModel.targetWeight} kg",
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
-                          ],
+                        GestureDetector(
+                          onTap: () {
+                            showModalBottomSheet(
+                              context: context,
+                              builder: (context) {
+                                return ValuePicker<double>(
+                                  values: List.generate(
+                                      171,
+                                      (index) =>
+                                          30 +
+                                          index.toDouble()), // 30 to 200 kg
+                                  initialValue:
+                                      goalViewModel.userGoal.goalWeight,
+                                  onValueChanged: (newWeight) {
+                                    goalViewModel.userGoal.goalWeight =
+                                        newWeight;
+                                    goalViewModel
+                                        .notifyListeners(); // Update the UI
+                                  },
+                                  displayText: (value) => "$value kg",
+                                );
+                              },
+                            );
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Target Weight",
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
+                              Text(
+                                "${goalViewModel.userGoal.goalWeight.toStringAsFixed(1)} kg",
+                                style: Theme.of(context).textTheme.displaySmall,
+                              ),
+                            ],
+                          ),
                         ),
                         const Divider(),
                         Row(
@@ -106,8 +148,8 @@ class UserGoal extends StatelessWidget {
                               style: Theme.of(context).textTheme.bodyLarge,
                             ),
                             Text(
-                              "${goalViewModel.goalPerWeek.toStringAsFixed(1)} kg",
-                              style: Theme.of(context).textTheme.bodyMedium,
+                              "${goalViewModel.userGoal.weeklyGoal.toStringAsFixed(1)} kg",
+                              style: Theme.of(context).textTheme.displaySmall,
                             ),
                           ],
                         ),
