@@ -2,12 +2,13 @@ package com.hcmus.statisticservice.application.service.impl;
 
 import com.hcmus.statisticservice.application.dto.CustomExerciseUsageDto;
 import com.hcmus.statisticservice.application.dto.CustomFoodUsageDto;
+import com.hcmus.statisticservice.application.dto.request.ExerciseRequest;
+import com.hcmus.statisticservice.application.dto.request.FoodRequest;
 import com.hcmus.statisticservice.application.dto.response.AdminReportResponse;
 import com.hcmus.statisticservice.application.dto.response.ApiResponse;
 import com.hcmus.statisticservice.application.dto.response.ExerciseReportResponse;
 import com.hcmus.statisticservice.application.dto.response.FoodReportResponse;
-import com.hcmus.statisticservice.application.dto.CustomFoodUsageDto;
-import com.hcmus.statisticservice.application.dto.CustomExerciseUsageDto;
+import com.hcmus.statisticservice.application.dto.request.ExerciseRequest;
 import com.hcmus.statisticservice.application.service.AdminReportService;
 import com.hcmus.statisticservice.domain.exception.StatisticException;
 import com.hcmus.statisticservice.domain.repository.FitProfileRepository;
@@ -88,4 +89,29 @@ public class AdminReportSeviceImpl implements AdminReportService {
 
     }
     
+    @Override
+    public ApiResponse<?> importFood(List<FoodRequest> foodRequests) {
+    
+        for(FoodRequest foodRequest : foodRequests)
+        {
+            foodServiceClient.addFood(foodRequest);
+        }
+        return ApiResponse.builder()
+                .status(HttpStatus.OK.value())
+                .generalMessage("Successfully import foods!")
+                .build();
+    
+    }
+
+    @Override
+    public ApiResponse<?> importExercise(List<ExerciseRequest> exerciseRequests){
+        for(ExerciseRequest exerciseRequest : exerciseRequests)
+        {
+            exerciseServiceClient.createExercise(exerciseRequest);
+        }
+        return ApiResponse.builder()
+                .status(HttpStatus.OK.value())
+                .generalMessage("Successfully import exercises!")
+                .build();
+    }
 }

@@ -1,7 +1,10 @@
 package com.hcmus.statisticservice.presentation.controller;
 
+import com.hcmus.statisticservice.application.dto.request.ExerciseRequest;
+import com.hcmus.statisticservice.application.dto.request.FoodRequest;
 import com.hcmus.statisticservice.application.dto.response.ApiResponse;
 import com.hcmus.statisticservice.application.service.AdminReportService;
+
 import com.hcmus.statisticservice.infrastructure.security.CustomSecurityContextHolder;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.http.HttpStatus;
 
-
+import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -30,4 +33,19 @@ public class AdminReportController {
 
         return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/import/food")
+    public ResponseEntity<ApiResponse<?>> importFood(@RequestBody List<FoodRequest> foodRequests) {
+        ApiResponse<?> response = adminReportService.importFood(foodRequests);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/import/exercise")
+    public ResponseEntity<ApiResponse<?>> importExercise(@RequestBody List<ExerciseRequest> exerciseRequests) {
+        ApiResponse<?> response = adminReportService.importExercise(exerciseRequests);
+
+        return ResponseEntity.ok(response);
+    }
+
 }

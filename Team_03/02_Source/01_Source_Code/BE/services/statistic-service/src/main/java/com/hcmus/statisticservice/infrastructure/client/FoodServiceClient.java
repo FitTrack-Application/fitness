@@ -3,6 +3,9 @@ package com.hcmus.statisticservice.infrastructure.client;
 import com.hcmus.statisticservice.application.dto.response.ApiResponse;
 import com.hcmus.statisticservice.application.dto.response.FoodReportResponse;
 import com.hcmus.statisticservice.infrastructure.client.FeignConfig;
+import com.hcmus.statisticservice.application.dto.request.FoodRequest;
+
+import jakarta.validation.Valid;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
@@ -22,4 +25,7 @@ import java.util.Map;
 public interface FoodServiceClient {
     @GetMapping("api/food-reports")
     ApiResponse<FoodReportResponse> getFoodReport();
+
+    @PostMapping("api/foods")
+    ResponseEntity<ApiResponse<?>> addFood(@Valid @RequestBody FoodRequest foodRequest);
 }

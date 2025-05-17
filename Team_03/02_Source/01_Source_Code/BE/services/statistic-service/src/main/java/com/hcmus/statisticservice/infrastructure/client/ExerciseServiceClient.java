@@ -1,5 +1,7 @@
 package com.hcmus.statisticservice.infrastructure.client;
 
+import com.hcmus.statisticservice.application.dto.ExerciseDto;
+import com.hcmus.statisticservice.application.dto.request.ExerciseRequest;
 import com.hcmus.statisticservice.application.dto.response.ApiResponse;
 import com.hcmus.statisticservice.application.dto.response.ExerciseReportResponse;
 import com.hcmus.statisticservice.infrastructure.client.FeignConfig;
@@ -21,4 +23,7 @@ import java.util.Map;
 public interface ExerciseServiceClient {
     @GetMapping("api/exercise-reports")
     ApiResponse<ExerciseReportResponse> getExerciseReport();
+
+    @PostMapping("/api/exercises")
+    public ResponseEntity<ApiResponse<ExerciseDto>> createExercise(@RequestBody ExerciseRequest exerciseRequest);
 }
