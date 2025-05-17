@@ -5,7 +5,6 @@ import com.hcmus.statisticservice.domain.repository.WeightLogRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -29,7 +28,7 @@ public class WeightLogRepositoryAdapter implements WeightLogRepository {
 
     @Override
     public List<WeightLog> findByUserIdAndDateBetweenOrderByDateDesc(UUID userId, LocalDate startDate,
-            LocalDate endDate) {
+                                                                     LocalDate endDate) {
         return jpaWeightLogRepository.findByUserIdAndDateBetweenOrderByDateDesc(userId, startDate, endDate);
     }
 

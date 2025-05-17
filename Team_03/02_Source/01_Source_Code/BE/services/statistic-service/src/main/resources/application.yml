@@ -1,3 +1,6 @@
+server:
+  port: ${STATISTIC_SERVICE_PORT:8081}
+
 spring:
   application:
     name: statistic-service
@@ -6,47 +9,39 @@ spring:
     username: ${POSTGRESQL_DB_USERNAME}
     password: ${POSTGRESQL_DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
-    hikari:
-      maximum-pool-size: 5
+    hikari: # Cấu hình kết nối connection pool sử dụng HikariCP
+      maximum-pool-size: 10 # Số kết nối tối đa từ 10
+      minimum-idle: 5 # Số kết nối tối thiểu không bị đóng
+      idle-timeout: 300000 # Thời gian (ms) kết nối có thể nhàn rỗi trước khi bị đóng (5 phút)
+      connection-timeout: 30000 # Thời gian tối đa (ms) để chờ kết nối (30 giây)
+      max-lifetime: 900000 # Thời gian sống tối đa của một connection (15 phút)
+      pool-name: HikariPool-StatisticService
   jpa:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: update
-    defer-datasource-initialization: true
-  sql:
-    init:
-      mode: always
-      continue-on-error: true
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: ${KEYCLOAK_AUTH_SERVER_HOST}/realms/${KEYCLOAK_REALM}
-          jwk-set-uri: ${KEYCLOAK_AUTH_SERVER_HOST}/realms/${KEYCLOAK_REALM}/protocol/openid-connect/certs
-
-keycloak:
-  jwk-set-uri: ${KEYCLOAK_AUTH_SERVER_HOST}/realms/${KEYCLOAK_REALM}/protocol/openid-connect/certs
-
-server:
-  port: 8081
-
-app:
-  fit-service:
-    host: ${FIT_SERVICE_HOST:http://fit-service:8080}
-  statistic-service:
-    host: ${STATISTIC_SERVICE_HOST:http://statistic-service:8081}
-  gateway-service:
-    host: ${GATEWAY_SERVICE_HOST:http://gateway-service:8088}
-  keycloak-auth-server:
-    host: ${KEYCLOAK_AUTH_SERVER_HOST:http://keycloak-auth-server:8888}
+      ddl-auto: update # Tự động cập nhật schema, chỉ dùng cho môi trường dev/test
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            connectTimeout: 5000
+            readTimeout: 5000
+            loggerLevel: basic
 
 logging:
   level:
     org:
       hibernate:
-        SQL: DEBUG
+        SQL: DEBUG # Log câu SQL (DEBUG trong dev/test)
         orm:
           jdbc:
-            bind: TRACE
+            bind: TRACE # Log giá trị tham số bind (giúp debug)
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

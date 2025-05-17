@@ -1,155 +1,19 @@
-#version: "3.8"
-#
-#services:
-#
-#  fit-service:
-#    build:
-#      context: ./fit-service
-#      dockerfile: Dockerfile.dev
-#    container_name: fit-service
-#    ports:
-#      - "${FIT_SERVICE_PORT:-8080}:8080"
-#    env_file:
-#      - .env
-#      - ./fit-service/.env
-#    environment:
-#      - FIT_SERVICE_HOST=http://fit-service:${FIT_SERVICE_PORT:-8080}
-#      - STATISTIC_SERVICE_HOST=http://statistic-service:${STATISTIC_SERVICE_PORT:-8081}
-#      - GATEWAY_SERVICE_HOST=http://gateway-service:${GATEWAY_SERVICE_PORT:-8088}
-#      - KEYCLOAK_AUTH_SERVER_HOST=http://keycloak-auth-server:${KEYCLOAK_AUTH_SERVER_PORT:-8888}
-#    networks:
-#      - fitness-network
-#    volumes:
-#      - ./fit-service:/app
-#      - maven-repo:/root/.m2
-#    healthcheck:
-#      test: [ "CMD-SHELL", "curl -f http://localhost:8080/actuator/health || exit 1" ]
-#      interval: 20s
-#      timeout: 20s
-#      retries: 3
-#    restart: unless-stopped
-#
-#  statistic-service:
-#    build:
-#      context: ./statistic-service
-#      dockerfile: Dockerfile.dev
-#    container_name: statistic-service
-#    ports:
-#      - "${STATISTIC_SERVICE_PORT:-8081}:8081"
-#    env_file:
-#      - .env
-#      - ./statistic-service/.env
-#    environment:
-#      - FIT_SERVICE_HOST=http://fit-service:${FIT_SERVICE_PORT:-8080}
-#      - STATISTIC_SERVICE_HOST=http://statistic-service:${STATISTIC_SERVICE_PORT:-8081}
-#      - GATEWAY_SERVICE_HOST=http://gateway-service:${GATEWAY_SERVICE_PORT:-8088}
-#      - KEYCLOAK_AUTH_SERVER_HOST=http://keycloak-auth-server:${KEYCLOAK_AUTH_SERVER_PORT:-8888}
-#    networks:
-#      - fitness-network
-#    volumes:
-#      - ./statistic-service:/app
-#      - maven-repo:/root/.m2
-#    healthcheck:
-#      test: [ "CMD-SHELL", "curl -f http://localhost:8081/actuator/health || exit 1" ]
-#      interval: 20s
-#      timeout: 20s
-#      retries: 3
-#    restart: unless-stopped
-#
-#  gateway-service:
-#    build:
-#      context: ./gateway-service
-#      dockerfile: Dockerfile.dev
-#    container_name: gateway-service
-#    depends_on:
-#      - fit-service
-#      - statistic-service
-#    ports:
-#      - "${GATEWAY_SERVICE_PORT:-8088}:8088"
-#    env_file:
-#      - .env
-#      - ./gateway-service/.env
-#    environment:
-#      - FIT_SERVICE_HOST=http://fit-service:${FIT_SERVICE_PORT:-8080}
-#      - STATISTIC_SERVICE_HOST=http://statistic-service:${STATISTIC_SERVICE_PORT:-8081}
-#      - GATEWAY_SERVICE_HOST=http://gateway-service:${GATEWAY_SERVICE_PORT:-8088}
-#      - KEYCLOAK_AUTH_SERVER_HOST=http://keycloak-auth-server:${KEYCLOAK_AUTH_SERVER_PORT:-8888}
-#    networks:
-#      - fitness-network
-#    volumes:
-#      - ./gateway-service:/app
-#      - maven-repo:/root/.m2
-#    healthcheck:
-#      test: [ "CMD-SHELL", "curl -f http://localhost:8088/actuator/health || exit 1" ]
-#      interval: 20s
-#      timeout: 20s
-#      retries: 3
-#    restart: unless-stopped
-#
-#  keycloak-auth-server:
-#    image: quay.io/keycloak/keycloak:26.2.0
-#    container_name: keycloak-auth-server
-#    ports:
-#      - "${KEYCLOAK_AUTH_SERVER_PORT:-8888}:8888"
-#    env_file:
-#      - .env
-#    environment:
-#      - KC_BOOTSTRAP_ADMIN_USERNAME=${KC_BOOTSTRAP_ADMIN_USERNAME}
-#      - KC_BOOTSTRAP_ADMIN_PASSWORD=${KC_BOOTSTRAP_ADMIN_PASSWORD}
-#      - KC_DB=postgres
-#      - KC_DB_URL=${KC_DB_URL}
-#      - KC_DB_USERNAME=${KC_DB_USERNAME}
-#      - KC_DB_PASSWORD=${KC_DB_PASSWORD}
-#      - KC_HOSTNAME=localhost
-#      - KC_HOSTNAME_PORT=${KEYCLOAK_AUTH_SERVER_PORT:-8888}
-#      - KC_HOSTNAME_STRICT=false
-#      - KC_HOSTNAME_STRICT_HTTPS=false
-#      - KC_LOG_LEVEL=info
-#      - KC_METRICS_ENABLED=true
-#      - KC_HEALTH_ENABLED=true
-#    networks:
-#      - fitness-network
-#    command: start-dev --http-port=${KEYCLOAK_AUTH_SERVER_PORT:-8888}
-#    restart: unless-stopped
-#
-#networks:
-#  fitness-network:
-#    driver: bridge
-#
-#volumes:
-#  maven-repo:
-
 version: "3.8"
 
 services:
-  fit-service:
+  food-service:
     build:
-      context: ./fit-service
+      context: ./food-service
       dockerfile: Dockerfile.dev
-    container_name: fit-service
-    ports:
-      - "${FIT_SERVICE_PORT:-8080}:8080"
+    container_name: food-service
     env_file:
       - .env
-      - ./fit-service/.env
-    environment:
-      - FIT_SERVICE_HOST=http://fit-service:${FIT_SERVICE_PORT:-8080}
-      - STATISTIC_SERVICE_HOST=http://statistic-service:${STATISTIC_SERVICE_PORT:-8081}
-      - MEDIA_SERVICE_HOST=http://media-service:${MEDIA_SERVICE_PORT:-8083}
-      - EXERCISE_SERVICE_HOST=http://exercise-service:${EXERCISE_SERVICE_PORT:-8082}
-      - GATEWAY_SERVICE_HOST=http://gateway-service:${GATEWAY_SERVICE_PORT:-8088}
-      - KEYCLOAK_AUTH_SERVER_HOST=http://keycloak-auth-server:${KEYCLOAK_AUTH_SERVER_PORT:-8888}
+      - ./food-service/.env
     networks:
       - fitness-network
     volumes:
-      - ./fit-service:/app
+      - ./food-service:/app
       - maven-repo:/root/.m2
-    healthcheck:
-      test:
-        ["CMD-SHELL", "curl -f http://localhost:8080/actuator/health || exit 1"]
-      interval: 20s
-      timeout: 20s
-      retries: 3
     restart: unless-stopped
 
   statistic-service:
@@ -157,29 +21,14 @@ services:
       context: ./statistic-service
       dockerfile: Dockerfile.dev
     container_name: statistic-service
-    ports:
-      - "${STATISTIC_SERVICE_PORT:-8081}:8081"
     env_file:
       - .env
       - ./statistic-service/.env
-    environment:
-      - FIT_SERVICE_HOST=http://fit-service:${FIT_SERVICE_PORT:-8080}
-      - STATISTIC_SERVICE_HOST=http://statistic-service:${STATISTIC_SERVICE_PORT:-8081}
-      - MEDIA_SERVICE_HOST=http://media-service:${MEDIA_SERVICE_PORT:-8083}
-      - EXERCISE_SERVICE_HOST=http://exercise-service:${EXERCISE_SERVICE_PORT:-8082}
-      - GATEWAY_SERVICE_HOST=http://gateway-service:${GATEWAY_SERVICE_PORT:-8088}
-      - KEYCLOAK_AUTH_SERVER_HOST=http://keycloak-auth-server:${KEYCLOAK_AUTH_SERVER_PORT:-8888}
     networks:
       - fitness-network
     volumes:
       - ./statistic-service:/app
       - maven-repo:/root/.m2
-    healthcheck:
-      test:
-        ["CMD-SHELL", "curl -f http://localhost:8081/actuator/health || exit 1"]
-      interval: 20s
-      timeout: 20s
-      retries: 3
     restart: unless-stopped
 
   media-service:
@@ -187,29 +36,14 @@ services:
       context: ./media-service
       dockerfile: Dockerfile.dev
     container_name: media-service
-    ports:
-      - "${MEDIA_SERVICE_PORT:-8083}:8083"
     env_file:
       - .env
       - ./media-service/.env
-    environment:
-      - FIT_SERVICE_HOST=http://fit-service:${FIT_SERVICE_PORT:-8080}
-      - STATISTIC_SERVICE_HOST=http://statistic-service:${STATISTIC_SERVICE_PORT:-8081}
-      - EXERCISE_SERVICE_HOST=http://exercise-service:${EXERCISE_SERVICE_PORT:-8082}
-      - MEDIA_SERVICE_HOST=http://media-service:${MEDIA_SERVICE_PORT:-8083}
-      - GATEWAY_SERVICE_HOST=http://gateway-service:${GATEWAY_SERVICE_PORT:-8088}
-      - KEYCLOAK_AUTH_SERVER_HOST=http://keycloak-auth-server:${KEYCLOAK_AUTH_SERVER_PORT:-8888}
     networks:
       - fitness-network
     volumes:
       - ./media-service:/app
       - maven-repo:/root/.m2
-    healthcheck:
-      test:
-        ["CMD-SHELL", "curl -f http://localhost:8083/actuator/health || exit 1"]
-      interval: 20s
-      timeout: 20s
-      retries: 3
     restart: unless-stopped
 
   exercise-service:
@@ -217,29 +51,14 @@ services:
       context: ./exercise-service
       dockerfile: Dockerfile.dev
     container_name: exercise-service
-    ports:
-      - "${EXERCISE_SERVICE_PORT:-8082}:8082"
     env_file:
       - .env
       - ./exercise-service/.env
-    environment:
-      - FIT_SERVICE_HOST=http://fit-service:${FIT_SERVICE_PORT:-8080}
-      - STATISTIC_SERVICE_HOST=http://statistic-service:${STATISTIC_SERVICE_PORT:-8081}
-      - EXERCISE_SERVICE_HOST=http://exercise-service:${EXERCISE_SERVICE_PORT:-8082}
-      - MEDIA_SERVICE_HOST=http://media-service:${MEDIA_SERVICE_PORT:-8083}
-      - GATEWAY_SERVICE_HOST=http://gateway-service:${GATEWAY_SERVICE_PORT:-8088}
-      - KEYCLOAK_AUTH_SERVER_HOST=http://keycloak-auth-server:${KEYCLOAK_AUTH_SERVER_PORT:-8888}
     networks:
       - fitness-network
     volumes:
       - ./exercise-service:/app
       - maven-repo:/root/.m2
-    healthcheck:
-      test:
-        ["CMD-SHELL", "curl -f http://localhost:8082/actuator/health || exit 1"]
-      interval: 20s
-      timeout: 20s
-      retries: 3
     restart: unless-stopped
 
   gateway-service:
@@ -247,33 +66,22 @@ services:
       context: ./gateway-service
       dockerfile: Dockerfile.dev
     container_name: gateway-service
-    depends_on:
-      - fit-service
-      - statistic-service
-      - exercise-service
     ports:
       - "${GATEWAY_SERVICE_PORT:-8088}:8088"
     env_file:
       - .env
       - ./gateway-service/.env
     environment:
-      - FIT_SERVICE_HOST=http://fit-service:${FIT_SERVICE_PORT:-8080}
-      - STATISTIC_SERVICE_HOST=http://statistic-service:${STATISTIC_SERVICE_PORT:-8081}
-      - MEDIA_SERVICE_HOST=http://media-service:${MEDIA_SERVICE_PORT:-8083}
-      - EXERCISE_SERVICE_HOST=http://exercise-service:${EXERCISE_SERVICE_PORT:-8082}
-      - GATEWAY_SERVICE_HOST=http://gateway-service:${GATEWAY_SERVICE_PORT:-8088}
-      - KEYCLOAK_AUTH_SERVER_HOST=http://keycloak-auth-server:${KEYCLOAK_AUTH_SERVER_PORT:-8888}
+      - FOOD_SERVICE_HOST=http://food-service:8080
+      - STATISTIC_SERVICE_HOST=http://statistic-service:8081
+      - EXERCISE_SERVICE_HOST=http://exercise-service:8082
+      - MEDIA_SERVICE_HOST=http://media-service:8083
+      - KEYCLOAK_AUTH_SERVER_HOST=http://keycloak-auth-server:8888
     networks:
       - fitness-network
     volumes:
       - ./gateway-service:/app
       - maven-repo:/root/.m2
-    healthcheck:
-      test:
-        ["CMD-SHELL", "curl -f http://localhost:8088/actuator/health || exit 1"]
-      interval: 20s
-      timeout: 20s
-      retries: 3
     restart: unless-stopped
 
   keycloak-auth-server:
@@ -290,8 +98,8 @@ services:
       - KC_DB_URL=${KC_DB_URL}
       - KC_DB_USERNAME=${KC_DB_USERNAME}
       - KC_DB_PASSWORD=${KC_DB_PASSWORD}
-      - KC_HOSTNAME=10.0.2.2
-      # - KC_HOSTNAME=localhost
+      # - KC_HOSTNAME=10.0.2.2
+      - KC_HOSTNAME=192.168.1.13
       - KC_HOSTNAME_PORT=${KEYCLOAK_AUTH_SERVER_PORT:-8888}
       - KC_HOSTNAME_STRICT=false
       - KC_HOSTNAME_STRICT_HTTPS=false

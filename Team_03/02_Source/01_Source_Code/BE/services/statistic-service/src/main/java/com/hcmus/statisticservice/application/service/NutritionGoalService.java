@@ -18,12 +18,12 @@ public interface NutritionGoalService {
     NutritionGoal updateNutritionGoal(UUID userId, FitProfile profile);
 
     NutritionGoal updateNutritionGoal(UUID userId, WeightGoal weightGoal, Double currentWeight,
-            ActivityLevel activityLevel);
+                                      ActivityLevel activityLevel);
 
     NutritionGoal updateNutritionGoal(UUID userId, FitProfile profile, WeightGoal weightGoal, Double currentWeight);
 
     NutritionData calculateNutritionData(String gender, double curWeight, int curHeight, int curAge,
-            String activityLevel, double weeklyGoal, double goalWeight);
+                                         String activityLevel, double weeklyGoal, double goalWeight);
 
     ApiResponse<GetNutritionGoalResponse> getNutritionGoal(UUID userId);
 }

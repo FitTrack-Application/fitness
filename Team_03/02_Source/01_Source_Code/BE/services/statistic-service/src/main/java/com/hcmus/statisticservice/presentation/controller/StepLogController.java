@@ -4,7 +4,7 @@ import com.hcmus.statisticservice.application.dto.request.StepLogRequest;
 import com.hcmus.statisticservice.application.dto.response.ApiResponse;
 import com.hcmus.statisticservice.application.dto.response.StepLogResponse;
 import com.hcmus.statisticservice.application.service.StepLogService;
-import com.hcmus.statisticservice.infrastructure.security.CurrentUserUtil;
+import com.hcmus.statisticservice.infrastructure.security.CustomSecurityContextHolder;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,13 +20,12 @@ import java.util.UUID;
 @RequestMapping("/api/step-logs")
 public class StepLogController {
 
-    private final CurrentUserUtil currentUserUtil;
     private final StepLogService stepLogService;
 
     @GetMapping("/me")
     public ResponseEntity<ApiResponse<List<StepLogResponse>>> getStepProgress(
             @RequestParam(value = "days", defaultValue = "7") Integer days) {
-        UUID userId = currentUserUtil.getCurrentUserId();
+        UUID userId = CustomSecurityContextHolder.getCurrentUserId();
 
         log.info("Fetching step progress for user: {}", userId);
         ApiResponse<List<StepLogResponse>> response = stepLogService.getStepProgress(userId, days);
@@ -36,7 +35,7 @@ public class StepLogController {
 
     @PostMapping("/me")
     public ResponseEntity<ApiResponse<?>> trackStep(@Valid @RequestBody StepLogRequest stepLogRequest) {
-        UUID userId = currentUserUtil.getCurrentUserId();
+        UUID userId = CustomSecurityContextHolder.getCurrentUserId();
 
         log.info("Tracking step log for user: {}", userId);
         ApiResponse<?> response = stepLogService.getTrackStepResponse(userId, stepLogRequest);

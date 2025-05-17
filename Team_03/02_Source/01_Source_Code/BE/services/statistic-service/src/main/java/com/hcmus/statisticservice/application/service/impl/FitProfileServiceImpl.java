@@ -16,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -74,7 +73,6 @@ public class FitProfileServiceImpl implements FitProfileService {
                 .status(HttpStatus.OK.value())
                 .generalMessage("Get profile successfully!")
                 .data(fitProfileResponse)
-                .timestamp(LocalDateTime.now())
                 .build();
     }
 
@@ -96,7 +94,6 @@ public class FitProfileServiceImpl implements FitProfileService {
         return ApiResponse.builder()
                 .status(HttpStatus.OK.value())
                 .generalMessage("Update profile successfully for " + updateProfile.getName() + "!")
-                .timestamp(LocalDateTime.now())
                 .build();
     }
 }

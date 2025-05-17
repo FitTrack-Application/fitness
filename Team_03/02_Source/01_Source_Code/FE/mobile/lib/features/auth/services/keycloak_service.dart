@@ -4,13 +4,13 @@ import 'package:dio/dio.dart';
 
 class KeycloakService {
   static const String issuer = 'http://10.0.2.2:8888/realms/my-fitness';
-  // static const String issuer = 'http://192.168.1.8:8888/realms/my-fitness';
+  // static const String issuer = 'http://192.168.1.13:8888/realms/my-fitness';
   static const String clientId = 'flutter-app-client';
   static const String redirectUrl = 'com.fittrack.mobile:/callback';
   final String discoveryUrl =
       'http://10.0.2.2:8888/realms/my-fitness/.well-known/openid-configuration';
   // final String discoveryUrl =
-  //     'http://192.168.1.8:8888/realms/my-fitness/.well-known/openid-configuration';
+  //     'http://192.168.1.13:8888/realms/my-fitness/.well-known/openid-configuration';
   static const List<String> scopes = ['openid', 'profile', 'email'];
 
   final FlutterAppAuth _appAuth = const FlutterAppAuth();
@@ -95,7 +95,7 @@ class KeycloakService {
 
     final response = await _dio.post(
       'http://10.0.2.2:8888/realms/my-fitness/protocol/openid-connect/logout',
-      // 'http://192.168.1.8:8888/realms/my-fitness/protocol/openid-connect/logout',
+      // 'http://192.168.1.13:8888/realms/my-fitness/protocol/openid-connect/logout',
       options: Options(
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
