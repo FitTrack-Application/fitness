@@ -21,6 +21,6 @@ import java.util.UUID;
 )
 
 public interface ExerciseServiceClient {
-    @GetMapping("/api/exercise-log-entries/total-calories-burned/{userId}")
-    public ResponseEntity<ApiResponse<TotalCaloriesBurnedResponse>> getTotalCaloriesBurnedByUserId(@PathVariable UUID userId);
+    @GetMapping("api/exercise-log-entries/total-calories-burned/{userId}")
+    ApiResponse<TotalCaloriesBurnedResponse> getTotalCaloriesBurnedByUserId(@PathVariable UUID userId);
 }

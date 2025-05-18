@@ -24,6 +24,6 @@ import java.util.UUID;
 )
 
 public interface FoodServiceClient {
-    @GetMapping("/api/meal-entries/total-calories-consumed/{userId}")
-    public ResponseEntity<ApiResponse<TotalCaloriesConsumedResponse>> getTotalCaloriesConsumedByUserId(@PathVariable UUID userId);
+    @GetMapping("api/meal-entries/total-calories-consumed/{userId}")
+    ApiResponse<TotalCaloriesConsumedResponse> getTotalCaloriesConsumedByUserId(@PathVariable UUID userId);
 }

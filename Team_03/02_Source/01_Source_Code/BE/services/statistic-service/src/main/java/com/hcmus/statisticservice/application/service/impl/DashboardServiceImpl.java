@@ -26,14 +26,14 @@ public class DashboardServiceImpl implements DashboardService {
     
     @Override
     public ApiResponse<DashboardResponse> getDashboard(UUID userId) {
-        int totalCaloriesBurned = exerciseServiceClient.getTotalCaloriesBurnedByUserId(userId).getBody().getData().getTotalCaloriesBurned();      
+        int totalCaloriesBurned = exerciseServiceClient.getTotalCaloriesBurnedByUserId(userId).getData().getTotalCaloriesBurned();      
         DashboardResponse dashboardResponse = new DashboardResponse();
 
         int caloriesGoal = nutritionGoalRepository.findByUserId(userId)
             .orElseThrow(() -> new IllegalArgumentException("Nutrition goal not found for user: " + userId))
             .getCalories();
 
-        double totalCaloriesConsumed = foodServiceClient.getTotalCaloriesConsumedByUserId(userId).getBody().getData().getTotalCaloriesConsumed();
+        double totalCaloriesConsumed = foodServiceClient.getTotalCaloriesConsumedByUserId(userId).getData().getTotalCaloriesConsumed();
 
         dashboardResponse.setTotalCaloriesBurned(totalCaloriesBurned);
         dashboardResponse.setCaloriesGoal(caloriesGoal);
