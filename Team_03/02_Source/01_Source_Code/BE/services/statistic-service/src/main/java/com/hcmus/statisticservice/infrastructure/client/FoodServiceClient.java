@@ -27,5 +27,5 @@ public interface FoodServiceClient {
     ApiResponse<FoodReportResponse> getFoodReport();
 
     @PostMapping("api/foods")
-    ResponseEntity<ApiResponse<?>> addFood(@Valid @RequestBody FoodRequest foodRequest);
+    ApiResponse<?> addFood(@Valid @RequestBody FoodRequest foodRequest);
 }

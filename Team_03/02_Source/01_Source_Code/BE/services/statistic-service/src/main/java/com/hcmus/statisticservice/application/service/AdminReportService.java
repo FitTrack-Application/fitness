@@ -14,6 +14,8 @@ import java.util.UUID;
 @Service
 public interface AdminReportService {
     ApiResponse<AdminReportResponse> getAdminReport();
+
     ApiResponse<?> importFood(List<FoodRequest> foodRequests);
+    
     ApiResponse<?> importExercise(List<ExerciseRequest> exerciseRequests);
 }

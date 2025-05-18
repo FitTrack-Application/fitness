@@ -19,6 +19,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Date;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Map;
 import java.util.UUID;
 
@@ -51,6 +54,7 @@ public class FitProfileServiceImpl implements FitProfileService {
                 .activityLevel(addProfile.getActivityLevel())
                 .imageUrl(addProfile.getImageUrl())
                 .userId(userId)
+                .createdAt(Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()))
                 .build();
         return fitProfileRepository.save(profile);
     }

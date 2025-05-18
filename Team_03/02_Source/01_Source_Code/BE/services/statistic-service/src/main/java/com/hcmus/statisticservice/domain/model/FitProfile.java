@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.util.Date;
 import java.util.UUID;
 
 @Getter
@@ -52,4 +53,7 @@ public class FitProfile {
 
     @Column(name = "image_url", length = 1000)
     private String imageUrl;
+
+    @Column(name = "created_at")
+    private Date createdAt;
 }

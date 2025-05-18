@@ -24,6 +24,6 @@ public interface ExerciseServiceClient {
     @GetMapping("api/exercise-reports")
     ApiResponse<ExerciseReportResponse> getExerciseReport();
 
-    @PostMapping("/api/exercises")
-    public ResponseEntity<ApiResponse<ExerciseDto>> createExercise(@RequestBody ExerciseRequest exerciseRequest);
+    @PostMapping("api/exercises")
+    ApiResponse<ExerciseDto> createExercise(@RequestBody ExerciseRequest exerciseRequest);
 }

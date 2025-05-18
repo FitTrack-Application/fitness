@@ -8,7 +8,6 @@ import com.hcmus.statisticservice.application.dto.response.AdminReportResponse;
 import com.hcmus.statisticservice.application.dto.response.ApiResponse;
 import com.hcmus.statisticservice.application.dto.response.ExerciseReportResponse;
 import com.hcmus.statisticservice.application.dto.response.FoodReportResponse;
-import com.hcmus.statisticservice.application.dto.request.ExerciseRequest;
 import com.hcmus.statisticservice.application.service.AdminReportService;
 import com.hcmus.statisticservice.domain.exception.StatisticException;
 import com.hcmus.statisticservice.domain.repository.FitProfileRepository;
@@ -17,11 +16,8 @@ import com.hcmus.statisticservice.infrastructure.client.ExerciseServiceClient;
 import com.hcmus.statisticservice.infrastructure.client.FoodServiceClient;
 
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +26,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class AdminReportSeviceImpl implements AdminReportService {
+public class AdminReportServiceImpl implements AdminReportService {
 
     private final FitProfileRepository fitProfileRepository;
     private final LatestLoginRepository latestLoginRepository;
@@ -91,22 +87,18 @@ public class AdminReportSeviceImpl implements AdminReportService {
     
     @Override
     public ApiResponse<?> importFood(List<FoodRequest> foodRequests) {
-    
-        for(FoodRequest foodRequest : foodRequests)
-        {
+        for(FoodRequest foodRequest : foodRequests) {
             foodServiceClient.addFood(foodRequest);
         }
         return ApiResponse.builder()
                 .status(HttpStatus.OK.value())
                 .generalMessage("Successfully import foods!")
                 .build();
-    
     }
 
     @Override
-    public ApiResponse<?> importExercise(List<ExerciseRequest> exerciseRequests){
-        for(ExerciseRequest exerciseRequest : exerciseRequests)
-        {
+    public ApiResponse<?> importExercise(List<ExerciseRequest> exerciseRequests) {
+        for(ExerciseRequest exerciseRequest : exerciseRequests) {
             exerciseServiceClient.createExercise(exerciseRequest);
         }
         return ApiResponse.builder()
