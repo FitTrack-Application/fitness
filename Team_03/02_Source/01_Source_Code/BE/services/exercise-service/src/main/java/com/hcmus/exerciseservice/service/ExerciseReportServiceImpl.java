@@ -3,20 +3,16 @@ package com.hcmus.exerciseservice.service;
 import com.hcmus.exerciseservice.dto.response.ApiResponse;
 import com.hcmus.exerciseservice.dto.TopExerciseDto;
 import com.hcmus.exerciseservice.dto.response.ExerciseReportResponse;
-import com.hcmus.exerciseservice.exception.ResourceNotFoundException;
 import com.hcmus.exerciseservice.model.Exercise;
 import com.hcmus.exerciseservice.repository.ExerciseRepository;
 import com.hcmus.exerciseservice.repository.ExerciseLogEntryRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -30,8 +26,6 @@ public class ExerciseReportServiceImpl implements ExerciseReportService {
     @Override
     public ApiResponse<ExerciseReportResponse> getExerciseReport() {
         Integer totalExerciseCount = (int) exerciseRepository.count();
-
-        Integer distinctExerciseUsedCount = exerciseLogEntryRepository.countDistinctExerciseUsed();
 
         List<UUID> distinctExerciseIdsUsed = exerciseLogEntryRepository.findDistinctExerciseIdsUsed();
 

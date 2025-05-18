@@ -5,7 +5,6 @@ import com.hcmus.statisticservice.application.dto.response.ApiResponse;
 import com.hcmus.statisticservice.application.dto.response.FitProfileResponse;
 import com.hcmus.statisticservice.application.service.FitProfileService;
 import com.hcmus.statisticservice.infrastructure.security.CustomSecurityContextHolder;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

@@ -3,7 +3,6 @@ package com.hcmus.statisticservice.domain.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.hibernate.annotations.UuidGenerator;
 
 import java.util.Date;
 import java.util.UUID;

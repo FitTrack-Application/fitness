@@ -4,15 +4,10 @@ import com.hcmus.statisticservice.application.dto.ExerciseDto;
 import com.hcmus.statisticservice.application.dto.request.ExerciseRequest;
 import com.hcmus.statisticservice.application.dto.response.ApiResponse;
 import com.hcmus.statisticservice.application.dto.response.ExerciseReportResponse;
-import com.hcmus.statisticservice.infrastructure.client.FeignConfig;
 
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Map;
 
 @FeignClient(
     name = "exercise-service",

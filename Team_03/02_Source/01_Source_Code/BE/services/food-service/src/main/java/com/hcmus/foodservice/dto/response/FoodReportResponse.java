@@ -3,7 +3,6 @@ package com.hcmus.foodservice.dto.response;
 import lombok.*;
 
 import java.util.List;
-import java.util.UUID;
 
 import com.hcmus.foodservice.dto.TopFoodDto;
 

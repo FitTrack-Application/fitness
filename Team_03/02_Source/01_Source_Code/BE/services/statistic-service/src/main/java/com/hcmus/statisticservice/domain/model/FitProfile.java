@@ -54,6 +54,8 @@ public class FitProfile {
     @Column(name = "image_url", length = 1000)
     private String imageUrl;
 
-    @Column(name = "created_at")
+    @NotNull
+    @Temporal(TemporalType.DATE)
+    @Column(name = "created_at", nullable = false)
     private Date createdAt;
 }

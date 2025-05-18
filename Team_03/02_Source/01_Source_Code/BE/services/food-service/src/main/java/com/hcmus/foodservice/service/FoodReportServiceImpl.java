@@ -3,24 +3,19 @@ package com.hcmus.foodservice.service;
 import com.hcmus.foodservice.dto.response.ApiResponse;
 import com.hcmus.foodservice.dto.TopFoodDto;
 import com.hcmus.foodservice.dto.response.FoodReportResponse;
-import com.hcmus.foodservice.exception.ResourceNotFoundException;
-import com.hcmus.foodservice.mapper.FoodMapper;
 import com.hcmus.foodservice.model.Food;
-import com.hcmus.foodservice.model.ServingUnit;
 
 import com.hcmus.foodservice.repository.FoodRepository;
 import com.hcmus.foodservice.repository.MealEntryRepository;
-import jakarta.transaction.Transactional;
+import com.hcmus.foodservice.repository.MealLogRepository;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -31,12 +26,13 @@ public class FoodReportServiceImpl implements FoodReportService {
 
     private final MealEntryRepository mealEntryRepository;
 
+    private final MealLogRepository mealLogRepository;
+
     @Override
     public ApiResponse<FoodReportResponse> getFoodReport() {
         Integer totalFoodCount = (int) foodRepository.count();
-        Integer totalMealCount = (int) mealEntryRepository.count();
+        Integer totalMealCount = (int) mealLogRepository.count();
 
-        Integer distinctFoodUsedCount = mealEntryRepository.countDistinctFoodUsed();
 
         List<UUID> distinctFoodIdsUsed = mealEntryRepository.findDistinctFoodIdsUsed();
 

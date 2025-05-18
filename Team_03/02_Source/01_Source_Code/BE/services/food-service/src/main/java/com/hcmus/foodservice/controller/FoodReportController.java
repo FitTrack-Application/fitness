@@ -2,18 +2,10 @@ package com.hcmus.foodservice.controller;
 
 import com.hcmus.foodservice.dto.response.ApiResponse;
 import com.hcmus.foodservice.dto.response.FoodReportResponse;
-import com.hcmus.foodservice.util.CustomSecurityContextHolder;
 import com.hcmus.foodservice.service.FoodReportService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.UUID;
 
 @RequiredArgsConstructor
 @RestController
