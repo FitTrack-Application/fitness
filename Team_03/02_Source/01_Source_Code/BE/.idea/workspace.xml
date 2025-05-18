@@ -5,68 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c3ede984-d861-4949-b357-ed657807274d" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/infrastructure/client/ExcerciseServiceClient.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/infrastructure/client/FoodServiceClient.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/services/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/services/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/fit-service/src/main/java/com/hcmus/fitservice/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/services/fit-service/src/main/java/com/hcmus/fitservice/config/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/fit-service/src/main/java/com/hcmus/fitservice/controller/FoodController.java" beforeDir="false" afterPath="$PROJECT_DIR$/services/fit-service/src/main/java/com/hcmus/fitservice/controller/FoodController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/fit-service/src/main/java/com/hcmus/fitservice/dto/request/AddFoodRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/services/fit-service/src/main/java/com/hcmus/fitservice/dto/request/AddFoodRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/services/statistic-service/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/config/SecurityConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/controller/FitProfileController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/controller/NutritionGoalController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/controller/StatisticController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/controller/StepLogController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/controller/SurveyController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/controller/WeightGoalController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/controller/WeightLogController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/dto/request/SaveSurveyRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/dto/request/StepLogRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/dto/request/UpdateProfileRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/dto/request/UpdateWeightGoalRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/dto/request/WeightLogRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/dto/response/ApiResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/dto/response/CheckSurveyResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/dto/response/FitProfileResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/dto/response/GetNutritionGoalResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/dto/response/GetWeightGoalResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/dto/response/StepLogResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/dto/response/WeightLogResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/exception/GlobalExceptionHandler.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/exception/NutritionException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/exception/ResourceNotFoundException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/exception/StatisticException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/mapper/FitProfileMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/model/FitProfile.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/model/NutritionData.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/model/NutritionGoal.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/model/StepLog.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/model/WeightGoal.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/model/WeightLog.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/model/type/ActivityLevel.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/model/type/Gender.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/model/type/Goal.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/repository/FitProfileRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/repository/NutritionGoalRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/repository/StepLogRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/repository/WeightGoalRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/repository/WeightLogRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/security/CustomAccessDeniedHandler.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/security/CustomAuthenticationEntryPoint.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/service/FitProfileService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/service/FitProfileServiceImpl.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/service/NutritionGoalService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/service/NutritionGoalServiceImpl.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/service/StatisticService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/service/StepLogService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/service/StepLogServiceImpl.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/service/SurveyService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/service/SurveyServiceImpl.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/service/WeightGoalService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/service/WeightGoalServiceImpl.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/service/WeightLogService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/service/WeightLogServiceImpl.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/statistic-service/src/main/java/com/hcmus/statisticservice/util/JwtUtil.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,12 +23,16 @@
     &quot;assignee&quot;: &quot;ndthienKHTN&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/FitTrack-Application/fitness.git&quot;,
-    &quot;accountId&quot;: &quot;50bd9273-b338-4aec-981f-7385120f098d&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/FitTrack-Application/fitness.git",
+    "accountId": "2575fdeb-8c07-4a3c-8405-9be9f93a479d"
   }
-}</component>
+}]]></component>
+  <component name="KubernetesApiPersistence"><![CDATA[{}]]></component>
+  <component name="KubernetesApiProvider"><![CDATA[{
+  "isMigrated": true
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8
 }</component>
@@ -101,7 +46,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "dev",
+    "git-widget-placeholder": "be/vinh/adminreport",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "D:/NAM4/HK2/DA_CNPM/Project/fitness",
     "node.js.detected.package.eslint": "true",
@@ -116,8 +61,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-28b599e66164-intellij.indexing.shared.core-IU-242.24807.4" />
-        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-IU-242.24807.4" />
+        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.25410.129" />
+        <option value="bundled-js-predefined-d6986cc7102b-6a121458b545-JavaScript-IU-251.25410.129" />
       </set>
     </attachedChunks>
   </component>
@@ -131,6 +76,7 @@
       <updated>1744013300610</updated>
       <workItem from="1746182712166" duration="545000" />
       <workItem from="1746184829056" duration="26000" />
+      <workItem from="1747376621763" duration="311000" />
     </task>
     <servers />
   </component>
