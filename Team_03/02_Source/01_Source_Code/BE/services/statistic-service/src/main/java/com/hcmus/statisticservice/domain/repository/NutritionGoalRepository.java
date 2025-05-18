@@ -11,4 +11,5 @@ public interface NutritionGoalRepository {
     Optional<NutritionGoal> findByUserId(UUID userId);
 
     void deleteById(UUID id);
+
 }
