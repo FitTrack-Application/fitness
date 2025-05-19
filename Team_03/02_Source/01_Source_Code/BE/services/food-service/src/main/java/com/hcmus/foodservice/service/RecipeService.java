@@ -11,14 +11,14 @@ import java.util.UUID;
 public interface RecipeService {
     ApiResponse<RecipeResponse> createRecipe(RecipeRequest recipeRequest, UUID userId);
 
-    ApiResponse<List<RecipeResponse>> getAllRecipes(Pageable pageable, UUID userId);
+    ApiResponse<List<RecipeResponse>> getRecipesByUserId(Pageable pageable, UUID userId);
 
-    ApiResponse<List<RecipeResponse>> searchRecipesByName(String name, Pageable pageable, UUID userId);
+    ApiResponse<List<RecipeResponse>> searchRecipesByUserIdAndName(String name, Pageable pageable, UUID userId);
 
-    ApiResponse<RecipeResponse> getRecipeById (UUID recipeId, UUID userId);
+    ApiResponse<RecipeResponse> getRecipeByIdAndUserId(UUID recipeId, UUID userId);
 
-    ApiResponse<RecipeResponse> updateRecipeById(UUID recipeId, RecipeRequest recipeRequest, UUID userId);
+    ApiResponse<RecipeResponse> updateRecipeByIdAndUserId(UUID recipeId, RecipeRequest recipeRequest, UUID userId);
 
-    ApiResponse<?> deleteRecipeById(UUID recipeId, UUID userId);
+    ApiResponse<?> deleteRecipeByIdAndUserId(UUID recipeId, UUID userId);
 
 }

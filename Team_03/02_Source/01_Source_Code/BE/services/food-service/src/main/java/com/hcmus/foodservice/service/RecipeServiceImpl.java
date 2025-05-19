@@ -66,7 +66,7 @@ public class RecipeServiceImpl implements RecipeService {
 
     // Get all Recipes
     @Override
-    public ApiResponse<List<RecipeResponse>> getAllRecipes(Pageable pageable, UUID userId) {
+    public ApiResponse<List<RecipeResponse>> getRecipesByUserId(Pageable pageable, UUID userId) {
         Page<Recipe> recipePage = recipeRepository.findAllByUserId(userId, pageable);
 
         return buildRecipeListResponse(recipePage);
@@ -74,7 +74,7 @@ public class RecipeServiceImpl implements RecipeService {
 
     // Search Recipes by name
     @Override
-    public ApiResponse<List<RecipeResponse>> searchRecipesByName(String query, Pageable pageable, UUID userId) {
+    public ApiResponse<List<RecipeResponse>> searchRecipesByUserIdAndName(String query, Pageable pageable, UUID userId) {
         Page<Recipe> recipePage = recipeRepository.findByUserIdAndRecipeNameContainingIgnoreCase(userId, query, pageable);
 
         return buildRecipeListResponse(recipePage);
@@ -106,7 +106,7 @@ public class RecipeServiceImpl implements RecipeService {
 
     // Get Recipe by ID
     @Override
-    public ApiResponse<RecipeResponse> getRecipeById(UUID recipeId, UUID userId) {
+    public ApiResponse<RecipeResponse> getRecipeByIdAndUserId(UUID recipeId, UUID userId) {
         Recipe recipe = recipeRepository.findByRecipeIdAndUserId(recipeId, userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Recipe not found with ID: " + recipeId + "and user ID: " + userId));
 
@@ -124,7 +124,7 @@ public class RecipeServiceImpl implements RecipeService {
     // Update Recipe by ID
     @Override
     @Transactional
-    public ApiResponse<RecipeResponse> updateRecipeById(UUID recipeId, RecipeRequest recipeRequest, UUID userId) {
+    public ApiResponse<RecipeResponse> updateRecipeByIdAndUserId(UUID recipeId, RecipeRequest recipeRequest, UUID userId) {
         Recipe recipe = recipeRepository.findByRecipeIdAndUserId(recipeId, userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Recipe not found with ID: " + recipeId + "and user ID: " + userId));
 
@@ -161,8 +161,9 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     // Delete Recipe by ID
+    @Transactional
     @Override
-    public ApiResponse<?> deleteRecipeById(UUID recipeId, UUID userId) {
+    public ApiResponse<?> deleteRecipeByIdAndUserId(UUID recipeId, UUID userId) {
         // Check Recipe exists
         Recipe recipe = recipeRepository.findByRecipeIdAndUserId(recipeId, userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Recipe not found with ID: " + recipeId + "and user ID: " + userId));

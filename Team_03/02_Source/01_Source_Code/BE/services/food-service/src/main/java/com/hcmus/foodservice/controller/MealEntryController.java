@@ -25,7 +25,7 @@ public class MealEntryController {
      */
     @DeleteMapping("/{mealEntryId}")
     public ResponseEntity<ApiResponse<Void>> deleteMealEntry(@PathVariable UUID mealEntryId) {
-        ApiResponse<Void> response = mealEntryService.deleteMealEntry(mealEntryId);
+        ApiResponse<Void> response = mealEntryService.deleteMealEntryById(mealEntryId);
         return ResponseEntity.ok(response);
     }
 
@@ -41,7 +41,7 @@ public class MealEntryController {
             @PathVariable UUID mealEntryId,
             @RequestBody FoodEntryRequest foodEntryRequest
     ) {
-        ApiResponse<FoodEntryResponse> response = mealEntryService.updateMealEntry(
+        ApiResponse<FoodEntryResponse> response = mealEntryService.updateMealEntryById(
                 mealEntryId,
                 foodEntryRequest
         );
