@@ -10,15 +10,19 @@ import java.util.List;
 import java.util.UUID;
 
 public interface ExerciseService {
-    ApiResponse<List<ExerciseDto>> getAllExercises(Pageable pageable);
+    ApiResponse<List<ExerciseDto>> getSystemExercises(Pageable pageable);
 
-    ApiResponse<List<ExerciseDto>> searchExerciseByName(String query, Pageable pageable);
+    ApiResponse<List<ExerciseDto>> searchSystemExerciseByName(String query, Pageable pageable);
+
+    ApiResponse<List<ExerciseDto>> getExercisesByUserId(UUID userId, Pageable pageable);
+
+    ApiResponse<List<ExerciseDto>> searchExercisesByUserIdAndName(UUID userId, String query, Pageable pageable);
 
     ApiResponse<ExerciseDto> getExerciseById(UUID exerciseId);
 
     ApiResponse<ExerciseDto> createExercise(ExerciseRequest exerciseRequest, UUID userId);
 
-    ApiResponse<?> deleteExerciseById(UUID exerciseId);
+    ApiResponse<?> deleteExerciseByIdAndUserId(UUID exerciseId, UUID userId);
 
     ApiResponse<ExerciseCaloriesResponse> getExerciseCaloriesById(UUID exerciseId,  int duration);
 }
