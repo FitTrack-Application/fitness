@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public interface MealEntryService {
 
-    ApiResponse<Void> deleteMealEntry(UUID mealEntryId);
+    ApiResponse<Void> deleteMealEntryById(UUID mealEntryId);
 
-    ApiResponse<FoodEntryResponse> updateMealEntry(UUID mealEntryId, FoodEntryRequest foodEntryRequest);
+    ApiResponse<FoodEntryResponse> updateMealEntryById(UUID mealEntryId, FoodEntryRequest foodEntryRequest);
 }

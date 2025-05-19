@@ -11,6 +11,7 @@ import com.hcmus.foodservice.model.ServingUnit;
 import com.hcmus.foodservice.repository.FoodRepository;
 import com.hcmus.foodservice.repository.MealEntryRepository;
 import com.hcmus.foodservice.repository.ServingUnitRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +29,8 @@ public class MealEntryServiceImpl implements MealEntryService {
     private final FoodEntryMapper foodEntryMapper;
 
     @Override
-    public ApiResponse<Void> deleteMealEntry(UUID mealEntryId) {
+    @Transactional
+    public ApiResponse<Void> deleteMealEntryById(UUID mealEntryId) {
         // Find the meal entry by id
         MealEntry mealEntry = mealEntryRepository.findById(mealEntryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Meal entry not found with ID: " + mealEntryId));
@@ -43,10 +45,10 @@ public class MealEntryServiceImpl implements MealEntryService {
     }
 
     @Override
-    public ApiResponse<FoodEntryResponse> updateMealEntry(UUID mealEntryId, FoodEntryRequest foodEntryRequest) {
+    public ApiResponse<FoodEntryResponse> updateMealEntryById(UUID mealEntryId, FoodEntryRequest foodEntryRequest) {
         // Check if meal entry exists
         MealEntry mealEntry = mealEntryRepository.findById(mealEntryId)
-                .orElseThrow(() -> new ResourceNotFoundException("Meal entry not found with ID: " + mealEntryId));
+                .orElseThrow(() -> new ResourceNotFoundException("Meal entry not found with ID: " + mealEntryId ));
 
         // Check if food exists
         Food food = foodRepository.findById(foodEntryRequest.getFoodId())

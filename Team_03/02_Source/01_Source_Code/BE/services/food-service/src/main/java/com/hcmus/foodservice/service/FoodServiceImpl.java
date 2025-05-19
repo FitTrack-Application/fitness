@@ -73,15 +73,28 @@ public class FoodServiceImpl implements FoodService {
 
 
     @Override
-    public ApiResponse<List<FoodDto>> getAllFoods(Pageable pageable) {
-        Page<Food> foodPage = foodRepository.findAll(pageable);
+    public ApiResponse<List<FoodDto>> getSystemFoods(Pageable pageable) {
+        Page<Food> foodPage = foodRepository.findByUserIdIsNull(pageable);
         return buildFoodListResponse(foodPage);
     }
 
 
     @Override
-    public ApiResponse<List<FoodDto>> searchFoodsByName(String query, Pageable pageable) {
-        Page<Food> foodPage = foodRepository.findByFoodNameContainingIgnoreCase(query, pageable);
+    public ApiResponse<List<FoodDto>> searchSystemFoodsByName(String query, Pageable pageable) {
+        Page<Food> foodPage = foodRepository.findByUserIdIsNullAndFoodNameContainingIgnoreCase(query, pageable);
+        return buildFoodListResponse(foodPage);
+    }
+
+    // Get my foods
+    @Override
+    public ApiResponse<List<FoodDto>> getFoodsByUserId(UUID userId, Pageable pageable) {
+        Page<Food> foodPage = foodRepository.findByUserId(userId, pageable);
+        return buildFoodListResponse(foodPage);
+    }
+
+    @Override
+    public ApiResponse<List<FoodDto>> searchFoodsByUserIdAndName(UUID userId, String query, Pageable pageable) {
+        Page<Food> foodPage = foodRepository.findByUserIdAndFoodNameContainingIgnoreCase(userId, query, pageable);
         return buildFoodListResponse(foodPage);
     }
 
