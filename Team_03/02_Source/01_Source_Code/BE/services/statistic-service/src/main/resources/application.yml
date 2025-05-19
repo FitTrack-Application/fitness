@@ -1,0 +1,47 @@
+server:
+  port: ${STATISTIC_SERVICE_PORT:8081}
+
+spring:
+  application:
+    name: statistic-service
+  datasource:
+    url: jdbc:postgresql://${POSTGRESQL_DB_HOST}:${POSTGRESQL_DB_PORT}/${POSTGRESQL_DB_NAME}?sslmode=require
+    username: ${POSTGRESQL_DB_USERNAME}
+    password: ${POSTGRESQL_DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari: # Cấu hình kết nối connection pool sử dụng HikariCP
+      maximum-pool-size: 10 # Số kết nối tối đa từ 10
+      minimum-idle: 5 # Số kết nối tối thiểu không bị đóng
+      idle-timeout: 300000 # Thời gian (ms) kết nối có thể nhàn rỗi trước khi bị đóng (5 phút)
+      connection-timeout: 30000 # Thời gian tối đa (ms) để chờ kết nối (30 giây)
+      max-lifetime: 900000 # Thời gian sống tối đa của một connection (15 phút)
+      pool-name: HikariPool-StatisticService
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update # Tự động cập nhật schema, chỉ dùng cho môi trường dev/test
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            connectTimeout: 5000
+            readTimeout: 5000
+            loggerLevel: basic
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG # Log câu SQL (DEBUG trong dev/test)
+        orm:
+          jdbc:
+            bind: TRACE # Log giá trị tham số bind (giúp debug)
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
