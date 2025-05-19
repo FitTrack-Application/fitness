@@ -57,7 +57,7 @@ class ApiService {
 
   Future<void> userSurvey(Map<String, dynamic> user) async {
     try {
-      final response = await _dio.put(
+      final response = await _dio.post(
         "/api/surveys/me",
         data: user,
       );

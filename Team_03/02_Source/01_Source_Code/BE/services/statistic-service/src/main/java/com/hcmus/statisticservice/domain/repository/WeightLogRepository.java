@@ -2,7 +2,6 @@ package com.hcmus.statisticservice.domain.repository;
 
 import com.hcmus.statisticservice.domain.model.WeightLog;
 
-import java.time.LocalDateTime;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;

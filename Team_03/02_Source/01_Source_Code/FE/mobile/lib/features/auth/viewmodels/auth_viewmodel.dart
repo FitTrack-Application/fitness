@@ -48,7 +48,7 @@ class AuthViewModel extends ChangeNotifier {
       return hasSurvey;
     } catch (e) {
       debugPrint("Error checking survey status: $e");
-      return true;
+      return true; // Default to false if there's an error
     }
   }
 }

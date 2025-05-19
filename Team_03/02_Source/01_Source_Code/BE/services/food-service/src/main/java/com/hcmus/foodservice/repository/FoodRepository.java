@@ -11,4 +11,9 @@ public interface FoodRepository extends JpaRepository<Food, UUID> {
     Page<Food> findByFoodNameContainingIgnoreCase(String name, Pageable pageable);
 
     Food findByFoodIdAndUserId(UUID foodId, UUID userId);
+
+    Food findByFoodId(UUID foodId);
+
+    boolean existsByFoodIdAndUserIdIsNotNull(UUID foodId);
+
 }
