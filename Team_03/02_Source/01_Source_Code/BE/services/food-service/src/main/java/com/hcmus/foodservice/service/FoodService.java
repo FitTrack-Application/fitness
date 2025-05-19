@@ -27,7 +27,7 @@ public interface FoodService {
 
     ApiResponse<?> createFood(FoodRequest foodRequest, UUID userId);
 
-    ApiResponse<?> deleteFood(UUID foodId, UUID userId);
+    ApiResponse<?> deleteFoodByIdAndUserId(UUID foodId, UUID userId);
 
-    ApiResponse<?> updateFood(UUID foodId, FoodRequest foodRequest, UUID userId);
+    ApiResponse<?> updateFoodByIdAndUserId(UUID foodId, FoodRequest foodRequest, UUID userId);
 }
