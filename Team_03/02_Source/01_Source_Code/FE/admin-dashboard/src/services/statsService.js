@@ -1,3 +1,5 @@
+import axiosInstance from "./axiosInstance";
+
 // export const fetchDashboardStats = async () => {
 //   try {
 //     // For development/testing, you can use this mock response
@@ -36,69 +38,57 @@
 // };
 
 export const fetchDashboardStats = async () => {
-  await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate network delay
-  return {
-    // General statistics
-    totalUsers: 1250,
-    activeUsers: 950,
-    totalMeals: 320,
-    totalFoods: 780,
-    totalExercises: 180,
+  try {
+    const response = await axiosInstance.get("/admin/statistics");
+    const data = response.data.data;
 
-    // New users by month (Line/Bar chart)
-    newUsersByMonth: {
-      labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-      data: [120, 120, 155, 220, 210, 210],
-    },
+    // Transform the API response to match the dashboard's expected format
+    return {
+      // General statistics
+      totalUsers: data.totalUsers,
+      activeUsers: data.activeUsers,
+      totalMeals: data.totalMeals,
+      totalFoods: data.totalFoods,
+      totalExercises: data.totalExercises,
 
-    // Daily logins (Line chart)
-    dailyLogins: {
-      labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-      data: [85, 92, 78, 95, 88, 120, 110],
-    },
+      // New users by week
+      newUsersByMonth: {
+        labels: data.newUsersByWeek.map((item) => item.date),
+        data: data.newUsersByWeek.map((item) => item.count),
+      },
 
-    // Users achieving goals per week (Bar chart)
-    weeklyGoalAchievements: {
-      labels: ["Week 1", "Week 2", "Week 3", "Week 4"],
-      data: [45, 52, 58, 65],
-      totalUsers: [100, 100, 100, 100], // For percentage calculation
-    },
+      // Early churn by week
+      earlyChurnByMonth: {
+        labels: data.earlyChurnByWeek.map((item) => item.date),
+        data: data.earlyChurnByWeek.map((item) => item.count),
+      },
 
-    // Users whose last login is close to registration (Bar chart)
-    earlyChurnByMonth: {
-      labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-      data: [30, 25, 20, 15, 18, 22],
-      totalNewUsers: [120, 150, 180, 220, 270, 310], // For percentage calculation
-    },
+      // Custom food usage
+      customFoodUsage: {
+        labels: data.customFoodUsage.map((item) => item.label),
+        data: data.customFoodUsage.map((item) => item.count),
+      },
 
-    // Percentage of users adding custom food (Pie chart)
-    customFoodUsage: {
-      labels: ["Used custom food", "Used available food"],
-      data: [65, 35],
-    },
+      // Custom exercise usage
+      customExerciseUsage: {
+        labels: data.customExerciseUsage.map((item) => item.label),
+        data: data.customExerciseUsage.map((item) => item.count),
+      },
 
-    // Percentage of users adding custom exercise (Pie chart)
-    customExerciseUsage: {
-      labels: ["Used custom exercise", "Used available exercise"],
-      data: [45, 55],
-    },
+      // Top foods
+      topCustomFoods: {
+        labels: data.topFoods.map((item) => item.name),
+        data: data.topFoods.map((item) => item.count),
+      },
 
-    // Top 5 custom foods (Bar chart)
-    topCustomFoods: {
-      labels: [
-        "Broken rice",
-        "Beef noodle soup",
-        "Banh mi",
-        "Pho",
-        "Fried rice",
-      ],
-      data: [320, 290, 270, 250, 230],
-    },
-
-    // Top 5 custom exercises (Bar chart)
-    topCustomExercises: {
-      labels: ["Running", "Cycling", "Yoga", "Swimming", "Weight training"],
-      data: [180, 150, 140, 120, 90],
-    },
-  };
+      // Top exercises
+      topCustomExercises: {
+        labels: data.topExercises.map((item) => item.name),
+        data: data.topExercises.map((item) => item.count),
+      },
+    };
+  } catch (error) {
+    console.error("Error fetching dashboard stats:", error);
+    throw new Error("Failed to load dashboard statistics");
+  }
 };

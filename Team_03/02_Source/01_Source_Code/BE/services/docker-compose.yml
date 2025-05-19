@@ -98,8 +98,8 @@ services:
       - KC_DB_URL=${KC_DB_URL}
       - KC_DB_USERNAME=${KC_DB_USERNAME}
       - KC_DB_PASSWORD=${KC_DB_PASSWORD}
-      # - KC_HOSTNAME=10.0.2.2
-      - KC_HOSTNAME=localhost
+      - KC_HOSTNAME=10.0.2.2
+      # - KC_HOSTNAME=localhost
       - KC_HOSTNAME_PORT=${KEYCLOAK_AUTH_SERVER_PORT:-8888}
       - KC_HOSTNAME_STRICT=false
       - KC_HOSTNAME_STRICT_HTTPS=false
