@@ -36,7 +36,7 @@ spring:
         - id: statistic_service
           uri: ${STATISTIC_SERVICE_HOST:http://statistic-service:8081}
           predicates:
-            - Path=/api/statistics/**,/api/fit-profiles/**,/api/nutrition-goals/**,/api/step-logs/**,/api/weight-logs/**,/api/weight-goals/**,/api/surveys/**
+            - Path=/api/statistics/**,/api/fit-profiles/**,/api/nutrition-goals/**,/api/step-logs/**,/api/weight-logs/**,/api/weight-goals/**,/api/surveys/**, /api/dashboard/**
         - id: exercise_service
           uri: ${EXERCISE_SERVICE_HOST:http://exercise-service:8082}
           predicates:
