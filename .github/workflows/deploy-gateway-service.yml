@@ -53,9 +53,8 @@ jobs:
     - name: 🚩 Build and Push Docker image to ACR
       run: |
         cd Team_03/02_Source/01_Source_Code/BE/services/gateway-service
-        docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/gateway-service:${{ github.sha }} -t ${{ secrets.ACR_LOGIN_SERVER }}/gateway-service:latest .
+        docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/gateway-service:${{ github.sha }} .
         docker push ${{ secrets.ACR_LOGIN_SERVER }}/gateway-service:${{ github.sha }}
-        docker push ${{ secrets.ACR_LOGIN_SERVER }}/gateway-service:latest
       
     - name: 🧹 Clean up Docker images
       if: always()
