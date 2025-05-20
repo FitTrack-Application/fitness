@@ -15,7 +15,4 @@ public interface RecipeRepository extends JpaRepository<Recipe, UUID> {
 
     Page<Recipe> findByUserIdAndRecipeNameContainingIgnoreCase(UUID userId, String name, Pageable pageable);
 
-//    @Transactional
-//    @Query("SELECT r FROM Recipe r LEFT JOIN FETCH r.recipeEntries WHERE r.recipeId = :recipeId")
-//    Optional<Recipe> findByIdWithEntries(@Param("recipeId") UUID recipeId);
 }
