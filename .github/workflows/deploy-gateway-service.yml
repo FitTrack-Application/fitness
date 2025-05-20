@@ -1,28 +1,26 @@
-name: CI/CD Pipeline For Gateway Service
+name: CI/CD Pipeline - Gateway Service
 
 on:
   push:
     branches:
       - 'main'
-      - 'dev'
-      - 'kiet'
+      - 'bedev'
     paths: 
       - 'Team_03/02_Source/01_Source_Code/BE/services/gateway-service/**'
       - '.github/workflows/deploy-gateway-service.yml'
   pull_request:
     branches: 
       - 'main'
-      - 'dev'
-      - 'kiet'
+      - 'bedev'
     paths: 
       - 'Team_03/02_Source/01_Source_Code/BE/services/gateway-service/**'
       - '.github/workflows/deploy-gateway-service.yml'
 
 jobs:
-  build-backend-dev:
+  build-gateway-service:
     runs-on: ubuntu-latest
-    environment: Dev
-    if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/kiet'
+    environment: Azure
+    if: github.ref == 'refs/heads/bedev' || github.ref == 'refs/heads/main'
     steps:
     - name: ✅ Checkout Code
       uses: actions/checkout@v4
@@ -32,30 +30,65 @@ jobs:
       with:
         java-version: '17'
         distribution: "zulu"
+        cache: maven
+      
+    # - name: 🧪 Run Unit Tests
+    #   run: |
+    #     cd Team_03/02_Source/01_Source_Code/BE/services/gateway-service
+    #     mvn test
+    #   continue-on-error: false
               
-    - name: 🔎 Build the Spring Boot application and Docker image
+    - name: 🔎 Build the Spring Boot application
       run: |
         cd Team_03/02_Source/01_Source_Code/BE/services/gateway-service
         mvn clean package -DskipTests
-        docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/gateway-service:${{ github.sha }} -t ${{ secrets.DOCKER_HUB_USERNAME }}/gateway-service:latest .
 
-    - name: 🔑 Log in to Docker Hub
-      run: echo ${{ secrets.DOCKER_HUB_PASSWORD }} | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
-
-    - name: 🔄 Push Docker image to Docker Hub
+    - name: 🔑 Log in to Azure Container Registry
+      uses: azure/docker-login@v1
+      with: 
+        login-server: ${{ secrets.ACR_LOGIN_SERVER }}
+        username: ${{ secrets.ACR_USERNAME }}
+        password: ${{ secrets.ACR_PASSWORD }}
+  
+    - name: 🚩 Build and Push Docker image to ACR
       run: |
-        docker push ${{ secrets.DOCKER_HUB_USERNAME }}/gateway-service:${{ github.sha }}
-        docker push ${{ secrets.DOCKER_HUB_USERNAME }}/gateway-service:latest
-
-  deploy-backend-dev:
-    needs: build-backend-dev
+        cd Team_03/02_Source/01_Source_Code/BE/services/gateway-service
+        docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/gateway-service:${{ github.sha }} -t ${{ secrets.ACR_LOGIN_SERVER }}/gateway-service:latest .
+        docker push ${{ secrets.ACR_LOGIN_SERVER }}/gateway-service:${{ github.sha }}
+        docker push ${{ secrets.ACR_LOGIN_SERVER }}/gateway-service:latest
+      
+    - name: 🧹 Clean up Docker images
+      if: always()
+      run: |
+        docker image prune -f
+      
+  deploy-gateway-service:
+    needs: build-gateway-service
     runs-on: ubuntu-latest
-    environment: Dev
-    if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/kiet'
+    environment: Azure
+    if: github.ref == 'refs/heads/bedev' || github.ref == 'refs/heads/main'
     steps:
     - name: ✅ Checkout Code
       uses: actions/checkout@v4
 
-    - name: 🚩 Deploy to Render
+    - name: 🔑 Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        
+    - name: 🚩 Deploy to Azure Container Apps
+      uses: azure/container-apps-deploy-action@v1
+      with:
+        resourceGroup: ${{ secrets.AZURE_RESOURCE_GROUP }}
+        containerAppName: gateway-service
+        imageToDeploy: ${{ secrets.ACR_LOGIN_SERVER }}/gateway-service:${{ github.sha }}
+        targetPort: 8088
+        ingress: external
+        location: ${{ secrets.AZURE_LOCATION }}
+
+    - name: 🔎 Verify Deployment
       run: |
-        curl -X POST "${{ secrets.GATEWAY_SERVICE_DEPLOY_HOOK }}"
+        az containerapp show --name gateway-service --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} --query "properties.latestRevisionName" -o tsv
+        az containerapp revision list --name gateway-service --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} --query "[0].properties.runningStatus"
+      continue-on-error: true
+
