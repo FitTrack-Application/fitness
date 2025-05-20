@@ -21,6 +21,9 @@ class DiaryViewModel extends ChangeNotifier {
   final Set<String> _removingFoodIds = {};
 
   // #### Exercise ####
+
+  String workoutId = '';
+
   // Thay thế biến isAdding bằng Set các exerciseIds đang được thêm
   final Set<String> _addingExerciseIds = {};
   // Thêm set để theo dõi các bài tập đang được xóa
@@ -86,7 +89,7 @@ class DiaryViewModel extends ChangeNotifier {
       breakfastCalories + lunchCalories + dinnerCalories + snackCalories;
 
   double get caloriesBurned => exerciseItems.fold(
-      0, (sum, exercise) => sum + exercise.calories.toDouble());
+      0, (sum, exercise) => sum + exercise.caloriesBurnedPerMinute.toDouble());
 
   double get caloriesRemaining => calorieGoal - caloriesConsumed + caloriesBurned;
 
@@ -230,7 +233,7 @@ class DiaryViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> addExerciseToWorkout(String exerciseId, DateTime date) async {
+  Future<void> addExerciseToDiary(String exerciseLogId, String exerciseId, double duration) async {
     /////
   }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile/features/fitness/view/recipe_detail/recipe_detail.dart';
+import 'package:mobile/features/fitness/viewmodels/search_exercise_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 import 'common/widgets/bottom_nav_bar/bottom_nav_provider.dart';
@@ -29,6 +30,8 @@ void main() {
         ChangeNotifierProvider(create: (_) => BottomNavProvider()),
         ChangeNotifierProvider(
             create: (_) => SearchFoodViewModel()..searchFoods()),
+        ChangeNotifierProvider(
+            create: (_) => SearchExerciseViewModel()..searchExercises()),
         ChangeNotifierProvider(
             create: (_) => DiaryViewModel()..fetchCaloriesGoal()),
         ChangeNotifierProvider(create: (_) => ProfileViewModel()),

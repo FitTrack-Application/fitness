@@ -1,16 +1,19 @@
 class Exercise {
-  final String exerciseId;
-  final int calories;
+  final String id;
+  final String name;
+  final int caloriesBurnedPerMinute;
 
   Exercise({
-    required this.exerciseId,
-    required this.calories,
+    required this.id,
+    required this.name,
+    required this.caloriesBurnedPerMinute,
   });
 
   factory Exercise.fromJson(Map<String, dynamic> json) {
     return Exercise(
-      exerciseId: json['exerciseId'] ?? '',
-      calories: (json['calories'] ?? 0).toInt(),
+      id: json['id'] ?? '',
+      name: json['name'] ?? '',
+      caloriesBurnedPerMinute: (json['caloriesBurnedPerMinute'] ?? 0).toInt(),
     );
   }
 }

@@ -324,6 +324,9 @@ class _DiaryScreenState extends State<DiaryScreen>
           TextButton(
             onPressed: () {
               // Thêm navigation đến màn add exercise
+              final workoutLogId = "71c0a08a-ed95-44d5-a226-747a4c54c3f0";
+              context.push(
+                  '/searchExercise/$workoutLogId');
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -423,7 +426,7 @@ class _DiaryScreenState extends State<DiaryScreen>
     return Column(
       children: [
         ListTile(
-          title: Text(item.exerciseId),
+          title: Text(item.id),
         ),
         const Divider(
           height: 0.1,
