@@ -50,15 +50,29 @@ public class ExerciseServiceImpl implements ExerciseService {
     }
 
     @Override
-    public ApiResponse<List<ExerciseDto>> getAllExercises(Pageable pageable) {
-        Page<Exercise> exercisePage = exerciseRepository.findAll(pageable);
+    public ApiResponse<List<ExerciseDto>> getSystemExercises(Pageable pageable) {
+        Page<Exercise> exercisePage = exerciseRepository.findByUserIdIsNull(pageable);
 
         return buildExerciseListResponse(exercisePage);
     }
 
     @Override
-    public ApiResponse<List<ExerciseDto>> searchExerciseByName(String query, Pageable pageable) {
-        Page<Exercise> exercisePage = exerciseRepository.findByExerciseNameContainingIgnoreCase(query, pageable);
+    public ApiResponse<List<ExerciseDto>> searchSystemExerciseByName(String query, Pageable pageable) {
+        Page<Exercise> exercisePage = exerciseRepository.findByUserIdIsNullAndExerciseNameContainingIgnoreCase(query, pageable);
+
+        return buildExerciseListResponse(exercisePage);
+    }
+
+    @Override
+    public ApiResponse<List<ExerciseDto>> getExercisesByUserId(UUID userId, Pageable pageable) {
+        Page<Exercise> exercisePage = exerciseRepository.findByUserId(userId, pageable);
+
+        return buildExerciseListResponse(exercisePage);
+    }
+
+    @Override
+    public ApiResponse<List<ExerciseDto>> searchExercisesByUserIdAndName(UUID userId, String query, Pageable pageable) {
+        Page<Exercise> exercisePage = exerciseRepository.findByUserIdAndExerciseNameContainingIgnoreCase(userId, query, pageable);
 
         return buildExerciseListResponse(exercisePage);
     }
@@ -102,10 +116,10 @@ public class ExerciseServiceImpl implements ExerciseService {
     }
 
     @Override
-    public ApiResponse<?> deleteExerciseById(UUID exerciseId) {
+    public ApiResponse<?> deleteExerciseByIdAndUserId(UUID exerciseId, UUID userId) {
         // Find the exercise by id
-        Exercise exercise = exerciseRepository.findById(exerciseId)
-                .orElseThrow(() -> new ResourceNotFoundException("Exercise not found with ID: " + exerciseId));
+        Exercise exercise = exerciseRepository.findByExerciseIdAndUserId(exerciseId, userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Exercise not found with ID: " + exerciseId + " and user ID: " + userId));
 
         // Delete the exercise
         exerciseRepository.delete(exercise);

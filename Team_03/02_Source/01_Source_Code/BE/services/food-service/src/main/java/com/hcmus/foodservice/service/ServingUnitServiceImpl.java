@@ -2,6 +2,7 @@ package com.hcmus.foodservice.service;
 
 import com.hcmus.foodservice.dto.response.ApiResponse;
 import com.hcmus.foodservice.dto.response.ServingUnitResponse;
+import com.hcmus.foodservice.exception.ResourceNotFoundException;
 import com.hcmus.foodservice.model.ServingUnit;
 import com.hcmus.foodservice.repository.ServingUnitRepository;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +40,7 @@ public class ServingUnitServiceImpl implements ServingUnitService {
     @Override
     public ApiResponse<ServingUnitResponse> getServingUnitById(UUID servingUnitId) {
         ServingUnit servingUnit = servingUnitRepository.findById(servingUnitId)
-                .orElseThrow(() -> new RuntimeException("Serving unit not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Serving unit not found"));
 
         // Convert to Dto
         ServingUnitResponse servingUnitResponse = ServingUnitResponse.builder()

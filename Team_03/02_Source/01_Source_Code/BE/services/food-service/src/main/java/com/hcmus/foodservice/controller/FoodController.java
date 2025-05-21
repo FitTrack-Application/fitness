@@ -138,24 +138,24 @@ public class FoodController {
     @DeleteMapping("/{foodId}")
     public ResponseEntity<ApiResponse<?>> deleteFood(@PathVariable UUID foodId) {
         if (CustomSecurityContextHolder.hasRole("ADMIN")) {
-            ApiResponse<?> response = foodService.deleteFood(foodId, null);
+            ApiResponse<?> response = foodService.deleteFoodByIdAndUserId(foodId, null);
             return ResponseEntity.ok(response);
         }
 
         UUID userId = CustomSecurityContextHolder.getCurrentUserId();
-        ApiResponse<?> response = foodService.deleteFood(foodId, userId);
+        ApiResponse<?> response = foodService.deleteFoodByIdAndUserId(foodId, userId);
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{foodId}")
     public ResponseEntity<ApiResponse<?>> updateFood(@PathVariable UUID foodId, @Valid @RequestBody FoodRequest foodRequest) {
         if (CustomSecurityContextHolder.hasRole("ADMIN")) {
-            ApiResponse<?> response = foodService.updateFood(foodId, foodRequest, null);
+            ApiResponse<?> response = foodService.updateFoodByIdAndUserId(foodId, foodRequest, null);
             return ResponseEntity.ok(response);
         }
 
         UUID userId = CustomSecurityContextHolder.getCurrentUserId();
-        ApiResponse<?> response = foodService.updateFood(foodId, foodRequest, userId);
+        ApiResponse<?> response = foodService.updateFoodByIdAndUserId(foodId, foodRequest, userId);
         return ResponseEntity.ok(response);
     }
 }
