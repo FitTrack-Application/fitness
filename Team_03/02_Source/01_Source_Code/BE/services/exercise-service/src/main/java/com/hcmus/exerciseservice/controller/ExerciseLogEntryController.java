@@ -35,7 +35,7 @@ public class ExerciseLogEntryController {
         return ResponseEntity.ok(response);
     }
 
-     @GetMapping("/total-calories-burned/{userId}")
+    @GetMapping("/total-calories-burned/{userId}")
     public ResponseEntity<ApiResponse<TotalCaloriesBurnedResponse>> getTotalCaloriesBurnedByUserId(
             @PathVariable UUID userId
     ) {

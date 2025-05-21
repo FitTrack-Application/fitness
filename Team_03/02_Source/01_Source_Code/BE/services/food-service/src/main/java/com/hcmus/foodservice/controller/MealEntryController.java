@@ -7,7 +7,7 @@ import com.hcmus.foodservice.service.MealEntryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import com.hcmus.foodservice.dto.response.TotalCaloriesConsumedResponse;
 import java.util.UUID;
 
 @RequiredArgsConstructor
