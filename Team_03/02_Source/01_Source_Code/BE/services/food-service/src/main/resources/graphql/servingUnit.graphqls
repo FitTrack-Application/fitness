@@ -1,0 +1,10 @@
+type Query {
+    getAllServingUnits: [ServingUnitResponse]
+    getServingUnitById(servingUnitId: ID!): ServingUnitResponse
+}
+
+type ServingUnitResponse {
+    id: ID!
+    unitName: String
+    unitSymbol: String
+}
