@@ -1,4 +1,4 @@
-name: CI/CD Pipeline - Gateway Service
+name: CI/CD Pipeline - Exercise Service
 
 on:
   push:
@@ -6,18 +6,18 @@ on:
       - 'main'
       - 'bedev'
     paths: 
-      - 'Team_03/02_Source/01_Source_Code/BE/services/gateway-service/**'
-      - '.github/workflows/deploy-gateway-service.yml'
+      - 'Team_03/02_Source/01_Source_Code/BE/services/exercise-service/**'
+      - '.github/workflows/deploy-exercise-service.yml'
   pull_request:
     branches: 
       - 'main'
       - 'bedev'
     paths: 
-      - 'Team_03/02_Source/01_Source_Code/BE/services/gateway-service/**'
-      - '.github/workflows/deploy-gateway-service.yml'
+      - 'Team_03/02_Source/01_Source_Code/BE/services/exercise-service/**'
+      - '.github/workflows/deploy-exercise-service.yml'
 
 jobs:
-  build-gateway-service:
+  build-exercise-service:
     runs-on: ubuntu-latest
     environment: Azure
     if: github.ref == 'refs/heads/bedev' || github.ref == 'refs/heads/main'
@@ -34,13 +34,13 @@ jobs:
       
     # - name: 🧪 Run Unit Tests
     #   run: |
-    #     cd Team_03/02_Source/01_Source_Code/BE/services/gateway-service
+    #     cd Team_03/02_Source/01_Source_Code/BE/services/food-service
     #     mvn test
     #   continue-on-error: false
               
     - name: 🔎 Build the Spring Boot application
       run: |
-        cd Team_03/02_Source/01_Source_Code/BE/services/gateway-service
+        cd Team_03/02_Source/01_Source_Code/BE/services/exercise-service
         mvn clean package -DskipTests
 
     - name: 🔑 Log in to Azure Container Registry
@@ -52,17 +52,17 @@ jobs:
   
     - name: 🚩 Build and Push Docker image to ACR
       run: |
-        cd Team_03/02_Source/01_Source_Code/BE/services/gateway-service
-        docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/gateway-service:${{ github.sha }} .
-        docker push ${{ secrets.ACR_LOGIN_SERVER }}/gateway-service:${{ github.sha }}
+        cd Team_03/02_Source/01_Source_Code/BE/services/exercise-service
+        docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/exercise-service:${{ github.sha }} .
+        docker push ${{ secrets.ACR_LOGIN_SERVER }}/exercise-service:${{ github.sha }}
       
     - name: 🧹 Clean up Docker images
       if: always()
       run: |
         docker image prune -f
       
-  deploy-gateway-service:
-    needs: build-gateway-service
+  deploy-exercise-service:
+    needs: build-exercise-service
     runs-on: ubuntu-latest
     environment: Azure
     if: github.ref == 'refs/heads/bedev' || github.ref == 'refs/heads/main'
@@ -79,15 +79,15 @@ jobs:
       uses: azure/container-apps-deploy-action@v1
       with:
         resourceGroup: ${{ secrets.AZURE_RESOURCE_GROUP }}
-        containerAppName: gateway-service
-        imageToDeploy: ${{ secrets.ACR_LOGIN_SERVER }}/gateway-service:${{ github.sha }}
-        targetPort: 8088
-        ingress: external
+        containerAppName: exercise-service
+        imageToDeploy: ${{ secrets.ACR_LOGIN_SERVER }}/exercise-service:${{ github.sha }}
+        targetPort: 8082
+        ingress: internal
         location: ${{ secrets.AZURE_LOCATION }}
 
     - name: 🔎 Verify Deployment
       run: |
-        az containerapp show --name gateway-service --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} --query "properties.latestRevisionName" -o tsv
-        az containerapp revision list --name gateway-service --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} --query "[0].properties.runningStatus"
+        az containerapp show --name exercise-service --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} --query "properties.latestRevisionName" -o tsv
+        az containerapp revision list --name exercise-service --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} --query "[0].properties.runningStatus"
       continue-on-error: true
 
