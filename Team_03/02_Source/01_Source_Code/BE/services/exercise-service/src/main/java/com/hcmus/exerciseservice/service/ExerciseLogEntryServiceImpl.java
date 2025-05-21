@@ -3,6 +3,7 @@ package com.hcmus.exerciseservice.service;
 import com.hcmus.exerciseservice.dto.request.ExerciseLogEntryRequest;
 import com.hcmus.exerciseservice.dto.response.ApiResponse;
 import com.hcmus.exerciseservice.dto.response.ExerciseLogEntryResponse;
+import com.hcmus.exerciseservice.dto.response.TotalCaloriesBurnedResponse;
 import com.hcmus.exerciseservice.exception.ResourceNotFoundException;
 import com.hcmus.exerciseservice.mapper.ExerciseLogEntryMapper;
 import com.hcmus.exerciseservice.model.Exercise;
@@ -59,6 +60,24 @@ public class ExerciseLogEntryServiceImpl implements ExerciseLogEntryService {
                 .status(200)
                 .generalMessage("Successfully updated exercise log entry")
                 .data(exerciseLogEntryResponse)
+                .build();
+    }
+
+    @Override
+    public ApiResponse<TotalCaloriesBurnedResponse> getTotalCaloriesBurnedByUserId(UUID userId){
+        Integer totalCaloriesBurned = exerciseLogEntryRepository.getTotalCaloriesBurnedByUserId(userId);
+        if (totalCaloriesBurned == null) {
+            totalCaloriesBurned = 0;
+        }
+
+        TotalCaloriesBurnedResponse response = TotalCaloriesBurnedResponse.builder()
+                .totalCaloriesBurned(totalCaloriesBurned)
+                .build();
+
+        return ApiResponse.<TotalCaloriesBurnedResponse>builder()
+                .status(200)
+                .generalMessage("Successfully retrieved total calories burned")
+                .data(response)
                 .build();
     }
 }
