@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/common/widgets/bottom_nav_bar/bottom_nav_provider.dart';
+import 'package:mobile/cores/constants/routes.dart';
 import 'package:provider/provider.dart';
 
 class BottomNavBar extends StatelessWidget {
-  const BottomNavBar({super.key});
-
   @override
   Widget build(BuildContext context) {
     return Consumer<BottomNavProvider>(
@@ -26,31 +25,10 @@ class BottomNavBar extends StatelessWidget {
                 break;
             }
           },
-          items: [
-            BottomNavigationBarItem(
-              icon: Icon(
-                navProvider.currentIndex == 0
-                    ? Icons.dashboard // Icon khi được chọn
-                    : Icons.dashboard_outlined, // Icon khi không được chọn
-              ),
-              label: 'Dashboard',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                navProvider.currentIndex == 1
-                    ? Icons.local_library // Icon khi được chọn
-                    : Icons.local_library_outlined, // Icon khi không được chọn
-              ),
-              label: 'Diary',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                navProvider.currentIndex == 2
-                    ? Icons.person // Icon khi được chọn
-                    : Icons.person_outlined, // Icon khi không được chọn
-              ),
-              label: 'Profile',
-            ),
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.analytics), label: 'Dashboard'),
+            BottomNavigationBarItem(icon: Icon(Icons.book), label: 'Diary'),
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
           ],
         );
       },
