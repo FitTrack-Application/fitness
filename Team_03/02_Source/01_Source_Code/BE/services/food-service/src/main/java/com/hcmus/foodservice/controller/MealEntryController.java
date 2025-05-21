@@ -47,4 +47,10 @@ public class MealEntryController {
         );
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/total-calories-consumed/{userId}")
+    public ResponseEntity<ApiResponse<TotalCaloriesConsumedResponse>> getTotalCaloriesConsumedByUserId(@PathVariable UUID userId) {
+        ApiResponse<TotalCaloriesConsumedResponse> response = mealEntryService.getTotalCaloriesConsumedByUserId(userId);
+        return ResponseEntity.ok(response);
+    }
 }
