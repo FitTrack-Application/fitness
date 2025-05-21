@@ -9,7 +9,7 @@ class AppThemeData {
   static final Color _darkFocusColor = Colors.white.withOpacity(0.12);
 
   static ThemeData lightThemeData =
-      themeData(lightColorScheme, _lightFocusColor);
+  themeData(lightColorScheme, _lightFocusColor);
   static ThemeData darkThemeData = themeData(darkColorScheme, _darkFocusColor);
 
   static ThemeData themeData(ColorScheme colorScheme, Color focusColor) {
@@ -50,7 +50,7 @@ class AppThemeData {
     onPrimary: _lightFillColor,
     onSecondary: Color(0xFF322942),
     onSurface: Color(0xFF241E30),
-    brightness: Brightness.light,
+    brightness: Brightness.light, background: Color(0xFFEFF3F3), onBackground:Color(0xFFEFF3F3),
   );
 
   static const ColorScheme darkColorScheme = ColorScheme(
@@ -65,7 +65,7 @@ class AppThemeData {
     onPrimary: _darkFillColor,
     onSecondary: _darkFillColor,
     onSurface: _darkFillColor,
-    brightness: Brightness.dark,
+    brightness: Brightness.dark, background: Color(0xFFEFF3F3), onBackground: Color(0xFFEFF3F3),
   );
 
   static const _regular = FontWeight.w400;

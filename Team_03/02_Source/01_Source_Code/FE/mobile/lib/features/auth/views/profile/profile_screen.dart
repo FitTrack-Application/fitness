@@ -1,81 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/common/widgets/list_item/list_item.dart';
-import 'package:go_router/go_router.dart';
-import 'package:mobile/cores/constants/colors.dart';
-import 'package:mobile/features/auth/viewmodels/auth_viewmodel.dart';
-import 'package:provider/provider.dart';
+import 'package:mobile/common/widgets/bottom_nav_bar/bottom_nav_bar.dart';
 
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
-
   @override
   Widget build(BuildContext context) {
-    final authViewModel = context.read<AuthViewModel>();
     return Scaffold(
-      appBar: AppBar(title: const Text("Profile")),
-      body: Column(
-        children: [
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    context.go('/profile/edit');
-                  },
-                  child: const CircleAvatar(
-                    radius: 50,
-                    backgroundColor: NeutralColors.light500,
-                    child: Icon(
-                      Icons.person,
-                      size: 50,
-                      color: NeutralColors.dark500,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 5),
-                const Text(
-                  "user@example.com",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 20),
-          Expanded(
-            child: ListView(
-              children: [
-                ListItem(
-                  leadingIcon: Icons.flag_outlined,
-                  title: "Goals",
-                  onTap: () {
-                    context.go('/goal');
-                  },
-                ),
-                ListItem(
-                  leadingIcon: Icons.lock,
-                  title: "Change Password",
-                  onTap: () {
-                    // Navigate to Change Password Page
-                  },
-                ),
-                ListItem(
-                  leadingIcon: Icons.logout,
-                  title: "Logout",
-                  onTap: () async {
-                    // Handle Logout
-                    await authViewModel.logout();
-                    context.go('/welcome');
-                  },
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+      appBar: AppBar(title: Text("Profile")),
+      body: Center(child: Text("User Profile Screen")),
     );
   }
 }
