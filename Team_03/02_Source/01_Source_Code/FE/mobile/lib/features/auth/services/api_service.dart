@@ -96,11 +96,26 @@ class ApiService {
     }
   }
 
-  Future<void> editProfile(Map<String, dynamic> profileData) async {
+  Future<void> editProfile(Map<String, dynamic> profileData,
+      {File? imageFile}) async {
     try {
+      // Create a FormData object
+      final formData = FormData.fromMap({
+        'data': jsonEncode(profileData), // Profile data as a JSON string
+        if (imageFile != null)
+          'image': await MultipartFile.fromFile(imageFile.path,
+              filename: 'profile_image.jpg'),
+      });
+
+      // Send the request
       final response = await _dio.post(
         "/api/fit-profiles/me",
-        data: profileData,
+        data: formData,
+        options: Options(
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        ),
       );
 
       debugPrint("API Response: ${response.statusCode} - ${response.data}");
@@ -143,6 +158,24 @@ class ApiService {
     } catch (e) {
       debugPrint("Error fetching goal: $e");
       throw Exception("Failed to fetch goal");
+    }
+  }
+
+  Future<void> editGoal(Map<String, dynamic> goalData) async {
+    try {
+      final response = await _dio.put(
+        "/api/weight-goals/me", // Assuming the endpoint for editing goals
+        data: goalData,
+      );
+
+      debugPrint("API Response: ${response.statusCode} - ${response.data}");
+
+      if (response.statusCode! < 200 || response.statusCode! >= 300) {
+        throw Exception('Failed to edit goal: ${response.data}');
+      }
+    } catch (e) {
+      debugPrint("Error editing goal: $e");
+      throw Exception("Failed to edit goal");
     }
   }
 }

@@ -27,12 +27,9 @@ class GoalViewModel extends ChangeNotifier {
     try {
       final response = await _apiService.getGoal();
 
-      // Extract the "data" field from the response
       if (response.containsKey('data') &&
           response['data'] is Map<String, dynamic>) {
         final goalData = response['data'];
-
-        // Update the UserGoal instance
         userGoal = UserGoal.fromJson(goalData);
       } else {
         throw Exception(
@@ -41,6 +38,26 @@ class GoalViewModel extends ChangeNotifier {
     } catch (e) {
       errorMessage = "Failed to fetch goal data";
       debugPrint("Error fetching goal: $e");
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> editGoal(BuildContext context) async {
+    isLoading = true;
+    errorMessage = null;
+    notifyListeners();
+
+    try {
+      final goalData = userGoal.toJson();
+
+      await _apiService.editGoal(goalData);
+
+      notifyListeners();
+    } catch (e) {
+      errorMessage = "Failed to edit goal";
+      debugPrint("Error editing goal: $e");
     } finally {
       isLoading = false;
       notifyListeners();

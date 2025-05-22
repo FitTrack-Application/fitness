@@ -3,6 +3,8 @@ import 'package:mobile/features/auth/viewmodels/profile_viewmodel.dart';
 import 'package:mobile/common/widgets/value_picker/value_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 class UserProfileScreen extends StatelessWidget {
   const UserProfileScreen({super.key});
@@ -50,8 +52,23 @@ class UserProfileScreen extends StatelessWidget {
                         children: [
                           // Avatar Section
                           GestureDetector(
-                            onTap: () {
-                              // Avatar editing logic remains unchanged
+                            onTap: () async {
+                              final ImagePicker picker = ImagePicker();
+
+                              // Pick an image from the gallery
+                              final XFile? pickedFile = await picker.pickImage(
+                                  source: ImageSource.gallery);
+
+                              if (pickedFile != null) {
+                                final File imageFile = File(pickedFile.path);
+
+                                // Update the profile with the selected image
+                                await profileViewModel.updateProfile(context,
+                                    imageFile: imageFile);
+
+                                // Notify listeners to refresh the UI
+                                profileViewModel.notifyListeners();
+                              }
                             },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -80,7 +97,7 @@ class UserProfileScreen extends StatelessWidget {
                               ),
                               Text(
                                 profileViewModel.userProfile.name,
-                                style: Theme.of(context).textTheme.bodyMedium,
+                                style: Theme.of(context).textTheme.displaySmall,
                               ),
                             ],
                           ),
@@ -93,12 +110,13 @@ class UserProfileScreen extends StatelessWidget {
                                 context: context,
                                 builder: (context) {
                                   return ValuePicker<String>(
-                                    values: ['MALE', 'FEMALE', 'OTHER'],
+                                    values: ['Male', 'Female', 'Other'],
                                     initialValue:
                                         profileViewModel.userProfile.gender,
                                     onValueChanged: (newGender) {
                                       profileViewModel.userProfile.gender =
                                           newGender;
+                                      profileViewModel.updateProfile(context);
                                       profileViewModel
                                           .notifyListeners(); // Update the UI
                                     },
@@ -138,6 +156,7 @@ class UserProfileScreen extends StatelessWidget {
                                     onValueChanged: (newHeight) {
                                       profileViewModel.userProfile.height =
                                           newHeight;
+                                      profileViewModel.updateProfile(context);
                                       profileViewModel
                                           .notifyListeners(); // Update the UI
                                     },
@@ -176,6 +195,7 @@ class UserProfileScreen extends StatelessWidget {
                                         profileViewModel.userProfile.age,
                                     onValueChanged: (newAge) {
                                       profileViewModel.userProfile.age = newAge;
+                                      profileViewModel.updateProfile(context);
                                       profileViewModel
                                           .notifyListeners(); // Update the UI
                                     },
@@ -209,17 +229,18 @@ class UserProfileScreen extends StatelessWidget {
                                 builder: (context) {
                                   return ValuePicker<String>(
                                     values: [
-                                      'SEDENTARY',
-                                      'LIGHT',
-                                      'MODERATE',
-                                      'ACTIVE',
-                                      'VERY_ACTIVE'
+                                      'Sedentary',
+                                      'Light',
+                                      'Moderate',
+                                      'Active',
+                                      'Very Active'
                                     ],
                                     initialValue: profileViewModel
                                         .userProfile.activityLevel,
                                     onValueChanged: (newActivityLevel) {
                                       profileViewModel.userProfile
                                           .activityLevel = newActivityLevel;
+                                      profileViewModel.updateProfile(context);
                                       profileViewModel
                                           .notifyListeners(); // Update the UI
                                     },
