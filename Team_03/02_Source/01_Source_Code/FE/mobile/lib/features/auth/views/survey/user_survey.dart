@@ -7,6 +7,7 @@ import 'step_three.dart';
 import 'step_four.dart';
 import 'step_five.dart';
 import 'package:mobile/features/auth/viewmodels/survey_viewmodel.dart';
+import 'package:mobile/features/auth/viewmodels/auth_viewmodel.dart';
 
 class UserSurvey extends StatefulWidget {
   final String email;
@@ -26,6 +27,7 @@ class UserSurvey extends StatefulWidget {
 class _UserSurveyState extends State<UserSurvey> {
   int _currentStep = 0;
   final SurveyViewModel surveyViewModel = SurveyViewModel();
+  final AuthViewModel authViewModel = AuthViewModel();
 
   final GlobalKey<FormState> _stepOneKey = GlobalKey<FormState>();
   final GlobalKey<FormState> _stepTwoKey = GlobalKey<FormState>();
@@ -36,6 +38,10 @@ class _UserSurveyState extends State<UserSurvey> {
     setState(() {
       if (_currentStep > 0) {
         _currentStep--;
+      }
+      if (_currentStep == 0) {
+        authViewModel.logout();
+        context.go('/welcome');
       }
     });
   }
