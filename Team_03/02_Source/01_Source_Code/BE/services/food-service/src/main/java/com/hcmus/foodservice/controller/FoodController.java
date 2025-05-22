@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -84,9 +85,34 @@ public class FoodController {
         Pageable pageable = PageRequest.of(page - 1, size);
         ApiResponse<List<FoodDto>> response;
         if (query == null || query.isEmpty()) {
-            response = foodService.getAllFoods(pageable);
+            response = foodService.getSystemFoods(pageable);
         } else {
-            response = foodService.searchFoodsByName(query, pageable);
+            response = foodService.searchSystemFoodsByName(query, pageable);
+        }
+        return ResponseEntity.ok(response);
+    }
+
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("/me")
+    public ResponseEntity<ApiResponse<List<FoodDto>>> getMyFoods(
+            @RequestParam(required = false) String query,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        // Check if page and size are valid
+        if (page < 1) {
+            throw new IllegalArgumentException("Page number must be greater than 0");
+        }
+        if (size < 1) {
+            throw new IllegalArgumentException("Size must be greater than 0");
+        }
+        Pageable pageable = PageRequest.of(page - 1, size);
+        UUID userId = CustomSecurityContextHolder.getCurrentUserId();
+
+        ApiResponse<List<FoodDto>> response;
+        if (query == null || query.isEmpty()) {
+            response = foodService.getFoodsByUserId(userId, pageable);
+        } else {
+            response = foodService.searchFoodsByUserIdAndName(userId, query, pageable);
         }
         return ResponseEntity.ok(response);
     }
@@ -99,6 +125,11 @@ public class FoodController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<?>> addFood(@Valid @RequestBody FoodRequest foodRequest) {
+        if (CustomSecurityContextHolder.hasRole("ADMIN")) {
+            ApiResponse<?> response = foodService.createFood(foodRequest, null);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        }
+
         UUID userId = CustomSecurityContextHolder.getCurrentUserId();
         ApiResponse<?> response = foodService.createFood(foodRequest, userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -106,15 +137,25 @@ public class FoodController {
 
     @DeleteMapping("/{foodId}")
     public ResponseEntity<ApiResponse<?>> deleteFood(@PathVariable UUID foodId) {
+        if (CustomSecurityContextHolder.hasRole("ADMIN")) {
+            ApiResponse<?> response = foodService.deleteFoodByIdAndUserId(foodId, null);
+            return ResponseEntity.ok(response);
+        }
+
         UUID userId = CustomSecurityContextHolder.getCurrentUserId();
-        ApiResponse<?> response = foodService.deleteFood(foodId, userId);
+        ApiResponse<?> response = foodService.deleteFoodByIdAndUserId(foodId, userId);
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{foodId}")
     public ResponseEntity<ApiResponse<?>> updateFood(@PathVariable UUID foodId, @Valid @RequestBody FoodRequest foodRequest) {
+        if (CustomSecurityContextHolder.hasRole("ADMIN")) {
+            ApiResponse<?> response = foodService.updateFoodByIdAndUserId(foodId, foodRequest, null);
+            return ResponseEntity.ok(response);
+        }
+
         UUID userId = CustomSecurityContextHolder.getCurrentUserId();
-        ApiResponse<?> response = foodService.updateFood(foodId, foodRequest, userId);
+        ApiResponse<?> response = foodService.updateFoodByIdAndUserId(foodId, foodRequest, userId);
         return ResponseEntity.ok(response);
     }
 }

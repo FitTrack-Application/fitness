@@ -32,4 +32,9 @@ public class RepositoryConfig {
     public FitProfileRepository fitProfileRepository(JpaFitProfileRepository jpaFitProfileRepository) {
         return new FitProfileRepositoryAdapter(jpaFitProfileRepository);
     }
+
+    @Bean
+    public LatestLoginRepository latestLoginRepository(JpaLatestLoginRepository jpaLatestLoginRepository) {
+        return new LatestLoginRepositoryAdapter(jpaLatestLoginRepository);
+    }
 }

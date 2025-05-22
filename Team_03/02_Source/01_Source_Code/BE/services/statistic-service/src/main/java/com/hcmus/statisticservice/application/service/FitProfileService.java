@@ -5,6 +5,7 @@ import com.hcmus.statisticservice.application.dto.response.ApiResponse;
 import com.hcmus.statisticservice.application.dto.response.FitProfileResponse;
 import com.hcmus.statisticservice.domain.model.FitProfile;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
@@ -18,5 +19,5 @@ public interface FitProfileService {
 
     ApiResponse<FitProfileResponse> getFindProfileResponse(UUID userID);
 
-    ApiResponse<?> getUpdateProfileResponse(UUID userId, UpdateProfileRequest updateProfileRequest);
+    ApiResponse<?> getUpdateProfileResponse(UUID userId, UpdateProfileRequest updateProfileRequest, MultipartFile imageFile);
 }

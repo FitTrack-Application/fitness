@@ -134,45 +134,12 @@ const Dashboard = () => {
     ],
   };
 
-  const dailyLoginsData = {
-    labels: stats.dailyLogins.labels,
-    datasets: [
-      {
-        label: "Login Count",
-        data: stats.dailyLogins.data,
-        fill: false,
-        backgroundColor: "rgba(75, 192, 192, 0.2)",
-        borderColor: "rgba(75, 192, 192, 1)",
-        tension: 0.1,
-      },
-    ],
-  };
-
-  const weeklyGoalData = {
-    labels: stats.weeklyGoalAchievements.labels,
-    datasets: [
-      {
-        label: "% Goal Achieved",
-        data: stats.weeklyGoalAchievements.data.map(
-          (value, index) =>
-            (value / stats.weeklyGoalAchievements.totalUsers[index]) * 100
-        ),
-        backgroundColor: "rgba(255, 159, 64, 0.5)",
-        borderColor: "rgba(255, 159, 64, 1)",
-        borderWidth: 1,
-      },
-    ],
-  };
-
   const earlyChurnData = {
     labels: stats.earlyChurnByMonth.labels,
     datasets: [
       {
-        label: "% Users Not Returning",
-        data: stats.earlyChurnByMonth.data.map(
-          (value, index) =>
-            (value / stats.earlyChurnByMonth.totalNewUsers[index]) * 100
-        ),
+        label: "Users Not Returning",
+        data: stats.earlyChurnByMonth.data,
         backgroundColor: "rgba(255, 99, 132, 0.5)",
         borderColor: "rgba(255, 99, 132, 1)",
         borderWidth: 1,
@@ -256,30 +223,16 @@ const Dashboard = () => {
       <DashboardContainer>
         <Card>
           <CardHeader>
-            <CardTitle>New Users per Month</CardTitle>
+            <CardTitle>New Users per Week</CardTitle>
           </CardHeader>
           <Line data={newUsersByMonthData} />
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>Early Churn Rate per Month</CardTitle>
+            <CardTitle>Early Churn Rate per Week</CardTitle>
           </CardHeader>
           <Line data={earlyChurnData} />
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Daily Login Count</CardTitle>
-          </CardHeader>
-          <Line data={dailyLoginsData} />
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Weekly Goal Achievement Rate</CardTitle>
-          </CardHeader>
-          <Line data={weeklyGoalData} />
         </Card>
 
         <Card>
@@ -298,14 +251,14 @@ const Dashboard = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle>Top 5 Most Used Custom Foods</CardTitle>
+            <CardTitle>Top Most Used Foods</CardTitle>
           </CardHeader>
           <Bar data={topCustomFoodsData} />
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>Top 5 Most Used Custom Exercises</CardTitle>
+            <CardTitle>Top Most Used Exercises</CardTitle>
           </CardHeader>
           <Bar data={topCustomExercisesData} />
         </Card>
