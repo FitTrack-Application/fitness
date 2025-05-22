@@ -144,8 +144,8 @@ class _SearchExerciseScreenState extends State<SearchExerciseScreen>
             child: TabBarView(
               controller: _tabController,
               children: [
-                _buildBody(viewModel, isMyExercise: true),
                 _buildBody(viewModel, isMyExercise: false),
+                _buildBody(viewModel, isMyExercise: true),
               ],
             ),
           ),
@@ -160,7 +160,7 @@ class _SearchExerciseScreenState extends State<SearchExerciseScreen>
 
     return Column(
       children: [
-        if (isMyExercise)
+        if (!isMyExercise)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
             child: SizedBox(
@@ -194,7 +194,7 @@ class _SearchExerciseScreenState extends State<SearchExerciseScreen>
               ),
             ),
           ),
-        if(!isMyExercise)
+        if(isMyExercise)
           Column(
             children: [
               Padding(
