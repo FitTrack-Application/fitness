@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/features/fitness/services/repository/exercise_repository.dart';
+import 'package:mobile/features/fitness/view/exercises/widget/exercise_info_section.dart';
 import 'package:mobile/features/fitness/viewmodels/exercise_detail_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/serving_unit.dart';
 import '../../viewmodels/diary_viewmodel.dart';
+import '../food_detail/widget/custom_divider.dart';
 
 class ExerciseDetailScreen extends StatefulWidget {
   final String exerciseId;
@@ -45,7 +47,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen> {
       child: Builder(
         builder: (context) => Scaffold(
           appBar: AppBar(
-            title: Text('Add Food',
+            title: Text('Add Exercise',
               style: textTheme.titleMedium,
             ),
             centerTitle: true,
@@ -78,13 +80,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen> {
                     onPressed: isAdding
                         ? null
                         : () async {
-                      diaryVM.addExerciseToDiary(
-                        mealLogId: widget.workoutLogId,
-                        foodId: food.id,
-                        servingUnitId: foodVM.selectedServingUnit?.id ??
-                            '',
-                        numberOfServings: foodVM.servingSize,
-                      );
+                      diaryVM.addExerciseToDiary(widget.workoutLogId, exerciseId: exercise.id, duration: widget.duration);
                       if (context.mounted) {
                         context.pop();
                       }
@@ -94,7 +90,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen> {
               ),
             ],
           ),
-          body: Consumer<FoodDetailViewModel>(
+          body: Consumer<ExerciseDetailViewModel>(
             builder: (context, viewModel, child) {
               switch (viewModel.loadState) {
                 case LoadState.loading:
@@ -126,7 +122,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen> {
           CircularProgressIndicator(color: colorScheme.primary),
           const SizedBox(height: 16),
           Text(
-            'Loading food information...',
+            'Loading exercise information...',
             style: textTheme.bodyMedium,
           ),
         ],
@@ -134,7 +130,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen> {
     );
   }
 
-  Widget _buildErrorState(BuildContext context, FoodDetailViewModel viewModel) {
+  Widget _buildErrorState(BuildContext context, ExerciseDetailViewModel viewModel) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 
@@ -172,7 +168,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen> {
   }
 
   Widget _buildTimeoutState(
-      BuildContext context, FoodDetailViewModel viewModel) {
+      BuildContext context, ExerciseDetailViewModel viewModel) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 
@@ -200,19 +196,19 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen> {
           ElevatedButton.icon(
             icon: const Icon(Icons.refresh),
             label: const Text('Try Again'),
-            onPressed: () => viewModel.loadFood(widget.exerciseId),
+            onPressed: () => viewModel.loadExercise(widget.exerciseId),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildLoadedState(BuildContext context, FoodDetailViewModel viewModel,
+  Widget _buildLoadedState(BuildContext context, ExerciseDetailViewModel viewModel,
       TextTheme textTheme) {
-    final food = viewModel.food;
+    final exercise = viewModel.exercise;
     final colorScheme = Theme.of(context).colorScheme;
 
-    if (food == null) {
+    if (exercise == null) {
       return const SizedBox.shrink();
     }
 
@@ -221,71 +217,41 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (food.imageUrl.isNotEmpty)
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Image.network(
-                food.imageUrl,
-                width: double.infinity,
-                height: 200,
-                fit: BoxFit.cover,
-              ),
-            ),
-          const SizedBox(height: 16),
           Text(
-            food.name,
+            exercise.name,
             style: textTheme.titleSmall?.copyWith(
               fontWeight: FontWeight.bold,
             ),
           ),
           const SizedBox(height: 16),
           const CustomDivider(),
-          FoodInfoSection(
-            label: 'Number of Servings',
-            value: viewModel.servingSize.toString(),
-            onTap: () => _editServings(context, viewModel),
+          ExerciseInfoSection(
+            label: 'Duration',
+            value: viewModel.duration.toString(),
+            onTap: () => _editDuration(context, viewModel),
           ),
           const CustomDivider(),
-          FoodInfoSection(
-            label: 'Serving Size',
-            value: viewModel.selectedServingUnit?.unitName ?? 'Grams',
-            onTap: () => _selectServingUnit(context, viewModel),
-          ),
-          const CustomDivider(),
-          FoodInfoSection(
-            label: 'Meal Type',
-            value: _getMealTypeDisplayName(viewModel.selectedMealType),
-            // onTap: () => _selectMealType(context, viewModel),
-            onTap: () {},
+          ExerciseInfoSection(
+            label: 'Calories Burned Per Minute',
+            value: exercise.caloriesBurnedPerMinute.toString(),
+            //onTap: () => _selectServingUnit(context, viewModel),
+            onTap: () => {},
           ),
           const CustomDivider(),
           const SizedBox(height: 16),
-          Row(
-            children: [
-              CalorieSummary(
-                calories: food.calories,
-                carbs: food.carbs,
-                fat: food.fat,
-                protein: food.protein,
-              ),
-            ],
-          ),
+          // Row(
+          //   children: [
+          //     CalorieSummary(
+          //       calories: food.calories,
+          //       carbs: food.carbs,
+          //       fat: food.fat,
+          //       protein: food.protein,
+          //     ),
+          //   ],
+          // ),
         ],
       ),
     );
-  }
-
-  String _getMealTypeDisplayName(MealType mealType) {
-    switch (mealType) {
-      case MealType.breakfast:
-        return 'BREAKFAST';
-      case MealType.lunch:
-        return 'LUNCH';
-      case MealType.dinner:
-        return 'DINNER';
-      case MealType.snack:
-        return 'SNACK';
-    }
   }
 
   // Future<void> _selectMealType(
@@ -405,106 +371,106 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen> {
   //   );
   // }
 
-  Future<void> _selectServingUnit(
-      BuildContext context, FoodDetailViewModel viewModel) async {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
+  // Future<void> _selectServingUnit(
+  //     BuildContext context, FoodDetailViewModel viewModel) async {
+  //   final colorScheme = Theme.of(context).colorScheme;
+  //   final textTheme = Theme.of(context).textTheme;
+  //
+  //   await showDialog(
+  //     context: context,
+  //     builder: (context) => AlertDialog(
+  //       title: Text(
+  //         'Select Serving Unit',
+  //         style: textTheme.titleMedium,
+  //       ),
+  //       content: SizedBox(
+  //         width: double.maxFinite,
+  //         child: Column(
+  //           mainAxisSize: MainAxisSize.min,
+  //           children: [
+  //             for (var unit in viewModel.servingUnits) ...[
+  //               _buildServingUnitOption(
+  //                 context,
+  //                 unit,
+  //                 viewModel,
+  //               ),
+  //               const SizedBox(height: 8),
+  //             ]
+  //           ],
+  //         ),
+  //       ),
+  //       actions: [
+  //         TextButton(
+  //           onPressed: () => Navigator.pop(context),
+  //           child: Text(
+  //             'Cancel',
+  //             style: TextStyle(color: colorScheme.primary),
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
+  //
+  // Widget _buildServingUnitOption(
+  //     BuildContext context,
+  //     ServingUnit servingUnit,
+  //     ExerciseDetailViewModel viewModel,
+  //     ) {
+  //   final colorScheme = Theme.of(context).colorScheme;
+  //   final textTheme = Theme.of(context).textTheme;
+  //   final isSelected = viewModel.selectedServingUnit?.id == servingUnit.id;
+  //
+  //   return InkWell(
+  //     onTap: () {
+  //       viewModel.updateServingUnit(servingUnit);
+  //       Navigator.pop(context);
+  //     },
+  //     child: Container(
+  //       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+  //       decoration: BoxDecoration(
+  //         color: isSelected
+  //             ? colorScheme.primary.withOpacity(0.1)
+  //             : Colors.transparent,
+  //         borderRadius: BorderRadius.circular(8),
+  //         border: Border.all(
+  //           color: isSelected
+  //               ? colorScheme.primary
+  //               : colorScheme.outline.withOpacity(0.5),
+  //           width: isSelected ? 2 : 1,
+  //         ),
+  //       ),
+  //       child: Row(
+  //         children: [
+  //           Text(
+  //             '${servingUnit.unitName} (${servingUnit.unitSymbol})',
+  //             style: textTheme.bodyMedium?.copyWith(
+  //               fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+  //               color: isSelected ? colorScheme.primary : colorScheme.onSurface,
+  //             ),
+  //           ),
+  //           const Spacer(),
+  //           if (isSelected)
+  //             Icon(
+  //               Icons.check_circle,
+  //               color: colorScheme.primary,
+  //             ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
-    await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          'Select Serving Unit',
-          style: textTheme.titleMedium,
-        ),
-        content: SizedBox(
-          width: double.maxFinite,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              for (var unit in viewModel.servingUnits) ...[
-                _buildServingUnitOption(
-                  context,
-                  unit,
-                  viewModel,
-                ),
-                const SizedBox(height: 8),
-              ]
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(
-              'Cancel',
-              style: TextStyle(color: colorScheme.primary),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildServingUnitOption(
-      BuildContext context,
-      ServingUnit servingUnit,
-      FoodDetailViewModel viewModel,
-      ) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-    final isSelected = viewModel.selectedServingUnit?.id == servingUnit.id;
-
-    return InkWell(
-      onTap: () {
-        viewModel.updateServingUnit(servingUnit);
-        Navigator.pop(context);
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? colorScheme.primary.withOpacity(0.1)
-              : Colors.transparent,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: isSelected
-                ? colorScheme.primary
-                : colorScheme.outline.withOpacity(0.5),
-            width: isSelected ? 2 : 1,
-          ),
-        ),
-        child: Row(
-          children: [
-            Text(
-              '${servingUnit.unitName} (${servingUnit.unitSymbol})',
-              style: textTheme.bodyMedium?.copyWith(
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                color: isSelected ? colorScheme.primary : colorScheme.onSurface,
-              ),
-            ),
-            const Spacer(),
-            if (isSelected)
-              Icon(
-                Icons.check_circle,
-                color: colorScheme.primary,
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Future<void> _editServings(
-      BuildContext context, FoodDetailViewModel viewModel) async {
+  Future<void> _editDuration(
+      BuildContext context, ExerciseDetailViewModel viewModel) async {
     final controller =
-    TextEditingController(text: viewModel.servingSize.toString());
+    TextEditingController(text: viewModel.duration.toString());
     final colorScheme = Theme.of(context).colorScheme;
 
     await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Edit Servings'),
+        title: const Text('Edit Duration'),
         content: TextField(
           controller: controller,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -513,7 +479,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen> {
             LengthLimitingTextInputFormatter(10),
           ],
           decoration: InputDecoration(
-            hintText: 'Enter number of servings',
+            hintText: 'Enter number of duration',
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(color: colorScheme.primary),
               borderRadius: BorderRadius.circular(12),
@@ -533,9 +499,9 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen> {
           ),
           TextButton(
             onPressed: () {
-              final newServings = double.tryParse(controller.text);
-              if (newServings != null && newServings >= 1) {
-                viewModel.updateServingSize(newServings);
+              final newDuration = double.tryParse(controller.text);
+              if (newDuration != null && newDuration >= 0) {
+                viewModel.updateDuration(newDuration);
                 Navigator.pop(context);
               }
             },

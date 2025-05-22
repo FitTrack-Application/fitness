@@ -1,15 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:mobile/features/fitness/services/repository/meal_log_repository.dart';
+import 'package:mobile/features/fitness/services/repository/workout_log_repository.dart';
 
 import '../models/exercise.dart';
+import '../models/exercise_entry.dart';
 import '../models/food.dart';
 import '../models/meal_entry.dart';
 import '../models/meal_log.dart';
+import '../models/workout_log.dart';
 import '../services/repository/food_repository.dart';
 
 class DiaryViewModel extends ChangeNotifier {
   final MealLogRepository _mealLogRepository;
   final FoodRepository _foodRepository;
+  final WorkoutLogRepository _workoutLogRepository;
 
   DateTime selectedDate = DateTime.now();
   bool isLoading = false;
@@ -21,8 +25,7 @@ class DiaryViewModel extends ChangeNotifier {
   final Set<String> _removingFoodIds = {};
 
   // #### Exercise ####
-
-  String workoutId = '';
+  WorkoutLogFitness? workoutLog;
 
   // Thay thế biến isAdding bằng Set các exerciseIds đang được thêm
   final Set<String> _addingExerciseIds = {};
@@ -31,12 +34,17 @@ class DiaryViewModel extends ChangeNotifier {
 
   String? errorMessage;
   List<MealLogFitness> mealLogs = [];
-  List<Exercise> exerciseItems = [];
+  List<ExerciseEntry> exerciseEntries = [];
   int calorieGoal = 0;
+  int exerciseCalorieGoal = 0;
 
-  DiaryViewModel() : _mealLogRepository = MealLogRepository(),
-                     _foodRepository = FoodRepository() {
+  DiaryViewModel() :
+        _mealLogRepository = MealLogRepository(),
+        _foodRepository = FoodRepository(),
+        _workoutLogRepository = WorkoutLogRepository() {
     fetchDiaryForSelectedDate();
+    fetchCaloriesGoal();
+    //fetchExerciseCalorieGoal();
   }
 
   // Getters
@@ -48,7 +56,7 @@ class DiaryViewModel extends ChangeNotifier {
   // Getters
   bool isAddingExercise(String exerciseId) => _addingExerciseIds.contains(exerciseId);
 
-  // Getter để kiểm tra món ăn có đang được xóa không
+  // Getter để kiểm tra bài tập có đang được xóa không
   bool isRemovingExercise(String exerciseId) => _removingExerciseIds.contains(exerciseId);
 
   // Getters
@@ -88,8 +96,7 @@ class DiaryViewModel extends ChangeNotifier {
   double get caloriesConsumed =>
       breakfastCalories + lunchCalories + dinnerCalories + snackCalories;
 
-  double get caloriesBurned => exerciseItems.fold(
-      0, (sum, exercise) => sum + exercise.caloriesBurnedPerMinute.toDouble());
+  int get caloriesBurned => workoutLog?.totalCaloriesBurned ?? 0;
 
   double get caloriesRemaining => calorieGoal - caloriesConsumed + caloriesBurned;
 
@@ -125,9 +132,17 @@ class DiaryViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      // TODO: Call API to fetch exercises
-      exerciseItems = [];
+      // Fetch workout log
+      try {
+        workoutLog = await _workoutLogRepository.fetchWorkoutLogForDate(selectedDate);
+        exerciseEntries = workoutLog?.exerciseEntries ?? [];
+      } catch (e) {
+        print('Error fetching workout log: $e');
+        workoutLog = null;
+        exerciseEntries = [];
+      }
 
+      // Fetch meal logs
       try {
         mealLogs = await _mealLogRepository.fetchMealLogsForDate(selectedDate);
       } catch (e) {
@@ -233,8 +248,83 @@ class DiaryViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> addExerciseToDiary(String exerciseLogId, String exerciseId, double duration) async {
-    /////
+  /// Thêm bài tập vào nhật ký
+  Future<void> addExerciseToDiary(String? workoutLogId, {
+    required String exerciseId,
+    required double duration,
+
+  }) async {
+    _addingExerciseIds.add(exerciseId);
+    notifyListeners();
+
+    try {
+      // Kiểm tra xem đã có workout log cho ngày này chưa
+      if (workoutLog == null) {
+        workoutLog = await _workoutLogRepository.createWorkoutLogForDate(selectedDate);
+      }
+
+      await _workoutLogRepository.addExerciseEntry(
+        workoutLogId: workoutLog!.id,
+        exerciseId: exerciseId,
+        duration: duration,
+      );
+
+      // Cập nhật lại diary sau khi thêm thành công
+      await fetchDiaryForSelectedDate();
+    } catch (e) {
+      errorMessage = "Không thể thêm bài tập: ${e.toString()}";
+      notifyListeners();
+    } finally {
+      // Xóa exerciseId khỏi danh sách đang xử lý
+      _addingExerciseIds.remove(exerciseId);
+      notifyListeners();
+    }
+  }
+
+  /// Xóa bài tập khỏi nhật ký
+  Future<void> removeExerciseFromDiary(String exerciseEntryId) async {
+    _removingExerciseIds.add(exerciseEntryId);
+    notifyListeners();
+
+    try {
+      await _workoutLogRepository.deleteExerciseEntry(exerciseEntryId);
+
+      // Cập nhật lại UI sau khi xóa thành công
+      await fetchDiaryForSelectedDate();
+    } catch (e) {
+      errorMessage = "Không thể xóa bài tập: ${e.toString()}";
+      notifyListeners();
+    } finally {
+      _removingExerciseIds.remove(exerciseEntryId);
+      notifyListeners();
+    }
+  }
+
+  /// Chỉnh sửa bài tập trong nhật ký
+  Future<void> editExerciseInDiary({
+    required String exerciseEntryId,
+    required String exerciseId,
+    required int duration,
+  }) async {
+    _addingExerciseIds.add(exerciseEntryId); // Tạm dùng chung set để hiện trạng thái loading
+    notifyListeners();
+
+    try {
+      await _workoutLogRepository.editExerciseEntry(
+        exerciseEntryId: exerciseEntryId,
+        exerciseId: exerciseId,
+        duration: duration,
+      );
+
+      // Cập nhật lại nhật ký sau khi chỉnh sửa
+      await fetchDiaryForSelectedDate();
+    } catch (e) {
+      errorMessage = "Không thể cập nhật bài tập: ${e.toString()}";
+      notifyListeners();
+    } finally {
+      _addingExerciseIds.remove(exerciseEntryId);
+      notifyListeners();
+    }
   }
 
   Future<void> fetchCaloriesGoal() async {
@@ -246,4 +336,14 @@ class DiaryViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  // Future<void> fetchExerciseCalorieGoal() async {
+  //   try {
+  //     exerciseCalorieGoal = await _workoutLogRepository.fetchExerciseCaloriesGoal();
+  //     notifyListeners();
+  //   } catch (e) {
+  //     errorMessage = "Không thể lấy exercise calorie goal: ${e.toString()}";
+  //     notifyListeners();
+  //   }
+  // }
 }

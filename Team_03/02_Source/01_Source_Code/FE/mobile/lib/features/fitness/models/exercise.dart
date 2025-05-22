@@ -16,4 +16,12 @@ class Exercise {
       caloriesBurnedPerMinute: (json['caloriesBurnedPerMinute'] ?? 0).toInt(),
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'caloriesBurnedPerMinute': caloriesBurnedPerMinute,
+    };
+  }
 }
