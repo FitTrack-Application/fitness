@@ -5,9 +5,9 @@ class KeycloakService {
 
   // Cấu hình cập nhật
   static KEYCLOAK_CONFIG = {
-    url: "http://localhost:8888", // Bỏ dấu "/" ở cuối
-    realm: "my-fitness",
-    clientId: "admin-fitness",
+    url: import.meta.env.VITE_KEYCLOAK_URL,
+    realm: import.meta.env.VITE_KEYCLOAK_REALM,
+    clientId: import.meta.env.VITE_KEYCLOAK_CLIENT_ID,
     redirectUri: window.location.origin + "/callback",
   };
 

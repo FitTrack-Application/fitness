@@ -7,20 +7,20 @@ class SurveyViewModel extends ChangeNotifier {
   // Fields for survey data
   String name = 'Nguyễn Văn A';
   int age = 28;
-  String gender = 'Male';
+  String gender = 'MALE';
   double height = 175.0;
   double weight = 70.5;
   String goal = "Gain weight";
   double weightGoal = 75;
   double goalPerWeek = 0.2;
-  String activityLevel = 'Moderately active';
+  String activityLevel = 'MODERATE';
 
   // Calculate daily net calorie goal
   double calculateCalorieGoal() {
     double calorieGoal;
 
     // Base calorie calculation using Mifflin-St Jeor Equation
-    if (gender == 'Male') {
+    if (gender == 'MALE') {
       calorieGoal = (10 * weight) + (6.25 * height) - (5 * age) + 5;
     } else {
       calorieGoal = (10 * weight) + (6.25 * height) - (5 * age) - 161;
@@ -67,7 +67,7 @@ class SurveyViewModel extends ChangeNotifier {
   }
 
   // Send survey data to the API
-  Future<void> sendSurveyData() async {
+  Future<bool> sendSurveyData() async {
     final userInfo = {
       "name": name,
       "age": age,
@@ -85,9 +85,10 @@ class SurveyViewModel extends ChangeNotifier {
     try {
       await _apiService.userSurvey(userInfo);
       debugPrint("Survey data submitted successfully!");
+      return true; // Indicate success
     } catch (e) {
       debugPrint("Error submitting survey: $e");
-      throw Exception("Failed to submit survey data");
+      return false; // Indicate failure
     }
   }
 }

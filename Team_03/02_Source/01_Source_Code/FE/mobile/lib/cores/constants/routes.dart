@@ -3,9 +3,9 @@ import 'package:mobile/common/widgets/bottom_nav_bar/main_screen.dart';
 import 'package:mobile/features/auth/views/authentication/user_login.dart';
 import 'package:mobile/features/auth/views/authentication/user_register.dart';
 import 'package:mobile/features/auth/views/authentication/welcome_screen.dart';
-import 'package:mobile/features/auth/views/profile/user_profile.dart';
+import 'package:mobile/features/auth/views/profile/user_profile_screen.dart';
 import 'package:mobile/features/auth/views/profile/profile_screen.dart';
-import 'package:mobile/features/auth/views/profile/user_goal.dart';
+import 'package:mobile/features/auth/views/profile/user_goal_screen.dart';
 import 'package:mobile/features/auth/views/splash/splash_screen.dart';
 import 'package:mobile/features/auth/views/survey/user_survey.dart';
 import 'package:mobile/features/fitness/view/diary/diary_screen.dart';
@@ -168,11 +168,11 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/goal',
-      builder: (context, state) => const UserGoal(),
+      builder: (context, state) => const UserGoalScreen(),
     ),
     GoRoute(
       path: '/profile/edit',
-      builder: (context, state) => const UserProfile(),
+      builder: (context, state) => const UserProfileScreen(),
     ),
     GoRoute(
       path: '/weight/add',

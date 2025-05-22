@@ -13,7 +13,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +20,7 @@ import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
-public class ExerciseServiceImpl implements ExerciseService{
+public class ExerciseServiceImpl implements ExerciseService {
 
     private final ExerciseRepository exerciseRepository;
 
@@ -47,20 +46,33 @@ public class ExerciseServiceImpl implements ExerciseService{
                 .generalMessage("Successfully retrieved exercises")
                 .data(exercisePageDto.getContent())
                 .metadata(metadata)
-                .timestamp(LocalDateTime.now())
                 .build();
     }
 
     @Override
-    public ApiResponse<List<ExerciseDto>> getAllExercises(Pageable pageable) {
-        Page<Exercise> exercisePage = exerciseRepository.findAll(pageable);
+    public ApiResponse<List<ExerciseDto>> getSystemExercises(Pageable pageable) {
+        Page<Exercise> exercisePage = exerciseRepository.findByUserIdIsNull(pageable);
 
         return buildExerciseListResponse(exercisePage);
     }
 
     @Override
-    public ApiResponse<List<ExerciseDto>> searchExerciseByName(String query, Pageable pageable) {
-        Page<Exercise> exercisePage = exerciseRepository.findByExerciseNameContainingIgnoreCase(query, pageable);
+    public ApiResponse<List<ExerciseDto>> searchSystemExerciseByName(String query, Pageable pageable) {
+        Page<Exercise> exercisePage = exerciseRepository.findByUserIdIsNullAndExerciseNameContainingIgnoreCase(query, pageable);
+
+        return buildExerciseListResponse(exercisePage);
+    }
+
+    @Override
+    public ApiResponse<List<ExerciseDto>> getExercisesByUserId(UUID userId, Pageable pageable) {
+        Page<Exercise> exercisePage = exerciseRepository.findByUserId(userId, pageable);
+
+        return buildExerciseListResponse(exercisePage);
+    }
+
+    @Override
+    public ApiResponse<List<ExerciseDto>> searchExercisesByUserIdAndName(UUID userId, String query, Pageable pageable) {
+        Page<Exercise> exercisePage = exerciseRepository.findByUserIdAndExerciseNameContainingIgnoreCase(userId, query, pageable);
 
         return buildExerciseListResponse(exercisePage);
     }
@@ -76,7 +88,6 @@ public class ExerciseServiceImpl implements ExerciseService{
                 .status(200)
                 .generalMessage("Successfully retrieved exercise")
                 .data(exerciseDto)
-                .timestamp(LocalDateTime.now())
                 .build();
     }
 
@@ -101,15 +112,14 @@ public class ExerciseServiceImpl implements ExerciseService{
                 .status(201)
                 .generalMessage("Successfully created exercise")
                 .data(exerciseDto)
-                .timestamp(LocalDateTime.now())
                 .build();
     }
 
     @Override
-    public ApiResponse<?> deleteExerciseById(UUID exerciseId) {
+    public ApiResponse<?> deleteExerciseByIdAndUserId(UUID exerciseId, UUID userId) {
         // Find the exercise by id
-        Exercise exercise = exerciseRepository.findById(exerciseId)
-                .orElseThrow(() -> new ResourceNotFoundException("Exercise not found with ID: " + exerciseId));
+        Exercise exercise = exerciseRepository.findByExerciseIdAndUserId(exerciseId, userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Exercise not found with ID: " + exerciseId + " and user ID: " + userId));
 
         // Delete the exercise
         exerciseRepository.delete(exercise);
@@ -117,12 +127,11 @@ public class ExerciseServiceImpl implements ExerciseService{
         return ApiResponse.builder()
                 .status(200)
                 .generalMessage("Successfully deleted exercise")
-                .timestamp(LocalDateTime.now())
                 .build();
     }
 
     @Override
-    public ApiResponse<ExerciseCaloriesResponse> getExerciseCaloriesById(UUID exerciseId,  int duration) {
+    public ApiResponse<ExerciseCaloriesResponse> getExerciseCaloriesById(UUID exerciseId, int duration) {
         // Find the exercise by id
         Exercise exercise = exerciseRepository.findById(exerciseId)
                 .orElseThrow(() -> new ResourceNotFoundException("Exercise not found with ID: " + exerciseId));
@@ -141,7 +150,6 @@ public class ExerciseServiceImpl implements ExerciseService{
                 .status(200)
                 .generalMessage("Successfully retrieved exercise calories")
                 .data(response)
-                .timestamp(LocalDateTime.now())
                 .build();
     }
 }

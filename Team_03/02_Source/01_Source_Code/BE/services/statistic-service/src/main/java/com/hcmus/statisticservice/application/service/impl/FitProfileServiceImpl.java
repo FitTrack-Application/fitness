@@ -12,11 +12,17 @@ import com.hcmus.statisticservice.domain.model.type.ActivityLevel;
 import com.hcmus.statisticservice.domain.model.type.Gender;
 import com.hcmus.statisticservice.domain.repository.FitProfileRepository;
 import lombok.RequiredArgsConstructor;
+import com.hcmus.statisticservice.infrastructure.client.MediaServiceClient;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
+import java.util.Date;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -26,6 +32,7 @@ public class FitProfileServiceImpl implements FitProfileService {
     final private FitProfileRepository fitProfileRepository;
     final private FitProfileMapper fitProfileMapper;
     final private NutritionGoalService nutritionGoalService;
+    private final MediaServiceClient mediaServiceClient;
 
     @Override
     public FitProfile findProfile(UUID userID) {
@@ -47,6 +54,7 @@ public class FitProfileServiceImpl implements FitProfileService {
                 .activityLevel(addProfile.getActivityLevel())
                 .imageUrl(addProfile.getImageUrl())
                 .userId(userId)
+                .createdAt(Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()))
                 .build();
         return fitProfileRepository.save(profile);
     }
@@ -74,19 +82,26 @@ public class FitProfileServiceImpl implements FitProfileService {
                 .status(HttpStatus.OK.value())
                 .generalMessage("Get profile successfully!")
                 .data(fitProfileResponse)
-                .timestamp(LocalDateTime.now())
                 .build();
     }
 
     @Override
-    public ApiResponse<?> getUpdateProfileResponse(UUID userId, UpdateProfileRequest updateProfileRequest) {
+    public ApiResponse<?> getUpdateProfileResponse(UUID userId, UpdateProfileRequest updateProfileRequest, 
+                                                   MultipartFile imageFile) {
+        String imageUrl = null;
+        if (imageFile != null && !imageFile.isEmpty()) {
+            ApiResponse<Map<String, String>> imageResponse = mediaServiceClient.uploadImage(imageFile);
+
+            imageUrl = imageResponse.getData().get("url");
+        }
+        
         FitProfile updateProfile = FitProfile.builder()
                 .name(updateProfileRequest.getName())
                 .age(updateProfileRequest.getAge())
                 .gender(Gender.fromString(updateProfileRequest.getGender()))
                 .height(updateProfileRequest.getHeight())
                 .activityLevel(ActivityLevel.valueOf(updateProfileRequest.getActivityLevel()))
-                .imageUrl(updateProfileRequest.getImageUrl())
+                .imageUrl(imageUrl)
                 .build();
         FitProfile savedProfile = updateProfile(userId, updateProfile);
         if (savedProfile == null) {
@@ -96,7 +111,6 @@ public class FitProfileServiceImpl implements FitProfileService {
         return ApiResponse.builder()
                 .status(HttpStatus.OK.value())
                 .generalMessage("Update profile successfully for " + updateProfile.getName() + "!")
-                .timestamp(LocalDateTime.now())
                 .build();
     }
 }

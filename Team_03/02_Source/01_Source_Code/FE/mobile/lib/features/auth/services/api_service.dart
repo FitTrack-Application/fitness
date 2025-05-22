@@ -1,35 +1,36 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:mobile/features/auth/models/user_info.dart';
+import 'package:mobile/features/auth/models/user_profile.dart';
 import '../../../../cores/utils/dio/dio_client.dart';
 
 class ApiService {
-  static const String baseUrl = "http://localhost:8080/api/user-info";
+  // static const String baseUrl = "http://localhost:8080/api/user-info";
   final Dio _dio = DioClient().dio;
-  Future<List<UserInfo>> fetchUsers() async {
-    final response = await http.get(Uri.parse(baseUrl));
+  // Future<List<UserInfo>> fetchUsers() async {
+  //   final response = await http.get(Uri.parse(baseUrl));
 
-    if (response.statusCode == 200) {
-      List<dynamic> data = json.decode(response.body);
-      return data.map((json) => UserInfo.fromJson(json)).toList();
-    } else {
-      throw Exception('Failed to load users');
-    }
-  }
+  //   if (response.statusCode == 200) {
+  //     List<dynamic> data = json.decode(response.body);
+  //     return data.map((json) => UserInfo.fromJson(json)).toList();
+  //   } else {
+  //     throw Exception('Failed to load users');
+  //   }
+  // }
 
-  Future<void> createUser(UserInfo user) async {
-    final response = await http.post(
-      Uri.parse(baseUrl),
-      headers: {"Content-Type": "application/json"},
-      body: json.encode(user.toJson()),
-    );
+  // Future<void> createUser(UserInfo user) async {
+  //   final response = await http.post(
+  //     Uri.parse(baseUrl),
+  //     headers: {"Content-Type": "application/json"},
+  //     body: json.encode(user.toJson()),
+  //   );
 
-    if (response.statusCode != 200) {
-      throw Exception('Failed to create user');
-    }
-  }
+  //   if (response.statusCode != 200) {
+  //     throw Exception('Failed to create user');
+  //   }
+  // }
 
   Future<bool> checkSurvey() async {
     try {
@@ -56,7 +57,7 @@ class ApiService {
 
   Future<void> userSurvey(Map<String, dynamic> user) async {
     try {
-      final response = await _dio.put(
+      final response = await _dio.post(
         "/api/surveys/me",
         data: user,
       );
@@ -92,6 +93,38 @@ class ApiService {
     } catch (e) {
       debugPrint("Error fetching profile: $e");
       throw Exception("Failed to fetch profile");
+    }
+  }
+
+  Future<void> editProfile(Map<String, dynamic> profileData) async {
+    try {
+      final response = await _dio.post(
+        "/api/fit-profiles/me",
+        data: profileData,
+      );
+
+      debugPrint("API Response: ${response.statusCode} - ${response.data}");
+
+      if (response.statusCode! < 200 || response.statusCode! >= 300) {
+        throw Exception('Failed to edit profile: ${response.data}');
+      }
+    } catch (e) {
+      debugPrint("Error editing profile: $e");
+      throw Exception("Failed to edit profile");
+    }
+  }
+
+  Future<String> uploadImage(File imageFile) async {
+    final formData = FormData.fromMap({
+      "file": await MultipartFile.fromFile(imageFile.path),
+    });
+
+    final response = await _dio.post("/api/upload", data: formData);
+
+    if (response.statusCode! >= 200 && response.statusCode! < 300) {
+      return response.data['url']; // Assuming the API returns the image URL
+    } else {
+      throw Exception("Failed to upload image");
     }
   }
 

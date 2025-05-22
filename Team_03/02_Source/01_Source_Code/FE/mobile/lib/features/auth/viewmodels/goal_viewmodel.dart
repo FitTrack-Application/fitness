@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/features/auth/services/api_service.dart';
+import 'package:mobile/features/auth/models/user_goal.dart';
 
 class GoalViewModel extends ChangeNotifier {
   final ApiService _apiService = ApiService();
 
-  // Fields for goal data
-  String goalType = '';
-  double startingWeight = 0.0;
-  double currentWeight = 0.0;
-  double targetWeight = 0.0;
-  double goalPerWeek = 0.0;
-  DateTime startingDay = DateTime.now();
-  String activityLevel = '';
+  // UserGoal instance
+  UserGoal userGoal = UserGoal(
+    startingWeight: 0.0,
+    currentWeight: 0.0,
+    goalWeight: 0.0,
+    startingDate: DateTime.now(),
+    weeklyGoal: 0.0,
+    activityLevel: "",
+  ); // Initialize with a default instance
 
   bool isLoading = false;
   String? errorMessage;
@@ -30,13 +32,8 @@ class GoalViewModel extends ChangeNotifier {
           response['data'] is Map<String, dynamic>) {
         final goalData = response['data'];
 
-        startingWeight = goalData['startingWeight'];
-        currentWeight = goalData['currentWeight'];
-        targetWeight = goalData['goalWeight'];
-        goalPerWeek = goalData['weeklyGoal'];
-        startingDay = DateTime.parse(goalData['startingDate']);
-        activityLevel = goalData['activityLevel'];
-        goalType = _determineGoalType(startingWeight, targetWeight);
+        // Update the UserGoal instance
+        userGoal = UserGoal.fromJson(goalData);
       } else {
         throw Exception(
             "Invalid response format: 'data' field is missing or invalid");
@@ -50,14 +47,14 @@ class GoalViewModel extends ChangeNotifier {
     }
   }
 
-  // Determine goal type based on starting and target weights
-  String _determineGoalType(double startingWeight, double targetWeight) {
-    if (startingWeight > targetWeight) {
-      return "Lose weight";
-    } else if (startingWeight < targetWeight) {
-      return "Gain weight";
+  // Determine the type of goal based on current and goal weight
+  String determineGoalType() {
+    if (userGoal.currentWeight > userGoal.goalWeight) {
+      return "Weight Loss";
+    } else if (userGoal.currentWeight < userGoal.goalWeight) {
+      return "Weight Gain";
     } else {
-      return "Maintain weight";
+      return "Weight Maintenance";
     }
   }
 }
