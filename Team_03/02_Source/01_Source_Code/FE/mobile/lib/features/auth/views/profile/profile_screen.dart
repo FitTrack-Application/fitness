@@ -44,6 +44,13 @@ class ProfileScreen extends StatelessWidget {
             child: ListView(
               children: [
                 ListItem(
+                  leadingIcon: Icons.person,
+                  title: "Profile",
+                  onTap: () {
+                    context.go('/profile/edit');
+                  },
+                ),
+                ListItem(
                   leadingIcon: Icons.flag_outlined,
                   title: "Goals",
                   onTap: () {

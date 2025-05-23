@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:mobile/features/auth/services/api_service.dart';
 import 'package:mobile/features/auth/models/user_profile.dart';
@@ -45,19 +47,27 @@ class ProfileViewModel extends ChangeNotifier {
     }
   }
 
+  Future<void> updateProfile(BuildContext context, {File? imageFile}) async {
+    isLoading = true;
+    hasError = false;
+    notifyListeners();
+
+    try {
+      // Convert the existing `userProfile` instance to a JSON map
+      final profileData = userProfile.toJson();
+
+      // Call the API to update the profile
+      await _apiService.editProfile(profileData, imageFile: imageFile);
+
+      notifyListeners();
+    } catch (e) {
+      hasError = true;
+      errorMessage = "Failed to update profile";
+      debugPrint("Error updating profile: $e");
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
+  }
   // Update individual fields in the UserProfile
-  void updateHeight(double newHeight) {
-    userProfile.height = newHeight;
-    notifyListeners();
-  }
-
-  void updateGender(String newGender) {
-    userProfile.gender = newGender;
-    notifyListeners();
-  }
-
-  void updateAge(int newAge) {
-    userProfile.age = newAge;
-    notifyListeners();
-  }
 }
