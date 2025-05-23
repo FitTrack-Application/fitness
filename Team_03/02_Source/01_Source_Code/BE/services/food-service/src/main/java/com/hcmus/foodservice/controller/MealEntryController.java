@@ -7,7 +7,7 @@ import com.hcmus.foodservice.service.MealEntryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import com.hcmus.foodservice.dto.response.TotalCaloriesConsumedResponse;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -45,6 +45,12 @@ public class MealEntryController {
                 mealEntryId,
                 foodEntryRequest
         );
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/total-calories-consumed/{userId}")
+    public ResponseEntity<ApiResponse<TotalCaloriesConsumedResponse>> getTotalCaloriesConsumedByUserId(@PathVariable UUID userId) {
+        ApiResponse<TotalCaloriesConsumedResponse> response = mealEntryService.getTotalCaloriesConsumedByUserId(userId);
         return ResponseEntity.ok(response);
     }
 }

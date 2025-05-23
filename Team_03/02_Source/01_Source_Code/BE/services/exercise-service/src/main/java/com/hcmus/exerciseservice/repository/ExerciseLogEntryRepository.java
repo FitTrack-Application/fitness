@@ -4,6 +4,7 @@ import com.hcmus.exerciseservice.model.ExerciseLogEntry;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.UUID;
@@ -19,4 +20,14 @@ public interface ExerciseLogEntryRepository extends JpaRepository<ExerciseLogEnt
     List<UUID> findTopMostUsedExerciseIds(Pageable pageable);
 
     Integer countByExercise_ExerciseId(UUID exerciseId);
+
+    @Query("""
+    SELECT SUM(ele.duration * e.caloriesBurnedPerMinute)
+    FROM ExerciseLogEntry ele
+    JOIN ele.exerciseLog el
+    JOIN ele.exercise e
+    WHERE el.userId = :userId
+    """)
+    Integer getTotalCaloriesBurnedByUserId(@Param("userId") UUID userId);
+
 }

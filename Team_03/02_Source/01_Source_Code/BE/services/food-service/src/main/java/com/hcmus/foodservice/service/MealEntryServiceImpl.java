@@ -3,6 +3,7 @@ package com.hcmus.foodservice.service;
 import com.hcmus.foodservice.dto.request.FoodEntryRequest;
 import com.hcmus.foodservice.dto.response.ApiResponse;
 import com.hcmus.foodservice.dto.response.FoodEntryResponse;
+import com.hcmus.foodservice.dto.response.TotalCaloriesConsumedResponse;
 import com.hcmus.foodservice.exception.ResourceNotFoundException;
 import com.hcmus.foodservice.mapper.FoodEntryMapper;
 import com.hcmus.foodservice.model.Food;
@@ -13,6 +14,8 @@ import com.hcmus.foodservice.repository.MealEntryRepository;
 import com.hcmus.foodservice.repository.ServingUnitRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -72,6 +75,24 @@ public class MealEntryServiceImpl implements MealEntryService {
                 .status(200)
                 .generalMessage("Successfully updated meal entry")
                 .data(foodEntryResponse)
+                .build();
+    }
+
+    @Override
+    public ApiResponse<TotalCaloriesConsumedResponse> getTotalCaloriesConsumedByUserId(UUID userId) {
+        Double totalCaloriesConsumed = mealEntryRepository.getTotalCaloriesConsumedByUserId(userId);
+        if (totalCaloriesConsumed == null) {
+            totalCaloriesConsumed = 0.0;
+        }
+
+        TotalCaloriesConsumedResponse response = TotalCaloriesConsumedResponse.builder()
+                .totalCaloriesConsumed(totalCaloriesConsumed)
+                .build();
+
+        return ApiResponse.<TotalCaloriesConsumedResponse>builder()
+                .status(HttpStatus.OK.value())
+                .generalMessage("Successfully retrieved total calories consumed")
+                .data(response)
                 .build();
     }
 }
