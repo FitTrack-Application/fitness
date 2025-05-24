@@ -27,6 +27,7 @@
         <module>statistic-service</module>
         <module>exercise-service</module>
         <module>gateway-service</module>
+        <module>chatbot-service</module>
     </modules>
     <build>
         <plugins>
