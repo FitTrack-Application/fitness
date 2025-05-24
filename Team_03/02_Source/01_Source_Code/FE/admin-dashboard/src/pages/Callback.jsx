@@ -29,7 +29,7 @@ const Callback = () => {
 
   return (
     <Wrapper>
-      {loading && !error && <h1>Đang xử lý đăng nhập...</h1>}
+      {loading && !error && <h1>Đang xử lý...</h1>}
       {error && <h1>Lỗi xác thực</h1>}
     </Wrapper>
   );
