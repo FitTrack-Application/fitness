@@ -22,7 +22,6 @@ def create_application() -> FastAPI:
         allow_headers=["*"],
     )
     
-    
     app.include_router(api_router, prefix=settings.api_str)
     
     @app.get("/")
@@ -40,12 +39,3 @@ def create_application() -> FastAPI:
     return app
 
 app = create_application()
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(
-        "app.main:app",
-        host=settings.host,
-        port=settings.port,
-        reload=settings.debug
-    )

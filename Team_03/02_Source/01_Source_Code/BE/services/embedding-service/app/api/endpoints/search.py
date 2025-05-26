@@ -8,10 +8,7 @@ router = APIRouter(tags=["Search Foods"])
 @router.post("/get-food-entries", response_model=FoodSearchResponse)
 async def get_food_entries(request: FoodSearchRequest):
     try:
-        food_entries = search_service.parse_meal_description(
-            meal_description=request.meal_description,
-            unit_conversions_description=request.unit_conversions_description
-        )
+        food_entries = search_service.parse_meal_description(meal_description=request.meal_description)
         if not food_entries:
             return FoodSearchResponse(message="Không tìm thấy món ăn phù hợp", data=[])
         return FoodSearchResponse(

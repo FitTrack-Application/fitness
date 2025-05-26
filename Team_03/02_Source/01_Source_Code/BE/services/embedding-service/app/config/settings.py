@@ -3,8 +3,6 @@ class Settings(BaseSettings):
     app_name: str = "embedding-service"
     app_version: str = "1.0.0"
     debug: bool = False
-    host: str = "localhost"
-    port: int = 8000
     
     api_str: str = "/api/ai"
     
@@ -17,6 +15,9 @@ class Settings(BaseSettings):
     
     ai_api_key: str
     ai_model_name: str
+    
+    gram_id: str
+    milliliter_id: str
     
     class Config:
         env_file = ".env"

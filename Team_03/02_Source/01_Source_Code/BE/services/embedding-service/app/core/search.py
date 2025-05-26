@@ -6,6 +6,33 @@ from app.config.settings import settings
 from app.core.vectordb import vector_db_service
 import numpy as np
 
+UNIT_CONVERSIONS = {
+    "gram": 1,
+    "g": 1,
+    "kilogram": 1000,
+    "kg": 1000,
+    "ounce": 28.35,
+    "oz": 28.35,
+    "pound": 453.59,
+    "lb": 453.59,
+    "cup": 240, 
+    "tablespoon": 15,
+    "tbsp": 15,
+    "teaspoon": 5,
+    "tsp": 5,
+    "milliliter": 1,
+    "ml": 1,
+    "liter": 1000,
+    "l": 1000,
+    "tô": 200, 
+    "bát": 150,
+    "chén": 100, 
+    "ly": 250,   
+    "muỗng": 10, 
+    "piece": 50,
+    "slice": 30,
+}
+
 class SearchService:
     def __init__(self):
         self.openai_client = None
@@ -19,7 +46,7 @@ class SearchService:
             print(f"Error loading OpenAI client: {e}")
             raise
 
-    def search_food_by_description(self, description: str) -> Dict:
+    def search_food_by_food_description(self, description: str) -> Dict:
         try:
             result = vector_db_service.search_most_similar_food(description)
             if result["food_id"]:
@@ -34,26 +61,26 @@ class SearchService:
                 "found": False
             }
         except Exception as e:
-            print(f"Error in search_food_by_description: {e}")
+            print(f"Error in search_food_by_food_description: {e}")
             return {
                 "food_id": None,
                 "food_name": None,
                 "found": False
             }
 
-    def parse_meal_description(self, meal_description: str, unit_conversions_description: str) -> List[Dict]:
-        system_prompt = self.get_system_prompt(unit_conversions_description=unit_conversions_description)
+    def parse_meal_description(self, meal_description: str) -> List[Dict]:
+        system_prompt = self.get_system_prompt()
         
         functions = [
             {
-                "name": "search_food_by_description",
-                "description": "Search for one most relevant food item available in the system database by a short English description about that food item.",
+                "name": "search_food_by_food_description",
+                "description": "Search for one most relevant food item in the system database by a short English description about that food item.",
                 "parameters": {
                     "type": "object",
                     "properties": {
                         "description": {
                             "type": "string",
-                            "description": "Short description of the food item, including food name, to search for. The description should be in English."
+                            "description": "Short description of the food item, including food name, to search for. The description should be translated into English."
                         }
                     },
                     "required": ["description"]
@@ -84,8 +111,8 @@ class SearchService:
                     func_name = message.function_call.name
                     args = json.loads(message.function_call.arguments)
                     
-                    if func_name == "search_food_by_description":
-                        result = self.search_food_by_description(args["description"])
+                    if func_name == "search_food_by_food_description":
+                        result = self.search_food_by_food_description(args["description"])
                         messages.append({
                             "role": "function",
                             "name": func_name,
@@ -135,31 +162,33 @@ class SearchService:
         except Exception as e:
             print(f"Error in parse_meal_description: {e}")
             return []
-    
-    def get_system_prompt(self, unit_conversions_description: str) -> str:
+        
+    def get_system_prompt(self) -> str:
+        unit_list = ", ".join(UNIT_CONVERSIONS.keys())
         return f"""
-        You are a meal parser assistant. Your task is to analyze a user's meal description and extract all food items consumed.
+        You are an assistant specialized in analyzing and parsing meal description. Your task is to analyze a user's meal description and extract all food items consumed.
+        
         For each food item identified:
-        1. Use the search_food_by_description function to find the food in the system.
+        1. Use the search_food_by_food_description function to find the food in the system.
         2. Extract the quantity and unit from the description.
-        3. The unit must be one of the available units in the system, as specified in the `unit_conversions_description`. Each unit has an associated `serving_unit` (ID) and `unit_name`.     
-        4. If no quantity is specified, assume 100 with gram and 1 with other serving unit.
-        5. If the unit is ambiguous or not found in the `unit_conversions_description`, default to the "gram" unit and its corresponding `serving_unit` ID, using international or Vietnamese standards (e.g., 1 cup = 240g, 1 tablespoon = 15g, 1 teaspoon = 5g, tô = 200g, bát = 150g, chén = 100g, ly = 250g, muỗng = 10g, piece = 50g, slice = 30g) to estimate the quantity in grams.
-        6. Use the `unit_conversions_description` to clarify ambiguous units when possible.
-
-        Available units in the system and their gram conversions:
-        {unit_conversions_description}
-
+        3. The unit extracted can be in various forms, such as grams, milliliters, cups, etc. If the unit is not specified, assume it is grams for solid foods and milliliters for liquid foods.  
+        4. Convert the quantity to grams or milliliters using these available units: {unit_list}. There may be some additional units in the description that are not in the list, then you should use international standards to convert the amount into grams or mimilliliters. The amount will be stored in number_of_servings, and the unit using will be either gram or milliliter.
+        5. If no quantity is specified, assume number of serving is 100 for gram unit or milliliter unit (100g or 100ml). 
+        
+        Available units and their gram conversions:
+        {json.dumps(UNIT_CONVERSIONS, indent=2, ensure_ascii=False)}
+        
         Return the result as a JSON array of objects, each with:
-        - food_id: from search result (string or null)
-        - food_name: from search result (string or null)
-        - serving_unit_id: the `serving_unit` ID from the `unit_conversions_description` (string)
-        - number_of_servings: quantity of the unit (number)
+        - food_id: The food identifier from search result (string)
+        - food_name: The food name from search result (string)
+        - serving_unit_id: The corresponding ID of the serving unit. Should be set to {settings.gram_id} for solid foods (foods to eat), or {settings.milliliter_id} for liquid foods (foods to drink).
+        - number_of_servings: The estimated quantity, represented as the number of grams or milliliters.
 
         Example output:
         [
-        {{"food_id": "food-0000001", "food_name": "Beef Pho", "serving_unit_id": "unit-0000001", "number_of_servings": 15.3}},
-        {{"food_id": "food-0000002", "food_name": "Chicken", "serving_unit_id": "unit-0000001", "number_of_servings": 100}}
+            {{"food_id": "food-0000001", "food_name": "Beef Pho", "serving_unit_id": {settings.gram_id}, "number_of_servings": 15.3}},
+            {{"food_id": "food-0000002", "food_name": "Apple Juice", "serving_unit_id": {settings.milliliter_id}, "number_of_servings": 20}},
+            ...
         ]
 
         Handle all food items in the description."""
