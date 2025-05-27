@@ -16,7 +16,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.Date;
 import java.util.UUID;
 
 @Service
@@ -54,6 +56,7 @@ public class SurveyServiceImpl implements SurveyService {
                 .activityLevel(ActivityLevel.fromString(saveSurveyRequest.getActivityLevel()))
                 .imageUrl(saveSurveyRequest.getImageUrl())
                 .userId(userId)
+                .createdAt(Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()))
                 .build();
 
         WeightGoal weightGoal = WeightGoal.builder()
