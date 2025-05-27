@@ -4,13 +4,13 @@ import 'package:dio/dio.dart';
 
 class KeycloakService {
   // static const String issuer = 'http://10.0.2.2:8888/realms/my-fitness';
-  static const String issuer = 'https://fcaaf0a4-fd3e-4274-8377-7a88e78f9086.app.skycloak.io/realms/my-fitness';
+  static const String issuer = 'https://fitness-hcmus.cloud/realms/my-fitness';
   static const String clientId = 'flutter-app-client';
   static const String redirectUrl = 'com.fittrack.mobile:/callback';
   // final String discoveryUrl =
   //     'http://10.0.2.2:8888/realms/my-fitness/.well-known/openid-configuration';
   final String discoveryUrl =
-      'https://fcaaf0a4-fd3e-4274-8377-7a88e78f9086.app.skycloak.io/realms/my-fitness/.well-known/openid-configuration';
+      'https://fitness-hcmus.cloud/realms/my-fitness/.well-known/openid-configuration';
   static const List<String> scopes = ['openid', 'profile', 'email'];
 
   final FlutterAppAuth _appAuth = const FlutterAppAuth();
@@ -95,7 +95,7 @@ class KeycloakService {
 
     final response = await _dio.post(
       // 'http://10.0.2.2:8888/realms/my-fitness/protocol/openid-connect/logout',
-      'https://fcaaf0a4-fd3e-4274-8377-7a88e78f9086.app.skycloak.io/realms/my-fitness/protocol/openid-connect/logout',
+      'https://fitness-hcmus.cloud/realms/my-fitness/protocol/openid-connect/logout',
       options: Options(
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
