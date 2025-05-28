@@ -1,19 +1,27 @@
 package com.hcmus.foodservice.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hcmus.foodservice.client.request.CreateFoodEmbeddingRequest;
+import com.hcmus.foodservice.client.EmbeddingServiceClient;
 import com.hcmus.foodservice.client.OpenFoodFactClient;
+import com.hcmus.foodservice.client.request.UpdateFoodEmbeddingRequest;
 import com.hcmus.foodservice.dto.FoodDto;
 import com.hcmus.foodservice.dto.request.FoodRequest;
 import com.hcmus.foodservice.dto.response.ApiResponse;
 import com.hcmus.foodservice.dto.response.FoodMacrosDetailsResponse;
 import com.hcmus.foodservice.exception.ResourceNotFoundException;
+import com.hcmus.foodservice.exception.ValidationException;
 import com.hcmus.foodservice.mapper.FoodMapper;
 import com.hcmus.foodservice.model.Food;
 import com.hcmus.foodservice.model.ServingUnit;
 import com.hcmus.foodservice.repository.FoodRepository;
 import com.hcmus.foodservice.repository.ServingUnitRepository;
+import com.hcmus.foodservice.util.CustomSecurityContextHolder;
+import feign.FeignException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,6 +33,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class FoodServiceImpl implements FoodService {
 
     private final FoodRepository foodRepository;
@@ -34,6 +43,10 @@ public class FoodServiceImpl implements FoodService {
     private final FoodMapper foodMapper;
 
     private final OpenFoodFactClient openFoodFactClient;
+
+    private final EmbeddingServiceClient embeddingServiceClient;
+
+    private final ObjectMapper objectMapper;
 
     @Override
     public ApiResponse<FoodDto> getFoodById(UUID foodId) {
@@ -73,15 +86,28 @@ public class FoodServiceImpl implements FoodService {
 
 
     @Override
-    public ApiResponse<List<FoodDto>> getAllFoods(Pageable pageable) {
-        Page<Food> foodPage = foodRepository.findAll(pageable);
+    public ApiResponse<List<FoodDto>> getSystemFoods(Pageable pageable) {
+        Page<Food> foodPage = foodRepository.findByUserIdIsNull(pageable);
         return buildFoodListResponse(foodPage);
     }
 
 
     @Override
-    public ApiResponse<List<FoodDto>> searchFoodsByName(String query, Pageable pageable) {
-        Page<Food> foodPage = foodRepository.findByFoodNameContainingIgnoreCase(query, pageable);
+    public ApiResponse<List<FoodDto>> searchSystemFoodsByName(String query, Pageable pageable) {
+        Page<Food> foodPage = foodRepository.findByUserIdIsNullAndFoodNameContainingIgnoreCase(query, pageable);
+        return buildFoodListResponse(foodPage);
+    }
+
+    // Get my foods
+    @Override
+    public ApiResponse<List<FoodDto>> getFoodsByUserId(UUID userId, Pageable pageable) {
+        Page<Food> foodPage = foodRepository.findByUserId(userId, pageable);
+        return buildFoodListResponse(foodPage);
+    }
+
+    @Override
+    public ApiResponse<List<FoodDto>> searchFoodsByUserIdAndName(UUID userId, String query, Pageable pageable) {
+        Page<Food> foodPage = foodRepository.findByUserIdAndFoodNameContainingIgnoreCase(userId, query, pageable);
         return buildFoodListResponse(foodPage);
     }
 
@@ -143,7 +169,21 @@ public class FoodServiceImpl implements FoodService {
         food.setImageUrl(foodDto.getImageUrl());
         food.setUserId(userId);
 
-        foodRepository.save(food);
+        Food savedFood = foodRepository.save(food);
+
+        if (CustomSecurityContextHolder.hasRole("ADMIN")) {
+            try {
+                CreateFoodEmbeddingRequest request = new CreateFoodEmbeddingRequest(savedFood.getFoodId().toString(), savedFood.getFoodName());
+                JsonNode response = embeddingServiceClient.createFoodEmbedding(request);
+                String message = response.get("message").asText();
+                log.info("Successfully created food embedding: {}", message);
+            } catch (FeignException e) {
+                throw new RuntimeException("Failed to create food embedding for ID: " + savedFood.getFoodId(), e);
+            } catch (ValidationException e) {
+                log.info("Validation error creating food embedding for ID {}: {}", savedFood.getFoodId(), e.getMessage());
+                throw new RuntimeException("Validation failed: " + e.getMessage(), e);
+            }
+        }
 
         return ApiResponse.builder()
                 .status(200)
@@ -153,7 +193,7 @@ public class FoodServiceImpl implements FoodService {
 
     @Transactional
     @Override
-    public ApiResponse<?> deleteFood(UUID foodId, UUID userId) {
+    public ApiResponse<?> deleteFoodByIdAndUserId(UUID foodId, UUID userId) {
         Food food = foodRepository.findByFoodIdAndUserId(foodId, userId);
         if (food == null) {
             throw new ResourceNotFoundException("Food not found with ID: " + foodId + " for user ID: " + userId);
@@ -161,14 +201,25 @@ public class FoodServiceImpl implements FoodService {
 
         foodRepository.delete(food);
 
+        try {
+            embeddingServiceClient.deleteFoodEmbedding(foodId.toString());
+            log.info("Successfully deleted food embedding for ID: {}", foodId);
+        } catch (FeignException e) {
+            throw new RuntimeException("Failed to delete food embedding for ID: " + foodId, e);
+        } catch (ValidationException e) {
+            log.info("Validation error creating food embedding for ID {}: {}", foodId, e.getMessage());
+            throw new RuntimeException("Validation failed: " + e.getMessage(), e);
+        }
+
         return ApiResponse.builder()
                 .status(200)
                 .generalMessage("Successfully deleted food!")
                 .build();
     }
 
+    @Transactional
     @Override
-    public ApiResponse<?> updateFood(UUID foodId, FoodRequest foodRequest, UUID userId) {
+    public ApiResponse<?> updateFoodByIdAndUserId(UUID foodId, FoodRequest foodRequest, UUID userId) {
         Food food = foodRepository.findByFoodIdAndUserId(foodId, userId);
         if (food == null) {
             throw new ResourceNotFoundException("Food not found with ID: " + foodId + " for user ID: " + userId);
@@ -182,6 +233,20 @@ public class FoodServiceImpl implements FoodService {
         food.setImageUrl(foodRequest.getImageUrl() == null ? food.getImageUrl() : foodRequest.getImageUrl());
 
         foodRepository.save(food);
+
+        if (userId == null) {
+            try {
+                UpdateFoodEmbeddingRequest request = new UpdateFoodEmbeddingRequest(food.getFoodName());
+                JsonNode response = embeddingServiceClient.updateFoodEmbedding(foodId.toString(), request);
+                String message = response.get("message").asText();
+                log.info("Successfully updated food embedding: {}", message);
+            } catch (FeignException e) {
+                throw new RuntimeException("Failed to update food embedding for ID: " + foodId, e);
+            } catch (ValidationException e) {
+                log.error("Validation error creating food embedding for ID {}: {}", foodId, e.getMessage());
+                throw new RuntimeException("Validation failed: " + e.getMessage(), e);
+            }
+        }
 
         return ApiResponse.builder()
                 .status(200)

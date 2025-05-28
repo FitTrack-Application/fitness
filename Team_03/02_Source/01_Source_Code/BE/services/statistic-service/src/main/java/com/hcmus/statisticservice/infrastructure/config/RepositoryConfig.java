@@ -1,6 +1,11 @@
 package com.hcmus.statisticservice.infrastructure.config;
 
-import com.hcmus.statisticservice.domain.repository.*;
+import com.hcmus.statisticservice.domain.repository.FitProfileRepository;
+import com.hcmus.statisticservice.domain.repository.LatestLoginRepository;
+import com.hcmus.statisticservice.domain.repository.NutritionGoalRepository;
+import com.hcmus.statisticservice.domain.repository.StepLogRepository;
+import com.hcmus.statisticservice.domain.repository.WeightGoalRepository;
+import com.hcmus.statisticservice.domain.repository.WeightLogRepository;
 import com.hcmus.statisticservice.infrastructure.repository.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,5 +36,10 @@ public class RepositoryConfig {
     @Bean
     public FitProfileRepository fitProfileRepository(JpaFitProfileRepository jpaFitProfileRepository) {
         return new FitProfileRepositoryAdapter(jpaFitProfileRepository);
+    }
+
+    @Bean
+    public LatestLoginRepository latestLoginRepository(JpaLatestLoginRepository jpaLatestLoginRepository) {
+        return new LatestLoginRepositoryAdapter(jpaLatestLoginRepository);
     }
 }

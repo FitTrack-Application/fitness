@@ -45,3 +45,8 @@ management:
     web:
       exposure:
         include: "*"
+
+host:
+  food-service: ${FOOD_SERVICE_HOST:http://food-service:8080}
+  exercise-service: ${EXERCISE_SERVICE_HOST:http://exercise-service:8082}
+  media-service: ${MEDIA_SERVICE_HOST:http://media-service:8083}

@@ -3,6 +3,7 @@ package com.hcmus.foodservice.service;
 import com.hcmus.foodservice.dto.request.FoodEntryRequest;
 import com.hcmus.foodservice.dto.response.ApiResponse;
 import com.hcmus.foodservice.dto.response.FoodEntryResponse;
+import com.hcmus.foodservice.dto.response.TotalCaloriesConsumedResponse;
 import com.hcmus.foodservice.exception.ResourceNotFoundException;
 import com.hcmus.foodservice.mapper.FoodEntryMapper;
 import com.hcmus.foodservice.model.Food;
@@ -11,7 +12,10 @@ import com.hcmus.foodservice.model.ServingUnit;
 import com.hcmus.foodservice.repository.FoodRepository;
 import com.hcmus.foodservice.repository.MealEntryRepository;
 import com.hcmus.foodservice.repository.ServingUnitRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -28,7 +32,8 @@ public class MealEntryServiceImpl implements MealEntryService {
     private final FoodEntryMapper foodEntryMapper;
 
     @Override
-    public ApiResponse<Void> deleteMealEntry(UUID mealEntryId) {
+    @Transactional
+    public ApiResponse<Void> deleteMealEntryById(UUID mealEntryId) {
         // Find the meal entry by id
         MealEntry mealEntry = mealEntryRepository.findById(mealEntryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Meal entry not found with ID: " + mealEntryId));
@@ -43,10 +48,10 @@ public class MealEntryServiceImpl implements MealEntryService {
     }
 
     @Override
-    public ApiResponse<FoodEntryResponse> updateMealEntry(UUID mealEntryId, FoodEntryRequest foodEntryRequest) {
+    public ApiResponse<FoodEntryResponse> updateMealEntryById(UUID mealEntryId, FoodEntryRequest foodEntryRequest) {
         // Check if meal entry exists
         MealEntry mealEntry = mealEntryRepository.findById(mealEntryId)
-                .orElseThrow(() -> new ResourceNotFoundException("Meal entry not found with ID: " + mealEntryId));
+                .orElseThrow(() -> new ResourceNotFoundException("Meal entry not found with ID: " + mealEntryId ));
 
         // Check if food exists
         Food food = foodRepository.findById(foodEntryRequest.getFoodId())
@@ -70,6 +75,24 @@ public class MealEntryServiceImpl implements MealEntryService {
                 .status(200)
                 .generalMessage("Successfully updated meal entry")
                 .data(foodEntryResponse)
+                .build();
+    }
+
+    @Override
+    public ApiResponse<TotalCaloriesConsumedResponse> getTotalCaloriesConsumedByUserId(UUID userId) {
+        Double totalCaloriesConsumed = mealEntryRepository.getTotalCaloriesConsumedByUserId(userId);
+        if (totalCaloriesConsumed == null) {
+            totalCaloriesConsumed = 0.0;
+        }
+
+        TotalCaloriesConsumedResponse response = TotalCaloriesConsumedResponse.builder()
+                .totalCaloriesConsumed(totalCaloriesConsumed)
+                .build();
+
+        return ApiResponse.<TotalCaloriesConsumedResponse>builder()
+                .status(HttpStatus.OK.value())
+                .generalMessage("Successfully retrieved total calories consumed")
+                .data(response)
                 .build();
     }
 }

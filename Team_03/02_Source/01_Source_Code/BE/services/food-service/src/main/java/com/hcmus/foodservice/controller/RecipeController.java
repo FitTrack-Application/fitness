@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,21 +24,20 @@ public class RecipeController {
 
     private final RecipeService recipeService;
 
-    // Create Recipe
+    @PreAuthorize("hasRole('USER')")
     @PostMapping
     public ResponseEntity<ApiResponse<RecipeResponse>> createRecipe(
             @RequestBody RecipeRequest recipeRequest
     ) {
-        // Extract User ID from JWT token
         UUID userId = CustomSecurityContextHolder.getCurrentUserId();
 
         ApiResponse<RecipeResponse> response = recipeService.createRecipe(recipeRequest, userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    // Get recipes with pagination
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/me")
-    public ResponseEntity<ApiResponse<List<RecipeResponse>>> getAllRecipes(
+    public ResponseEntity<ApiResponse<List<RecipeResponse>>> getMyRecipes(
             @RequestParam(required = false) String query,
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "size", defaultValue = "10") int size
@@ -49,60 +49,52 @@ public class RecipeController {
         if (size < 1) {
             throw new IllegalArgumentException("Size must be greater than 0");
         }
-
-        // Extract User ID from JWT token
         UUID userId = CustomSecurityContextHolder.getCurrentUserId();
 
         Pageable pageable = PageRequest.of(page - 1, size);
 
         ApiResponse<List<RecipeResponse>> response;
-
-        // If query is not provided or empty, return all user's recipes
         if (query == null || query.isEmpty()) {
-            response = recipeService.getAllRecipes(pageable, userId);
+            response = recipeService.getRecipesByUserId(pageable, userId);
         } else {
-            // If query is provided, search recipes by name
-            response = recipeService.searchRecipesByName(query, pageable, userId);
+            response = recipeService.searchRecipesByUserIdAndName(query, pageable, userId);
         }
 
         return ResponseEntity.ok(response);
     }
 
 
-    // Get recipe by ID
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/{recipeId}")
     public ResponseEntity<ApiResponse<RecipeResponse>> getRecipeById(
             @PathVariable UUID recipeId
     ) {
-        // Extract User ID from JWT token
         UUID userId = CustomSecurityContextHolder.getCurrentUserId();
 
-        ApiResponse<RecipeResponse> response = recipeService.getRecipeById(recipeId, userId);
+        ApiResponse<RecipeResponse> response = recipeService.getRecipeByIdAndUserId(recipeId, userId);
         return ResponseEntity.ok(response);
     }
 
-    // Update recipe by ID
+    @PreAuthorize("hasRole('USER')")
     @PutMapping("/{recipeId}")
     public ResponseEntity<ApiResponse<RecipeResponse>> updateRecipeById(
             @PathVariable UUID recipeId,
             @RequestBody RecipeRequest recipeRequest
     ) {
-        // Extract User ID from JWT token
         UUID userId = CustomSecurityContextHolder.getCurrentUserId();
 
-        ApiResponse<RecipeResponse> response = recipeService.updateRecipeById(recipeId, recipeRequest, userId);
+        ApiResponse<RecipeResponse> response = recipeService.updateRecipeByIdAndUserId(recipeId, recipeRequest, userId);
         return ResponseEntity.ok(response);
     }
 
-    // Delete recipe by ID
+    @PreAuthorize("hasRole('USER')")
     @DeleteMapping("/{recipeId}")
     public ResponseEntity<ApiResponse<?>> deleteRecipeById(
             @PathVariable UUID recipeId
     ) {
-        // Extract User ID from JWT token
         UUID userId = CustomSecurityContextHolder.getCurrentUserId();
 
-        ApiResponse<?> response = recipeService.deleteRecipeById(recipeId, userId);
+        ApiResponse<?> response = recipeService.deleteRecipeByIdAndUserId(recipeId, userId);
         return ResponseEntity.ok(response);
     }
 }
