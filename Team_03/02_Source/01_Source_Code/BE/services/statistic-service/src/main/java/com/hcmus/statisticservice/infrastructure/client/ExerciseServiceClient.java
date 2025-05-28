@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 @FeignClient(
     name = "exercise-service",
-    url = "${EXERCISE_SERVICE_HOST}",
+    url = "${host.exercise-service}",
     configuration = FeignConfig.class
 )
 

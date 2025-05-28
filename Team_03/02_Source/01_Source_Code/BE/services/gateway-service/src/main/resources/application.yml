@@ -10,7 +10,7 @@ spring:
     gateway:
       httpclient:
         connect-timeout: 3000 # Thời gian timeout khi connect (ms) - nhỏ lại cho local
-        response-timeout: 10s # Thời gian chờ phản hồi từ service downstream
+        response-timeout: 60s # Thời gian chờ phản hồi từ service downstream
         pool:
           max-connections: 200 # Tổng số kết nối tối đa
       default-filters:
@@ -45,6 +45,10 @@ spring:
           uri: ${MEDIA_SERVICE_HOST:http://media-service:8083}
           predicates:
             - Path=/api/media/**
+        - id: embedding_service
+          uri: ${EMBEDDING_SERVICE_HOST:http://embedding-service:8000}
+          predicates:
+            - Path=/api/ai/get-food-entries/**
 
 resilience4j:
   circuitbreaker:
