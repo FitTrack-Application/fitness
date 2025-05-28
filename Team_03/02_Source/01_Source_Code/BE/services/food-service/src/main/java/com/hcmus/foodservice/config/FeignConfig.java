@@ -1,6 +1,10 @@
 package com.hcmus.foodservice.config;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hcmus.foodservice.exception.ValidationException;
 import com.hcmus.foodservice.util.CustomSecurityContextHolder;
+import feign.FeignException;
 import feign.RequestInterceptor;
 import feign.codec.ErrorDecoder;
 import lombok.extern.slf4j.Slf4j;
@@ -16,9 +20,7 @@ import java.util.UUID;
 @Slf4j
 public class FeignConfig {
 
-    private static final List<String> excludedClients = new ArrayList<>(List.of(
-            "open-food-fact"
-    ));
+    private static final List<String> excludedClients = new ArrayList<>(List.of("open-food-fact", "embedding-service"));
 
     private boolean checkExcludedClient(String client) {
         return excludedClients.contains(client);
@@ -51,7 +53,26 @@ public class FeignConfig {
             int status = response.status();
             String errorMessage = String.format("Feign error occurred: method=%s, status=%d", methodKey, status);
             log.error(errorMessage);
-            return new RuntimeException(errorMessage);
+            try {
+                String responseBody = response.body() != null ? new String(response.body().asInputStream().readAllBytes()) : "";
+                if (status == 422) {
+                    JsonNode errorResponse = new ObjectMapper().readTree(responseBody);
+                    JsonNode details = errorResponse.get("detail");
+                    if (details.isArray()) {
+                        StringBuilder detailedMessage = new StringBuilder("Validation errors: ");
+                        details.forEach(detail -> {
+                            String msg = detail.get("msg").asText();
+                            String loc = detail.get("loc").toString();
+                            detailedMessage.append(String.format("location=%s, msg=%s; ", loc, msg));
+                        });
+                        return new ValidationException(detailedMessage.toString());
+                    }
+                }
+                return new FeignException.FeignClientException(status, errorMessage, response.request(), responseBody.getBytes(), null);
+            } catch (Exception e) {
+                log.warn("Failed to parse error response: {}", e.getMessage());
+                return new RuntimeException(errorMessage);
+            }
         };
     }
 }

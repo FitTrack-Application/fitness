@@ -50,7 +50,6 @@ logs/
 data/
 
 # Model cache
-models/
 .cache/
 
 # OS

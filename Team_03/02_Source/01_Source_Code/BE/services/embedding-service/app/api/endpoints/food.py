@@ -24,7 +24,7 @@ async def update_food_embedding(food_id: str, request: FoodEmbeddingUpdate):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Unknown error: {str(e)}")
 
-@router.delete("/{food_id}")
+@router.delete("/{food_id}", response_model=FoodEmbeddingResponse)
 async def delete_food(food_id: str):
     try:
         success = vector_db_service.delete_food(food_id)

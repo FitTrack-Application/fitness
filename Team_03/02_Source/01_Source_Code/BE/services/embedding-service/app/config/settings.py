@@ -10,11 +10,11 @@ class Settings(BaseSettings):
     pinecone_index_name: str
     pinecone_index_host: str
     
-    embedding_model_name: str
-    embedding_dimension: int
-    
     ai_api_key: str
+    ai_api_version: str
     ai_model_name: str
+    ai_embedding_model_name: str
+    ai_azure_endpoint: str
     
     gram_id: str
     milliliter_id: str

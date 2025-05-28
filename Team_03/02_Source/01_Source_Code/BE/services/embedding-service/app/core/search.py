@@ -1,10 +1,8 @@
 from typing import List, Dict
-from openai import OpenAI
+from openai import AzureOpenAI
 import json
-from app.models.search import FoodSearchRequest, FoodEntry, FoodSearchResponse
 from app.config.settings import settings
 from app.core.vectordb import vector_db_service
-import numpy as np
 
 UNIT_CONVERSIONS = {
     "gram": 1,
@@ -40,7 +38,11 @@ class SearchService:
 
     def _load_ai_client(self):
         try:
-            self.openai_client = OpenAI(api_key=settings.ai_api_key)
+            self.openai_client = AzureOpenAI(
+                api_key=settings.ai_api_key,  
+                api_version=settings.ai_api_version,
+                azure_endpoint = settings.ai_azure_endpoint
+            )
             print("OpenAI loaded successfully")
         except Exception as e:
             print(f"Error loading OpenAI client: {e}")
@@ -87,7 +89,6 @@ class SearchService:
                 }
             }
         ]
-
         try:
             messages = [
                 {"role": "system", "content": system_prompt},
@@ -103,10 +104,10 @@ class SearchService:
                     function_call="auto",
                     max_tokens=2000
                 )
-                
+        
                 message = response.choices[0].message
                 messages.append(message)
-
+                
                 if message.function_call:
                     func_name = message.function_call.name
                     args = json.loads(message.function_call.arguments)
