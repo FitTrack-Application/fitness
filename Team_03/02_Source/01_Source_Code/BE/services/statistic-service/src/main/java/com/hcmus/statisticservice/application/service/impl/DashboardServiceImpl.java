@@ -12,7 +12,6 @@ import com.hcmus.statisticservice.application.dto.response.ApiResponse;
 import com.hcmus.statisticservice.application.dto.response.DashboardResponse;
 import com.hcmus.statisticservice.application.service.DashboardService;
 import com.hcmus.statisticservice.domain.repository.NutritionGoalRepository;
-import com.hcmus.statisticservice.application.dto.response.TotalCaloriesBurnedResponse;
 
 import java.util.UUID;
 

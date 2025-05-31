@@ -28,6 +28,7 @@ public interface MealEntryRepository extends JpaRepository<MealEntry, UUID> {
         JOIN me.servingUnit su
         JOIN me.mealLog ml
         WHERE ml.userId = :userId
+            AND ml.date = CURRENT_DATE
     """)
     Double getTotalCaloriesConsumedByUserId(@Param("userId") UUID userId);
 

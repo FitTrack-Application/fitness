@@ -27,6 +27,7 @@ public interface ExerciseLogEntryRepository extends JpaRepository<ExerciseLogEnt
     JOIN ele.exerciseLog el
     JOIN ele.exercise e
     WHERE el.userId = :userId
+        AND el.date = CURRENT_DATE
     """)
     Integer getTotalCaloriesBurnedByUserId(@Param("userId") UUID userId);
 
