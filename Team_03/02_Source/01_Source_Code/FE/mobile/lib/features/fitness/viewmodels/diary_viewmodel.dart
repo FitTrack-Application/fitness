@@ -338,14 +338,4 @@ class DiaryViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
-
-  // Future<void> fetchExerciseCalorieGoal() async {
-  //   try {
-  //     exerciseCalorieGoal = await _workoutLogRepository.fetchExerciseCaloriesGoal();
-  //     notifyListeners();
-  //   } catch (e) {
-  //     errorMessage = "Không thể lấy exercise calorie goal: ${e.toString()}";
-  //     notifyListeners();
-  //   }
-  // }
 }

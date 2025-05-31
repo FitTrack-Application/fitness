@@ -92,7 +92,7 @@ class RecipeDetailScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Nutrition (per ${recipe.servingSize.toStringAsFixed(0)} ${recipe.unit})", style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
+          Text("Nutrition (per ${recipe.numberOfServings.toStringAsFixed(0)} ${recipe.unit})", style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
           const SizedBox(height: 12),
           Row(
             children: [

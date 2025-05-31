@@ -50,31 +50,17 @@ class DashboardLogModel {
   final int caloriesGoal;
   final int totalCaloriesConsumed;
   final int totalCaloriesBurned;
-  final Macronutrients macronutrients;
-  final List<MealLog> meals;
-  final List<ActivityLog> activities;
-
   DashboardLogModel({
     required this.caloriesGoal,
     required this.totalCaloriesConsumed,
     required this.totalCaloriesBurned,
-    required this.macronutrients,
-    required this.meals,
-    required this.activities,
   });
 
   factory DashboardLogModel.fromJson(Map<String, dynamic> json) {
     return DashboardLogModel(
-      caloriesGoal: json['caloriesGoal'],
-      totalCaloriesConsumed: json['totalCaloriesConsumed'],
-      totalCaloriesBurned: json['totalCaloriesBurned'],
-      macronutrients: Macronutrients.fromJson(json['macronutrients']),
-      meals: (json['meals'] as List)
-          .map((mealJson) => MealLog.fromJson(mealJson))
-          .toList(),
-      activities: (json['activities'] as List)
-          .map((actJson) => ActivityLog.fromJson(actJson))
-          .toList(),
+      caloriesGoal: (json['caloriesGoal'] as num).toInt(),
+      totalCaloriesConsumed: (json['totalCaloriesConsumed'] as num).toInt(),
+      totalCaloriesBurned: (json['totalCaloriesBurned'] as num).toInt(),
     );
   }
 }

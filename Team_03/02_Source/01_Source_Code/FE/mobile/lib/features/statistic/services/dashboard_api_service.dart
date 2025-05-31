@@ -11,13 +11,30 @@ class DashboardApiService {
 
   DashboardApiService(this.apiClient);
 
-  Future<DashboardLogModel> fetchDashboardData(String token) async {
-    final headers = {'Authorization': 'Bearer $token'};
-    final response = await apiClient.get('api/dashboard',
-        queryParams: null, headers: headers);
+  Future<DashboardLogModel> fetchDashboardData() async {
+    try {
+      print('📤 Requesting getDashboardInfo');
 
-    return DashboardLogModel.fromJson(response);
+      final response = await _dio.get("/api/dashboard/me");
+
+      print('📥 Raw data type: ${response.data['data'].runtimeType}');
+      print('📥 Raw data: ${response.data['data']}');
+
+      final data = response.data['data'];
+
+      if (data is! Map<String, dynamic>) {
+        throw Exception("Unexpected format: 'data' is not a map.");
+      }
+
+      return DashboardLogModel.fromJson(data);
+    } catch (e, stack) {
+      print('🔥 Error in fetchDashboardData: $e');
+      print('📉 Stacktrace:\n$stack');
+      rethrow;
+    }
   }
+
+
 
   Future<List<WeightEntry>> fetchWeightStatistics() async {
     try {
@@ -75,7 +92,7 @@ class DashboardApiService {
         print('No step logs found! Returning default list.');
         return [
           StepEntry(date: DateTime.now(), steps: 0), // Default entry
-          StepEntry(date: DateTime.now().subtract(Duration(days: 1)), steps: 0),
+          StepEntry(date: DateTime.now().subtract(const Duration(days: 1)), steps: 0),
         ];
       }
 
@@ -87,7 +104,7 @@ class DashboardApiService {
         return [
           StepEntry(date: DateTime.now(), steps: 100), // Default entry
           StepEntry(
-              date: DateTime.now().subtract(Duration(days: 1)), steps: 500),
+              date: DateTime.now().subtract(const Duration(days: 1)), steps: 500),
         ];
       } else {
         print('DioException: ${e.message}');
@@ -98,7 +115,7 @@ class DashboardApiService {
       // Return a default list in case of any other error
       return [
         StepEntry(date: DateTime.now(), steps: 0),
-        StepEntry(date: DateTime.now().subtract(Duration(days: 1)), steps: 0),
+        StepEntry(date: DateTime.now().subtract(const Duration(days: 1)), steps: 0),
       ];
     }
   }
@@ -139,7 +156,6 @@ class DashboardApiService {
             steps.toString(), // Convert steps to String as required by the API
         "date": date,
       };
-
       print('Request Payload: $body'); // Log the payload
 
       final response = await _dio.post(

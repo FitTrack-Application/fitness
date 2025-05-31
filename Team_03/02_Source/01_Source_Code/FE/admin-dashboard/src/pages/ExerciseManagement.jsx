@@ -103,10 +103,10 @@ const ExerciseManagement = () => {
         complete: async (results) => {
           if (results.data && results.data.length > 0) {
             try {
-              await uploadExerciseData(results.data);
+              const response = await uploadExerciseData(results.data);
               setMessage({
                 type: "success",
-                text: `Successfully imported ${results.data.length} exercise items.`,
+                text: `${response.message}`,
               });
               // Reset form
               setFile(null);

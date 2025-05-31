@@ -47,7 +47,7 @@ const LoginPage = () => {
       <LoginBox>
         <LoginTitle>My Fitness Admin Website</LoginTitle>
         <LoginButton onClick={login} disabled={loading}>
-          {loading ? "Loading..." : "Login"}
+          {loading ? "Loading..." : "Go To Admin Dashboard"}
         </LoginButton>
       </LoginBox>
     </LoginContainer>

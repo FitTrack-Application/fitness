@@ -1,46 +1,14 @@
 import axiosInstance from "./axiosInstance";
 
-// export const fetchDashboardStats = async () => {
-//   try {
-//     // For development/testing, you can use this mock response
-//     // Remove this in production and uncomment the actual API call below
-
-//     // Mock data for development
-//     return {
-//       totalUsers: 1250,
-//       totalFoods: 320,
-//       totalExercises: 180,
-//       userGrowth: {
-//         labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-//         data: [120, 150, 180, 220, 270, 310],
-//       },
-//       foodCategories: {
-//         labels: ["Fruits", "Vegetables", "Proteins", "Grains", "Dairy"],
-//         data: [65, 85, 70, 50, 50],
-//       },
-//       exerciseTypes: {
-//         labels: ["Cardio", "Strength", "Flexibility", "Balance", "Sports"],
-//         data: [40, 60, 30, 20, 30],
-//       },
-//       weeklyActivity: {
-//         labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-//         data: [65, 59, 80, 81, 56, 55, 40],
-//       },
-//     };
-
-//     // Uncomment for actual API integration
-//     // const response = await api.get('/stats/dashboard');
-//     // return response.data;
-//   } catch (error) {
-//     console.error("Error fetching dashboard stats:", error);
-//     throw new Error("Failed to load dashboard statistics");
-//   }
-// };
-
 export const fetchDashboardStats = async () => {
   try {
     const response = await axiosInstance.get("/admin/statistics");
+    console.log("response");
+    console.log(response);
     const data = response.data.data;
+
+    console.log("data");
+    console.log(data);
 
     // Transform the API response to match the dashboard's expected format
     return {

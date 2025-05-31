@@ -47,7 +47,7 @@ class WeightGraph extends StatelessWidget {
     maxWeight = (maxWeight / 4).ceil() * 4.0;
 
     // Set min weight to 40
-    const double minWeight = 40;
+    const double minWeight = 20;
 
     // Calculate optimal weight interval
     final weightInterval =
@@ -126,10 +126,13 @@ class WeightGraph extends StatelessWidget {
                                     (double value, TitleMeta meta) {
                                   final date = minDate
                                       .add(Duration(days: value.toInt()));
-                                  return Text(
-                                    DateFormat('MM/dd').format(date),
-                                    style: WeightGraphTheme.titleDataStyle(
-                                        context),
+                                  return Transform.rotate(
+                                    angle: -0.5,
+                                    child: Text(
+                                      DateFormat('MM/dd').format(date),
+                                      style: WeightGraphTheme.titleDataStyle(
+                                          context),
+                                    ),
                                   );
                                 },
                               ),
@@ -149,10 +152,10 @@ class WeightGraph extends StatelessWidget {
                                 },
                               ),
                             ),
-                            topTitles: AxisTitles(
+                            topTitles: const AxisTitles(
                               sideTitles: SideTitles(showTitles: false),
                             ),
-                            rightTitles: AxisTitles(
+                            rightTitles: const AxisTitles(
                               sideTitles: SideTitles(showTitles: false),
                             ),
                           ),
