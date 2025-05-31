@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 
 class KeycloakService {
   // static const String issuer = 'http://10.0.2.2:8888/realms/my-fitness';
-  static const String issuer = 'https://fitness-hcmus.cloud/realms/my-fitness/realms/my-fitness';
+  static const String issuer = 'https://fitness-hcmus.cloud/realms/my-fitness';
   static const String clientId = 'flutter-app-client';
   static const String redirectUrl = 'com.fittrack.mobile:/callback';
   // final String discoveryUrl =
@@ -20,7 +20,7 @@ class KeycloakService {
   // Đăng nhập với Keycloak
   Future<bool> login() async {
     try {
-      final AuthorizationTokenResponse result =
+      final AuthorizationTokenResponse? result =
       await _appAuth.authorizeAndExchangeCode(
         AuthorizationTokenRequest(
           clientId,
@@ -38,16 +38,18 @@ class KeycloakService {
       print(">>>>>>>>>>>>> RESULT 1");
       print(result);
 
-      // Lưu token vào secure storage
-      print(">>>>>>>>>>>>> RESULT 2");
-      print('Access Token: ${result.accessToken}');
-      print('Refresh Token: ${result.refreshToken}');
-      print('ID Token: ${result.idToken}');
-      print('Token Expiration: ${result.accessTokenExpirationDateTime}');
-      await _storage.write(key: 'access_token', value: result.accessToken);
-      await _storage.write(key: 'refresh_token', value: result.refreshToken);
-      return true;
-          return false;
+      if (result != null) {
+        // Lưu token vào secure storage
+        print(">>>>>>>>>>>>> RESULT 2");
+        print('Access Token: ${result.accessToken}');
+        print('Refresh Token: ${result.refreshToken}');
+        print('ID Token: ${result.idToken}');
+        print('Token Expiration: ${result.accessTokenExpirationDateTime}');
+        await _storage.write(key: 'access_token', value: result.accessToken);
+        await _storage.write(key: 'refresh_token', value: result.refreshToken);
+        return true;
+      }
+      return false;
     } catch (e) {
       print('Login error: $e');
       return false;
@@ -65,7 +67,7 @@ class KeycloakService {
       final String? refreshToken = await _storage.read(key: 'refresh_token');
       if (refreshToken == null) return false;
 
-      final TokenResponse result = await _appAuth.token(
+      final TokenResponse? result = await _appAuth.token(
         TokenRequest(
           clientId,
           redirectUrl,
@@ -74,10 +76,12 @@ class KeycloakService {
         ),
       );
 
-      await _storage.write(key: 'access_token', value: result.accessToken);
-      await _storage.write(key: 'refresh_token', value: result.refreshToken);
-      return true;
-          return false;
+      if (result != null) {
+        await _storage.write(key: 'access_token', value: result.accessToken);
+        await _storage.write(key: 'refresh_token', value: result.refreshToken);
+        return true;
+      }
+      return false;
     } catch (e) {
       print('Refresh token error: $e');
       return false;
