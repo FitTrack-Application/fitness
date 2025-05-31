@@ -6,11 +6,15 @@ import 'package:mobile/features/fitness/services/repository/exercise_repository.
 // Define possible loading states
 enum LoadState { initial, loading, loaded, error, timeout }
 
-class ExerciseDetailViewModel extends ChangeNotifier {
+class ExerciseAddViewModel extends ChangeNotifier {
   final ExerciseRepository _repository;
-  Exercise? exercise;
+  //Exercise? exercise;
   double _duration = 0;
+  String _name = 'New Exercise';
+  int _caloriesBurned = 0;
   double get duration => _duration;
+  String get name => _name;
+  int get caloriesBurned => _caloriesBurned;
 
   set duration(double value) {
     if (value >= 0 && value <= 10000) {
@@ -19,36 +23,41 @@ class ExerciseDetailViewModel extends ChangeNotifier {
     }
   }
 
-  // void updateDuration(double duration) {
-  //   if (duration > 0 && duration <= 10000) {
-  //     _duration = duration;
-  //     loadExercise(exercise?.id ?? '', duration: _duration);
-  //     notifyListeners();
-  //   }
-  // }
+  set caloriesBurned(int value) {
+    if (value >= 0 && value <= 10000) {
+      _caloriesBurned = value;
+      notifyListeners();
+    }
+  }
 
-  LoadState loadState = LoadState.initial;
+  set name(String value) {
+    if (value.trim().isNotEmpty) {
+      _name = value;
+      notifyListeners();
+    }
+  }
+
+  LoadState loadState = LoadState.loaded;
   String? errorMessage;
 
   // Timeout duration
   static const Duration _timeoutDuration = Duration(seconds: 10);
 
-  ExerciseDetailViewModel(this._repository);
+  ExerciseAddViewModel(this._repository);
 
-  Future<void> loadExercise(
-      String exerciseId, {double duration = 0}) async {
+  Future<void> createMyExercise() async {
     loadState = LoadState.loading;
     errorMessage = null;
     notifyListeners();
 
     try {
       final result = await _repository
-          .getExerciseById(exerciseId)
+          .createMyExercise(name, duration, caloriesBurned)
           .timeout(_timeoutDuration, onTimeout: () {
         throw TimeoutException('Connection timed out. Please try again.');
       });
 
-      exercise = result;
+      //exercise = result;
 
       loadState = LoadState.loaded;
     } on TimeoutException catch (e) {

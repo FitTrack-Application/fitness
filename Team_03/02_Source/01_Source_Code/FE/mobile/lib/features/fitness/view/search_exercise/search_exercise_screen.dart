@@ -39,6 +39,7 @@ class _SearchExerciseScreenState extends State<SearchExerciseScreen>
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(_onTabChanged);
     _scrollController.addListener(_scrollListener);
+    context.read<SearchExerciseViewModel>().isMyExercise = false;
 
     _allController = TextEditingController();
     _myExercisesController = TextEditingController();
@@ -79,6 +80,7 @@ class _SearchExerciseScreenState extends State<SearchExerciseScreen>
 
   void _onTabChanged() {
     final isMyExercise = _tabController.index == 1;
+    context.read<SearchExerciseViewModel>().isMyExercise = isMyExercise;
     context.read<SearchExerciseViewModel>().searchExercises(
       query: isMyExercise ? _myExercisesController.text : _allController.text,
       isMyExercise: isMyExercise,
@@ -170,16 +172,7 @@ class _SearchExerciseScreenState extends State<SearchExerciseScreen>
                 decoration: InputDecoration(
                   hintText: 'Search for exercise',
                   hintStyle: theme.textTheme.bodyMedium,
-                  prefixIcon: viewModel.isLoading
-                      ? const SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    ),
-                  )
-                      : const Icon(Icons.search),
+                  prefixIcon: const Icon(Icons.search),
                   contentPadding: const EdgeInsets.symmetric(vertical: 10),
                   suffixIcon: _allController.text.isNotEmpty
                       ? IconButton(
@@ -202,26 +195,17 @@ class _SearchExerciseScreenState extends State<SearchExerciseScreen>
                 child: SizedBox(
                   height: 50,
                   child: TextField(
-                    controller: _allController,
+                    controller: _myExercisesController,
                     decoration: InputDecoration(
                       hintText: 'Search for your exercise',
                       hintStyle: theme.textTheme.bodyMedium,
-                      prefixIcon: viewModel.isLoading
-                          ? const SizedBox(
-                        width: 24,
-                        height: 24,
-                        child: Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        ),
-                      )
-                          : const Icon(Icons.search),
+                      prefixIcon: const Icon(Icons.search),
                       contentPadding: const EdgeInsets.symmetric(vertical: 10),
-                      suffixIcon: _allController.text.isNotEmpty
+                      suffixIcon: _myExercisesController.text.isNotEmpty
                           ? IconButton(
                         icon: const Icon(Icons.clear),
                         onPressed: () {
-                          _allController.clear();
+                          _myExercisesController.clear();
                           context.read<SearchExerciseViewModel>().searchExercises(query: '', isMyExercise: false);
                         },
                       )
@@ -280,12 +264,13 @@ class _SearchExerciseScreenState extends State<SearchExerciseScreen>
       );
     }
 
-    if (viewModel.exercises.isEmpty) {
+    if ((!viewModel.isMyExercise && viewModel.exercises.isEmpty) ||
+    (viewModel.isMyExercise && viewModel.myExercises.isEmpty)) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.no_food, size: 64, color: Colors.grey),
+            const Icon(Icons.not_interested, size: 64, color: Colors.grey),
             const SizedBox(height: 16),
             Text(
               (_allController.text).isEmpty
@@ -297,11 +282,14 @@ class _SearchExerciseScreenState extends State<SearchExerciseScreen>
       );
     }
 
+    final exercises = isMyExercise ? viewModel.myExercises : viewModel.exercises;
+
     return ListView.builder(
       controller: _scrollController,
-      itemCount: viewModel.exercises.length + (viewModel.isFetchingMore ? 1 : 0),
+      // itemCount: (viewModel.isMyExercise ? viewModel.myExercises.length : viewModel.exercises.length) + (viewModel.isFetchingMore ? 1 : 0),
+      itemCount: exercises.length + (viewModel.isFetchingMore ? 1 : 0),
       itemBuilder: (context, index) {
-        if (index == viewModel.exercises.length) {
+        if (index == exercises.length) {
           if (viewModel.loadMoreError.isNotEmpty) {
             return Padding(
               padding: const EdgeInsets.all(16.0),
@@ -317,27 +305,32 @@ class _SearchExerciseScreenState extends State<SearchExerciseScreen>
             child: Center(child: CircularProgressIndicator()),
           );
         }
-        if(!isMyExercise){
-          final exercise = viewModel.exercises[index];
-          return ExerciseItemWidget(
-            exercise: exercise,
-            onTap: () =>context.push('/exerciseDetails/${widget.workoutLogId}/${exercise.id}?'),
-            // onAdd: () {
-            //   final diaryViewModel = context.read<DiaryViewModel>();
-            //   diaryViewModel.addExerciseToDiary(
-            //     workoutLogId: widget.workoutLogId,
-            //     exerciseId: exercise.id,
-            //     duration: exercise.,
-            //   );
-            // },
-          );
-        } else {
-          final exercise = viewModel.myExercises[index];
-          return ExerciseItemWidget(
-            exercise: exercise,
-            onTap: () =>context.push('/exerciseDetails/${widget.workoutLogId}/${exercise.id}?'),
-          );
-        }
+        // if(!isMyExercise){
+        //   final exercise = viewModel.exercises[index];
+        //   return ExerciseItemWidget(
+        //     exercise: exercise,
+        //     onTap: () =>context.push('/exerciseDetails/${widget.workoutLogId}/${exercise.id}?'),
+        //     // onAdd: () {
+        //     //   final diaryViewModel = context.read<DiaryViewModel>();
+        //     //   diaryViewModel.addExerciseToDiary(
+        //     //     workoutLogId: widget.workoutLogId,
+        //     //     exerciseId: exercise.id,
+        //     //     duration: exercise.,
+        //     //   );
+        //     // },
+        //   );
+        // } else {
+        //   final exercise = viewModel.myExercises[index];
+        //   return ExerciseItemWidget(
+        //     exercise: exercise,
+        //     onTap: () =>context.push('/exerciseDetails/${widget.workoutLogId}/${exercise.id}?'),
+        //   );
+        // }
+        final exercise = exercises[index];
+        return ExerciseItemWidget(
+          exercise: exercise,
+          onTap: () =>context.push('/exerciseDetails/${widget.workoutLogId}/${exercise.id}?'),
+        );
       },
     );
   }

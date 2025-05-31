@@ -7,6 +7,7 @@ class SearchExerciseViewModel extends ChangeNotifier {
   final ExerciseRepository _repository;
   final List<Exercise> _exercises = [];
   final List<Exercise> _myExercises = [];
+  bool _isMyExercise = false;
 
 
   // Timeout for API calls
@@ -17,6 +18,13 @@ class SearchExerciseViewModel extends ChangeNotifier {
 
   List<Exercise> get exercises => _exercises;
   List<Exercise> get myExercises => _myExercises;
+  bool get isMyExercise => _isMyExercise;
+  set isMyExercise(bool value) {
+    if (_isMyExercise != value) {
+      _isMyExercise = value;
+      notifyListeners();
+    }
+  }
 
 
   bool isLoading = false;
@@ -45,10 +53,12 @@ class SearchExerciseViewModel extends ChangeNotifier {
 
     try {
       if (isMyExercise) {
-        //Mock data
+        final paginatedResponse = await _fetchWithTimeout(() =>
+            _repository.searchMyExercises(query, page: _currentPage, size: 10));
+
         _myExercises.clear();
-        //_myExercises.addAll(_getMockRecipes);
-        _totalPages = 1;
+        _myExercises.addAll(paginatedResponse!.data);
+        _totalPages = paginatedResponse.pagination.totalPages;
       } else {
         final paginatedResponse = await _fetchWithTimeout(() =>
             _repository.searchExercises(query, page: _currentPage, size: 10));
@@ -83,8 +93,16 @@ class SearchExerciseViewModel extends ChangeNotifier {
     try {
       _currentPage++;
       if (isMyExercise) {
-        _hasMoreData = false; // Simulate no pagination for mock
-        //_myExercises.addAll(_getMockRecipes);
+        final paginatedResponse = await _fetchWithTimeout(() => _repository
+            .searchMyExercises(_searchQuery, page: _currentPage, size: size));
+
+        if (paginatedResponse!.data.isEmpty) {
+          _hasMoreData = false;
+        } else {
+          _myExercises.addAll(paginatedResponse.data);
+          _totalPages = paginatedResponse.pagination.totalPages;
+          _hasMoreData = _currentPage < _totalPages;
+        }
       } else {
         final paginatedResponse = await _fetchWithTimeout(() => _repository
             .searchExercises(_searchQuery, page: _currentPage, size: size));

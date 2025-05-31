@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:mobile/features/fitness/services/repository/meal_log_repository.dart';
 import 'package:mobile/features/fitness/services/repository/workout_log_repository.dart';
@@ -109,9 +110,9 @@ class DiaryViewModel extends ChangeNotifier {
   }
 
   /// Thay đổi ngày đã chọn
-  void changeSelectedDate(DateTime date) {
+  Future<void> changeSelectedDate(DateTime date) async {
     selectedDate = date;
-    fetchDiaryForSelectedDate();
+    await fetchDiaryForSelectedDate();
     notifyListeners();
   }
 
@@ -135,6 +136,7 @@ class DiaryViewModel extends ChangeNotifier {
       // Fetch workout log
       try {
         workoutLog = await _workoutLogRepository.fetchWorkoutLogForDate(selectedDate);
+       // workoutLog ??= await _workoutLogRepository.createWorkoutLogForDate(selectedDate);
         exerciseEntries = workoutLog?.exerciseEntries ?? [];
       } catch (e) {
         print('Error fetching workout log: $e');

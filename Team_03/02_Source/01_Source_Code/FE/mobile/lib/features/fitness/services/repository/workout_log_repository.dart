@@ -47,16 +47,12 @@ class WorkoutLogRepository {
       );
     } on DioException catch (e) {
       print('🔥 Error fetchWorkoutLogForDate: ${e.response?.statusCode} ${e.message}');
-      // Kiểm tra lỗi 404 - workout log không tồn tại cho ngày cụ thể
-      if (e.response?.statusCode == 404) {
-        return null;
-      }
       rethrow;
     }
   }
 
   /// 2. Tạo workout log cho ngày cụ thể
-  Future<WorkoutLogFitness> createWorkoutLogForDate(DateTime date) async {
+  Future<WorkoutLogFitness?> createWorkoutLogForDate(DateTime date) async {
     final formattedDate = _formatDate(date);
     print('🆕 Creating workout log for date: $formattedDate');
 
@@ -66,16 +62,22 @@ class WorkoutLogRepository {
         data: {'date': formattedDate},
       );
 
-      final data = response.data['data'];
-      print('✅ Workout log created for $formattedDate with ID: ${data['id']}');
+      if (response.data['status'] != 201) {
+        print('❗️ Failed to create workout log: ${response.data['status']} ${response.data['generalMessage']}');
+        return null;
+      }
 
-      return WorkoutLogFitness(
-        id: data['id'],
-        date: DateTime.parse(data['date']),
-        exerciseEntries: [],
-      );
+      print('✅ Workout log created for $formattedDate');
+
+      return fetchWorkoutLogForDate(date);
     } on DioException catch (e) {
       print('🔥 Error createWorkoutLogForDate: ${e.response?.statusCode} ${e.message}');
+      if (e.response?.statusCode == 404) {
+        return null;
+      } else if (e.response?.statusCode == 400) {
+        print('Error: Workout log have not created on this day - Try to create workout log on this day');
+        return createWorkoutLogForDate(date);
+      }
       rethrow;
     }
   }

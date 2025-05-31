@@ -34,7 +34,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen> {
     super.initState();
     _exerciseVM = ExerciseDetailViewModel(ExerciseRepository())
       ..loadExercise(widget.exerciseId, duration: widget.duration);
-    _exerciseVM.updateDuration(widget.duration);
+    _exerciseVM.duration = widget.duration;
   }
 
   @override
@@ -80,7 +80,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen> {
                     onPressed: isAdding
                         ? null
                         : () async {
-                      diaryVM.addExerciseToDiary(widget.workoutLogId, exerciseId: exercise.id, duration: widget.duration);
+                      diaryVM.addExerciseToDiary(widget.workoutLogId, exerciseId: exercise.id, duration: exerciseVM.duration);
                       if (context.mounted) {
                         context.pop();
                       }
@@ -131,40 +131,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen> {
   }
 
   Widget _buildErrorState(BuildContext context, ExerciseDetailViewModel viewModel) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-
     return const SizedBox.shrink();
-
-    // return Center(
-    //   child: Column(
-    //     mainAxisAlignment: MainAxisAlignment.center,
-    //     children: [
-    //       Icon(
-    //         Icons.error_outline,
-    //         size: 64,
-    //         color: colorScheme.error,
-    //       ),
-    //       const SizedBox(height: 16),
-    //       Text(
-    //         'Failed to load food information',
-    //         style: textTheme.titleMedium,
-    //       ),
-    //       const SizedBox(height: 8),
-    //       Text(
-    //         viewModel.errorMessage ?? 'Unknown error occurred',
-    //         textAlign: TextAlign.center,
-    //         style: textTheme.bodyMedium,
-    //       ),
-    //       const SizedBox(height: 24),
-    //       ElevatedButton.icon(
-    //         icon: const Icon(Icons.refresh),
-    //         label: const Text('Try Again'),
-    //         onPressed: () => viewModel.loadFood(widget.foodId),
-    //       ),
-    //     ],
-    //   ),
-    // );
   }
 
   Widget _buildTimeoutState(
@@ -501,7 +468,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen> {
             onPressed: () {
               final newDuration = double.tryParse(controller.text);
               if (newDuration != null && newDuration >= 0) {
-                viewModel.updateDuration(newDuration);
+                viewModel.duration = newDuration;
                 Navigator.pop(context);
               }
             },
