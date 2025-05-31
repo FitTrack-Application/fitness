@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:mobile/features/fitness/services/repository/meal_log_repository.dart';
 
 import '../models/exercise.dart';
-import '../models/food.dart';
 import '../models/meal_entry.dart';
 import '../models/meal_log.dart';
 import '../services/repository/food_repository.dart';

@@ -84,7 +84,7 @@ class UserGoalScreen extends StatelessWidget {
                                 style: Theme.of(context).textTheme.bodyLarge,
                               ),
                               Text(
-                                "${goalViewModel.userGoal.startingDate.toLocal().toString().split(' ')[0]}",
+                                goalViewModel.userGoal.startingDate.toLocal().toString().split(' ')[0],
                                 style: Theme.of(context).textTheme.bodyMedium,
                               ),
                             ],

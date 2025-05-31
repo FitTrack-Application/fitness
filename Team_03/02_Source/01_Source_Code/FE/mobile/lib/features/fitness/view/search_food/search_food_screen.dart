@@ -353,7 +353,6 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
               );
             },
           );
-          ;
         }
       },
     );

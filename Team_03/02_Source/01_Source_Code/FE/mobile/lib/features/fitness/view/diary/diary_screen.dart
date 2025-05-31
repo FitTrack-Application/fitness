@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile/features/fitness/models/exercise.dart';
-import 'package:mobile/features/fitness/models/food.dart';
 import 'package:mobile/features/fitness/models/meal_entry.dart';
 import 'package:provider/provider.dart';
 

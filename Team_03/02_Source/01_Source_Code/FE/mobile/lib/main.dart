@@ -1,17 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:mobile/features/fitness/view/recipe_detail/recipe_detail.dart';
 import 'package:provider/provider.dart';
 
 import 'common/widgets/bottom_nav_bar/bottom_nav_provider.dart';
-import 'cores/constants/colors.dart';
 import 'cores/constants/routes.dart';
 import 'cores/theme/theme.dart';
 import 'features/auth/viewmodels/auth_viewmodel.dart';
 import 'features/auth/viewmodels/goal_viewmodel.dart';
 import 'features/auth/viewmodels/profile_viewmodel.dart';
-import 'features/fitness/models/food.dart';
-import 'features/fitness/models/recipe.dart';
 import 'features/fitness/services/api_client.dart';
 import 'features/fitness/viewmodels/diary_viewmodel.dart';
 import 'features/fitness/viewmodels/search_food_viewmodel.dart';
@@ -22,7 +17,7 @@ import 'package:dio/dio.dart';
 
 void main() {
   final dio = Dio();
-  final storage = const FlutterSecureStorage();
+  const storage = FlutterSecureStorage();
   runApp(
     MultiProvider(
       providers: [

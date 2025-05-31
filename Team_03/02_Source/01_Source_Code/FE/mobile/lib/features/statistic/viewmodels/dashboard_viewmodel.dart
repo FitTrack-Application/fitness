@@ -18,7 +18,6 @@ class DashboardViewModel extends ChangeNotifier {
   List<ActivityLog> activities = [];
   int totalCaloriesConsumed = 0;
   int totalCaloriesBurned = 0;
-  Macronutrients macronutrients = Macronutrients(carbs: 0, protein: 0, fat: 0);
   int caloriesGoal = 0;
   double targetWeight = 70;
   List<WeightEntry> weightEntries = [
@@ -30,23 +29,17 @@ class DashboardViewModel extends ChangeNotifier {
   int get caloriesRemaining =>
       caloriesGoal - totalCaloriesConsumed; //+ totalCaloriesBurned;
 
-  int get carbsPercent => _calculateMacroPercent(macronutrients.carbs);
-  int get proteinPercent => _calculateMacroPercent(macronutrients.protein);
-  int get fatPercent => _calculateMacroPercent(macronutrients.fat);
-
   Future<void> fetchDashboardData({required String token}) async {
     isLoading = true;
     notifyListeners();
 
     try {
-      final result = createMockData();
-      //final result = await apiService.fetchDashboardData(token);
-      meals = result.meals;
-      activities = result.activities;
+      //final result = createMockData();
+      final result = await apiService.fetchDashboardData();
+
       caloriesGoal = result.caloriesGoal;
       totalCaloriesConsumed = result.totalCaloriesConsumed;
       totalCaloriesBurned = result.totalCaloriesBurned;
-      macronutrients = result.macronutrients;
       errorMessage = null;
     } catch (e) {
       errorMessage = e.toString();
@@ -63,11 +56,6 @@ class DashboardViewModel extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       errorMessage = e.toString();
-      stepEntries = [
-        StepEntry(date: DateTime.now(), steps: 500), // Example default entry
-        StepEntry(
-            date: DateTime.now().subtract(Duration(days: 1)), steps: 1000),
-      ];
     } finally {
       notifyListeners();
     }
@@ -80,11 +68,6 @@ class DashboardViewModel extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       errorMessage = e.toString();
-      stepEntries = [
-        StepEntry(date: DateTime.now(), steps: 500), // Example default entry
-        StepEntry(
-            date: DateTime.now().subtract(Duration(days: 1)), steps: 1000),
-      ];
     } finally {
       notifyListeners();
     }
@@ -97,6 +80,16 @@ class DashboardViewModel extends ChangeNotifier {
     required String date,
     String? progressPhoto,
   }) async {
+    if (weight < 20 || weight > 200) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Weight must be between 20 and 200 kg'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
     try {
       await apiService.addWeightLog(
         weight: weight,
@@ -105,13 +98,11 @@ class DashboardViewModel extends ChangeNotifier {
       );
 
       // Update the local list and notify listeners
-      weightEntries
-          .add(WeightEntry(date: DateTime.parse(date), weight: weight));
-      notifyListeners();
+      await fetchWeightStatistics();
 
       // Show success notification
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Weight log added successfully!'),
           backgroundColor: Colors.green,
         ),
@@ -121,7 +112,7 @@ class DashboardViewModel extends ChangeNotifier {
 
       // Show error notification
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Failed to add weight log. Please try again.'),
           backgroundColor: Colors.red,
         ),
@@ -135,19 +126,27 @@ class DashboardViewModel extends ChangeNotifier {
     required int steps,
     required String date,
   }) async {
+    if (steps < 0 || steps > 10000) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Steps must be between 0 and 10,000'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
     try {
       await apiService.addStepLog(
         steps: steps,
         date: date,
       );
 
-      // Update the local list and notify listeners
-      stepEntries.add(StepEntry(date: DateTime.parse(date), steps: steps));
-      notifyListeners();
+      await fetchStepStatistics();
 
       // Show success notification
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Step log added successfully!'),
           backgroundColor: Colors.green,
         ),
@@ -157,7 +156,7 @@ class DashboardViewModel extends ChangeNotifier {
 
       // Show error notification
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Failed to add step log. Please try again.'),
           backgroundColor: Colors.red,
         ),
@@ -188,32 +187,4 @@ class DashboardViewModel extends ChangeNotifier {
     }
   }
 
-  int _calculateMacroPercent(int macroValue) {
-    final total =
-        macronutrients.carbs + macronutrients.protein + macronutrients.fat;
-    if (total == 0) return 0;
-    return ((macroValue / total) * 100).toInt();
-  }
-}
-
-DashboardLogModel createMockData() {
-  return DashboardLogModel(
-    caloriesGoal: 2000,
-    totalCaloriesConsumed: 1200,
-    totalCaloriesBurned: 400,
-    macronutrients: Macronutrients(
-      carbs: 150,
-      protein: 100,
-      fat: 50,
-    ),
-    meals: [
-      MealLog(id: 1, name: "Breakfast", calories: 350),
-      MealLog(id: 2, name: "Lunch", calories: 450),
-      MealLog(id: 3, name: "Dinner", calories: 400),
-    ],
-    activities: [
-      ActivityLog(id: 1, name: "Running", caloriesBurned: 300),
-      ActivityLog(id: 2, name: "Cycling", caloriesBurned: 100),
-    ],
-  );
 }
