@@ -63,11 +63,6 @@ class DashboardViewModel extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       errorMessage = e.toString();
-      stepEntries = [
-        StepEntry(date: DateTime.now(), steps: 500), // Example default entry
-        StepEntry(
-            date: DateTime.now().subtract(Duration(days: 1)), steps: 1000),
-      ];
     } finally {
       notifyListeners();
     }
@@ -80,11 +75,6 @@ class DashboardViewModel extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       errorMessage = e.toString();
-      stepEntries = [
-        StepEntry(date: DateTime.now(), steps: 500), // Example default entry
-        StepEntry(
-            date: DateTime.now().subtract(Duration(days: 1)), steps: 1000),
-      ];
     } finally {
       notifyListeners();
     }
@@ -97,6 +87,16 @@ class DashboardViewModel extends ChangeNotifier {
     required String date,
     String? progressPhoto,
   }) async {
+    if (weight < 20 || weight > 200) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Weight must be between 20 and 200 kg'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
     try {
       await apiService.addWeightLog(
         weight: weight,
@@ -105,13 +105,11 @@ class DashboardViewModel extends ChangeNotifier {
       );
 
       // Update the local list and notify listeners
-      weightEntries
-          .add(WeightEntry(date: DateTime.parse(date), weight: weight));
-      notifyListeners();
+      await fetchWeightStatistics();
 
       // Show success notification
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Weight log added successfully!'),
           backgroundColor: Colors.green,
         ),
@@ -121,7 +119,7 @@ class DashboardViewModel extends ChangeNotifier {
 
       // Show error notification
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Failed to add weight log. Please try again.'),
           backgroundColor: Colors.red,
         ),
@@ -135,19 +133,27 @@ class DashboardViewModel extends ChangeNotifier {
     required int steps,
     required String date,
   }) async {
+    if (steps < 0 || steps > 10000) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Steps must be between 0 and 10,000'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
     try {
       await apiService.addStepLog(
         steps: steps,
         date: date,
       );
 
-      // Update the local list and notify listeners
-      stepEntries.add(StepEntry(date: DateTime.parse(date), steps: steps));
-      notifyListeners();
+      await fetchStepStatistics();
 
       // Show success notification
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Step log added successfully!'),
           backgroundColor: Colors.green,
         ),
@@ -157,7 +163,7 @@ class DashboardViewModel extends ChangeNotifier {
 
       // Show error notification
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Failed to add step log. Please try again.'),
           backgroundColor: Colors.red,
         ),

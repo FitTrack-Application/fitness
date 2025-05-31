@@ -87,8 +87,8 @@ class _AddStepState extends State<AddStep> {
                   if (steps == null) {
                     return 'Please enter a valid number';
                   }
-                  if (steps >= 5000) {
-                    return 'Steps must be less than 5000';
+                  if (steps >= 10000) {
+                    return 'Steps must be less than 10000';
                   }
                   return null;
                 },
