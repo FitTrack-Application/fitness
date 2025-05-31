@@ -54,7 +54,7 @@ public class FitProfileServiceImpl implements FitProfileService {
                 .activityLevel(addProfile.getActivityLevel())
                 .imageUrl(addProfile.getImageUrl())
                 .userId(userId)
-                .createdAt(addProfile.getCreatedAt())
+                .createdAt(Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()))
                 .build();
         return fitProfileRepository.save(profile);
     }
