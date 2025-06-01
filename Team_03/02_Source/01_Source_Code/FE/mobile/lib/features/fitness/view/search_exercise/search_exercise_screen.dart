@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/features/fitness/models/exercise.dart';
 import 'package:mobile/features/fitness/view/search_exercise/widget/error_display.dart';
-import 'package:mobile/features/fitness/viewmodels/diary_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 import '../../viewmodels/search_exercise_viewmodel.dart';

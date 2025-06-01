@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:mobile/features/fitness/models/exercise.dart';
 import 'package:mobile/features/fitness/models/exercise_entry.dart';
-import 'package:mobile/features/fitness/models/food.dart';
 import 'package:mobile/features/fitness/models/meal_entry.dart';
 import 'package:provider/provider.dart';
 
@@ -325,7 +323,7 @@ class _DiaryScreenState extends State<DiaryScreen>
           TextButton(
             onPressed: () {
               // Thêm navigation đến màn add exercise
-              final workoutLogId = "71c0a08a-ed95-44d5-a226-747a4c54c3f0";
+              const workoutLogId = "71c0a08a-ed95-44d5-a226-747a4c54c3f0";
               context.push(
                   '/searchExercise/$workoutLogId');
             },

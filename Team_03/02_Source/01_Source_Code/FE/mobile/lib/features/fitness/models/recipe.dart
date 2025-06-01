@@ -4,25 +4,25 @@ import 'food.dart';
 class Recipe {
   final String id;
   final String name;
-  final String description;
+  final String direction;
   final ServingUnit servingUnit;
   final double numberOfServings;
-  final List<Food> foodList;
+  final List<Food> recipeEntries;
 
   Recipe({
     required this.id,
     required this.name,
-    required this.description,
+    required this.direction,
     required this.servingUnit,
     required this.numberOfServings,
-    required this.foodList,
+    required this.recipeEntries,
   });
 
   factory Recipe.fromJson(Map<String, dynamic> json) {
     return Recipe(
       id: json['id'] ?? '',
       name: json['name'] ?? '',
-      description: json['description'] ?? '',
+      direction: json['description'] ?? '',
       numberOfServings: (json['numberOfServings'] as num?)?.toDouble() ?? 1.0,
       servingUnit: json['servingUnit'] != null
           ? ServingUnit.fromJson(json['servingUnit'])
@@ -31,7 +31,7 @@ class Recipe {
         unitName: 'Gram',
         unitSymbol: 'g',
       ),
-      foodList: (json['foodList'] as List<dynamic>? ?? [])
+      recipeEntries: (json['recipeEntries'] as List<dynamic>? ?? [])
           .map((item) => Food.fromJson(item))
           .toList(),
     );
@@ -39,27 +39,26 @@ class Recipe {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'name': name,
-      'description': description,
-      'servingUnit': servingUnit.toJson(),
-      'numberOfServings': numberOfServings,
-      'foodList': foodList.map((food) => food.toJson()).toList(),
+      'direction': direction,
+      //'servingUnit': servingUnit.toJson(),
+      //'numberOfServings': numberOfServings,
+      'recipeEntries': recipeEntries.map((food) => food.idToJson()).toList(),
     };
   }
 
   // Total nutritional values (computed from foodList)
   double get calories =>
-      foodList.fold(0, (sum, food) => sum + food.calories);
+      recipeEntries.fold(0, (sum, food) => sum + food.calories);
 
   double get protein =>
-      foodList.fold(0, (sum, food) => sum + food.protein);
+      recipeEntries.fold(0, (sum, food) => sum + food.protein);
 
   double get fat =>
-      foodList.fold(0, (sum, food) => sum + food.fat);
+      recipeEntries.fold(0, (sum, food) => sum + food.fat);
 
   double get carbs =>
-      foodList.fold(0, (sum, food) => sum + food.carbs);
+      recipeEntries.fold(0, (sum, food) => sum + food.carbs);
 
 // For the display unit
   String get unit => servingUnit.unitName;

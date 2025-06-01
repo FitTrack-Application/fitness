@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:mobile/features/statistic/models/step_entry.dart';
-import 'package:mobile/features/statistic/models/weight_entry.dart'
-    show WeightEntry;
 import 'package:mobile/features/statistic/view/dashboard/widget/weight_graph.dart';
 import 'package:mobile/features/statistic/view/dashboard/widget/step_graph.dart';
 import 'package:provider/provider.dart';

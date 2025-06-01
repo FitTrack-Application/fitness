@@ -1,11 +1,8 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:mobile/features/fitness/services/repository/meal_log_repository.dart';
 import 'package:mobile/features/fitness/services/repository/workout_log_repository.dart';
 
-import '../models/exercise.dart';
 import '../models/exercise_entry.dart';
-import '../models/food.dart';
 import '../models/meal_entry.dart';
 import '../models/meal_log.dart';
 import '../models/workout_log.dart';
@@ -261,9 +258,7 @@ class DiaryViewModel extends ChangeNotifier {
 
     try {
       // Kiểm tra xem đã có workout log cho ngày này chưa
-      if (workoutLog == null) {
-        workoutLog = await _workoutLogRepository.createWorkoutLogForDate(selectedDate);
-      }
+      workoutLog ??= await _workoutLogRepository.createWorkoutLogForDate(selectedDate);
 
       await _workoutLogRepository.addExerciseEntry(
         workoutLogId: workoutLog!.id,

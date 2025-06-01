@@ -35,11 +35,11 @@ class RecipeDetailScreen extends StatelessWidget {
                 ),
               ),
 
-            if (recipe.description.isNotEmpty)
+            if (recipe.direction.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.only(bottom: 24),
                 child: Text(
-                  recipe.description,
+                  recipe.direction,
                   style: GoogleFonts.poppins(fontSize: 16),
                 ),
               ),
@@ -56,7 +56,7 @@ class RecipeDetailScreen extends StatelessWidget {
             ),
             const SizedBox(height: 12),
 
-            ...recipe.foodList.map((food) => _buildFoodItem(food)),
+            ...recipe.recipeEntries.map((food) => _buildFoodItem(food)),
           ],
         ),
       ),
@@ -64,6 +64,7 @@ class RecipeDetailScreen extends StatelessWidget {
   }
 
   Widget _buildFoodItem(Food food) {
+    print(food.name);
     return Card(
       color: NeutralColors.light100,
       margin: const EdgeInsets.symmetric(vertical: 6),

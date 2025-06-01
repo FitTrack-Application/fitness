@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/features/fitness/viewmodels/diary_viewmodel.dart';
-import 'package:provider/provider.dart';
 
 import '../../../models/exercise.dart';
 

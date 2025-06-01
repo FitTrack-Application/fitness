@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:mobile/features/fitness/view/recipe_detail/recipe_detail.dart';
 import 'package:mobile/features/fitness/viewmodels/search_exercise_viewmodel.dart';
 import 'package:provider/provider.dart';
 

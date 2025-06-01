@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import '../../../../cores/utils/dio/dio_client.dart';
 import '../../models/exercise_entry.dart';
 import '../../models/workout_log.dart';
-import '../../models/exercise.dart';
 
 class WorkoutLogRepository {
   final Dio _dio = DioClient().dio;

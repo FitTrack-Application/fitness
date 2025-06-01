@@ -76,7 +76,7 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
 
 
   void _onTabChanged() {
-    final isMyFood = _tabController.index == 1;
+    final isMyFood = _tabController.index == 0;
     context.read<SearchFoodViewModel>().searchFoods(query: _searchController.text, isInMyRecipesTab: isMyFood);
   }
 
@@ -272,6 +272,9 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
 
 
   Widget _buildListView(SearchFoodViewModel viewModel, {required bool isMyFood}) {
+    final items = isMyFood ? viewModel.foods : viewModel.recipes;
+    final itemCount = items.length + (viewModel.isFetchingMore ? 1 : 0);
+
     if (viewModel.isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -302,11 +305,12 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
       );
     }
 
+
     return ListView.builder(
       controller: _scrollController,
-      itemCount: viewModel.foods.length + (viewModel.isFetchingMore ? 1 : 0),
+      itemCount: itemCount,
       itemBuilder: (context, index) {
-        if (index == viewModel.foods.length) {
+        if (index == items.length) {
           if (viewModel.loadMoreError.isNotEmpty) {
             return Padding(
               padding: const EdgeInsets.all(16.0),
@@ -325,6 +329,23 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
 
         if (!isMyFood) {
           final recipe = viewModel.recipes[index];
+          if (viewModel.recipes.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.no_food, size: 64, color: Colors.grey),
+                  const SizedBox(height: 16),
+                  Text(
+                    (_allController.text).isEmpty
+                        ? 'No recipe available'
+                        : 'No recipe found for "${_allController.text}"',
+                  ),
+                ],
+              ),
+            );
+          }
+
           return RecipeItemWidget(
             recipe: recipe,
             onTap: () => context.push('/recipe_detail', extra: recipe),
@@ -358,3 +379,5 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
     );
   }
 }
+
+

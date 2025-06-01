@@ -59,7 +59,7 @@ class DashboardViewModel extends ChangeNotifier {
       stepEntries = [
         StepEntry(date: DateTime.now(), steps: 500), // Example default entry
         StepEntry(
-            date: DateTime.now().subtract(Duration(days: 1)), steps: 1000),
+            date: DateTime.now().subtract(const Duration(days: 1)), steps: 1000),
       ];
     } finally {
       notifyListeners();
@@ -76,7 +76,7 @@ class DashboardViewModel extends ChangeNotifier {
       stepEntries = [
         StepEntry(date: DateTime.now(), steps: 500), // Example default entry
         StepEntry(
-            date: DateTime.now().subtract(Duration(days: 1)), steps: 1000),
+            date: DateTime.now().subtract(const Duration(days: 1)), steps: 1000),
       ];
     } finally {
       notifyListeners();
@@ -104,7 +104,7 @@ class DashboardViewModel extends ChangeNotifier {
 
       // Show success notification
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Weight log added successfully!'),
           backgroundColor: Colors.green,
         ),
@@ -114,7 +114,7 @@ class DashboardViewModel extends ChangeNotifier {
 
       // Show error notification
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Failed to add weight log. Please try again.'),
           backgroundColor: Colors.red,
         ),
@@ -140,7 +140,7 @@ class DashboardViewModel extends ChangeNotifier {
 
       // Show success notification
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Step log added successfully!'),
           backgroundColor: Colors.green,
         ),
@@ -150,7 +150,7 @@ class DashboardViewModel extends ChangeNotifier {
 
       // Show error notification
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Failed to add step log. Please try again.'),
           backgroundColor: Colors.red,
         ),
