@@ -44,62 +44,62 @@ class UserProfileScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Avatar Section
+                  GestureDetector(
+                    onTap: () async {
+                      final ImagePicker picker = ImagePicker();
+
+                      // Pick an image from the gallery
+                      final XFile? pickedFile =
+                          await picker.pickImage(source: ImageSource.gallery);
+
+                      if (pickedFile != null) {
+                        final File imageFile = File(pickedFile.path);
+
+                        // Update the profile with the selected image
+                        await profileViewModel.updateProfile(context,
+                            imageFile: imageFile);
+
+                        if (profileViewModel.hasError) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(profileViewModel.errorMessage),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        } else {
+                          // Update the avatar with the local file path
+                          profileViewModel.userProfile.imageUrl =
+                              imageFile.path;
+                          profileViewModel.notifyListeners(); // Refresh the UI
+                        }
+                      }
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircleAvatar(
+                          radius: 100,
+                          backgroundImage: profileViewModel
+                                  .userProfile.imageUrl.isNotEmpty
+                              ? (profileViewModel.userProfile.imageUrl
+                                      .startsWith('http')
+                                  ? NetworkImage(
+                                      profileViewModel.userProfile.imageUrl)
+                                  : FileImage(File(profileViewModel
+                                      .userProfile.imageUrl))) as ImageProvider
+                              : const AssetImage('assets/images/avatar.png'),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Divider(),
                   Card(
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Avatar Section
-                          GestureDetector(
-                            onTap: () async {
-                              final ImagePicker picker = ImagePicker();
-
-                              // Pick an image from the gallery
-                              final XFile? pickedFile = await picker.pickImage(
-                                  source: ImageSource.gallery);
-
-                              if (pickedFile != null) {
-                                final File imageFile = File(pickedFile.path);
-
-                                // Update the profile with the selected image
-                                await profileViewModel.updateProfile(context,
-                                    imageFile: imageFile);
-                                if (profileViewModel.hasError) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content:
-                                          Text(profileViewModel.errorMessage),
-                                      backgroundColor: Colors.red,
-                                    ),
-                                  );
-                                }
-                                // Notify listeners to refresh the UI
-                                profileViewModel.notifyListeners();
-                              }
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "Avatar",
-                                  style: Theme.of(context).textTheme.bodyLarge,
-                                ),
-                                CircleAvatar(
-                                  radius: 20,
-                                  backgroundImage: profileViewModel
-                                          .userProfile.imageUrl.isNotEmpty
-                                      ? NetworkImage(
-                                          profileViewModel.userProfile.imageUrl)
-                                      : const AssetImage(
-                                              'assets/images/avatar.png')
-                                          as ImageProvider,
-                                ),
-                              ],
-                            ),
-                          ),
-                          const Divider(),
-
                           // Username Section
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,

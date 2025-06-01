@@ -23,8 +23,12 @@ class ProfileViewModel extends ChangeNotifier {
   bool hasError = false;
   String errorMessage = "";
 
+  // Flag to track if the profile has been fetched
+  bool hasFetchedProfile = false;
+
   // Fetch profile data
   Future<void> fetchProfile(BuildContext context) async {
+    if (hasFetchedProfile) return; // Prevent multiple fetches
     isLoading = true;
     hasError = false;
     notifyListeners();
@@ -37,6 +41,7 @@ class ProfileViewModel extends ChangeNotifier {
       debugPrint(
           "Updated UserProfile: ${userProfile.toJson()}"); // Log the updated userProfile
 
+      hasFetchedProfile = true; // Mark profile as fetched
       isLoading = false;
       notifyListeners();
     } catch (e) {
@@ -62,7 +67,10 @@ class ProfileViewModel extends ChangeNotifier {
       await _apiService.editProfile(profileData,
           imageFile: imageFile, context: context);
 
-      // Notify listeners to refresh the UI
+      // Fetch the updated profile after editing
+      hasFetchedProfile = false; // Reset the flag
+      await fetchProfile(context); // Fetch updated profile
+
       notifyListeners();
     } catch (e) {
       hasError = true;

@@ -45,6 +45,8 @@ void main() {
               DashboardApiService(ApiClient(''))), // Placeholder
           update: (_, api, __) => DashboardViewModel(api),
         ),
+        ChangeNotifierProvider(
+            create: (context) => ProfileViewModel()..fetchProfile(context)),
       ],
       child: const MyApp(),
       // child: const MaterialApp(

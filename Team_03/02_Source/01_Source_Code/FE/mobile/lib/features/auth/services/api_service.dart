@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:http_parser/http_parser.dart';
 import '../../../../cores/utils/dio/dio_client.dart';
 
 class ApiService {
@@ -120,6 +121,8 @@ class ApiService {
         if (imageFile != null)
           'image': await MultipartFile.fromFile(
             imageFile.path,
+            filename: imageFile.path.split('/').last, // Extract filename
+            contentType: MediaType('image', 'png'),
           ),
       });
       // Send the request
