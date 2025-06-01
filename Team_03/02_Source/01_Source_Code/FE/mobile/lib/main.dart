@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:mobile/features/fitness/view/recipe_detail/recipe_detail.dart';
+import 'package:mobile/features/fitness/viewmodels/search_exercise_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 import 'common/widgets/bottom_nav_bar/bottom_nav_provider.dart';
@@ -24,6 +27,8 @@ void main() {
         ChangeNotifierProvider(create: (_) => BottomNavProvider()),
         ChangeNotifierProvider(
             create: (_) => SearchFoodViewModel()..searchFoods()),
+        ChangeNotifierProvider(
+            create: (_) => SearchExerciseViewModel()..searchExercises()),
         ChangeNotifierProvider(
             create: (_) => DiaryViewModel()..fetchCaloriesGoal()),
         ChangeNotifierProvider(create: (_) => ProfileViewModel()),
@@ -66,90 +71,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-// void main() {
-//   runApp(const MyApp());
-// }
-//
-// class MyApp extends StatelessWidget {
-//   const MyApp({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     Recipe recipe = testRecipe();
-//     return MaterialApp(
-//       title: 'Recipe Creator',
-//       debugShowCheckedModeBanner: false,
-//       theme: ThemeData(
-//         useMaterial3: true,
-//         colorScheme: ColorScheme.fromSeed(
-//           seedColor: HighlightColors.highlight500,
-//           primary: HighlightColors.highlight500,
-//         ),
-//         scaffoldBackgroundColor: NeutralColors.light500,
-//         textTheme: TextTheme(
-//           titleLarge: GoogleFonts.poppins(fontSize: 22,
-//               fontWeight: FontWeight.bold,
-//               color: NeutralColors.dark500),
-//           titleMedium: GoogleFonts.poppins(fontSize: 18,
-//               fontWeight: FontWeight.w600,
-//               color: NeutralColors.dark400),
-//           bodyLarge: GoogleFonts.poppins(
-//               fontSize: 16, color: NeutralColors.dark500),
-//           bodyMedium: GoogleFonts.poppins(
-//               fontSize: 14, color: NeutralColors.dark400),
-//           bodySmall: GoogleFonts.poppins(
-//               fontSize: 12, color: NeutralColors.dark300),
-//         ),
-//       ),
-//       home: RecipeDetailScreen(recipe: recipe),
-//     );
-//   }
-// }
-//
-// final mockFoods = [
-//   Food(
-//     name: "Grilled Chicken Breast",
-//     servingSize: 100,
-//     unit: "g",
-//     calories: 165,
-//     carbs: 0,
-//     fat: 3.6,
-//     protein: 31, id: '0',
-//   ),
-//   Food(
-//     id: '1',
-//     name: "Steamed Broccoli",
-//     servingSize: 100,
-//     unit: "g",
-//     calories: 35,
-//     carbs: 7,
-//     fat: 0.4,
-//     protein: 2.4,
-//   ),
-//   Food(
-//     id: '2',
-//     name: "Cooked Brown Rice",
-//     servingSize: 150,
-//     unit: "g",
-//     calories: 165,
-//     carbs: 34,
-//     fat: 1.4,
-//     protein: 3.5,
-//   ),
-// ];
-//
-// Recipe testRecipe() {
-//   return Recipe(
-//   name: "Grilled Chicken & Rice Bowl",
-//   description: "A balanced bowl of grilled chicken, brown rice, and broccoli. Great for post-workout meals!",
-//   servingSize: 1,
-//   unit: "bowl",
-//   calories: mockFoods.fold(0, (sum, f) => sum + f.calories),
-//   carbs: mockFoods.fold(0, (sum, f) => sum + f.carbs),
-//   fat: mockFoods.fold(0, (sum, f) => sum + f.fat),
-//   protein: mockFoods.fold(0, (sum, f) => sum + f.protein),
-// foodList: mockFoods,
-// id: '0');
-//
-// }

@@ -17,6 +17,7 @@ class AuthInterceptor extends Interceptor {
     final accessToken = await storage.read(key: 'access_token');
     if (accessToken != null) {
       options.headers['Authorization'] = 'Bearer $accessToken';
+      print("Access Token: $accessToken");
     }
     handler.next(options);
   }

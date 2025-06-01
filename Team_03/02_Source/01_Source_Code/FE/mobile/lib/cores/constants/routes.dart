@@ -7,15 +7,18 @@ import 'package:mobile/features/auth/views/profile/user_goal_screen.dart';
 import 'package:mobile/features/auth/views/splash/splash_screen.dart';
 import 'package:mobile/features/auth/views/survey/user_survey.dart';
 import 'package:mobile/features/fitness/view/diary/diary_screen.dart';
+import 'package:mobile/features/fitness/view/exercises/exercise_detail_screen.dart';
 import 'package:mobile/features/fitness/view/recipe_detail/create_recipe_screen.dart';
 import 'package:mobile/features/fitness/view/recipe_detail/recipe_detail.dart';
 import 'package:mobile/features/fitness/view/recipe_detail/search_food_for_recipe.dart';
 import 'package:mobile/features/fitness/view/scan_barcode/scan_barcode_screen.dart';
+import 'package:mobile/features/fitness/view/search_exercise/search_exercise_screen.dart';
 import 'package:mobile/features/statistic/view/dashboard/dashboard_screen.dart';
 import 'package:mobile/features/statistic/view/step/add_step.dart';
 
 import '../../features/fitness/models/meal_log.dart';
 import '../../features/fitness/models/recipe.dart';
+import '../../features/fitness/view/exercises/exercise_add_screen.dart';
 import '../../features/fitness/view/food_detail/food_detail_screen.dart';
 import '../../features/fitness/view/search_food/search_food_screen.dart';
 import 'package:mobile/features/statistic/view/weight/add_weight.dart';
@@ -99,7 +102,34 @@ final GoRouter appRouter = GoRouter(
         );
       },
     ),
+    GoRoute(
+      path: '/searchExercise/:workoutLogId',
+      builder: (context, state) {
+        final exerciseLogStr = state.pathParameters['workoutLogId']!;
 
+        return SearchExerciseScreen(
+          workoutLogId: exerciseLogStr,
+        );
+      },
+    ),
+    GoRoute(
+      path: '/exerciseDetails/:workoutLogId/:exerciseId',
+      builder: (context, state) {
+        final workoutLogId = state.pathParameters['workoutLogId']!;
+        final exerciseId = state.pathParameters['exerciseId']!;
+
+        return ExerciseDetailScreen(
+          workoutLogId: workoutLogId,
+          exerciseId: exerciseId,
+        );
+      },
+    ),
+    GoRoute(
+      path: '/create_my_exercise',
+      builder: (context, state) {
+        return const ExerciseAddScreen();
+      },
+    ),
     GoRoute(
       path: '/recipe_detail',
       builder: (context, state) {

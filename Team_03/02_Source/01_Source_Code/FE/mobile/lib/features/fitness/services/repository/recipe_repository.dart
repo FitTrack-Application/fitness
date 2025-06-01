@@ -32,7 +32,7 @@ class RecipeRepository {
       print('📤 Requesting searchRecipes with name="$name", page=$page, size=$size');
 
       final response = await _dio.get(
-        '/api/recipes',
+        '/api/recipes/',
         queryParameters: {
           'query': name,
           'page': page,
@@ -70,7 +70,7 @@ class RecipeRepository {
       print('📤 Creating recipe: ${recipe.name}');
 
       final response = await _dio.post(
-        '/api/recipes',
+        '/api/recipes/',
         data: recipe.toJson(), // You'll need to implement toJson in Recipe
       );
 
