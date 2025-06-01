@@ -2,8 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:mobile/features/auth/models/user_profile.dart';
 import '../../../../cores/utils/dio/dio_client.dart';
 
 class ApiService {
@@ -74,14 +72,14 @@ class ApiService {
     }
   }
 
-  Future<Map<String, dynamic>> getProfile() async {
+  Future<Map<String, dynamic>> getProfile(BuildContext context) async {
     try {
       final response = await _dio.get("/api/fit-profiles/me");
 
       debugPrint("API Response: ${response.statusCode} - ${response.data}");
 
       if (response.statusCode! < 200 || response.statusCode! >= 300) {
-        throw Exception('Failed to fetch profile: ${response.data}');
+        throw Exception('Failed to fetch profile(api): ${response.data}');
       }
 
       // Extract the "data" field from the response
@@ -91,22 +89,39 @@ class ApiService {
         throw Exception("Invalid response format: 'data' field is missing");
       }
     } catch (e) {
-      debugPrint("Error fetching profile: $e");
-      throw Exception("Failed to fetch profile");
+      debugPrint("Error editing profile: $e");
+
+      // Extract status code and error message from DioException
+      String errorMessage = "An error occurred";
+      if (e is DioException) {
+        final statusCode = e.response?.statusCode;
+        final serverMessage = e.response?.data.toString();
+        errorMessage = "Error editing profile: Status code $statusCode";
+      }
+
+      // Show error message as a pop-up
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(errorMessage),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
+    throw Exception("Failed to fetch profile due to an unknown error");
   }
 
   Future<void> editProfile(Map<String, dynamic> profileData,
-      {File? imageFile}) async {
+      {File? imageFile, required BuildContext context}) async {
     try {
       // Create a FormData object
       final formData = FormData.fromMap({
         'data': jsonEncode(profileData), // Profile data as a JSON string
-        if (imageFile != null)
-          'image': await MultipartFile.fromFile(imageFile.path,
-              filename: 'profile_image.jpg'),
-      });
 
+        if (imageFile != null)
+          'image': await MultipartFile.fromFile(
+            imageFile.path,
+          ),
+      });
       // Send the request
       final response = await _dio.post(
         "/api/fit-profiles/me",
@@ -117,33 +132,28 @@ class ApiService {
           },
         ),
       );
-
-      debugPrint("API Response: ${response.statusCode} - ${response.data}");
-
-      if (response.statusCode! < 200 || response.statusCode! >= 300) {
-        throw Exception('Failed to edit profile: ${response.data}');
-      }
     } catch (e) {
       debugPrint("Error editing profile: $e");
-      throw Exception("Failed to edit profile");
+
+      // Extract status code and error message from DioException
+      String errorMessage = "An error occurred";
+      if (e is DioException) {
+        final statusCode = e.response?.statusCode;
+        final serverMessage = e.response?.data.toString();
+        errorMessage = "Error editing profile: Status code $statusCode";
+      }
+
+      // Show error message as a pop-up
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(errorMessage),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
-  Future<String> uploadImage(File imageFile) async {
-    final formData = FormData.fromMap({
-      "file": await MultipartFile.fromFile(imageFile.path),
-    });
-
-    final response = await _dio.post("/api/upload", data: formData);
-
-    if (response.statusCode! >= 200 && response.statusCode! < 300) {
-      return response.data['url']; // Assuming the API returns the image URL
-    } else {
-      throw Exception("Failed to upload image");
-    }
-  }
-
-  Future<Map<String, dynamic>> getGoal() async {
+  Future<Map<String, dynamic>> getGoal(BuildContext context) async {
     try {
       final response = await _dio.get("/api/weight-goals/me");
 
@@ -157,11 +167,30 @@ class ApiService {
       return response.data;
     } catch (e) {
       debugPrint("Error fetching goal: $e");
-      throw Exception("Failed to fetch goal");
+
+      // Extract status code and error message from DioException
+      String errorMessage = "An error occurred";
+      if (e is DioException) {
+        final statusCode = e.response?.statusCode;
+        final serverMessage = e.response?.data.toString();
+        errorMessage =
+            "Error fetching goal: Status code $statusCode - $serverMessage";
+      }
+
+      // Show error message as a pop-up
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(errorMessage),
+          backgroundColor: Colors.red,
+        ),
+      );
+
+      throw Exception(
+          errorMessage); // Re-throw the exception for further handling
     }
   }
 
-  Future<void> editGoal(Map<String, dynamic> goalData) async {
+  Future<void> editGoal(Map<String, dynamic> goalData, context) async {
     try {
       final response = await _dio.put(
         "/api/weight-goals/me", // Assuming the endpoint for editing goals

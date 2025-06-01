@@ -6,6 +6,8 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
+final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
 class UserProfileScreen extends StatelessWidget {
   const UserProfileScreen({super.key});
 
@@ -14,10 +16,11 @@ class UserProfileScreen extends StatelessWidget {
     final profileViewModel =
         Provider.of<ProfileViewModel>(context, listen: false);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      profileViewModel.fetchProfile();
+      profileViewModel.fetchProfile(context);
     });
 
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text(
           'User Profile',
@@ -35,9 +38,6 @@ class UserProfileScreen extends StatelessWidget {
         builder: (context, profileViewModel, child) {
           if (profileViewModel.isLoading) {
             return const Center(child: CircularProgressIndicator());
-          } else if (profileViewModel.hasError) {
-            return Center(
-                child: Text("Error: ${profileViewModel.errorMessage}"));
           } else {
             return Padding(
               padding: const EdgeInsets.all(16.0),
@@ -65,7 +65,15 @@ class UserProfileScreen extends StatelessWidget {
                                 // Update the profile with the selected image
                                 await profileViewModel.updateProfile(context,
                                     imageFile: imageFile);
-
+                                if (profileViewModel.hasError) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content:
+                                          Text(profileViewModel.errorMessage),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
+                                }
                                 // Notify listeners to refresh the UI
                                 profileViewModel.notifyListeners();
                               }
@@ -79,8 +87,13 @@ class UserProfileScreen extends StatelessWidget {
                                 ),
                                 CircleAvatar(
                                   radius: 20,
-                                  backgroundImage: NetworkImage(
-                                      profileViewModel.userProfile.imageUrl),
+                                  backgroundImage: profileViewModel
+                                          .userProfile.imageUrl.isNotEmpty
+                                      ? NetworkImage(
+                                          profileViewModel.userProfile.imageUrl)
+                                      : const AssetImage(
+                                              'assets/images/avatar.png')
+                                          as ImageProvider,
                                 ),
                               ],
                             ),
@@ -92,7 +105,7 @@ class UserProfileScreen extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Username",
+                                "Name",
                                 style: Theme.of(context).textTheme.bodyLarge,
                               ),
                               Text(
@@ -117,6 +130,16 @@ class UserProfileScreen extends StatelessWidget {
                                       profileViewModel.userProfile.gender =
                                           newGender;
                                       profileViewModel.updateProfile(context);
+                                      if (profileViewModel.hasError) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                                profileViewModel.errorMessage),
+                                            backgroundColor: Colors.red,
+                                          ),
+                                        );
+                                      }
                                       profileViewModel
                                           .notifyListeners(); // Update the UI
                                     },
@@ -157,6 +180,16 @@ class UserProfileScreen extends StatelessWidget {
                                       profileViewModel.userProfile.height =
                                           newHeight;
                                       profileViewModel.updateProfile(context);
+                                      if (profileViewModel.hasError) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                                profileViewModel.errorMessage),
+                                            backgroundColor: Colors.red,
+                                          ),
+                                        );
+                                      }
                                       profileViewModel
                                           .notifyListeners(); // Update the UI
                                     },
@@ -196,6 +229,16 @@ class UserProfileScreen extends StatelessWidget {
                                     onValueChanged: (newAge) {
                                       profileViewModel.userProfile.age = newAge;
                                       profileViewModel.updateProfile(context);
+                                      if (profileViewModel.hasError) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                                profileViewModel.errorMessage),
+                                            backgroundColor: Colors.red,
+                                          ),
+                                        );
+                                      }
                                       profileViewModel
                                           .notifyListeners(); // Update the UI
                                     },
@@ -241,6 +284,16 @@ class UserProfileScreen extends StatelessWidget {
                                       profileViewModel.userProfile
                                           .activityLevel = newActivityLevel;
                                       profileViewModel.updateProfile(context);
+                                      if (profileViewModel.hasError) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                                profileViewModel.errorMessage),
+                                            backgroundColor: Colors.red,
+                                          ),
+                                        );
+                                      }
                                       profileViewModel
                                           .notifyListeners(); // Update the UI
                                     },

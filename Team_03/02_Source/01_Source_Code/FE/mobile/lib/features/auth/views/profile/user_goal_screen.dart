@@ -11,7 +11,7 @@ class UserGoalScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // Fetch goal data when the page is built
     final goalViewModel = Provider.of<GoalViewModel>(context, listen: false);
-    goalViewModel.fetchGoal(); // Replace "12345" with the actual user ID
+    goalViewModel.fetchGoal(context); // Replace "12345" with the actual user ID
 
     return Scaffold(
       appBar: AppBar(

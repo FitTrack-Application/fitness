@@ -19,13 +19,13 @@ class GoalViewModel extends ChangeNotifier {
   String? errorMessage;
 
   // Fetch goal data from the API
-  Future<void> fetchGoal() async {
+  Future<void> fetchGoal(BuildContext context) async {
     isLoading = true;
     errorMessage = null;
     notifyListeners();
 
     try {
-      final response = await _apiService.getGoal();
+      final response = await _apiService.getGoal(context);
 
       if (response.containsKey('data') &&
           response['data'] is Map<String, dynamic>) {
@@ -52,7 +52,7 @@ class GoalViewModel extends ChangeNotifier {
     try {
       final goalData = userGoal.toJson();
 
-      await _apiService.editGoal(goalData);
+      await _apiService.editGoal(goalData, context);
 
       notifyListeners();
     } catch (e) {

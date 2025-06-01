@@ -62,7 +62,6 @@ class UserProfile {
     };
 
     return {
-      "imageUrl": imageUrl,
       "name": name,
       "height": height,
       "gender": genderMapping[gender] ?? gender,

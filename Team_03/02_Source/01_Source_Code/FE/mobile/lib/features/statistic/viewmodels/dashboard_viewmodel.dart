@@ -56,9 +56,9 @@ class DashboardViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> fetchWeightStatistics() async {
+  Future<void> fetchWeightStatistics(BuildContext context) async {
     try {
-      final result = await apiService.fetchWeightStatistics();
+      final result = await apiService.fetchWeightStatistics(context);
       weightEntries = result;
       notifyListeners();
     } catch (e) {
@@ -68,9 +68,9 @@ class DashboardViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> fetchStepStatistics() async {
+  Future<void> fetchStepStatistics(BuildContext context) async {
     try {
-      final result = await apiService.fetchStepStatistics();
+      final result = await apiService.fetchStepStatistics(context);
       stepEntries = result;
       notifyListeners();
     } catch (e) {
@@ -105,7 +105,7 @@ class DashboardViewModel extends ChangeNotifier {
       );
 
       // Update the local list and notify listeners
-      await fetchWeightStatistics();
+      await fetchWeightStatistics(context);
 
       // Show success notification
       ScaffoldMessenger.of(context).showSnackBar(
@@ -149,7 +149,7 @@ class DashboardViewModel extends ChangeNotifier {
         date: date,
       );
 
-      await fetchStepStatistics();
+      await fetchStepStatistics(context);
 
       // Show success notification
       ScaffoldMessenger.of(context).showSnackBar(
@@ -171,9 +171,9 @@ class DashboardViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> fetchWeightGoal() async {
+  Future<void> fetchWeightGoal(BuildContext context) async {
     try {
-      final response = await _apiGoalService.getGoal();
+      final response = await _apiGoalService.getGoal(context);
 
       // Extract the "data" field from the response
       if (response.containsKey('data') &&
