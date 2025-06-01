@@ -529,6 +529,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
     final controller =
         TextEditingController(text: viewModel.servingSize.toString());
     final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
 
     await showDialog(
       context: context,
@@ -543,6 +544,9 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
           ],
           decoration: InputDecoration(
             hintText: 'Enter number of servings',
+            hintStyle: textTheme.bodyMedium?.copyWith(
+              color: colorScheme.onSurface.withValues(alpha: 255 * 0.6),
+            ),
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(color: colorScheme.primary),
               borderRadius: BorderRadius.circular(12),

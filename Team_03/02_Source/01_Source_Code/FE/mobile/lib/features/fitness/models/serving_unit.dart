@@ -24,4 +24,7 @@ class ServingUnit {
       'unitSymbol': unitSymbol,
     };
   }
+  @override
+  String toString() => unitName;
 }
+

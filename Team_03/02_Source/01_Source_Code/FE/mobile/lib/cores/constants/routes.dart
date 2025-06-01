@@ -22,6 +22,9 @@ import '../../features/fitness/view/food_detail/food_detail_screen.dart';
 import '../../features/fitness/view/scan_barcode/scan_barcode_screen.dart';
 import '../../features/fitness/view/search_food/search_food_screen.dart';
 import 'package:mobile/features/statistic/view/weight/add_weight.dart';
+import 'package:provider/provider.dart';
+
+import '../../features/fitness/viewmodels/diary_viewmodel.dart';
 
 final GoRouter appRouter = GoRouter(
   initialLocation: '/welcome',
@@ -40,6 +43,14 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/diary',
+      redirect: (context, state) {
+        // Get the DiaryViewModel from Provider
+        final diaryVM = Provider.of<DiaryViewModel>(context, listen: false);
+        // Refresh data
+        diaryVM.fetchDiaryForSelectedDate();
+        // Return null to continue with the navigation
+        return null;
+      },
       builder: (context, state) => const MainScreen(child: DiaryScreen()),
     ),
     GoRoute(

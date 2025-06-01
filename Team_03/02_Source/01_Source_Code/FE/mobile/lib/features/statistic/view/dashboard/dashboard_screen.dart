@@ -42,8 +42,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
       body: viewModel.isLoading
           ? const Center(child: CircularProgressIndicator())
           : viewModel.errorMessage != null
-              ? Center(child: Text(viewModel.errorMessage!))
-              : _buildDashboardBody(context, viewModel),
+          ? Center(child: Text(viewModel.errorMessage!))
+          : _buildDashboardBody(context, viewModel),
     );
   }
 
@@ -66,12 +66,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   style: theme.textTheme.titleMedium
                       ?.copyWith(color: NeutralColors.dark200)),
               const SizedBox(height: 24),
-              _buildCaloriesCard(theme, consumed, goal, remaining),
+              _buildCaloriesCard(theme, consumed , goal , remaining),
               const SizedBox(height: 24),
-              _buildMacronutrientsCard(theme, viewModel),
-              const SizedBox(height: 24),
+              // _buildMacronutrientsCard(theme, viewModel),
+              // const SizedBox(height: 24),
               //_buildQuickLogCard(theme),
-              const SizedBox(height: 24),
+              //const SizedBox(height: 24),
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal, // Enable horizontal scrolling
                 child: Row(
@@ -131,7 +131,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 colorList: colorList,
                 chartRadius: MediaQuery.of(context).size.width / 3,
                 chartValuesOptions:
-                    const ChartValuesOptions(showChartValues: false),
+                const ChartValuesOptions(showChartValues: false),
                 centerText: goal.toString(),
                 initialAngleInDegree: 270,
                 centerTextStyle: const TextStyle(
@@ -173,82 +173,82 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildMacronutrientsCard(
-      ThemeData theme, DashboardViewModel viewModel) {
-    final dataMap = <String, double>{
-      'Carbs': viewModel.carbsPercent.toDouble(),
-      'Protein': viewModel.proteinPercent.toDouble(),
-      'Fat': viewModel.fatPercent.toDouble(),
-    };
+  // Widget _buildMacronutrientsCard(
+  //     ThemeData theme, DashboardViewModel viewModel) {
+  //   final dataMap = <String, double>{
+  //     'Carbs': viewModel.carbsPercent.toDouble(),
+  //     'Protein': viewModel.proteinPercent.toDouble(),
+  //     'Fat': viewModel.fatPercent.toDouble(),
+  //   };
+  //
+  //   final colorList = <Color>[
+  //     NutritionColor.cabs,
+  //     NutritionColor.protein,
+  //     NutritionColor.fat,
+  //   ];
+  //
+  //   return Card(
+  //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+  //     elevation: 2,
+  //     child: Padding(
+  //       padding: const EdgeInsets.all(16),
+  //       child: Row(
+  //         children: [
+  //           Expanded(
+  //             flex: 3,
+  //             child: PieChart(
+  //               dataMap: dataMap,
+  //               animationDuration: const Duration(milliseconds: 800),
+  //               chartType: ChartType.disc,
+  //               colorList: colorList,
+  //               chartRadius: MediaQuery.of(context).size.width / 2.5,
+  //               chartValuesOptions:
+  //               const ChartValuesOptions(showChartValuesInPercentage: true),
+  //               legendOptions: const LegendOptions(showLegends: false),
+  //             ),
+  //           ),
+  //           Expanded(
+  //             flex: 2,
+  //             child: Column(
+  //               crossAxisAlignment: CrossAxisAlignment.start,
+  //               children: [
+  //                 Text('Macro Nutrients', style: theme.textTheme.titleLarge),
+  //                 const SizedBox(height: 12),
+  //                 _macroRow(
+  //                     'Carbs', viewModel.carbsPercent, NutritionColor.cabs),
+  //                 _macroRow('Protein', viewModel.proteinPercent,
+  //                     NutritionColor.protein),
+  //                 _macroRow('Fat', viewModel.fatPercent, NutritionColor.fat),
+  //               ],
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
-    final colorList = <Color>[
-      NutritionColor.cabs,
-      NutritionColor.protein,
-      NutritionColor.fat,
-    ];
-
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      elevation: 2,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          children: [
-            Expanded(
-              flex: 3,
-              child: PieChart(
-                dataMap: dataMap,
-                animationDuration: const Duration(milliseconds: 800),
-                chartType: ChartType.disc,
-                colorList: colorList,
-                chartRadius: MediaQuery.of(context).size.width / 2.5,
-                chartValuesOptions:
-                    const ChartValuesOptions(showChartValuesInPercentage: true),
-                legendOptions: const LegendOptions(showLegends: false),
-              ),
-            ),
-            Expanded(
-              flex: 2,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Macro Nutrients', style: theme.textTheme.titleLarge),
-                  const SizedBox(height: 12),
-                  _macroRow(
-                      'Carbs', viewModel.carbsPercent, NutritionColor.cabs),
-                  _macroRow('Protein', viewModel.proteinPercent,
-                      NutritionColor.protein),
-                  _macroRow('Fat', viewModel.fatPercent, NutritionColor.fat),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _macroRow(String name, int percent, Color color) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('$name - $percent%',
-              style: TextStyle(
-                color: color,
-              )),
-          const SizedBox(height: 4),
-          LinearProgressIndicator(
-            value: percent.toDouble() / 100.0,
-            color: color,
-            backgroundColor: NeutralColors.light300,
-            minHeight: 8,
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _macroRow(String name, int percent, Color color) {
+  //   return Padding(
+  //     padding: const EdgeInsets.only(bottom: 8),
+  //     child: Column(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [
+  //         Text('$name - $percent%',
+  //             style: TextStyle(
+  //               color: color,
+  //             )),
+  //         const SizedBox(height: 4),
+  //         LinearProgressIndicator(
+  //           value: percent.toDouble() / 100.0,
+  //           color: color,
+  //           backgroundColor: NeutralColors.light300,
+  //           minHeight: 8,
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   // Widget _buildQuickLogCard(ThemeData theme) {
   //   return Card(

@@ -3,14 +3,13 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:dio/dio.dart';
 
 class KeycloakService {
-  // static const String issuer = 'http://10.0.2.2:8888/realms/my-fitness';
-  static const String issuer = 'https://fitness-hcmus.cloud/realms/my-fitness';
+  // static const String baseUrl = 'http://10.0.2.2:8888';
+  static const String baseUrl = 'https://fitness-hcmus.cloud';
+  static const String issuer = '$baseUrl/realms/my-fitness';
   static const String clientId = 'flutter-app-client';
   static const String redirectUrl = 'com.fittrack.mobile:/callback';
-  // final String discoveryUrl =
-  //     'http://10.0.2.2:8888/realms/my-fitness/.well-known/openid-configuration';
   final String discoveryUrl =
-      'https://fitness-hcmus.cloud/realms/my-fitness/.well-known/openid-configuration';
+      '$baseUrl/realms/my-fitness/.well-known/openid-configuration';
   static const List<String> scopes = ['openid', 'profile', 'email'];
 
   final FlutterAppAuth _appAuth = const FlutterAppAuth();
@@ -26,24 +25,16 @@ class KeycloakService {
           clientId,
           redirectUrl,
           issuer: issuer,
-          //serviceConfiguration: _serviceConfiguration,
           scopes: scopes,
           discoveryUrl: discoveryUrl,
-          //additionalParameters: {'code_challenge_method': 'S256'},
-          //promptValues: ['login'],
           allowInsecureConnections: true,
         ),
       );
 
-      print(">>>>>>>>>>>>> RESULT 1");
-      print(result);
-
       if (result != null) {
         // Lưu token vào secure storage
-        print(">>>>>>>>>>>>> RESULT 2");
         print('Access Token: ${result.accessToken}');
         print('Refresh Token: ${result.refreshToken}');
-        print('ID Token: ${result.idToken}');
         print('Token Expiration: ${result.accessTokenExpirationDateTime}');
         await _storage.write(key: 'access_token', value: result.accessToken);
         await _storage.write(key: 'refresh_token', value: result.refreshToken);
@@ -94,8 +85,7 @@ class KeycloakService {
     if (refreshToken == null) return;
 
     final response = await _dio.post(
-      // 'http://10.0.2.2:8888/realms/my-fitness/protocol/openid-connect/logout',
-      'https://fitness-hcmus.cloud/realms/my-fitness/protocol/openid-connect/logout',
+      '$baseUrl/realms/my-fitness/protocol/openid-connect/logout',
       options: Options(
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',

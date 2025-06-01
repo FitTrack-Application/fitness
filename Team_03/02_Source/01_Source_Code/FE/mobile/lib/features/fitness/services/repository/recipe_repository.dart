@@ -1,142 +1,133 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 import '../../../../common/model/pagination.dart';
+import '../../../../cores/utils/dio/dio_client.dart';
 import '../../models/recipe.dart';
+import '../../models/serving_unit.dart';
 
 class RecipeRepository {
-  String baseUrl = "http://172.20.224.1:8088";
+  final Dio _dio = DioClient().dio;
 
-  Future<Recipe> getRecipeById(String recipeId) async {
-    final response = await http.get(Uri.parse('$baseUrl/api/recipes/$recipeId'));
+  Future<Recipe> getRecipeById(String id) async {
+    try {
+      print('📤 Requesting getRecipeById with id: $id');
 
-    if (response.statusCode == 200) {
-      final jsonBody = json.decode(response.body);
-      final data = jsonBody['data'];
+      final response = await _dio.get('/api/recipes/$id');
+      final data = response.data['data'];
+
+      print('✅ Response received for getRecipeById: ${data['name']}');
       return Recipe.fromJson(data);
-    } else {
-      throw Exception('Failed to load data');
+    } catch (e, stack) {
+      print('🔥 Exception during getRecipeById: $e');
+      print('📉 Stacktrace:\n$stack');
+      rethrow;
     }
   }
 
-  Future<PaginatedResponse<Recipe>> searchRecipes(String name,
-      {int page = 1, int size = 10}) async {
-    final url = Uri.parse('$baseUrl/api/recipes?query=$name&page=$page&size=$size');
+  Future<PaginatedResponse<Recipe>> searchRecipes(
+      String name, {
+        int page = 1,
+        int size = 10,
+      }) async {
+    try {
+      print('📤 Requesting searchRecipes with name="$name", page=$page, size=$size');
 
-    final response = await http.get(url);
+      final response = await _dio.get(
+        '/api/recipes',
+        queryParameters: {
+          'query': name,
+          'page': page,
+          'size': size,
+        },
+      );
 
-    if (response.statusCode == 200) {
-      final jsonBody = json.decode(response.body);
-      final List<dynamic> recipeListJson = jsonBody['data'] ?? [];
-      final Map<String, dynamic> paginationJson =
-          jsonBody['metadata']?['pagination'] ?? {};
+      final data = response.data;
+      final List<dynamic> recipeListJson = data['data'] ?? [];
+      final Map<String, dynamic> paginationJson = data['metadata']?['pagination'] ?? {};
 
-      final List<Recipe> recipes =
-      recipeListJson.map((item) => Recipe.fromJson(item)).toList();
+      print('✅ Response received for searchRecipes, total: ${recipeListJson.length}');
+
+      final recipes = recipeListJson.map((item) => Recipe.fromJson(item)).toList();
 
       return PaginatedResponse<Recipe>(
-        message: jsonBody['generalMessage'] ?? 'Success',
+        message: data['generalMessage'] ?? 'Success',
         data: recipes,
         pagination: Pagination(
-          currentPage: paginationJson['currentPage'] ?? 1,
+          currentPage: paginationJson['currentPage'] ?? page,
           pageSize: paginationJson['pageSize'] ?? size,
           totalItems: paginationJson['totalItems'] ?? recipes.length,
           totalPages: paginationJson['totalPages'] ?? 1,
         ),
       );
-    } else {
-      throw Exception('Failed to fetch recipes');
+    } catch (e, stack) {
+      print('🔥 Exception during searchRecipes: $e');
+      print('📉 Stacktrace:\n$stack');
+      rethrow;
     }
   }
 
-  Future<PaginatedResponse<Recipe>> searchMyRecipes(String name,
-      {int page = 1, int size = 10}) async {
-    // Return an empty list for "My Recipe"
-    return PaginatedResponse<Recipe>(
-      message: 'No data available for My Recipe',
-      data: [],
-      pagination: Pagination(
-        currentPage: page,
-        pageSize: size,
-        totalItems: 0,
-        totalPages: 1,
-      ),
-    );
-  }
-
-  /// Create a new recipe
   Future<Recipe> createRecipe(Recipe recipe) async {
-    final url = Uri.parse('$baseUrl/api/recipes');
-    final response = await http.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: json.encode({
-        'name': recipe.name,
-        'description': recipe.description,
-        'servingSize': recipe.servingSize,
-        'unit': recipe.unit,
-        'calories': recipe.calories,
-        'carbs': recipe.carbs,
-        'fat': recipe.fat,
-        'protein': recipe.protein,
-        'foodList': recipe.foodList.map((food) => food.toJson()).toList(),
-      }),
-    );
+    try {
+      print('📤 Creating recipe: ${recipe.name}');
 
-    if (response.statusCode == 201) {
-      final jsonBody = json.decode(response.body);
-      return Recipe.fromJson(jsonBody['data']);
-    } else {
-      throw Exception('Failed to create recipe');
+      final response = await _dio.post(
+        '/api/recipes',
+        data: recipe.toJson(), // You'll need to implement toJson in Recipe
+      );
+
+      final data = response.data['data'];
+      print('✅ Recipe created: ${data['name']}');
+      return Recipe.fromJson(data);
+    } catch (e, stack) {
+      print('🔥 Exception during createRecipe: $e');
+      print('📉 Stacktrace:\n$stack');
+      rethrow;
     }
   }
 
-  Future<List<Recipe>> getAllRecipes() async {
-    final response = await http.get(Uri.parse('$baseUrl/api/recipes/all'));
-
-    if (response.statusCode == 200) {
-      final jsonBody = json.decode(response.body);
-      final List<dynamic> recipeListJson = jsonBody['data'] ?? [];
-
-      return recipeListJson.map((item) => Recipe.fromJson(item)).toList();
-    } else {
-      throw Exception('Failed to fetch all recipes');
-    }
-  }
-
-  /// Update an existing recipe
-  Future<Recipe> updateRecipe(String id, Recipe recipe) async {
-    final url = Uri.parse('$baseUrl/api/recipes/$id');
-    final response = await http.put(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: json.encode({
-        'name': recipe.name,
-        'description': recipe.description,
-        'servingSize': recipe.servingSize,
-        'unit': recipe.unit,
-        'calories': recipe.calories,
-        'carbs': recipe.carbs,
-        'fat': recipe.fat,
-        'protein': recipe.protein,
-        'foodList': recipe.foodList.map((food) => food.toJson()).toList(),
-      }),
-    );
-
-    if (response.statusCode == 200) {
-      final jsonBody = json.decode(response.body);
-      return Recipe.fromJson(jsonBody['data']);
-    } else {
-      throw Exception('Failed to update recipe');
-    }
-  }
-
-  /// Delete a recipe
   Future<void> deleteRecipe(String id) async {
-    final url = Uri.parse('$baseUrl/api/recipes/$id');
-    final response = await http.delete(url);
+    try {
+      print('🗑️ Deleting recipe with id: $id');
+      await _dio.delete('/api/recipes/$id');
+      print('✅ Recipe deleted');
+    } catch (e, stack) {
+      print('🔥 Exception during deleteRecipe: $e');
+      print('📉 Stacktrace:\n$stack');
+      rethrow;
+    }
+  }
 
-    if (response.statusCode != 204) {
-      throw Exception('Failed to delete recipe');
+  Future<Recipe> updateRecipe(String id, Recipe recipe) async {
+    try {
+      print('📤 Updating recipe with id: $id');
+
+      final response = await _dio.put(
+        '/api/recipes/$id',
+        data: recipe.toJson(), // You need to define toJson in Recipe
+      );
+
+      final data = response.data['data'];
+      print('✅ Recipe updated: ${data['name']}');
+      return Recipe.fromJson(data);
+    } catch (e, stack) {
+      print('🔥 Exception during updateRecipe: $e');
+      print('📉 Stacktrace:\n$stack');
+      rethrow;
+    }
+  }
+
+  Future<List<ServingUnit>> getAllServingUnits() async {
+    try {
+      print('📤 Requesting getAllServingUnits');
+
+      final response = await _dio.get('/api/serving-units');
+      final List<dynamic> list = response.data['data'] ?? [];
+
+      print('✅ Total serving units fetched: ${list.length}');
+      return list.map((item) => ServingUnit.fromJson(item)).toList();
+    } catch (e, stack) {
+      print('🔥 Error in getAllServingUnits: $e');
+      print('📉 Stacktrace:\n$stack');
+      rethrow;
     }
   }
 }

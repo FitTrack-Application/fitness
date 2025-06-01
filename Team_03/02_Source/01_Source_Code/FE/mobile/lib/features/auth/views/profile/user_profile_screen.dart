@@ -123,7 +123,7 @@ class UserProfileScreen extends StatelessWidget {
                                 context: context,
                                 builder: (context) {
                                   return ValuePicker<String>(
-                                    values: ['Male', 'Female', 'Other'],
+                                    values: const ['Male', 'Female', 'Other'],
                                     initialValue:
                                         profileViewModel.userProfile.gender,
                                     onValueChanged: (newGender) {
@@ -271,7 +271,7 @@ class UserProfileScreen extends StatelessWidget {
                                 context: context,
                                 builder: (context) {
                                   return ValuePicker<String>(
-                                    values: [
+                                    values: const [
                                       'Sedentary',
                                       'Light',
                                       'Moderate',
