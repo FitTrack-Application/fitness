@@ -1,7 +1,14 @@
 import axiosInstance from "./axiosInstance";
+import KeycloakService from "./keycloakService";
 
 export const fetchDashboardStats = async () => {
   try {
+    // Đảm bảo Keycloak đã được khởi tạo đầy đủ
+    const keycloakService = KeycloakService.getInstance();
+    if (!keycloakService.isTokenValid()) {
+      await keycloakService.refreshToken();
+    }
+
     const response = await axiosInstance.get("/admin/statistics");
     console.log("response");
     console.log(response);

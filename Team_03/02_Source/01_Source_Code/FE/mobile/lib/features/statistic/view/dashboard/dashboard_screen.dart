@@ -7,6 +7,7 @@ import 'package:pie_chart/pie_chart.dart';
 
 import '../../../../cores/constants/colors.dart';
 import '../../viewmodels/dashboard_viewmodel.dart';
+import 'package:mobile/features/auth/viewmodels/profile_viewmodel.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -24,9 +25,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
       final viewModel = Provider.of<DashboardViewModel>(context, listen: false);
       const token = 'auth_token';
       viewModel.fetchDashboardData(token: token);
-      viewModel.fetchStepStatistics();
-      viewModel.fetchWeightStatistics();
-      viewModel.fetchWeightGoal();
+      viewModel.fetchStepStatistics(context);
+      viewModel.fetchWeightStatistics(context);
+      viewModel.fetchWeightGoal(context);
       _initialized = true;
     }
   }
@@ -39,8 +40,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
       body: viewModel.isLoading
           ? const Center(child: CircularProgressIndicator())
           : viewModel.errorMessage != null
-          ? Center(child: Text(viewModel.errorMessage!))
-          : _buildDashboardBody(context, viewModel),
+              ? Center(child: Text(viewModel.errorMessage!))
+              : _buildDashboardBody(context, viewModel),
     );
   }
 
@@ -53,17 +54,45 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final burned = viewModel.totalCaloriesBurned;
     final goal = viewModel.caloriesGoal;
     final remaining = goal - consumed; //+ burned;
+    final profileViewModel = context.read<ProfileViewModel>();
     return Padding(
         padding: const EdgeInsets.all(16.0),
         child: SafeArea(
           child: ListView(
             children: [
+              Row(
+                children: [
+                  CircleAvatar(
+                    radius: 40,
+                    backgroundImage:
+                        Provider.of<ProfileViewModel>(context, listen: false)
+                                .userProfile
+                                .imageUrl
+                                .isNotEmpty
+                            ? NetworkImage(Provider.of<ProfileViewModel>(
+                                    context,
+                                    listen: false)
+                                .userProfile
+                                .imageUrl)
+                            : const AssetImage('assets/images/avatar.png')
+                                as ImageProvider,
+                  ),
+                  const SizedBox(width: 20),
+                  Text(
+                      profileViewModel.userProfile.name.isNotEmpty
+                          ? profileViewModel.userProfile.name
+                          : "User Name",
+                      style: Theme.of(context).textTheme.titleLarge),
+                ],
+              ),
+
+              const SizedBox(height: 20),
               Text('Hi there 👋', style: theme.textTheme.headlineMedium),
               Text(today,
                   style: theme.textTheme.titleMedium
                       ?.copyWith(color: NeutralColors.dark200)),
               const SizedBox(height: 24),
-              _buildCaloriesCard(theme, consumed , goal , remaining),
+              _buildCaloriesCard(theme, consumed, goal, remaining),
               const SizedBox(height: 24),
               // _buildMacronutrientsCard(theme, viewModel),
               // const SizedBox(height: 24),
@@ -128,7 +157,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 colorList: colorList,
                 chartRadius: MediaQuery.of(context).size.width / 3,
                 chartValuesOptions:
-                const ChartValuesOptions(showChartValues: false),
+                    const ChartValuesOptions(showChartValues: false),
                 centerText: goal.toString(),
                 initialAngleInDegree: 270,
                 centerTextStyle: const TextStyle(

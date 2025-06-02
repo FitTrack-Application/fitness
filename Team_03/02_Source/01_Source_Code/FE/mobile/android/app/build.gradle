@@ -65,22 +65,22 @@ android {
 //        }
 //    }
 
-//    signingConfigs {
-//        release {
-//            keyAlias keystoreProperties['keyAlias']
-//            keyPassword keystoreProperties['keyPassword']
-//            storeFile file(keystoreProperties['storeFile'])
-//            storePassword keystoreProperties['storePassword']
-//        }
-//    }
+    // signingConfigs {
+    //     release {
+    //         keyAlias keystoreProperties['keyAlias']
+    //         keyPassword keystoreProperties['keyPassword']
+    //         storeFile file(keystoreProperties['storeFile'])
+    //         storePassword keystoreProperties['storePassword']
+    //     }
+    // }
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            shrinkResources false
-            signingConfig signingConfigs.debug
-        }
-    }
+    // buildTypes {
+    //     release {
+    //         minifyEnabled false
+    //         shrinkResources false
+    //         signingConfig signingConfigs.release
+    //     }
+    // }
 
 //    buildTypes {
 //        release {

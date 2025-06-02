@@ -279,67 +279,35 @@ class FoodRepository {
     );
   }
 
-  Future<ServingUnit> getServingUnitById(String id) async {
-    try {
-      print('📤 Requesting getServingUnitById with id=$id');
-
-      final response = await _dio.get('/api/serving-units/$id');
-      final data = response.data['data'];
-
-      print('✅ Serving unit fetched: ${data['name']}');
-      return ServingUnit.fromJson(data);
-    } catch (e, stack) {
-      print('🔥 Error in getServingUnitById: $e');
-      print('📉 Stacktrace:\n$stack');
-      rethrow;
-    }
-  }
-
   Future<List<ServingUnit>> getAllServingUnits() async {
     try {
-      print('📤 Requesting getAllServingUnits');
+      print('📤 Requesting getAllServingUnits (GraphQL)');
 
-      final response = await _dio.get('/api/serving-units');
-      final List<dynamic> list = response.data['data'] ?? [];
+      final response = await _dio.post(
+        '/food/graphql', // GraphQL endpoint
+        data: {
+          'query': '''
+          query {
+            getAllServingUnits {
+              id
+              unitName
+              unitSymbol
+            }
+          }
+        '''
+        },
+      );
+
+      final List<dynamic> list = response.data['data']?['getAllServingUnits'] ?? [];
 
       print('✅ Total serving units fetched: ${list.length}');
       return list.map((item) => ServingUnit.fromJson(item)).toList();
     } catch (e, stack) {
-      print('🔥 Error in getAllServingUnits: $e');
+      print('🔥 Error in getAllServingUnits (GraphQL): $e');
       print('📉 Stacktrace:\n$stack');
       rethrow;
     }
   }
-
-  // Future<List<ServingUnit>> getAllServingUnits() async {
-  //   try {
-  //     print('📤 Requesting getAllServingUnits (GraphQL)');
-  //
-  //     final response = await _dio.post(
-  //       '/food/graphql', // GraphQL endpoint
-  //       data: {
-  //         'query': '''
-  //         query {
-  //           getAllServingUnits {
-  //             id
-  //             unitName
-  //             unitSymbol
-  //           }
-  //         }
-  //       '''
-  //       },
-  //     );
-  //
-  //     final List<dynamic> list = response.data['data']?['getAllServingUnits'] ?? [];
-  //
-  //     print('✅ Total serving units fetched: ${list.length}');
-  //     return list.map((item) => ServingUnit.fromJson(item)).toList();
-  //   } catch (e, stack) {
-  //     print('🔥 Error in getAllServingUnits (GraphQL): $e');
-  //     print('📉 Stacktrace:\n$stack');
-  //     rethrow;
-  //   }
-  // }
 
   // Future<void> searchMyRecipes(String query, {required int page, required int size}) {}
 }

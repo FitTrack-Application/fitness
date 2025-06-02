@@ -58,7 +58,10 @@ class _AddStepState extends State<AddStep> {
                 context.go('/dashboard');
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Please fill in all fields')),
+                  SnackBar(
+                    content: Text("Please try again"),
+                    backgroundColor: Colors.red,
+                  ),
                 );
               }
             },
@@ -87,8 +90,11 @@ class _AddStepState extends State<AddStep> {
                   if (steps == null) {
                     return 'Please enter a valid number';
                   }
-                  if (steps >= 5000) {
-                    return 'Steps must be less than 5000';
+                  if (steps >= 15000) {
+                    return 'Steps must be less than 15000';
+                  }
+                  if (steps < 0) {
+                    return 'Steps cannot be negative';
                   }
                   return null;
                 },

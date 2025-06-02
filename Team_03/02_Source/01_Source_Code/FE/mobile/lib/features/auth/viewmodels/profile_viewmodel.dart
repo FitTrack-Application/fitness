@@ -3,13 +3,14 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:mobile/features/auth/services/api_service.dart';
 import 'package:mobile/features/auth/models/user_profile.dart';
+import 'package:dio/dio.dart';
 
 class ProfileViewModel extends ChangeNotifier {
   final ApiService _apiService = ApiService();
 
   // UserProfile instance
   UserProfile userProfile = UserProfile(
-    imageUrl: "https://example.com/avatar.jpg",
+    imageUrl: "",
     name: "",
     height: 0.0,
     gender: "",
@@ -22,20 +23,25 @@ class ProfileViewModel extends ChangeNotifier {
   bool hasError = false;
   String errorMessage = "";
 
+  // Flag to track if the profile has been fetched
+  bool hasFetchedProfile = false;
+
   // Fetch profile data
-  Future<void> fetchProfile() async {
+  Future<void> fetchProfile(BuildContext context) async {
+    if (hasFetchedProfile) return; // Prevent multiple fetches
     isLoading = true;
     hasError = false;
     notifyListeners();
 
     try {
-      final profileData = await _apiService.getProfile();
+      final profileData = await _apiService.getProfile(context);
       debugPrint("API Response: $profileData"); // Log the API response
 
       userProfile = UserProfile.fromJson(profileData);
       debugPrint(
           "Updated UserProfile: ${userProfile.toJson()}"); // Log the updated userProfile
 
+      hasFetchedProfile = true; // Mark profile as fetched
       isLoading = false;
       notifyListeners();
     } catch (e) {
@@ -43,6 +49,7 @@ class ProfileViewModel extends ChangeNotifier {
       hasError = true;
       errorMessage = e.toString();
       debugPrint("Error fetching profile: $e"); // Log the error
+
       notifyListeners();
     }
   }
@@ -57,13 +64,24 @@ class ProfileViewModel extends ChangeNotifier {
       final profileData = userProfile.toJson();
 
       // Call the API to update the profile
-      await _apiService.editProfile(profileData, imageFile: imageFile);
+      await _apiService.editProfile(profileData,
+          imageFile: imageFile, context: context);
+
+      // Fetch the updated profile after editing
+      hasFetchedProfile = false; // Reset the flag
+      await fetchProfile(context); // Fetch updated profile
 
       notifyListeners();
     } catch (e) {
       hasError = true;
-      errorMessage = "Failed to update profile";
-      debugPrint("Error updating profile: $e");
+
+      // Handle DioException specifically
+      if (e is DioError) {
+        errorMessage =
+            "Failed to update profile: ${e.response?.data ?? e.message}";
+      } else {
+        errorMessage = "An unexpected error occurred: ${e.toString()}";
+      }
     } finally {
       isLoading = false;
       notifyListeners();

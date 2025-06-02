@@ -188,28 +188,33 @@ class _DiaryScreenState extends State<DiaryScreen>
             children: [
               Text('Calories Remaining', style: textTheme.titleSmall),
               const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _buildCalorieColumn(
-                      viewModel.calorieGoal.toInt(), 'Goal', context),
-                  const SizedBox(width: 12),
-                  Text('-', style: textTheme.bodySmall),
-                  const SizedBox(width: 12),
-                  _buildCalorieColumn(
-                      viewModel.caloriesConsumed.toInt(), 'Food', context),
-                  const SizedBox(width: 12),
-                  Text('+', style: textTheme.bodySmall),
-                  const SizedBox(width: 12),
-                  _buildCalorieColumn(
-                      viewModel.caloriesBurned.toInt(), 'Exercise', context),
-                  const SizedBox(width: 12),
-                  Text('=', style: textTheme.bodySmall),
-                  const SizedBox(width: 12),
-                  _buildCalorieColumn(
-                      viewModel.caloriesRemaining.toInt(), 'Remaining', context,
-                      bold: true),
-                ],
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    _buildCalorieColumn(
+                        viewModel.calorieGoal.toInt(), 'Goal', context),
+                    const SizedBox(width: 12),
+                    Text('-', style: textTheme.bodySmall),
+                    const SizedBox(width: 12),
+                    _buildCalorieColumn(
+                        viewModel.caloriesConsumed.toInt(), 'Food', context),
+                    const SizedBox(width: 12),
+                    Text('+', style: textTheme.bodySmall),
+                    const SizedBox(width: 12),
+                    _buildCalorieColumn(
+                        viewModel.caloriesBurned.toInt(), 'Exercise', context),
+                    const SizedBox(width: 12),
+                    Text('=', style: textTheme.bodySmall),
+                    const SizedBox(width: 12),
+                    _buildCalorieColumn(
+                      viewModel.caloriesRemaining.toInt(),
+                      'Remaining',
+                      context,
+                      bold: true,
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

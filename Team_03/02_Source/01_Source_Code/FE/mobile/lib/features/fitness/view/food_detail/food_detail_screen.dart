@@ -529,6 +529,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
     final controller =
         TextEditingController(text: viewModel.servingSize.toString());
     final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
 
     await showDialog(
       context: context,
@@ -541,16 +542,19 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
             FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),
             LengthLimitingTextInputFormatter(10),
           ],
-          decoration: InputDecoration(
-            hintText: 'Enter number of servings',
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: colorScheme.primary),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
+          // decoration: InputDecoration(
+          //   hintText: 'Enter number of servings',
+          //   hintStyle: textTheme.bodyMedium?.copyWith(
+          //     color: colorScheme.onSurface.withValues(alpha: 255 * 0.6),
+          //   ),
+          //   focusedBorder: OutlineInputBorder(
+          //     borderSide: BorderSide(color: colorScheme.primary),
+          //     borderRadius: BorderRadius.circular(12),
+          //   ),
+          //   border: OutlineInputBorder(
+          //     borderRadius: BorderRadius.circular(12),
+          //   ),
+          // ),
         ),
         actions: [
           TextButton(
