@@ -6,7 +6,6 @@ import 'package:mobile/features/fitness/view/exercises/widget/exercise_info_sect
 import 'package:mobile/features/fitness/viewmodels/exercise_detail_viewmodel.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/serving_unit.dart';
 import '../../viewmodels/diary_viewmodel.dart';
 import '../food_detail/widget/custom_divider.dart';
 

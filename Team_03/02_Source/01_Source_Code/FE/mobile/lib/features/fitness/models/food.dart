@@ -56,4 +56,12 @@ class Food {
       'numberOfServings': numberOfServings,
     };
   }
+
+  Map<String, dynamic> idToJson() {
+    return {
+      'foodId': id,
+      'servingUnitId': '9b0f9cf0-1c6e-4c1e-a3a1-8a9fddc20a0b',
+      'numberOfServings': numberOfServings,
+    };
+  }
 }

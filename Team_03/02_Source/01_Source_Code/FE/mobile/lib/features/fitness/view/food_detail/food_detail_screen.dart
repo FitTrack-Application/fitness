@@ -545,7 +545,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
           decoration: InputDecoration(
             hintText: 'Enter number of servings',
             hintStyle: textTheme.bodyMedium?.copyWith(
-              color: colorScheme.onSurface.withValues(alpha: 255 * 0.6),
+              color: colorScheme.onSurface.withOpacity(0.6),
             ),
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(color: colorScheme.primary),

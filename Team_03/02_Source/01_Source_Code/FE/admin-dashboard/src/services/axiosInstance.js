@@ -3,11 +3,19 @@ import KeycloakService from "./keycloakService";
 
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
-  timeout: 60000,
+  timeout: 180000,
   headers: {
     "Content-Type": "application/json",
   },
 });
+
+// Hàm delay với thời gian tùy chỉnh
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+// Hàm tính thời gian delay cho retry với exponential backoff
+const getRetryDelay = (retryCount) => {
+  return Math.min(1000 * Math.pow(2, retryCount), 10000); // Max 10 seconds
+};
 
 // Interceptor để thêm token vào mỗi request
 axiosInstance.interceptors.request.use(
@@ -47,13 +55,33 @@ axiosInstance.interceptors.response.use(
   },
   async (error) => {
     const originalRequest = error.config;
+    
+    // Kiểm tra nếu request đã retry quá 3 lần
+    if (originalRequest._retryCount >= 3) {
+      return Promise.reject(error);
+    }
 
-    // Nếu lỗi 401 (Unauthorized) và chưa thử lại
+    // Khởi tạo số lần retry
+    originalRequest._retryCount = (originalRequest._retryCount || 0) + 1;
+
+    // Xử lý lỗi timeout hoặc lỗi 500
     if (
-      error.response &&
-      error.response.status === 401 &&
-      !originalRequest._retry
+      (error.code === 'ECONNABORTED' && error.message.includes('timeout')) ||
+      (error.response && error.response.status === 500)
     ) {
+      const delayTime = getRetryDelay(originalRequest._retryCount);
+      console.log(`Retry attempt ${originalRequest._retryCount} after ${delayTime}ms`);
+      
+      try {
+        await delay(delayTime);
+        return axiosInstance(originalRequest);
+      } catch (retryError) {
+        return Promise.reject(retryError);
+      }
+    }
+
+    // Xử lý lỗi 401 (Unauthorized)
+    if (error.response && error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
       try {

@@ -3,7 +3,6 @@ import 'dart:async';
 
 import '../models/food.dart';
 import '../models/recipe.dart';
-import '../models/serving_unit.dart';
 import '../services/repository/food_repository.dart';
 import '../services/repository/recipe_repository.dart';
 
