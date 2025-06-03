@@ -14,30 +14,33 @@ class ProfileScreen extends StatelessWidget {
     final authViewModel = context.read<AuthViewModel>();
     final profileViewModel = context.read<ProfileViewModel>();
     return Scaffold(
-      appBar: AppBar(title: const Text("Profile")),
       body: Column(
         children: [
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    context.go('/profile/edit');
-                  },
-                  child: const CircleAvatar(
-                    radius: 50,
-                    backgroundColor: NeutralColors.light500,
-                    child: Icon(
-                      Icons.person,
-                      size: 50,
-                      color: NeutralColors.dark500,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 5),
-              ],
-            ),
+          const SizedBox(height: 40),
+          Row(
+            children: [
+              const SizedBox(width: 10),
+              CircleAvatar(
+                radius: 40,
+                backgroundImage: Provider.of<ProfileViewModel>(context,
+                            listen: false)
+                        .userProfile
+                        .imageUrl
+                        .isNotEmpty
+                    ? NetworkImage(
+                        Provider.of<ProfileViewModel>(context, listen: false)
+                            .userProfile
+                            .imageUrl)
+                    : const AssetImage('assets/images/avatar.png')
+                        as ImageProvider,
+              ),
+              const SizedBox(width: 10),
+              Text(
+                  profileViewModel.userProfile.name.isNotEmpty
+                      ? profileViewModel.userProfile.name
+                      : "User Name",
+                  style: Theme.of(context).textTheme.titleLarge),
+            ],
           ),
           const SizedBox(height: 20),
           Expanded(

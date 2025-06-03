@@ -32,7 +32,7 @@ class RecipeRepository {
       print('📤 Requesting searchRecipes with name="$name", page=$page, size=$size');
 
       final response = await _dio.get(
-        '/api/recipes',
+        '/api/recipes/me',
         queryParameters: {
           'query': name,
           'page': page,

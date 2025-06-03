@@ -49,25 +49,35 @@ class DashboardViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> fetchWeightStatistics() async {
+  Future<void> fetchWeightStatistics(BuildContext context) async {
     try {
-      final result = await apiService.fetchWeightStatistics();
+      final result = await apiService.fetchWeightStatistics(context);
       weightEntries = result;
       notifyListeners();
     } catch (e) {
       errorMessage = e.toString();
+      stepEntries = [
+        StepEntry(date: DateTime.now(), steps: 500), // Example default entry
+        StepEntry(
+            date: DateTime.now().subtract(const Duration(days: 1)), steps: 1000),
+      ];
     } finally {
       notifyListeners();
     }
   }
 
-  Future<void> fetchStepStatistics() async {
+  Future<void> fetchStepStatistics(BuildContext context) async {
     try {
-      final result = await apiService.fetchStepStatistics();
+      final result = await apiService.fetchStepStatistics(context);
       stepEntries = result;
       notifyListeners();
     } catch (e) {
       errorMessage = e.toString();
+      stepEntries = [
+        StepEntry(date: DateTime.now(), steps: 500), // Example default entry
+        StepEntry(
+            date: DateTime.now().subtract(const Duration(days: 1)), steps: 1000),
+      ];
     } finally {
       notifyListeners();
     }
@@ -80,16 +90,6 @@ class DashboardViewModel extends ChangeNotifier {
     required String date,
     String? progressPhoto,
   }) async {
-    if (weight < 20 || weight > 200) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Weight must be between 20 and 200 kg'),
-          backgroundColor: Colors.red,
-        ),
-      );
-      return;
-    }
-
     try {
       await apiService.addWeightLog(
         weight: weight,
@@ -98,7 +98,10 @@ class DashboardViewModel extends ChangeNotifier {
       );
 
       // Update the local list and notify listeners
-      await fetchWeightStatistics();
+      weightEntries
+          .add(WeightEntry(date: DateTime.parse(date), weight: weight));
+      notifyListeners();
+      await fetchWeightStatistics(context);
 
       // Show success notification
       ScaffoldMessenger.of(context).showSnackBar(
@@ -126,23 +129,16 @@ class DashboardViewModel extends ChangeNotifier {
     required int steps,
     required String date,
   }) async {
-    if (steps < 0 || steps > 10000) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Steps must be between 0 and 10,000'),
-          backgroundColor: Colors.red,
-        ),
-      );
-      return;
-    }
-
     try {
       await apiService.addStepLog(
         steps: steps,
         date: date,
       );
 
-      await fetchStepStatistics();
+      // Update the local list and notify listeners
+      stepEntries.add(StepEntry(date: DateTime.parse(date), steps: steps));
+      notifyListeners();
+      await fetchStepStatistics(context);
 
       // Show success notification
       ScaffoldMessenger.of(context).showSnackBar(
@@ -164,9 +160,9 @@ class DashboardViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> fetchWeightGoal() async {
+  Future<void> fetchWeightGoal(BuildContext context) async {
     try {
-      final response = await _apiGoalService.getGoal();
+      final response = await _apiGoalService.getGoal(context);
 
       // Extract the "data" field from the response
       if (response.containsKey('data') &&

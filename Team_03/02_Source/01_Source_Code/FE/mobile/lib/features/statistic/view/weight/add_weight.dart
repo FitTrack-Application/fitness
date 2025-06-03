@@ -59,7 +59,10 @@ class _AddWeightState extends State<AddWeight> {
                 context.go('/dashboard');
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Please fill in all fields')),
+                  SnackBar(
+                    content: Text("Please try again"),
+                    backgroundColor: Colors.red,
+                  ),
                 );
               }
             },
@@ -90,6 +93,9 @@ class _AddWeightState extends State<AddWeight> {
                   }
                   if (weight > 200) {
                     return 'Weight cannot exceed 200 kg';
+                  }
+                  if (weight < 20) {
+                    return 'Weight must be at least 20 kg';
                   }
                   return null;
                 },
