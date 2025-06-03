@@ -127,14 +127,6 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
         ),
         centerTitle: true,
         title: Text('Search food', style: textTheme.titleMedium),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.qr_code_scanner),
-            onPressed: () {
-              GoRouter.of(context).go('/scan');
-            },
-          ),
-        ],
         bottom: TabBar(
           controller: _tabController,
           tabs: const [
@@ -175,16 +167,7 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
                 decoration: InputDecoration(
                   hintText: 'Search for food',
                   hintStyle: theme.textTheme.bodyMedium,
-                  prefixIcon: viewModel.isLoading
-                      ? const SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    ),
-                  )
-                      : const Icon(Icons.search),
+                  prefixIcon: const Icon(Icons.search),
                   contentPadding: const EdgeInsets.symmetric(vertical: 10),
                   suffixIcon: _allController.text.isNotEmpty
                       ? IconButton(

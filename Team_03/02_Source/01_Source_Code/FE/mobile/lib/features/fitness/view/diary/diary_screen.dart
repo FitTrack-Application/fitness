@@ -365,7 +365,7 @@ class _DiaryScreenState extends State<DiaryScreen>
             style: textTheme.bodyMedium,
           ),
           subtitle: Text(
-              "${item.food.calories} cal, Carbs: ${item.food.carbs}g, Fat: ${item.food.fat}g, Protein: ${item.food.protein}g",
+              "${item.numberOfServings} ${item.servingUnit.unitSymbol}, ${item.food.calories.toInt()} cal, Carbs: ${item.food.carbs}g, Fat: ${item.food.fat}g, Protein: ${item.food.protein}g",
               style: textTheme.bodySmall),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
