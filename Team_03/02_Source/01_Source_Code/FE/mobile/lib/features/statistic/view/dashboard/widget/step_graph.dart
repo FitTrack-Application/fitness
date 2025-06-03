@@ -153,8 +153,7 @@ class StepGraph extends StatelessWidget {
                                       // Only show some dates to avoid overcrowding
                                       final daysSinceStart =
                                           date.difference(minDate).inDays;
-                                      if (daysSinceStart % daysInterval == 0 ||
-                                          sortedEntries.length <= 4) {
+                                      if (daysSinceStart % daysInterval == 0) {
                                         return Transform.rotate(
                                           angle: -0.5,
                                           child: Text(

@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:mobile/features/fitness/models/exercise.dart';
 import 'package:mobile/features/fitness/services/repository/exercise_repository.dart';
 
 // Define possible loading states

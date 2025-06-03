@@ -24,6 +24,11 @@ class ServingUnit {
       'unitSymbol': unitSymbol,
     };
   }
+  Map<String, dynamic> idToJson() {
+    return {
+      'id': id,
+    };
+  }
   @override
   String toString() => unitName;
 }

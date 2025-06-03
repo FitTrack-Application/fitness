@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import '../models/food.dart';
 import '../models/recipe.dart';
 import '../models/serving_unit.dart';
@@ -65,17 +64,16 @@ class CreateRecipeViewModel extends ChangeNotifier {
   Future<Recipe?> createRecipe() async {
     final name = nameController.text.trim();
     final description = descriptionController.text.trim();
-    final numberOfServings = double.tryParse(numberOfServingsController.text.trim()) ?? double.nan;
+    final numberOfServings = double.tryParse(numberOfServingsController.text.trim()) ?? 0;
 
-    if (name.isEmpty ||numberOfServings.isNaN|| description.isEmpty || selectedUnit == null )  return null;
-
+    if (name.isEmpty || numberOfServings == 0|| description.isEmpty || selectedUnit == null )  return null;
     final newRecipe = Recipe(
       id: UniqueKey().toString(),
       name: name,
-      description: description,
+      direction: description,
       numberOfServings: numberOfServings,
       servingUnit: _selectedUnit!,
-      foodList: List.from(_selectedFoods),
+      recipeEntries: List.from(_selectedFoods),
     );
 
     try {

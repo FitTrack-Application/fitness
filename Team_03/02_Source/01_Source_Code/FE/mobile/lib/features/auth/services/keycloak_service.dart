@@ -19,7 +19,7 @@ class KeycloakService {
   // Đăng nhập với Keycloak
   Future<bool> login() async {
     try {
-      final AuthorizationTokenResponse? result =
+      final AuthorizationTokenResponse result =
       await _appAuth.authorizeAndExchangeCode(
         AuthorizationTokenRequest(
           clientId,
@@ -31,16 +31,14 @@ class KeycloakService {
         ),
       );
 
-      if (result != null) {
-        // Lưu token vào secure storage
-        print('Access Token: ${result.accessToken}');
-        print('Refresh Token: ${result.refreshToken}');
-        print('Token Expiration: ${result.accessTokenExpirationDateTime}');
-        await _storage.write(key: 'access_token', value: result.accessToken);
-        await _storage.write(key: 'refresh_token', value: result.refreshToken);
-        return true;
-      }
-      return false;
+      // Lưu token vào secure storage
+      print('Access Token: ${result.accessToken}');
+      print('Refresh Token: ${result.refreshToken}');
+      print('Token Expiration: ${result.accessTokenExpirationDateTime}');
+      await _storage.write(key: 'access_token', value: result.accessToken);
+      await _storage.write(key: 'refresh_token', value: result.refreshToken);
+      return true;
+          return false;
     } catch (e) {
       print('Login error: $e');
       return false;
@@ -58,7 +56,7 @@ class KeycloakService {
       final String? refreshToken = await _storage.read(key: 'refresh_token');
       if (refreshToken == null) return false;
 
-      final TokenResponse? result = await _appAuth.token(
+      final TokenResponse result = await _appAuth.token(
         TokenRequest(
           clientId,
           redirectUrl,
@@ -67,12 +65,10 @@ class KeycloakService {
         ),
       );
 
-      if (result != null) {
-        await _storage.write(key: 'access_token', value: result.accessToken);
-        await _storage.write(key: 'refresh_token', value: result.refreshToken);
-        return true;
-      }
-      return false;
+      await _storage.write(key: 'access_token', value: result.accessToken);
+      await _storage.write(key: 'refresh_token', value: result.refreshToken);
+      return true;
+          return false;
     } catch (e) {
       print('Refresh token error: $e');
       return false;

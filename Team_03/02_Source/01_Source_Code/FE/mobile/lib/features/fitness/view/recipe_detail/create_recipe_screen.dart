@@ -190,7 +190,6 @@
 // }
 
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -214,7 +213,7 @@ class CreateRecipeScreen extends StatelessWidget {
 
 
 class _CreateRecipeScreenContent extends StatelessWidget {
-  const _CreateRecipeScreenContent({super.key});
+  const _CreateRecipeScreenContent();
 
   @override
   Widget build(BuildContext context) {
@@ -229,25 +228,15 @@ class _CreateRecipeScreenContent extends StatelessWidget {
               final recipe = await viewModel.createRecipe();
               if (recipe == null) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Failed to create recipe.')),
+                  const SnackBar(content: Text('Failed to create recipe.')),
                 );
                 return;
               }
               await context.push('/recipe_detail', extra: recipe);
               context.pop(recipe);
-              if (recipe != null) {
-                // Save and pop
-                Navigator.pop(context, recipe);
-              } else {
-                print("❌ Failed to create recipe: name=${viewModel.nameController.text}, "
-                    "desc=${viewModel.descriptionController.text}, "
-                    "servings=${viewModel.numberOfServingsController.text}, "
-                    "unit=${viewModel.selectedUnit}");
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Failed to create recipe.')),
-                );
-              }
-            },
+              // Save and pop
+              Navigator.pop(context, recipe);
+                        },
             child: const Text('Save', style: TextStyle(color: HighlightColors.highlight500)),
           ),
         ],
@@ -323,7 +312,7 @@ class _CreateRecipeScreenContent extends StatelessWidget {
             const SizedBox(height: 10),
             Expanded(
               child: viewModel.selectedFoods.isEmpty
-                  ? Center(child: Text('No ingredients yet.'))
+                  ? const Center(child: Text('No ingredients yet.'))
                   : ListView.builder(
                 itemCount: viewModel.selectedFoods.length,
                 itemBuilder: (_, index) {

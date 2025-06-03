@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile/features/fitness/services/repository/exercise_repository.dart';
 import 'package:mobile/features/fitness/view/exercises/widget/exercise_info_section.dart';
 import 'package:provider/provider.dart';
-import '../../viewmodels/diary_viewmodel.dart';
 import '../../viewmodels/exercise_add_viewmodel.dart';
 import '../food_detail/widget/custom_divider.dart';
 
