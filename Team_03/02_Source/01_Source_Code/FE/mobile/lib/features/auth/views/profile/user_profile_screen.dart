@@ -101,18 +101,100 @@ class UserProfileScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           // Username Section
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Name",
-                                style: Theme.of(context).textTheme.bodyLarge,
-                              ),
-                              Text(
-                                profileViewModel.userProfile.name,
-                                style: Theme.of(context).textTheme.displaySmall,
-                              ),
-                            ],
+                          // Name Section
+                          GestureDetector(
+                            onTap: () {
+                              showModalBottomSheet(
+                                context: context,
+                                builder: (context) {
+                                  final TextEditingController nameController =
+                                      TextEditingController(
+                                    text: profileViewModel.userProfile.name,
+                                  );
+
+                                  return Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Enter your name",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .titleMedium,
+                                        ),
+                                        const SizedBox(height: 10),
+                                        TextField(
+                                          controller: nameController,
+                                          decoration: const InputDecoration(
+                                            border: OutlineInputBorder(),
+                                            hintText: "Enter your name",
+                                          ),
+                                        ),
+                                        const SizedBox(height: 20),
+                                        ElevatedButton(
+                                          onPressed: () async {
+                                            final newName =
+                                                nameController.text.trim();
+                                            if (newName.isNotEmpty) {
+                                              profileViewModel
+                                                  .userProfile.name = newName;
+                                              await profileViewModel
+                                                  .updateProfile(context);
+
+                                              if (profileViewModel.hasError) {
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  SnackBar(
+                                                    content: Text(
+                                                        profileViewModel
+                                                            .errorMessage),
+                                                    backgroundColor: Colors.red,
+                                                  ),
+                                                );
+                                              } else {
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  const SnackBar(
+                                                    content: Text(
+                                                        "Name updated successfully!"),
+                                                    backgroundColor:
+                                                        Colors.green,
+                                                  ),
+                                                );
+                                              }
+                                              profileViewModel
+                                                  .notifyListeners(); // Refresh the UI
+                                            }
+                                            Navigator.pop(
+                                                context); // Close the modal
+                                          },
+                                          child: const Text("Save"),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Name",
+                                  style: Theme.of(context).textTheme.bodyLarge,
+                                ),
+                                Text(
+                                  profileViewModel.userProfile.name.isNotEmpty
+                                      ? profileViewModel.userProfile.name
+                                      : "User Name",
+                                  style:
+                                      Theme.of(context).textTheme.displaySmall,
+                                ),
+                              ],
+                            ),
                           ),
                           const Divider(),
 

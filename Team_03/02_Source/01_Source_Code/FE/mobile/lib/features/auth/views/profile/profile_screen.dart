@@ -5,6 +5,7 @@ import 'package:mobile/cores/constants/colors.dart';
 import 'package:mobile/features/auth/viewmodels/auth_viewmodel.dart';
 import 'package:mobile/features/auth/viewmodels/profile_viewmodel.dart';
 import 'package:provider/provider.dart';
+import 'dart:io';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -20,19 +21,22 @@ class ProfileScreen extends StatelessWidget {
           Row(
             children: [
               const SizedBox(width: 10),
-              CircleAvatar(
-                radius: 40,
-                backgroundImage: Provider.of<ProfileViewModel>(context,
-                            listen: false)
-                        .userProfile
-                        .imageUrl
-                        .isNotEmpty
-                    ? NetworkImage(
-                        Provider.of<ProfileViewModel>(context, listen: false)
-                            .userProfile
-                            .imageUrl)
-                    : const AssetImage('assets/images/avatar.png')
-                        as ImageProvider,
+              Consumer<ProfileViewModel>(
+                builder: (context, profileViewModel, child) {
+                  return CircleAvatar(
+                    radius: 40,
+                    backgroundImage:
+                        profileViewModel.userProfile.imageUrl.isNotEmpty
+                            ? (profileViewModel.userProfile.imageUrl
+                                        .startsWith('http')
+                                    ? NetworkImage(
+                                        profileViewModel.userProfile.imageUrl)
+                                    : FileImage(File(
+                                        profileViewModel.userProfile.imageUrl)))
+                                as ImageProvider
+                            : const AssetImage('assets/images/avatar.png'),
+                  );
+                },
               ),
               const SizedBox(width: 10),
               Text(
