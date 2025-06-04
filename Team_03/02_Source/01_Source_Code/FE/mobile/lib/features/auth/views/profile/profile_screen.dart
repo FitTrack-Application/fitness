@@ -24,7 +24,7 @@ class ProfileScreen extends StatelessWidget {
               Consumer<ProfileViewModel>(
                 builder: (context, profileViewModel, child) {
                   return CircleAvatar(
-                    radius: 40,
+                    radius: 30,
                     backgroundImage:
                         profileViewModel.userProfile.imageUrl.isNotEmpty
                             ? (profileViewModel.userProfile.imageUrl
