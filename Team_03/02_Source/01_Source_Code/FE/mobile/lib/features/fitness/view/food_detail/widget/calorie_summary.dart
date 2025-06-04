@@ -50,7 +50,7 @@ class CalorieSummary extends StatelessWidget {
             child: Column(
               children: [
                 Text(
-                  "$calories",
+                  "${calories.toInt()}",
                   style: textTheme.headlineMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
