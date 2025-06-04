@@ -6,7 +6,6 @@ class Recipe {
   final String name;
   final String direction;
   final ServingUnit servingUnit;
-  final double numberOfServings;
   final List<Food> recipeEntries;
 
   Recipe({
@@ -14,7 +13,6 @@ class Recipe {
     required this.name,
     required this.direction,
     required this.servingUnit,
-    required this.numberOfServings,
     required this.recipeEntries,
   });
 
@@ -22,8 +20,7 @@ class Recipe {
     return Recipe(
       id: json['id'] ?? '',
       name: json['name'] ?? '',
-      direction: json['description'] ?? '',
-      numberOfServings: (json['numberOfServings'] as num?)?.toDouble() ?? 1.0,
+      direction: json['direction'] ?? '',
       servingUnit: json['servingUnit'] != null
           ? ServingUnit.fromJson(json['servingUnit'])
           : ServingUnit(
@@ -48,6 +45,8 @@ class Recipe {
   }
 
   // Total nutritional values (computed from foodList)
+  double get numberOfServings =>
+      recipeEntries.fold(0, (sum, food) => sum + food.numberOfServings);
   double get calories =>
       recipeEntries.fold(0, (sum, food) => sum + food.calories);
 

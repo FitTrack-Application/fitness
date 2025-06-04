@@ -235,10 +235,10 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
                   ),
                 ),
               ),
-
               TextButton(
                 onPressed: () async {
-                  final Recipe? newRecipe = await context.push('/create_recipe');
+                  final Recipe? newRecipe = await context.push('/create_recipe/${widget.mealLogId}/${mealTypeToString(widget.mealType)}');
+
 
                   if (newRecipe != null && context.mounted) {
                     context.read<SearchFoodViewModel>().addRecipeToList(newRecipe);
@@ -347,15 +347,29 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
           }
 
           return RecipeItemWidget(
+            // recipe: recipe,
+            // onTap: () => context.push('/recipe_detail', extra: recipe),
+            // onAdd: (){
+            //   final diaryViewModel = context.read<DiaryViewModel>();
+            //   diaryViewModel.addFoodToDiary(
+            //     mealLogId: widget.mealLogId,
+            //     foodId: recipe.id,
+            //     servingUnitId: 'GRAM',
+            //     numberOfServings: 100,
+            //   );
+            // },
             recipe: recipe,
-            onTap: () => context.push('/recipe_detail', extra: recipe),
-            onAdd: (){
+            onTap: () => context.push(
+          '/recipe_detail/${widget.mealLogId}?mealType=${mealTypeToString(widget.mealType)}',
+        extra: recipe,
+        ),
+        onAdd: () {
               final diaryViewModel = context.read<DiaryViewModel>();
               diaryViewModel.addFoodToDiary(
                 mealLogId: widget.mealLogId,
                 foodId: recipe.id,
-                servingUnitId: 'GRAM',
-                numberOfServings: 100,
+                servingUnitId:recipe.servingUnit.id,
+                numberOfServings: recipe.numberOfServings,
               );
             },
           );

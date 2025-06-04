@@ -15,7 +15,6 @@ class CreateRecipeViewModel extends ChangeNotifier {
 
   final TextEditingController nameController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
-  final TextEditingController numberOfServingsController = TextEditingController();
 
   List<Food> get selectedFoods => _selectedFoods;
   List<ServingUnit> get servingUnits => _servingUnits;
@@ -63,15 +62,13 @@ class CreateRecipeViewModel extends ChangeNotifier {
 
   Future<Recipe?> createRecipe() async {
     final name = nameController.text.trim();
-    final description = descriptionController.text.trim();
-    final numberOfServings = double.tryParse(numberOfServingsController.text.trim()) ?? 0;
+    final direction = descriptionController.text.trim();
 
-    if (name.isEmpty || numberOfServings == 0|| description.isEmpty || selectedUnit == null )  return null;
+    if (name.isEmpty || direction.isEmpty || selectedUnit == null )  return null;
     final newRecipe = Recipe(
       id: UniqueKey().toString(),
       name: name,
-      direction: description,
-      numberOfServings: numberOfServings,
+      direction: direction,
       servingUnit: _selectedUnit!,
       recipeEntries: List.from(_selectedFoods),
     );
@@ -91,6 +88,3 @@ class CreateRecipeViewModel extends ChangeNotifier {
   }
 }
 
-ServingUnit defaultUnit(){
-  return ServingUnit(id: '9b0f9cf0-1c6e-4c1e-a3a1-8a9fddc20a0ba', unitName: 'Gam', unitSymbol: 'G');
-}
