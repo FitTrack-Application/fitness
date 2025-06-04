@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:mobile/features/fitness/services/repository/ai_repository.dart';
 import 'dart:async';
 
 import '../models/food.dart';
@@ -9,21 +11,26 @@ import '../services/repository/recipe_repository.dart';
 class SearchFoodViewModel extends ChangeNotifier {
   final FoodRepository _foodRepository;
   final RecipeRepository _recipeRepository;
+  final AiRepository _aiRepository;
 
   final List<Food> _foods = [];
   final List<Recipe> _recipes = [];
+  late List<Food> _aiFoods = [];
 
-  final Duration _timeout = const Duration(seconds: 15);
+  final Duration _timeout = const Duration(seconds: 30);
 
   SearchFoodViewModel({
     FoodRepository? foodRepository,
     RecipeRepository? recipeRepository,
   })  : _foodRepository = foodRepository ?? FoodRepository(),
-        _recipeRepository = recipeRepository ?? RecipeRepository();
+        _recipeRepository = recipeRepository ?? RecipeRepository(),
+        _aiRepository = AiRepository();
 
   List<Food> get foods => _foods;
 
   List<Recipe> get recipes => _recipes;
+
+  List<Food> get aiFoods => _aiFoods;
 
   bool isLoading = false;
   bool isFetchingMore = false;
@@ -157,6 +164,37 @@ class SearchFoodViewModel extends ChangeNotifier {
 
   void addRecipeToList(Recipe recipe) {
     recipes.insert(0, recipe); // Add it to the beginning of the list
+    notifyListeners();
+  }
+
+  Future<void> searchAIFoods(String prompt) async {
+    if (isLoading) return;
+
+    _errorMessage = '';
+    isLoading = true;
+    notifyListeners();
+
+    try {
+      final response = await _fetchWithTimeout(() =>
+          _aiRepository.searchFoods(prompt));
+
+      // final foodList = await _fetchWithTimeout(() =>
+      //     _foodRepository.getFoodById(response.map((e) => e.foodId)));
+      _aiFoods.clear();
+      for (final aiFood in response) {
+        final food = await _fetchWithTimeout(() => _foodRepository.getFoodById(
+            aiFood.foodId,
+            servingUnitId: aiFood.servingUnitId,
+            numberOfServings: aiFood.numberOfServings
+        ));
+        _aiFoods.add(food);
+      }
+    } catch (e) {
+      _errorMessage = _getErrorMessage(e);
+      debugPrint('Error searching: $e');
+    }
+
+    isLoading = false;
     notifyListeners();
   }
 }

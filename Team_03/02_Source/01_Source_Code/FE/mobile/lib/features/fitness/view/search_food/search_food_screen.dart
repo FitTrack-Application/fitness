@@ -34,6 +34,8 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
   late TextEditingController _myRecipesController;
   Timer? _myRecipesDebounce;
   late TabController _tabController;
+  final TextEditingController _aiPromptController = TextEditingController();
+  bool _showAIOverlay = false;
 
   @override
   void initState() {
@@ -88,6 +90,7 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
     _allDebounce?.cancel();
     _myRecipesDebounce?.cancel();
     _tabController.dispose();
+    _aiPromptController.dispose();
     super.dispose();
   }
 
@@ -112,11 +115,46 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
     );
   }
 
+  void _showAIChatDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Ask AI for Food Suggestions'),
+          content: TextField(
+            controller: _aiPromptController,
+            decoration: const InputDecoration(
+              hintText: 'Enter your food query (e.g., "healthy breakfast ideas")',
+              //hintStyle: Theme.of(rootContext).textTheme.bodyMedium,
+            ),
+            maxLines: 3,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                if (_aiPromptController.text.trim().isNotEmpty) {
+                  context.read<SearchFoodViewModel>().searchAIFoods(_aiPromptController.text);
+                  Navigator.pop(context);
+                  setState(() => _showAIOverlay = true);
+                }
+              },
+              child: const Text('Search'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<SearchFoodViewModel>();
-    final theme = Theme.of(context);
+    // final aiViewModel = Theme.of(context);
     final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
@@ -127,6 +165,12 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
         ),
         centerTitle: true,
         title: Text('Search food', style: textTheme.titleMedium),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.smart_toy),
+            onPressed: _showAIChatDialog
+          ),
+        ],
         bottom: TabBar(
           controller: _tabController,
           tabs: const [
@@ -135,18 +179,33 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
           ],
         ),
       ),
-      body: Column(
+      body: Stack(
         children: [
-          Expanded(
-            child: TabBarView(
-              controller: _tabController,
+          Column(
+            children: [
+              Expanded(
+                child: TabBarView(
+                  controller: _tabController,
+                  children: [
+                    _buildBody(viewModel, isMyFood: true),
+                    _buildBody(viewModel, isMyFood: false),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          if (_showAIOverlay)
+            Stack(
               children: [
-                _buildBody(viewModel, isMyFood: true),
-                _buildBody(viewModel, isMyFood: false),
+                ModalBarrier(
+                  color: Colors.black.withOpacity(0.5),
+                  dismissible: true,
+                  onDismiss: () => setState(() => _showAIOverlay = false),
+                ),
+                _buildAIFoodOverlay(viewModel),
               ],
             ),
-          ),
-        ],
+        ]
       ),
     );
   }
@@ -361,6 +420,97 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
       },
     );
   }
+
+  Widget _buildAIFoodOverlay(SearchFoodViewModel viewModel) {
+    return Center(
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 100),
+        decoration: BoxDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              blurRadius: 10,
+              spreadRadius: 2,
+            ),
+          ],
+        ),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'AI Food Suggestions',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => setState(() => _showAIOverlay = false),
+                  ),
+                ],
+              ),
+            ),
+            if (viewModel.isLoading)
+              const Center(child: CircularProgressIndicator())
+            else if (viewModel.errorMessage.isNotEmpty)
+              Center(
+                child: ErrorDisplay(
+                  message: viewModel.errorMessage,
+                  onRetry: () => context.read<SearchFoodViewModel>().searchAIFoods(_aiPromptController.text),
+                ),
+              )
+            else if (viewModel.aiFoods.isEmpty)
+                const Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.no_food, size: 64, color: Colors.grey),
+                      SizedBox(height: 16),
+                      Text('No AI-suggested foods found'),
+                    ],
+                  ),
+                )
+              else
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: viewModel.aiFoods.length,
+                    itemBuilder: (context, index) {
+                      final food = viewModel.aiFoods[index];
+                      return Card(
+                        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        child: ListTile(
+                          title: Text(food.name),
+                          subtitle: Text('${food.calories} kcal per ${food.servingUnit}'),
+                          trailing: IconButton(
+                            icon: const Icon(Icons.add),
+                            onPressed: () {
+                              final diaryViewModel = context.read<DiaryViewModel>();
+                              diaryViewModel.addFoodToDiary(
+                                mealLogId: widget.mealLogId,
+                                foodId: food.id,
+                                numberOfServings: food.numberOfServings,
+                                servingUnitId: food.servingUnit.id,
+                              );
+                              setState(() => _showAIOverlay = false);
+                            },
+                          ),
+                          onTap: () => context.push(
+                              '/food/${widget.mealLogId}/${food.id}/add/100?mealType=${mealTypeToString(widget.mealType)}'),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+          ],
+        ),
+      ),
+    );
+  }
+
 }
 
 

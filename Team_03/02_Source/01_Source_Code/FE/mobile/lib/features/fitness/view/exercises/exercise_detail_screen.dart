@@ -446,6 +446,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen> {
           ],
           decoration: InputDecoration(
             hintText: 'Enter number of duration',
+            hintStyle: Theme.of(context).textTheme.bodyMedium,
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(color: colorScheme.primary),
               borderRadius: BorderRadius.circular(12),
