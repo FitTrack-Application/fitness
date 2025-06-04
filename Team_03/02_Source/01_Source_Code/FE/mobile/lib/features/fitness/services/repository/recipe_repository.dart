@@ -76,6 +76,7 @@ class RecipeRepository {
 
       final data = response.data['data'];
       print('✅ Recipe created: ${data['name']}');
+
       return Recipe.fromJson(data);
     } catch (e, stack) {
       print('🔥 Exception during createRecipe: $e');
@@ -126,6 +127,26 @@ class RecipeRepository {
       return list.map((item) => ServingUnit.fromJson(item)).toList();
     } catch (e, stack) {
       print('🔥 Error in getAllServingUnits: $e');
+      print('📉 Stacktrace:\n$stack');
+      rethrow;
+    }
+  }
+
+  Future<void> addRecipe(Recipe recipe,String mealLogs) async {
+    try {
+      print('🗑️ Adding recipe with id: ' + recipe.id);
+      print(mealLogs);
+      final response = await _dio.post(
+        '/api/meal-logs/$mealLogs/entries',
+        data: {
+          'foodId': recipe.id,
+          'servingUnitId': recipe.servingUnit.id,
+          'numberOfServings': recipe.numberOfServings,
+        }
+      );
+      print('✅ Recipe added');
+    } catch (e, stack) {
+      print('🔥 Exception during deleteRecipe: $e');
       print('📉 Stacktrace:\n$stack');
       rethrow;
     }

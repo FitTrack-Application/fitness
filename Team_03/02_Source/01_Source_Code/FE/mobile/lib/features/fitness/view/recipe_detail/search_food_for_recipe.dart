@@ -214,7 +214,7 @@ class _SearchFoodForRecipeScreenState extends State<SearchFoodForRecipeScreen> w
           return FoodItemWidget(
             food: food,
             onTap: () => (),
-            onAdd: () => Navigator.pop(context, food) //TODO handle onAdd method here
+            onAdd: () => {Navigator.pop(context, food)} //TODO handle onAdd method here
           );
 
               },

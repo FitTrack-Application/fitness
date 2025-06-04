@@ -137,21 +137,23 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
               ),
             ],
           ),
-          body: Consumer<FoodDetailViewModel>(
-            builder: (context, viewModel, child) {
-              switch (viewModel.loadState) {
-                case LoadState.loading:
-                  return _buildLoadingState(context);
-                case LoadState.error:
-                  return _buildErrorState(context, viewModel);
-                case LoadState.timeout:
-                  return _buildTimeoutState(context, viewModel);
-                case LoadState.loaded:
-                  return _buildLoadedState(context, viewModel, textTheme);
-                default:
-                  return _buildLoadingState(context);
-              }
-            },
+          body: SafeArea(
+            child: Consumer<FoodDetailViewModel>(
+              builder: (context, viewModel, child) {
+                switch (viewModel.loadState) {
+                  case LoadState.loading:
+                    return _buildLoadingState(context);
+                  case LoadState.error:
+                    return _buildErrorState(context, viewModel);
+                  case LoadState.timeout:
+                    return _buildTimeoutState(context, viewModel);
+                  case LoadState.loaded:
+                    return _buildLoadedState(context, viewModel, textTheme);
+                  default:
+                    return _buildLoadingState(context);
+                }
+              },
+            ),
           ),
         ),
       ),
