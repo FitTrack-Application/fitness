@@ -29,19 +29,19 @@ class SurveyViewModel extends ChangeNotifier {
     // Adjust for activity level
     double activityFactor;
     switch (activityLevel) {
-      case 'Sedentary':
+      case 'SEDENTARY':
         activityFactor = 1.2;
         break;
-      case 'Lightly active':
+      case 'LIGHT':
         activityFactor = 1.375;
         break;
-      case 'Moderately active':
+      case 'MODERATE':
         activityFactor = 1.55;
         break;
-      case 'Very active':
+      case 'ACTIVE':
         activityFactor = 1.725;
         break;
-      case 'Extra active':
+      case 'VERY_ACTIVE':
         activityFactor = 1.9;
         break;
       default:
@@ -52,10 +52,11 @@ class SurveyViewModel extends ChangeNotifier {
     // Adjust for goal type
     switch (goal) {
       case 'Lose weight':
-        calorieGoal -= 500 * goalPerWeek; // Subtract calories for weight loss
+        calorieGoal -=
+            7700 / 7 * goalPerWeek; // Subtract calories for weight loss
         break;
       case 'Gain weight':
-        calorieGoal += 500 * goalPerWeek; // Add calories for weight gain
+        calorieGoal += 7700 / 7 * goalPerWeek; // Add calories for weight gain
         break;
       case 'Maintain weight':
         break; // No adjustment for maintenance

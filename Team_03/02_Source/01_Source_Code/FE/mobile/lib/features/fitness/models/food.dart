@@ -31,7 +31,7 @@ class Food {
       protein: (json['protein'] ?? 0).toDouble(),
       carbs: (json['carbs'] ?? 0).toDouble(),
       fat: (json['fat'] ?? 0).toDouble(),
-      numberOfServings: (json['numberOfServings'] ?? 1).toDouble(),
+      numberOfServings: (json['numberOfServings'] ?? 100).toDouble(),
       servingUnit: json['servingUnit'] != null
           ? ServingUnit.fromJson(json['servingUnit'])
           : ServingUnit(

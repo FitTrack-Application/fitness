@@ -118,23 +118,68 @@ final GoRouter appRouter = GoRouter(
     ),
 
     GoRoute(
-      path: '/recipe_detail',
+      path: '/recipe_detail/:mealLogId',
       builder: (context, state) {
         final recipe = state.extra as Recipe;
-        return RecipeDetailScreen(recipe: recipe);
+        final mealLogId = state.pathParameters['mealLogId']!;
+        final mealType = mealTypeFromString(state.uri.queryParameters['mealType']!);
+
+        return RecipeDetailScreen(
+          recipe: recipe,
+          mealLogId: mealLogId,
+          mealType: mealType,
+        );
       },
+      // path: '/recipe/:mealLogIdOrMealEntryId/:foodId/:mode/:numberOfServings',
+      // builder: (context, state) {
+      //   final recipe = state.extra as Recipe;
+      //   final mealLogOrMealEntryStr =
+      //       state.pathParameters['mealLogIdOrMealEntryId'] ?? '';
+      //   final mode = state.pathParameters['mode'];
+      //   final isEdit = (mode == 'edit');
+      //   final numberOfServingsStr = state.pathParameters['numberOfServings'];
+      //   final numberOfServings =
+      //       double.tryParse(numberOfServingsStr ?? '1') ?? 100;
+      //   // Parse query param
+      //   final mealTypeStr = state.uri.queryParameters['mealType'];
+      //   MealType mealType = MealType.breakfast;
+      //   if (mealTypeStr != null) {
+      //     try {
+      //       mealType = mealTypeFromString(mealTypeStr);
+      //     } catch (e) {
+      //       print('⚠️ Invalid mealType: $mealTypeStr');
+      //     }
+      //   }
+      //
+      //   // Parse query param
+      //   final servingUnitId = state.uri.queryParameters['servingUnitId'];
+      //   return RecipeDetailScreen(
+      //     recipe: recipe,
+      //     mealLogId: isEdit ? '' : mealLogOrMealEntryStr,
+      //     mealType: mealType,
+      //   );
+      // },
     ),
     GoRoute(
       path: '/search_food_for_recipe',
       builder: (context, state) {
-        final recipeId = state.pathParameters['recipeId'] ?? '';
         return SearchFoodForRecipeScreen();
       },
     ),
     GoRoute(
-      path: '/create_recipe',
-      builder: (context, state) => const CreateRecipeScreen(),
+      path: '/create_recipe/:mealLogId/:mealType',
+      builder: (context, state) {
+        final mealLogId = state.pathParameters['mealLogId']!;
+        final mealTypeString = state.pathParameters['mealType']!;
+        final mealType = mealTypeFromString(mealTypeString);
+
+        return CreateRecipeScreen(
+          mealogId: mealLogId,
+          mealType: mealType,
+        );
+      },
     ),
+
     GoRoute(
       path: '/profile',
       builder: (context, state) => const MainScreen(child: ProfileScreen()),
