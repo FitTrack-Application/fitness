@@ -272,20 +272,7 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
     }
 
     if (viewModel.foods.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.no_food, size: 64, color: Colors.grey),
-            const SizedBox(height: 16),
-            Text(
-              (_allController.text).isEmpty
-                  ? 'No foods available'
-                  : 'No foods found for "${_allController.text}"',
-            ),
-          ],
-        ),
-      );
+      return const SizedBox.shrink();
     }
 
 
