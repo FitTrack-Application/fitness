@@ -15,7 +15,7 @@ public class MealLogMapper {
     private final FoodEntryMapper foodEntryMapper;
 
     public MealLogResponse converToMealLogResponse(MealLog mealLog) {
-        List<FoodEntryResponse> foodEntryResponses = mealLog.getMealEntries().stream().map(foodEntryMapper::convertToFoodEntryDto).toList();
+        List<FoodEntryResponse> foodEntryResponses = mealLog.getMealEntries().stream().map(foodEntryMapper::convertToFoodEntryResponse).toList();
 
         return MealLogResponse.builder()
                 .id(mealLog.getMealLogId())

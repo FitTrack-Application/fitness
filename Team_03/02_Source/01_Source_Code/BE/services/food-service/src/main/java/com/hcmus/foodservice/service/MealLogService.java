@@ -1,5 +1,6 @@
 package com.hcmus.foodservice.service;
 
+import com.hcmus.foodservice.dto.request.AddRecipeToMealLogRequest;
 import com.hcmus.foodservice.dto.response.FoodEntryResponse;
 import com.hcmus.foodservice.dto.request.FoodEntryRequest;
 import com.hcmus.foodservice.dto.response.MealLogResponse;
@@ -13,7 +14,9 @@ public interface MealLogService {
 
     ApiResponse<?> createDailyMealLogs(UUID userId, Date date);
 
-    ApiResponse<FoodEntryResponse> addMealEntry(UUID mealLogId, FoodEntryRequest foodEntryRequest);
+    ApiResponse<FoodEntryResponse> addFoodToMealLog(UUID mealLogId, FoodEntryRequest foodEntryRequest);
+
+    ApiResponse<List<FoodEntryResponse>> addRecipeToMealLog(UUID mealLogId, AddRecipeToMealLogRequest addRecipeToMealLogRequest);
 
     ApiResponse<List<MealLogResponse>> getMealLogsByUserIdAndDate(UUID userId, Date date);
 }

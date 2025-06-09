@@ -14,6 +14,8 @@ public class FoodEntryResponse {
 
     private UUID foodId;
 
+    private String foodName;
+
     private ServingUnitResponse servingUnit;
 
     private Double numberOfServings;

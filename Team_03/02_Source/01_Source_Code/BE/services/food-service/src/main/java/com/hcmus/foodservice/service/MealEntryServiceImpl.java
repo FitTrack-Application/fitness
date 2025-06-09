@@ -69,7 +69,7 @@ public class MealEntryServiceImpl implements MealEntryService {
         mealEntryRepository.save(mealEntry);
 
         // Convert to Dto
-        FoodEntryResponse foodEntryResponse = foodEntryMapper.convertToFoodEntryDto(mealEntry);
+        FoodEntryResponse foodEntryResponse = foodEntryMapper.convertToFoodEntryResponse(mealEntry);
 
         return ApiResponse.<FoodEntryResponse>builder()
                 .status(200)

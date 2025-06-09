@@ -1,5 +1,6 @@
 package com.hcmus.foodservice.controller;
 
+import com.hcmus.foodservice.dto.request.AddRecipeToMealLogRequest;
 import com.hcmus.foodservice.dto.request.DailyMealLogRequest;
 import com.hcmus.foodservice.dto.request.FoodEntryRequest;
 import com.hcmus.foodservice.dto.response.ApiResponse;
@@ -41,20 +42,32 @@ public class MealLogController {
     }
 
     /**
-     * Add a meal entry to a meal log
+     * Add food to a meal log
      *
      * @param mealLogId        the id of the meal log
      * @param foodEntryRequest the request body containing the meal entry details
      * @return a ResponseEntity containing an ApiResponse with the created MealEntryDto object
      */
     @PostMapping("/{mealLogId}/entries")
-    public ResponseEntity<ApiResponse<FoodEntryResponse>> addMealEntry(
+    public ResponseEntity<ApiResponse<FoodEntryResponse>> addFoodToMealLog(
             @PathVariable UUID mealLogId,
             @RequestBody FoodEntryRequest foodEntryRequest
     ) {
-        ApiResponse<FoodEntryResponse> response = mealLogService.addMealEntry(
+        ApiResponse<FoodEntryResponse> response = mealLogService.addFoodToMealLog(
                 mealLogId,
                 foodEntryRequest
+        );
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PostMapping("/{mealLogId}/recipes")
+    public ResponseEntity<ApiResponse<List<FoodEntryResponse>>> addRecipeToMealLog(
+            @PathVariable UUID mealLogId,
+            @RequestBody AddRecipeToMealLogRequest addRecipeToMealLogRequest
+    ) {
+        ApiResponse<List<FoodEntryResponse>> response = mealLogService.addRecipeToMealLog(
+                mealLogId,
+                addRecipeToMealLogRequest
         );
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
