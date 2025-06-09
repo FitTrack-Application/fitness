@@ -56,7 +56,7 @@ public class RecipeEntryServiceImpl implements RecipeEntryService {
         RecipeEntry savedRecipeEntry = recipeEntryRepository.save(recipeEntry);
 
         // Return FoodEntryDto
-        return foodEntryMapper.convertToFoodEntryDto(savedRecipeEntry);
+        return foodEntryMapper.convertToFoodEntryResponse(savedRecipeEntry);
     }
 
 //    // Update Recipe entry

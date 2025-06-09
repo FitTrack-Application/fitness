@@ -26,7 +26,7 @@ public class RecipeMapper {
 //                    .build();
 //        }
         List<FoodEntryResponse> foodEntryResponses = recipe.getRecipeEntries().stream()
-                .map(foodEntryMapper::convertToFoodEntryDto)
+                .map(foodEntryMapper::convertToFoodEntryResponse)
                 .toList();
 
         return RecipeResponse.builder()

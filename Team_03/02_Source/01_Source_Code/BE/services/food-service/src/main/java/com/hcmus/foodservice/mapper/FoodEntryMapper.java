@@ -15,7 +15,7 @@ public class FoodEntryMapper {
     private final ServingUnitMapper servingUnitMapper;
 
     // From RecipeEntry to FoodEntryDto
-    public FoodEntryResponse convertToFoodEntryDto(RecipeEntry recipeEntry) {
+    public FoodEntryResponse convertToFoodEntryResponse(RecipeEntry recipeEntry) {
 
         // Calculate macros
         Macros macros = MacrosCalculatorHelper.calculateMacros(recipeEntry.getFood(), recipeEntry.getServingUnit(), recipeEntry.getNumberOfServings());
@@ -23,6 +23,7 @@ public class FoodEntryMapper {
         return FoodEntryResponse.builder()
                 .id(recipeEntry.getRecipeEntryId())
                 .foodId(recipeEntry.getFood().getFoodId())
+                .foodName(recipeEntry.getFood().getFoodName())
                 .servingUnit(servingUnitMapper.convertToServingUnitResponse(recipeEntry.getServingUnit()))
                 .numberOfServings(recipeEntry.getNumberOfServings())
                 .calories(macros.getCalories())
@@ -33,13 +34,14 @@ public class FoodEntryMapper {
     }
 
     // From MealEntry to FoodEntryDto
-    public FoodEntryResponse convertToFoodEntryDto(MealEntry mealEntry) {
+    public FoodEntryResponse convertToFoodEntryResponse(MealEntry mealEntry) {
         // Calculate macros
         Macros macros = MacrosCalculatorHelper.calculateMacros(mealEntry.getFood(), mealEntry.getServingUnit(), mealEntry.getNumberOfServings());
 
         return FoodEntryResponse.builder()
                 .id(mealEntry.getMealEntryId())
                 .foodId(mealEntry.getFood().getFoodId())
+                .foodName(mealEntry.getFood().getFoodName())
                 .servingUnit(servingUnitMapper.convertToServingUnitResponse(mealEntry.getServingUnit()))
                 .numberOfServings(mealEntry.getNumberOfServings())
                 .calories(macros.getCalories())

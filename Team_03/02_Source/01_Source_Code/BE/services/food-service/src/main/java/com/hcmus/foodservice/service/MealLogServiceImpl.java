@@ -1,6 +1,7 @@
 package com.hcmus.foodservice.service;
 
 import com.hcmus.foodservice.dto.request.FoodEntryRequest;
+import com.hcmus.foodservice.dto.request.AddRecipeToMealLogRequest;
 import com.hcmus.foodservice.dto.response.ApiResponse;
 import com.hcmus.foodservice.dto.response.FoodEntryResponse;
 import com.hcmus.foodservice.dto.response.MealLogResponse;
@@ -8,15 +9,9 @@ import com.hcmus.foodservice.exception.ResourceAlreadyExistsException;
 import com.hcmus.foodservice.exception.ResourceNotFoundException;
 import com.hcmus.foodservice.mapper.FoodEntryMapper;
 import com.hcmus.foodservice.mapper.MealLogMapper;
-import com.hcmus.foodservice.model.Food;
-import com.hcmus.foodservice.model.MealEntry;
-import com.hcmus.foodservice.model.MealLog;
-import com.hcmus.foodservice.model.ServingUnit;
+import com.hcmus.foodservice.model.*;
 import com.hcmus.foodservice.model.type.MealType;
-import com.hcmus.foodservice.repository.FoodRepository;
-import com.hcmus.foodservice.repository.MealEntryRepository;
-import com.hcmus.foodservice.repository.MealLogRepository;
-import com.hcmus.foodservice.repository.ServingUnitRepository;
+import com.hcmus.foodservice.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,6 +28,8 @@ public class MealLogServiceImpl implements MealLogService {
     private final MealLogRepository mealLogRepository;
 
     private final FoodRepository foodRepository;
+
+    private final RecipeRepository recipeRepository;
 
     private final MealEntryRepository mealEntryRepository;
 
@@ -73,31 +70,40 @@ public class MealLogServiceImpl implements MealLogService {
                 .build();
     }
 
+    // Create meal entry
+    private MealEntry createMealEntry(MealLog mealLog, UUID foodId, UUID servingUnitId, double numberOfServings) {
+        // Check if food exists
+        Food food = foodRepository.findById(foodId)
+                .orElseThrow(() -> new ResourceNotFoundException("Food not found with ID: " + foodId));
+
+        // Check if number of servings is valid
+        ServingUnit servingUnit = servingUnitRepository.findById(servingUnitId)
+                .orElseThrow(() -> new ResourceNotFoundException("Serving unit not found with ID: " + servingUnitId));
+
+        MealEntry mealEntry = new MealEntry();
+        mealEntry.setMealLog(mealLog);
+        mealEntry.setFood(food);
+        mealEntry.setNumberOfServings(numberOfServings);
+        mealEntry.setServingUnit(servingUnit);
+
+        return mealEntryRepository.save(mealEntry);
+    }
+
     @Override
-    public ApiResponse<FoodEntryResponse> addMealEntry(UUID mealLogId, FoodEntryRequest foodEntryRequest) {
+    public ApiResponse<FoodEntryResponse> addFoodToMealLog(UUID mealLogId, FoodEntryRequest foodEntryRequest) {
         // Check if meal log exists
         MealLog mealLog = mealLogRepository.findById(mealLogId)
                 .orElseThrow(() -> new ResourceNotFoundException("Meal log not found with ID: " + mealLogId));
 
-        // Check if food exists
-        Food food = foodRepository.findById(foodEntryRequest.getFoodId())
-                .orElseThrow(() -> new ResourceNotFoundException("Food not found with ID: " + foodEntryRequest.getFoodId()));
-
-        // Check if number of servings is valid
-        ServingUnit servingUnit = servingUnitRepository.findById(foodEntryRequest.getServingUnitId())
-                .orElseThrow(() -> new ResourceNotFoundException("Serving unit not found with ID: " + foodEntryRequest.getServingUnitId()));
-
-        // Create new meal entry
-        MealEntry mealEntry = new MealEntry();
-        mealEntry.setMealLog(mealLog);
-        mealEntry.setFood(food);
-        mealEntry.setNumberOfServings(foodEntryRequest.getNumberOfServings());
-        mealEntry.setServingUnit(servingUnit);
-
-        MealEntry savedMealEntry = mealEntryRepository.save(mealEntry);
+        MealEntry mealEntry = createMealEntry(
+                mealLog,
+                foodEntryRequest.getFoodId(),
+                foodEntryRequest.getServingUnitId(),
+                foodEntryRequest.getNumberOfServings()
+        );
 
         // Convert to Dto
-        FoodEntryResponse foodEntryResponse = foodEntryMapper.convertToFoodEntryDto(savedMealEntry);
+        FoodEntryResponse foodEntryResponse = foodEntryMapper.convertToFoodEntryResponse(mealEntry);
 
         // Return response
         return ApiResponse.<FoodEntryResponse>builder()
@@ -105,6 +111,40 @@ public class MealLogServiceImpl implements MealLogService {
                 .generalMessage("Meal entry added successfully")
                 .data(foodEntryResponse)
                 .build();
+    }
+
+    @Transactional
+    @Override
+    public ApiResponse<List<FoodEntryResponse>> addRecipeToMealLog(UUID mealLogId, AddRecipeToMealLogRequest addRecipeToMealLogRequest) {
+        MealLog mealLog = mealLogRepository.findById(mealLogId)
+                .orElseThrow(() -> new ResourceNotFoundException("Meal log not found with ID: " + mealLogId));
+
+        Recipe recipe = recipeRepository.findById(addRecipeToMealLogRequest.getRecipeId())
+                .orElseThrow(() -> new ResourceNotFoundException("Recipe not found with ID: " + addRecipeToMealLogRequest.getRecipeId()));
+
+        // Add each food entry of recipe to meal log
+        List<MealEntry> mealEntries = new ArrayList<>();
+        for (RecipeEntry recipeEntry : recipe.getRecipeEntries()) {
+            MealEntry mealEntry = createMealEntry(
+                    mealLog,
+                    recipeEntry.getFood().getFoodId(),
+                    recipeEntry.getServingUnit().getServingUnitId(),
+                    recipeEntry.getNumberOfServings() * addRecipeToMealLogRequest.getNumberOfServings()
+            );
+            mealEntries.add(mealEntry);
+        }
+        ;
+        // Convert to DTO
+        List<FoodEntryResponse> foodEntryResponses = mealEntries.stream()
+                .map(foodEntryMapper::convertToFoodEntryResponse)
+                .toList();
+
+        return ApiResponse.<List<FoodEntryResponse>>builder()
+                .status(201)
+                .generalMessage("Recipe added to meal log successfully")
+                .data(foodEntryResponses)
+                .build();
+
     }
 
     @Override
