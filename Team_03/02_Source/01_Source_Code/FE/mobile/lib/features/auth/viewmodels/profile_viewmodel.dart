@@ -67,7 +67,10 @@ class ProfileViewModel extends ChangeNotifier {
       await _apiService.editProfile(profileData,
           imageFile: imageFile, context: context);
 
-      // Fetch the updated profile after editing
+      if (imageFile != null) {
+        userProfile.imageUrl = imageFile.path; // Update the avatar URL
+      }
+
       hasFetchedProfile = false; // Reset the flag
       await fetchProfile(context); // Fetch updated profile
 

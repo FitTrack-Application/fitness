@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile/features/statistic/view/dashboard/widget/weight_graph.dart';
@@ -62,27 +64,34 @@ class _DashboardScreenState extends State<DashboardScreen> {
             children: [
               Row(
                 children: [
-                  CircleAvatar(
-                    radius: 40,
-                    backgroundImage:
-                        Provider.of<ProfileViewModel>(context, listen: false)
-                                .userProfile
-                                .imageUrl
-                                .isNotEmpty
-                            ? NetworkImage(Provider.of<ProfileViewModel>(
-                                    context,
-                                    listen: false)
-                                .userProfile
-                                .imageUrl)
-                            : const AssetImage('assets/images/avatar.png')
-                                as ImageProvider,
+                  Consumer<ProfileViewModel>(
+                    builder: (context, profileViewModel, child) {
+                      return CircleAvatar(
+                        radius: 30,
+                        backgroundImage: profileViewModel
+                                .userProfile.imageUrl.isNotEmpty
+                            ? (profileViewModel.userProfile.imageUrl
+                                        .startsWith('http')
+                                    ? NetworkImage(
+                                        profileViewModel.userProfile.imageUrl)
+                                    : FileImage(File(
+                                        profileViewModel.userProfile.imageUrl)))
+                                as ImageProvider
+                            : const AssetImage('assets/images/avatar.png'),
+                      );
+                    },
                   ),
                   const SizedBox(width: 20),
-                  Text(
-                      profileViewModel.userProfile.name.isNotEmpty
-                          ? profileViewModel.userProfile.name
-                          : "User Name",
-                      style: Theme.of(context).textTheme.titleLarge),
+                  Consumer<ProfileViewModel>(
+                    builder: (context, profileViewModel, child) {
+                      return Text(
+                        profileViewModel.userProfile.name.isNotEmpty
+                            ? profileViewModel.userProfile.name
+                            : "User Name",
+                        style: Theme.of(context).textTheme.titleLarge,
+                      );
+                    },
+                  ),
                 ],
               ),
 
