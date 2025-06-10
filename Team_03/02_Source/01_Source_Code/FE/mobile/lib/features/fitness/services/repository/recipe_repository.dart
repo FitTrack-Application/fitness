@@ -132,21 +132,20 @@ class RecipeRepository {
     }
   }
 
-  Future<void> addRecipe(Recipe recipe,String mealLogs) async {
+  Future<void> addRecipeToLog(Recipe recipe,String mealLogs) async {
     try {
-      print('🗑️ Adding recipe with id: ' + recipe.id);
+      print('🗑️ Adding recipe with id: ${recipe.id}');
       print(mealLogs);
       final response = await _dio.post(
-        '/api/meal-logs/$mealLogs/entries',
+        '/api/meal-logs/$mealLogs/recipes',
         data: {
-          'foodId': recipe.id,
-          'servingUnitId': recipe.servingUnit.id,
+          'recipeId': recipe.id,
           'numberOfServings': recipe.numberOfServings,
         }
       );
       print('✅ Recipe added');
     } catch (e, stack) {
-      print('🔥 Exception during deleteRecipe: $e');
+      print('🔥 Exception during addRecipe: $e');
       print('📉 Stacktrace:\n$stack');
       rethrow;
     }

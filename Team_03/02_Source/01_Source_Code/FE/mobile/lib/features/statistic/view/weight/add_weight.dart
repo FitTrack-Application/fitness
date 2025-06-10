@@ -59,7 +59,7 @@ class _AddWeightState extends State<AddWeight> {
                 context.go('/dashboard');
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
+                  const SnackBar(
                     content: Text("Please try again"),
                     backgroundColor: Colors.red,
                   ),

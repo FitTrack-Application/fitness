@@ -20,7 +20,7 @@ class CreateRecipeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => CreateRecipeViewModel(RecipeRepository())..loadServingUnits(),
+      create: (_) => CreateRecipeViewModel(RecipeRepository()),
       child: _CreateRecipeScreenContent(
         mealogId: mealogId,
         mealType: mealType,
@@ -35,7 +35,6 @@ class _CreateRecipeScreenContent extends StatelessWidget {
   final MealType mealType;
 
   const _CreateRecipeScreenContent({
-    super.key,
     required this.mealogId,
     required this.mealType,
   });
@@ -57,7 +56,7 @@ class _CreateRecipeScreenContent extends StatelessWidget {
                 );
                 return;
               }
-              await await context.push(
+              await context.push(
                 '/recipe_detail/$mealogId?mealType=${mealTypeToString(mealType)}',
                 extra: recipe,
               );
@@ -89,29 +88,29 @@ class _CreateRecipeScreenContent extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            viewModel.isLoadingUnits
-                ? const CircularProgressIndicator()
-                : DropdownButtonFormField<ServingUnit>(
-              value: viewModel.selectedUnit, // vm.selectedUnit must now be nullable
-              items: viewModel.servingUnits.map((unit) {
-                return DropdownMenuItem<ServingUnit>(
-                  value: unit,
-                  child: Text('${unit.unitName} (${unit.unitSymbol})'),
-                );
-              }).toList(),
-              onChanged: (unit) {
-                if (unit != null) {
-                  viewModel.setSelectedUnit(unit);
-                }
-              },
-              decoration: InputDecoration(
-                labelText: 'Serving Unit',
-                labelStyle: Theme.of(context).textTheme.bodyLarge, // match label font
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-              ),
-              style: Theme.of(context).textTheme.bodyLarge, // controls selected text style
-              dropdownColor: NeutralColors.light100, // optional: matches card theme
-            ),
+            // viewModel.isLoadingUnits
+            //     ? const CircularProgressIndicator()
+            //     : DropdownButtonFormField<ServingUnit>(
+            //   value: viewModel.selectedUnit, // vm.selectedUnit must now be nullable
+            //   items: viewModel.servingUnits.map((unit) {
+            //     return DropdownMenuItem<ServingUnit>(
+            //       value: unit,
+            //       child: Text('${unit.unitName} (${unit.unitSymbol})'),
+            //     );
+            //   }).toList(),
+            //   onChanged: (unit) {
+            //     if (unit != null) {
+            //       viewModel.setSelectedUnit(unit);
+            //     }
+            //   },
+            //   decoration: InputDecoration(
+            //     labelText: 'Serving Unit',
+            //     labelStyle: Theme.of(context).textTheme.bodyLarge, // match label font
+            //     border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+            //   ),
+            //   style: Theme.of(context).textTheme.bodyLarge, // controls selected text style
+            //   dropdownColor: NeutralColors.light100, // optional: matches card theme
+            // ),
 
             const SizedBox(height: 20),
             Row(

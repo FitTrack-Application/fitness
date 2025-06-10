@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/features/fitness/services/repository/recipe_repository.dart';
+import 'package:mobile/features/fitness/viewmodels/search_food_viewmodel.dart';
 import 'package:provider/provider.dart';
 import '../../../models/recipe.dart';
 import '../../../viewmodels/diary_viewmodel.dart';
@@ -21,7 +23,8 @@ class RecipeItemWidget extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
     final diaryViewModel = context.watch<DiaryViewModel>();
-    final isAddingThisFood = diaryViewModel.isAddingFood(recipe.id);
+    final isAddingThisRecipe = diaryViewModel.isAddingRecipe(recipe.id);
+
 
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -50,10 +53,36 @@ class RecipeItemWidget extends StatelessWidget {
             ),
             child: InkWell(
               borderRadius: BorderRadius.circular(20),
-              onTap: isAddingThisFood ? null : onAdd, // <- Use the custom callback
+              // onTap:isAddingThisRecipe
+              //     ? null
+              //     : () async {
+              //   if (onAdd != null) {
+              //     onAdd!(); // Call the provided callback if available
+              //   } else {
+              //     if (diaryViewModel.currentMealLogId != null) {
+              //       bool success = await diaryViewModel.addRecipeToLog(
+              //         recipe,
+              //         diaryViewModel.currentMealLogId!,
+              //       );
+              //       if (success) {
+              //         ScaffoldMessenger.of(context).showSnackBar(
+              //           const SnackBar(content: Text("Recipe added to log")),
+              //         );
+              //       } else {
+              //         ScaffoldMessenger.of(context).showSnackBar(
+              //           const SnackBar(content: Text("Failed to add recipe")),
+              //         );
+              //       }
+              //     } else {
+              //       ScaffoldMessenger.of(context).showSnackBar(
+              //         const SnackBar(content: Text("No meal log selected")),
+              //       );
+              //     }
+              //   }
+              // },
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: isAddingThisFood
+                child: isAddingThisRecipe
                     ? SizedBox(
                   width: 24,
                   height: 24,

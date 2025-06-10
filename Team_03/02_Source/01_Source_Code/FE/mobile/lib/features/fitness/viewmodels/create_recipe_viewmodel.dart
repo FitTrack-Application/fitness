@@ -10,7 +10,6 @@ class CreateRecipeViewModel extends ChangeNotifier {
   CreateRecipeViewModel(this._repository);
   final List<Food> _selectedFoods = [];
   List<ServingUnit> _servingUnits = [];
-  ServingUnit? _selectedUnit;
   bool _isLoadingUnits = true;
 
   final TextEditingController nameController = TextEditingController();
@@ -18,7 +17,6 @@ class CreateRecipeViewModel extends ChangeNotifier {
 
   List<Food> get selectedFoods => _selectedFoods;
   List<ServingUnit> get servingUnits => _servingUnits;
-  ServingUnit? get selectedUnit => _selectedUnit;
   bool get isLoadingUnits => _isLoadingUnits;
 
 
@@ -32,44 +30,43 @@ class CreateRecipeViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setSelectedUnit(ServingUnit? unit) {
-    if (unit != null) {
-      _selectedUnit = unit;
-      notifyListeners();
-    }
-  }
+  // void setSelectedUnit(ServingUnit? unit) {
+  //   if (unit != null) {
+  //     _selectedUnit = unit;
+  //     notifyListeners();
+  //   }
+  // }
 
 
-  Future<void> loadServingUnits() async {
-    _isLoadingUnits = true;
-    notifyListeners();
-
-    try {
-      _servingUnits = await _repository.getAllServingUnits();
-
-      // Select the first unit or default one that exists in the list
-      if (_servingUnits.isNotEmpty) {
-        _selectedUnit = _servingUnits.first;
-      }
-    } catch (e) {
-      // Optionally log or handle the error
-    } finally {
-      _isLoadingUnits = false;
-      notifyListeners();
-    }
-  }
+  // Future<void> loadServingUnits() async {
+  //   _isLoadingUnits = true;
+  //   notifyListeners();
+  //
+  //   try {
+  //     _servingUnits = await _repository.getAllServingUnits();
+  //
+  //     // Select the first unit or default one that exists in the list
+  //     if (_servingUnits.isNotEmpty) {
+  //       _selectedUnit = _servingUnits.first;
+  //     }
+  //   } catch (e) {
+  //     // Optionally log or handle the error
+  //   } finally {
+  //     _isLoadingUnits = false;
+  //     notifyListeners();
+  //   }
+  // }
 
 
   Future<Recipe?> createRecipe() async {
     final name = nameController.text.trim();
     final direction = descriptionController.text.trim();
 
-    if (name.isEmpty || direction.isEmpty || selectedUnit == null )  return null;
+    if (name.isEmpty || direction.isEmpty )  return null;
     final newRecipe = Recipe(
       id: UniqueKey().toString(),
       name: name,
       direction: direction,
-      servingUnit: _selectedUnit!,
       recipeEntries: List.from(_selectedFoods),
     );
 
