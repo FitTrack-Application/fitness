@@ -81,7 +81,7 @@ class DashboardApiService {
 
       // Show generic error message as a pop-up
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text("Error fetching weight statistics"),
           backgroundColor: Colors.red,
         ),
@@ -138,14 +138,14 @@ class DashboardApiService {
       print('DioException: ${e.message}');
       return [
         StepEntry(date: DateTime.now(), steps: 0), // Default entry
-        StepEntry(date: DateTime.now().subtract(Duration(days: 1)), steps: 0),
+        StepEntry(date: DateTime.now().subtract(const Duration(days: 1)), steps: 0),
       ];
     } catch (e) {
       print('Error fetching step statistics: $e');
 
       // Show generic error message as a pop-up
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text("Error fetching step statistics"),
           backgroundColor: Colors.red,
         ),

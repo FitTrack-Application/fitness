@@ -70,21 +70,21 @@ class CalorieSummary extends StatelessWidget {
                         "Carbs",
                         caloriesFromCarbs.toStringAsFixed(0),
                         colorCarbs,
-                        carbs.toStringAsFixed(1) + "g"
+                        "${carbs.toStringAsFixed(1)}g"
                     ),
                     _buildCalorieIndicator(
                         context,
                         "Fat",
                         caloriesFromFat.toStringAsFixed(0),
                         colorFat,
-                        fat.toStringAsFixed(1) + "g"
+                        "${fat.toStringAsFixed(1)}g"
                     ),
                     _buildCalorieIndicator(
                         context,
                         "Protein",
                         caloriesFromProtein.toStringAsFixed(0),
                         colorProtein,
-                        protein.toStringAsFixed(1) + "g"
+                        "${protein.toStringAsFixed(1)}g"
                     ),
                   ],
                 ),
@@ -118,7 +118,7 @@ class CalorieSummary extends StatelessWidget {
           style: textTheme.bodySmall,
         ),
         Text(
-          calories + " cal",
+          "$calories cal",
           style: textTheme.bodyMedium?.copyWith(
             color: color,
             fontWeight: FontWeight.bold,

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/common/widgets/list_item/list_item.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mobile/cores/constants/colors.dart';
 import 'package:mobile/features/auth/viewmodels/auth_viewmodel.dart';
 import 'package:mobile/features/auth/viewmodels/profile_viewmodel.dart';
 import 'package:provider/provider.dart';

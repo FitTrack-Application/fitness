@@ -24,7 +24,7 @@ void main() {
       providers: [
         ChangeNotifierProvider(create: (_) => BottomNavProvider()),
         ChangeNotifierProvider(
-            create: (_) => SearchFoodViewModel()..searchFoods()),
+            create: (_) => SearchFoodViewModel()..searchFoods(tabType: TabType.all)),
         ChangeNotifierProvider(
             create: (_) => SearchExerciseViewModel()..searchExercises()),
         ChangeNotifierProvider(

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:mobile/features/fitness/services/repository/recipe_repository.dart';
 import 'package:mobile/features/fitness/view/food_detail/widget/calorie_summary.dart';
 import 'package:mobile/features/fitness/viewmodels/recipe_detail_viewmodel.dart';
@@ -229,7 +228,7 @@ class _RecipeDetailState extends State<RecipeDetailScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Nutrition (per ${recipe.numberOfServings.toStringAsFixed(0)} ${recipe.unit})", style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
+          Text("Nutrition", style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
           const SizedBox(height: 12),
           Row(
             children: [
