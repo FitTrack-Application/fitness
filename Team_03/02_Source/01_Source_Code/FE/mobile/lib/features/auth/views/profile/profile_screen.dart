@@ -65,13 +65,6 @@ class ProfileScreen extends StatelessWidget {
                   },
                 ),
                 ListItem(
-                  leadingIcon: Icons.lock,
-                  title: "Change Password",
-                  onTap: () {
-                    // Navigate to Change Password Page
-                  },
-                ),
-                ListItem(
                   leadingIcon: Icons.logout,
                   title: "Logout",
                   onTap: () async {

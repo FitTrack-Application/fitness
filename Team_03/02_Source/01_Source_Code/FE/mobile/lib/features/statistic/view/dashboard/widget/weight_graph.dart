@@ -122,14 +122,17 @@ class WeightGraph extends StatelessWidget {
                                 showTitles: true,
                                 reservedSize: 30,
                                 interval: daysInterval.toDouble(),
-                                getTitlesWidget:
-                                    (double value, TitleMeta meta) {
-                                  final date = minDate
-                                      .add(Duration(days: value.toInt()));
+                                getTitlesWidget: (double value, TitleMeta meta) {
+                                  final date = minDate.add(Duration(days: value.toInt()));
+
+                                  // Skip rendering labels if they are at the edges and overcrowded
+                                  if (value == 0 || value == totalDays) {
+                                    return const SizedBox.shrink();
+                                  }
+
                                   return Text(
                                     DateFormat('MM/dd').format(date),
-                                    style: WeightGraphTheme.titleDataStyle(
-                                        context),
+                                    style: WeightGraphTheme.titleDataStyle(context),
                                   );
                                 },
                               ),
@@ -139,12 +142,15 @@ class WeightGraph extends StatelessWidget {
                                 showTitles: true,
                                 reservedSize: 40,
                                 interval: weightInterval,
-                                getTitlesWidget:
-                                    (double value, TitleMeta meta) {
+                                getTitlesWidget: (double value, TitleMeta meta) {
+                                  // Skip rendering labels if they are at the edges and overcrowded
+                                  if (value == minWeight || value == maxWeight) {
+                                    return const SizedBox.shrink();
+                                  }
+
                                   return Text(
                                     '${value.toInt()}',
-                                    style: WeightGraphTheme.titleDataStyle(
-                                        context),
+                                    style: WeightGraphTheme.titleDataStyle(context),
                                   );
                                 },
                               ),
