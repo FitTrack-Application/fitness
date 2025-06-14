@@ -1,7 +1,5 @@
 import 'package:go_router/go_router.dart';
 import 'package:mobile/common/widgets/bottom_nav_bar/main_screen.dart';
-import 'package:mobile/features/auth/views/authentication/user_login.dart';
-import 'package:mobile/features/auth/views/authentication/user_register.dart';
 import 'package:mobile/features/auth/views/authentication/welcome_screen.dart';
 import 'package:mobile/features/auth/views/profile/user_profile_screen.dart';
 import 'package:mobile/features/auth/views/profile/profile_screen.dart';
@@ -21,8 +19,8 @@ import 'package:mobile/features/statistic/view/step/add_step.dart';
 
 import '../../features/fitness/models/meal_log.dart';
 import '../../features/fitness/models/recipe.dart';
+import '../../features/fitness/view/food_detail/create_food_screen.dart';
 import '../../features/fitness/view/food_detail/food_detail_screen.dart';
-import '../../features/fitness/view/scan_barcode/scan_barcode_screen.dart';
 import '../../features/fitness/view/search_food/search_food_screen.dart';
 import 'package:mobile/features/statistic/view/weight/add_weight.dart';
 import 'package:provider/provider.dart';
@@ -163,11 +161,26 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/search_food_for_recipe',
       builder: (context, state) {
-        return SearchFoodForRecipeScreen();
+        return const SearchFoodForRecipeScreen();
+      },
+    ),
+
+    GoRoute(
+      path: '/create_food/:mealLogId/:mealType',
+      builder: (context, state) {
+        final mealLogId = state.pathParameters['mealLogId']!;
+        final mealTypeString = state.pathParameters['mealType']!;
+        final mealType = mealTypeFromString(mealTypeString);
+
+        return CreateFoodScreen(
+          mealogId: mealLogId,
+          mealType: mealType,
+        );
       },
     ),
     GoRoute(
       path: '/create_recipe/:mealLogId/:mealType',
+      //path: '/testing',
       builder: (context, state) {
         final mealLogId = state.pathParameters['mealLogId']!;
         final mealTypeString = state.pathParameters['mealType']!;
@@ -179,7 +192,6 @@ final GoRouter appRouter = GoRouter(
         );
       },
     ),
-
     GoRoute(
       path: '/profile',
       builder: (context, state) => const MainScreen(child: ProfileScreen()),

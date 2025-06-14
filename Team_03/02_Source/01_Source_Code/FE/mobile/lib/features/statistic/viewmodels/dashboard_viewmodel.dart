@@ -41,6 +41,7 @@ class DashboardViewModel extends ChangeNotifier {
       totalCaloriesConsumed = result.totalCaloriesConsumed;
       totalCaloriesBurned = result.totalCaloriesBurned;
       errorMessage = null;
+      notifyListeners();
     } catch (e) {
       errorMessage = e.toString();
     } finally {

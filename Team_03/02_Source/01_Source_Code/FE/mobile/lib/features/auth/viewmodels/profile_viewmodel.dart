@@ -79,7 +79,7 @@ class ProfileViewModel extends ChangeNotifier {
       hasError = true;
 
       // Handle DioException specifically
-      if (e is DioError) {
+      if (e is DioException) {
         errorMessage =
             "Failed to update profile: ${e.response?.data ?? e.message}";
       } else {

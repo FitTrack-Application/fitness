@@ -32,7 +32,7 @@ class RecipeDetailViewModel extends ChangeNotifier {
     try {
       isLoading = true;
       notifyListeners();
-      await repository.addRecipe(recipe,mealLogId);
+      await repository.addRecipeToLog(recipe,mealLogId);
 
       isLoading = false;
       notifyListeners();

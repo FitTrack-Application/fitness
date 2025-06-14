@@ -2,15 +2,17 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mobile/features/fitness/models/meal_log.dart';
-import 'package:mobile/features/fitness/view/search_food/widget/error_display.dart';
+import 'package:mobile/features/fitness/view/search_food/widget/food_item.dart';
+import 'package:mobile/features/fitness/view/search_food/widget/my_food_item.dart';
+import 'package:mobile/features/fitness/view/search_food/widget/recipe_item.dart';
 import 'package:provider/provider.dart';
-
+import '../../models/food.dart';
+import '../../models/meal_log.dart';
 import '../../models/recipe.dart';
 import '../../viewmodels/diary_viewmodel.dart';
 import '../../viewmodels/search_food_viewmodel.dart';
-import 'widget/recipe_item.dart';
-import 'widget/food_item.dart';
+import '../search_exercise/widget/error_display.dart';
+
 
 class SearchFoodScreen extends StatefulWidget {
   final String mealLogId;
@@ -26,74 +28,59 @@ class SearchFoodScreen extends StatefulWidget {
   State<SearchFoodScreen> createState() => _SearchFoodScreenState();
 }
 
+
 class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _searchController = TextEditingController();
-  Timer? _allDebounce;
+
   late TextEditingController _allController;
   late TextEditingController _myRecipesController;
+  late TextEditingController _myFoodsController;
+
+  Timer? _allDebounce;
   Timer? _myRecipesDebounce;
-  late TabController _tabController;
+  Timer? _myFoodsDebounce;
+
   final TextEditingController _aiPromptController = TextEditingController();
   bool _showAIOverlay = false;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
     _tabController.addListener(_onTabChanged);
     _scrollController.addListener(_scrollListener);
 
+
     _allController = TextEditingController();
     _myRecipesController = TextEditingController();
+    _myFoodsController = TextEditingController();
 
-    _allController.addListener(() => _debounceSearch(isMyFood: false));
-    _myRecipesController.addListener(() => _debounceSearch(isMyFood: true));
+    _allController.addListener(() => _debounceSearch(TabType.all));
+    _myRecipesController.addListener(() => _debounceSearch(TabType.myRecipes));
+    _myFoodsController.addListener(() => _debounceSearch(TabType.myFoods));
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<SearchFoodViewModel>().searchFoods(query: '', isInMyRecipesTab: false);
+    Future.microtask(() {
+      final vm = context.read<SearchFoodViewModel>();
+      vm.loadInitialData();
     });
-  }
-
-
-  void _debounceSearch({required bool isMyFood}) {
-    final timer = isMyFood ? _myRecipesDebounce : _allDebounce;
-    timer?.cancel();
-
-    final controller = isMyFood ? _myRecipesController : _allController;
-
-    final newTimer = Timer(const Duration(milliseconds: 500), () {
-      context.read<SearchFoodViewModel>().searchFoods(
-        query: controller.text,
-        isInMyRecipesTab: isMyFood,
-      );
-    });
-
-    if (isMyFood) {
-      _myRecipesDebounce = newTimer;
-    } else {
-      _allDebounce = newTimer;
-    }
-  }
-
-
-  void _onTabChanged() {
-    final isMyFood = _tabController.index == 0;
-    context.read<SearchFoodViewModel>().searchFoods(query: _searchController.text, isInMyRecipesTab: isMyFood);
   }
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    _tabController.dispose();
     _allController.dispose();
     _myRecipesController.dispose();
+    _myFoodsController.dispose();
+
     _allDebounce?.cancel();
     _myRecipesDebounce?.cancel();
-    _tabController.dispose();
+    _myFoodsDebounce?.cancel();
+
     _aiPromptController.dispose();
     super.dispose();
   }
-
 
   void _scrollListener() {
     final viewModel = context.read<SearchFoodViewModel>();
@@ -101,20 +88,81 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
         _scrollController.position.maxScrollExtent - 200 && // Load before reaching the end
         !viewModel.isFetchingMore &&
         viewModel.hasMoreData) {
-      viewModel.loadMoreFoods(isMyFood: _tabController.index == 1);
+      viewModel.loadMoreFoods(tabType: TabType.all);
     }
   }
 
-  void _retrySearch() {
-    final isMyFood = _tabController.index == 1;
-    final controller = isMyFood ? _myRecipesController : _allController;
+  void _onTabChanged() {
+    final tabType;
+    if(_tabController.index == 0)
+      tabType = TabType.all;
+    else if (_tabController.index == 1)
+      tabType = TabType.myRecipes;
+    else tabType = TabType.myFoods;
 
+    context.read<SearchFoodViewModel>().searchFoods(query: _searchController.text,tabType: tabType);
+  }
+
+
+  void _retrySearch(TabType tabType) {
+    // final isMyFood = _tabController.index == 1;
+    // final controller = isMyFood ? _myRecipesController : _allController;
+    final controller;
+    switch (tabType){
+      case TabType.all:
+        controller = _allController;
+      case TabType.myRecipes:
+        controller = _myRecipesController;
+      case TabType.myFoods:
+        controller = _myFoodsController;
+    }
     context.read<SearchFoodViewModel>().searchFoods(
       query: controller.text,
-      isInMyRecipesTab: isMyFood,
+      tabType: tabType,
     );
   }
 
+  void _debounceSearch(TabType tab) {
+    final viewModel = context.read<SearchFoodViewModel>();
+    Timer? timer;
+    TextEditingController? controller;
+
+    switch (tab) {
+      case TabType.all:
+        timer = _allDebounce;
+        controller = _allController;
+        break;
+      case TabType.myRecipes:
+        timer = _myRecipesDebounce;
+        controller = _myRecipesController;
+        break;
+      case TabType.myFoods:
+        timer = _myFoodsController as Timer?;
+        controller = _myFoodsController;
+        break;
+    }
+
+    timer?.cancel();
+
+    final newTimer = Timer(const Duration(milliseconds: 500), () {
+      viewModel.searchFoods(
+        query: controller!.text,
+        tabType: tab,
+      );
+    });
+
+    switch (tab) {
+      case TabType.all:
+        _allDebounce = newTimer;
+        break;
+      case TabType.myRecipes:
+        _myRecipesDebounce = newTimer;
+        break;
+      case TabType.myFoods:
+        _myFoodsDebounce = newTimer;
+        break;
+    }
+  }
   void _showAIChatDialog() {
     showDialog(
       context: context,
@@ -154,17 +202,9 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<SearchFoodViewModel>();
-    // final aiViewModel = Theme.of(context);
-    final textTheme = Theme.of(context).textTheme;
-
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
-        centerTitle: true,
-        title: Text('Search food', style: textTheme.titleMedium),
+        title: const Text('Search Food'),
         actions: [
           IconButton(
             icon: const Icon(Icons.smart_toy),
@@ -175,24 +215,24 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
           controller: _tabController,
           tabs: const [
             Tab(text: 'All'),
-            Tab(text: 'My Recipes')
+            Tab(text: 'My Recipes'),
+            Tab(text: 'My Food'),
           ],
         ),
       ),
       body: Stack(
         children: [
-          Column(
-            children: [
-              Expanded(
-                child: TabBarView(
-                  controller: _tabController,
-                  children: [
-                    _buildBody(viewModel, isMyFood: true),
-                    _buildBody(viewModel, isMyFood: false),
-                  ],
-                ),
-              ),
-            ],
+          Consumer<SearchFoodViewModel>(
+            builder: (context, viewModel, _) {
+              return TabBarView(
+                controller: _tabController,
+                children: [
+                  _buildTab(viewModel,tabType:  TabType.all),
+                  _buildTab(viewModel,tabType:  TabType.myRecipes),
+                  _buildTab(viewModel,tabType:  TabType.myFoods),
+                ],
+              );
+            },
           ),
           if (_showAIOverlay)
             Stack(
@@ -210,13 +250,13 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
     );
   }
 
-  Widget _buildBody(SearchFoodViewModel viewModel, {required bool isMyFood}) {
+  Widget _buildTab(SearchFoodViewModel viewModel, {required TabType tabType}) {
     final theme = Theme.of(context);
     final textTheme = Theme.of(context).textTheme;
 
     return Column(
       children: [
-        if (isMyFood)
+        if (tabType == TabType.all)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
             child: SizedBox(
@@ -233,7 +273,7 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
                     icon: const Icon(Icons.clear),
                     onPressed: () {
                       _allController.clear();
-                      context.read<SearchFoodViewModel>().searchFoods(query: '', isInMyRecipesTab: false);
+                      context.read<SearchFoodViewModel>().searchFoods(query: '', tabType: tabType);
                     },
                   )
                       : null,
@@ -241,7 +281,7 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
               ),
             ),
           ),
-        if(!isMyFood)
+        if(tabType == TabType.myRecipes)
           Column(
             children: [
               Padding(
@@ -269,7 +309,7 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
                         icon: const Icon(Icons.clear),
                         onPressed: () {
                           _allController.clear();
-                          context.read<SearchFoodViewModel>().searchFoods(query: '', isInMyRecipesTab: false);
+                          context.read<SearchFoodViewModel>().searchFoods(query: '',tabType: tabType);
                         },
                       )
                           : null,
@@ -280,12 +320,9 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
               TextButton(
                 onPressed: () async {
                   final Recipe? newRecipe = await context.push('/create_recipe/${widget.mealLogId}/${mealTypeToString(widget.mealType)}');
-
-
                   if (newRecipe != null && context.mounted) {
                     context.read<SearchFoodViewModel>().addRecipeToList(newRecipe);
                   }
-
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -305,30 +342,85 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
               ),
             ],
           ),
+        if(tabType == TabType.myFoods)
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                child: SizedBox(
+                  height: 50,
+                  child: TextField(
+                    controller: _allController,
+                    decoration: InputDecoration(
+                      hintText: 'Search for food',
+                      hintStyle: theme.textTheme.bodyMedium,
+                      prefixIcon: const Icon(Icons.search),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 10),
+                      suffixIcon: _allController.text.isNotEmpty
+                          ? IconButton(
+                        icon: const Icon(Icons.clear),
+                        onPressed: () {
+                          _allController.clear();
+                          context.read<SearchFoodViewModel>().searchFoods(query: '', tabType: tabType);
+                        },
+                      )
+                          : null,
+                    ),
+                  ),
+                ),
+              ),
+              TextButton(
+                onPressed: () async {
+                  final Food? newFood = await context.push('/create_food/${widget.mealLogId}/${mealTypeToString(widget.mealType)}');
+                  if (newFood != null && context.mounted) {
+                    context.read<SearchFoodViewModel>().addMyFoodToList(newFood);
+                  }
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: Text(
+                        '+ CREATE FOOD',
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          //color: colorScheme.primary,
+                        ),
+
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         Expanded(
-          child: _buildListView(viewModel, isMyFood: isMyFood),
+          child: _buildListView(viewModel, tabType),
+
         ),
       ],
     );
   }
 
 
-  Widget _buildListView(SearchFoodViewModel viewModel, {required bool isMyFood}) {
-    final items = isMyFood ? viewModel.foods : viewModel.recipes;
-    final itemCount = items.length + (viewModel.isFetchingMore ? 1 : 0);
-
+  Widget _buildListView(SearchFoodViewModel viewModel, TabType tabType) {
+    final items = switch (tabType) {
+      TabType.all => viewModel.foods,
+      TabType.myRecipes => viewModel.recipes,
+      TabType.myFoods => viewModel.myFoods,
+    };
     if (viewModel.isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    if (viewModel.errorMessage.isNotEmpty) {
-      return Center(
-        child: ErrorDisplay(
-          message: viewModel.errorMessage,
-          onRetry: _retrySearch,
-        ),
-      );
-    }
+    // if (viewModel.errorMessage.isNotEmpty) {
+    //   return Center(
+    //     child: ErrorDisplay(
+    //       message: viewModel.errorMessage,
+    //       onRetry: _retrySearch,
+    //     ),
+    //   );
+    // }
 
     if (viewModel.foods.isEmpty) {
       return const SizedBox.shrink();
@@ -337,7 +429,7 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
 
     return ListView.builder(
       controller: _scrollController,
-      itemCount: itemCount,
+      itemCount: items.length,
       itemBuilder: (context, index) {
         if (index == items.length) {
           if (viewModel.loadMoreError.isNotEmpty) {
@@ -345,7 +437,7 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
               padding: const EdgeInsets.all(16.0),
               child: ErrorDisplay(
                 message: viewModel.loadMoreError,
-                onRetry: () => viewModel.loadMoreFoods(isMyFood: isMyFood),
+                onRetry: () => viewModel.loadMoreFoods(tabType: tabType),
                 compact: true,
               ),
             );
@@ -356,7 +448,7 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
           );
         }
 
-        if (!isMyFood) {
+        if (tabType == TabType.myRecipes) {
           final recipe = viewModel.recipes[index];
           if (viewModel.recipes.isEmpty) {
             return Center(
@@ -376,35 +468,34 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
           }
 
           return RecipeItemWidget(
-            // recipe: recipe,
-            // onTap: () => context.push('/recipe_detail', extra: recipe),
-            // onAdd: (){
-            //   final diaryViewModel = context.read<DiaryViewModel>();
-            //   diaryViewModel.addFoodToDiary(
-            //     mealLogId: widget.mealLogId,
-            //     foodId: recipe.id,
-            //     servingUnitId: 'GRAM',
-            //     numberOfServings: 100,
-            //   );
-            // },
             recipe: recipe,
             onTap: () => context.push(
-          '/recipe_detail/${widget.mealLogId}?mealType=${mealTypeToString(widget.mealType)}',
-        extra: recipe,
-        ),
-        onAdd: () {
+              '/recipe_detail/${widget.mealLogId}?mealType=${mealTypeToString(widget.mealType)}',
+              extra: recipe,
+            ),
+            onAdd: () {
+              //TODO handle add recipe to diary
+            },
+          );
+        } else if (tabType == TabType.all){
+          final food = viewModel.foods[index];
+          return FoodItemWidget(
+            food: food,
+            onTap: () =>context.push('/food/${widget.mealLogId}/${food.id}/add/100?mealType=${mealTypeToString(widget.mealType)}'),
+            onAdd: () {
               final diaryViewModel = context.read<DiaryViewModel>();
               diaryViewModel.addFoodToDiary(
                 mealLogId: widget.mealLogId,
-                foodId: recipe.id,
-                servingUnitId:recipe.servingUnit.id,
-                numberOfServings: recipe.numberOfServings,
+                foodId: food.id,
+                servingUnitId:'9b0f9cf0-1c6e-4c1e-a3a1-8a9fddc20a0b',
+                numberOfServings: 100,
               );
             },
           );
-        } else {
-          final food = viewModel.foods[index];
-          return FoodItemWidget(
+        }
+        else {
+          final food = viewModel.myFoods[index];
+          return MyFoodItemWidget(
             food: food,
             onTap: () =>context.push('/food/${widget.mealLogId}/${food.id}/add/100?mealType=${mealTypeToString(widget.mealType)}'),
             onAdd: () {
@@ -513,5 +604,3 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
   }
 
 }
-
-

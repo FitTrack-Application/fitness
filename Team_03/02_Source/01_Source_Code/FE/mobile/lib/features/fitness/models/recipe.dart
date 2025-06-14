@@ -5,14 +5,12 @@ class Recipe {
   final String id;
   final String name;
   final String direction;
-  final ServingUnit servingUnit;
   final List<Food> recipeEntries;
 
   Recipe({
     required this.id,
     required this.name,
     required this.direction,
-    required this.servingUnit,
     required this.recipeEntries,
   });
 
@@ -21,15 +19,8 @@ class Recipe {
       id: json['id'] ?? '',
       name: json['name'] ?? '',
       direction: json['direction'] ?? '',
-      servingUnit: json['servingUnit'] != null
-          ? ServingUnit.fromJson(json['servingUnit'])
-          : ServingUnit(
-        id: '',
-        unitName: 'Gram',
-        unitSymbol: 'g',
-      ),
       recipeEntries: (json['recipeEntries'] as List<dynamic>? ?? [])
-          .map((item) => Food.fromJson(item))
+          .map((item) => Food.recipeEntriesFromJson(item))
           .toList(),
     );
   }
@@ -58,8 +49,4 @@ class Recipe {
 
   double get carbs =>
       recipeEntries.fold(0, (sum, food) => sum + food.carbs);
-
-// For the display unit
-  String get unit => servingUnit.unitName;
-
 }

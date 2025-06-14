@@ -266,17 +266,57 @@ class FoodRepository {
         int page = 1,
         int size = 10,
       }) async {
-    print('ℹ️ searchMyFoods called — returning empty list by default');
-    return PaginatedResponse<Food>(
-      message: 'No data available for My Food',
-      data: [],
-      pagination: Pagination(
-        currentPage: page,
-        pageSize: size,
-        totalItems: 0,
-        totalPages: 1,
-      ),
-    );
+    try {
+      print('📤 Requesting searchFoods with name="$name", page=$page, size=$size');
+
+      final response = await _dio.get(
+        '/api/foods/me',
+        queryParameters: {
+          'query': name,
+          'page': page,
+          'size': size,
+        },
+      );
+
+      final data = response.data;
+      print('✅ Response received for searchFoods');
+      print('📦 Total items fetched: ${data['data']?.length ?? 0}');
+
+      final List<dynamic> foodListJson = data['data'] ?? [];
+      final Map<String, dynamic> paginationJson =
+          data['metadata']?['pagination'] ?? {};
+
+      final foods = foodListJson.map((item) => Food.fromJson(item)).toList();
+
+      return PaginatedResponse<Food>(
+        message: data['generalMessage'] ?? 'Success',
+        data: foods,
+        pagination: Pagination(
+          currentPage: paginationJson['currentPage'] ?? 1,
+          pageSize: paginationJson['pageSize'] ?? size,
+          totalItems: paginationJson['totalItems'] ?? foods.length,
+          totalPages: paginationJson['totalPages'] ?? 1,
+        ),
+      );
+    } catch (e, stack) {
+      print('🔥 Exception during searchFoods: $e');
+      print('📉 Stacktrace:\n$stack');
+      rethrow;
+    }
+  }
+
+  Future<bool> deleteFood(String id) async {
+    try {
+      print('🗑️ Deleting recipe with id: $id');
+      await _dio.delete('/api/foods/$id');
+      print('✅ Food deleted');
+      return true;
+      //return true;
+    } catch (e, stack) {
+      print('🔥 Exception during delete Food: $e');
+      print('📉 Stacktrace:\n$stack');
+      rethrow;
+    }
   }
 
   Future<List<ServingUnit>> getAllServingUnits() async {
@@ -304,6 +344,26 @@ class FoodRepository {
       return list.map((item) => ServingUnit.fromJson(item)).toList();
     } catch (e, stack) {
       print('🔥 Error in getAllServingUnits (GraphQL): $e');
+      print('📉 Stacktrace:\n$stack');
+      rethrow;
+    }
+  }
+
+  Future<Food> createFood(Food food) async {
+    try {
+      print('📤 Creating food: ${food.name}');
+
+      final response = await _dio.post(
+        '/api/foods',
+        data: food.toJson(), // You'll need to implement toJson in Recipe
+      );
+
+      final data = response.data['data'];
+      print('✅ Food created: ${data['name']}');
+
+      return Food.fromJson(data);
+    } catch (e, stack) {
+      print('🔥 Exception during createRecipe: $e');
       print('📉 Stacktrace:\n$stack');
       rethrow;
     }
