@@ -112,11 +112,6 @@ class FoodDetailViewModel extends ChangeNotifier {
     }
   }
 
-  // void updateMealType(MealType mealType) {
-  //   selectedMealType = mealType;
-  //   notifyListeners();
-  // }
-
   Future<void> fetchAllServingUnits(String? servingUnitId) async {
     loadState = LoadState.loading;
     notifyListeners();
