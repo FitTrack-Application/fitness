@@ -165,42 +165,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
   }
 
   Widget _buildErrorState(BuildContext context, FoodDetailViewModel viewModel) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.error_outline,
-            size: 64,
-            color: colorScheme.error,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'Failed to load food information',
-            style: textTheme.titleMedium,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            viewModel.errorMessage ?? 'Unknown error occurred',
-            textAlign: TextAlign.center,
-            style: textTheme.bodyMedium,
-          ),
-          const SizedBox(height: 24),
-          ElevatedButton.icon(
-            icon: const Icon(Icons.refresh),
-            label: const Text('Try Again'),
-            onPressed: () => viewModel.loadFood(
-              widget.foodId,
-              servingUnitId: widget.servingUnitId ?? '',
-              numberOfServings: widget.numberOfServings,
-            ),
-          ),
-        ],
-      ),
-    );
+    return const SizedBox.shrink();
   }
 
   Widget _buildTimeoutState(
