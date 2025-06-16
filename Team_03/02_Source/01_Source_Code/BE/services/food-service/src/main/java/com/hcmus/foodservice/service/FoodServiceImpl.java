@@ -158,7 +158,7 @@ public class FoodServiceImpl implements FoodService {
 
     @Transactional
     @Override
-    public ApiResponse<?> createFood(FoodRequest foodDto, UUID userId) {
+    public ApiResponse<FoodDto> createFood(FoodRequest foodDto, UUID userId) {
         Food food = new Food();
 
         food.setFoodName(foodDto.getName());
@@ -185,8 +185,9 @@ public class FoodServiceImpl implements FoodService {
             }
         }
 
-        return ApiResponse.builder()
+        return ApiResponse.<FoodDto>builder()
                 .status(200)
+                .data(foodMapper.convertToFoodDto(savedFood))
                 .generalMessage("Successfully created food!")
                 .build();
     }
@@ -219,7 +220,7 @@ public class FoodServiceImpl implements FoodService {
 
     @Transactional
     @Override
-    public ApiResponse<?> updateFoodByIdAndUserId(UUID foodId, FoodRequest foodRequest, UUID userId) {
+    public ApiResponse<FoodDto> updateFoodByIdAndUserId(UUID foodId, FoodRequest foodRequest, UUID userId) {
         Food food = foodRepository.findByFoodIdAndUserId(foodId, userId);
         if (food == null) {
             throw new ResourceNotFoundException("Food not found with ID: " + foodId + " for user ID: " + userId);
@@ -248,8 +249,9 @@ public class FoodServiceImpl implements FoodService {
             }
         }
 
-        return ApiResponse.builder()
+        return ApiResponse.<FoodDto>builder()
                 .status(200)
+                .data(foodMapper.convertToFoodDto(food))
                 .generalMessage("Successfully updated food!")
                 .build();
     }
