@@ -25,9 +25,9 @@ public interface FoodService {
 
     ApiResponse<FoodDto> scanFood(String barcode);
 
-    ApiResponse<?> createFood(FoodRequest foodRequest, UUID userId);
+    ApiResponse<FoodDto> createFood(FoodRequest foodRequest, UUID userId);
 
     ApiResponse<?> deleteFoodByIdAndUserId(UUID foodId, UUID userId);
 
-    ApiResponse<?> updateFoodByIdAndUserId(UUID foodId, FoodRequest foodRequest, UUID userId);
+    ApiResponse<FoodDto> updateFoodByIdAndUserId(UUID foodId, FoodRequest foodRequest, UUID userId);
 }
