@@ -40,8 +40,8 @@ android {
         targetSdk = flutter.targetSdkVersion
 //        versionCode = flutter.versionCode
 //        versionName = flutter.versionName
-        versionCode = 7
-        versionName = "1.0.6"
+        versionCode = 9
+        versionName = "1.0.8"
 
         manifestPlaceholders = [
             appAuthRedirectScheme: "com.fittrack.mobile",
