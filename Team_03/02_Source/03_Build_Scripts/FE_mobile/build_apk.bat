@@ -4,7 +4,7 @@
 echo Building APK release...
 
 :: Chuyển đến thư mục chứa pubspec.yaml
-cd /d "%~dp0..\01_Source_Code\FE\mobile"
+cd /d "%~dp0..\..\01_Source_Code\FE\mobile"
 
 :: Kiểm tra lại xem pubspec.yaml có tồn tại không
 if not exist "pubspec.yaml" (
