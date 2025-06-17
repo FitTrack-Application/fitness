@@ -14,6 +14,8 @@ import com.hcmus.statisticservice.domain.repository.FitProfileRepository;
 import lombok.RequiredArgsConstructor;
 import com.hcmus.statisticservice.infrastructure.client.MediaServiceClient;
 
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +37,7 @@ public class FitProfileServiceImpl implements FitProfileService {
     private final MediaServiceClient mediaServiceClient;
 
     @Override
+    @Cacheable(value = "fitProfile", key = "#userID")
     public FitProfile findProfile(UUID userID) {
         return fitProfileRepository.findByUserId(userID).orElseThrow(
                 () -> new StatisticException("Fit profile not found!"));
@@ -60,6 +63,7 @@ public class FitProfileServiceImpl implements FitProfileService {
     }
 
     @Override
+    @CacheEvict(value = {"fitProfile", "fitProfileResponse"}, key = "#userId")
     public FitProfile updateProfile(UUID userId, FitProfile updateProfile) {
         FitProfile profile = findProfile(userId);
 
