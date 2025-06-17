@@ -9,8 +9,8 @@ class CreateRecipeViewModel extends ChangeNotifier {
 
   CreateRecipeViewModel(this._repository);
   final List<Food> _selectedFoods = [];
-  List<ServingUnit> _servingUnits = [];
-  bool _isLoadingUnits = true;
+  final List<ServingUnit> _servingUnits = [];
+  final bool _isLoadingUnits = true;
 
   final TextEditingController nameController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();

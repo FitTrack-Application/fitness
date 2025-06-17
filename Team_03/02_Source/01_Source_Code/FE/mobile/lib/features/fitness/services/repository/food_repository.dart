@@ -358,9 +358,8 @@ class FoodRepository {
         data: food.toJson(), // You'll need to implement toJson in Recipe
       );
 
+      final status = response.data['status'];
       final data = response.data['data'];
-      print('✅ Food created: ${data['name']}');
-
       return Food.fromJson(data);
     } catch (e, stack) {
       print('🔥 Exception during createRecipe: $e');

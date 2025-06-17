@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/features/fitness/services/repository/recipe_repository.dart';
-import 'package:mobile/features/fitness/viewmodels/search_food_viewmodel.dart';
 import 'package:provider/provider.dart';
 import '../../../models/recipe.dart';
 import '../../../viewmodels/diary_viewmodel.dart';

@@ -4,7 +4,6 @@ import 'package:mobile/features/fitness/models/meal_log.dart';
 import 'package:provider/provider.dart';
 import '../../../../cores/constants/colors.dart';
 import '../../models/food.dart';
-import '../../models/serving_unit.dart';
 import '../../services/repository/recipe_repository.dart';
 import '../../viewmodels/create_recipe_viewmodel.dart';
 

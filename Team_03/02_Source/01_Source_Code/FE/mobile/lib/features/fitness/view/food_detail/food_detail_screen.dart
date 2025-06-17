@@ -95,7 +95,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                               color: colorScheme.primary,
                             ),
                           )
-                        : Icon(Icons.check, color: colorScheme.primary),
+                        : Icon(Icons.add, color: colorScheme.primary),
                     onPressed: isAdding
                         ? null
                         : () async {

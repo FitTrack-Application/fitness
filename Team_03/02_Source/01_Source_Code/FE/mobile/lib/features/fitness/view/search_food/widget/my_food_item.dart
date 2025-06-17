@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:mobile/features/fitness/services/repository/food_repository.dart';
-import 'package:mobile/features/fitness/viewmodels/food_detail_viewmodel.dart';
 import 'package:mobile/features/fitness/viewmodels/search_food_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/food.dart';
-import '../../../models/meal_log.dart';
 import '../../../viewmodels/diary_viewmodel.dart';
 
 class MyFoodItemWidget extends StatelessWidget {
@@ -147,7 +143,7 @@ class MyFoodItemWidget extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: isAddingThisFood
-                      ? SizedBox(
+                      ? const SizedBox(
                     width: 24,
                     height: 24,
                     child: CircularProgressIndicator(

@@ -90,10 +90,10 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
   }
 
   void _onTabChanged() {
-    final tabType;
-    if(_tabController.index == 0)
+    final TabType tabType;
+    if(_tabController.index == 0) {
       tabType = TabType.all;
-    else if (_tabController.index == 1)
+    } else if (_tabController.index == 1)
       tabType = TabType.myRecipes;
     else tabType = TabType.myFoods;
 
@@ -104,7 +104,7 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
   void _retrySearch(TabType tabType) {
     // final isMyFood = _tabController.index == 1;
     // final controller = isMyFood ? _myRecipesController : _allController;
-    final controller;
+    final TextEditingController controller;
     switch (tabType){
       case TabType.all:
         controller = _allController;

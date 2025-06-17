@@ -1,4 +1,3 @@
-import 'package:mobile/features/fitness/models/serving_unit.dart';
 import 'food.dart';
 
 class Recipe {

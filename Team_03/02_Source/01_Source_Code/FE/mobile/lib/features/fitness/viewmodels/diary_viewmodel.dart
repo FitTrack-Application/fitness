@@ -6,7 +6,6 @@ import 'package:mobile/features/fitness/services/repository/workout_log_reposito
 import '../models/exercise_entry.dart';
 import '../models/meal_entry.dart';
 import '../models/meal_log.dart';
-import '../models/recipe.dart';
 import '../models/workout_log.dart';
 import '../services/repository/food_repository.dart';
 
@@ -21,7 +20,7 @@ class DiaryViewModel extends ChangeNotifier {
   // #### Food ####
   // Thay thế biến isAdding bằng Set các foodIds đang được thêm
   final Set<String> _addingFoodIds = {};
-  late Set<String> _addingRecipeIds = {};
+  late final Set<String> _addingRecipeIds = {};
   // Thêm set để theo dõi các món ăn đang được xóa
   final Set<String> _removingFoodIds = {};
 

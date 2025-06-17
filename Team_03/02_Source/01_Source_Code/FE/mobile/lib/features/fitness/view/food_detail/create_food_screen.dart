@@ -46,20 +46,23 @@ class _CreateFoodScreenContent extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () async {
-              final Food = await viewModel.createFood();
-              if (Food == null) {
+              final food = await viewModel.createFood();
+              if (food == null) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Failed to create food.')),
                 );
                 return;
               }
-              await context.push(
-                '/Food_detail/$mealogId?mealType=${mealTypeToString(mealType)}',
-                extra: Food,
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('✅ Food created successfully'),
+                  backgroundColor: Colors.cyan,
+                ),
               );
-              context.pop(Food);
+              await context.push('/food/${mealogId}/${food.id}/add/100?mealType=${mealTypeToString(mealType)}');
+              context.pop(food);
               // Save and pop
-              Navigator.pop(context, Food);
+              Navigator.pop(context, food);
             },
             child: const Text('Save', style: TextStyle(color: HighlightColors.highlight500)),
           ),
