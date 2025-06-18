@@ -37,6 +37,8 @@ spring:
     port: ${REDIS_PORT}
     password: ${REDIS_PASSWORD}
     timeout: 60000
+    ssl:
+      enabled: true 
 
 logging:
   level:
@@ -45,7 +47,7 @@ logging:
         SQL: DEBUG # Log câu SQL (DEBUG trong dev/test)
         orm:
           jdbc:
-            bind: TRACE # Log giá trị tham số bind (giúp debug)
+            bind: TRACE # Log giá trị tham số bind (giúp debug)   
 
 management:
   endpoints:
