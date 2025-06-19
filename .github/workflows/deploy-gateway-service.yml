@@ -90,4 +90,3 @@ jobs:
         az containerapp show --name gateway-service --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} --query "properties.latestRevisionName" -o tsv
         az containerapp revision list --name gateway-service --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} --query "[0].properties.runningStatus"
       continue-on-error: true
-
