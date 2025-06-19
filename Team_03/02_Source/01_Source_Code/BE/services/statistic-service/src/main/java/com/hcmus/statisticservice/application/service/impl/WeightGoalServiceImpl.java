@@ -14,9 +14,12 @@ import com.hcmus.statisticservice.domain.model.WeightGoal;
 import com.hcmus.statisticservice.domain.model.type.ActivityLevel;
 import com.hcmus.statisticservice.domain.repository.WeightGoalRepository;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.CacheEvict;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -33,6 +36,7 @@ public class WeightGoalServiceImpl implements WeightGoalService {
     private final NutritionGoalService nutritionGoalService;
 
     @Override
+    @CacheEvict(value = {"weightGoal", "getWeightGoalResponse"}, key = "#userId")
     public WeightGoal updateWeightGoal(UUID userId, WeightGoal updateWeightGoal) {
         WeightGoal weightGoal = findWeightGoal(userId);
 
@@ -51,6 +55,7 @@ public class WeightGoalServiceImpl implements WeightGoalService {
     }
 
     @Override
+    @Cacheable(value = "weightGoal", key = "#userId")
     public WeightGoal findWeightGoal(UUID userId) {
         return weightGoalRepository.findByUserId(userId)
                 .orElseThrow(() -> new StatisticException("Weight goal not found!"));

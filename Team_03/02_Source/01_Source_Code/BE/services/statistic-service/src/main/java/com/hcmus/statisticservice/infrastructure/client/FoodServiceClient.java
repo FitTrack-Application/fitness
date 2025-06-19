@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @FeignClient(
     name = "food-service",
-    url = "${FOOD_SERVICE_HOST}",
+    url = "${host.food-service}",
     configuration = FeignConfig.class
 )
 
