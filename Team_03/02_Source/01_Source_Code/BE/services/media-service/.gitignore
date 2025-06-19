@@ -32,8 +32,30 @@ build/
 ### VS Code ###
 .vscode/
 
-# Ignore environment variables
-.env
+### Java ###
+# Compiled class file
+*.class
 
-### Bin ###
-bin/
+# Log file
+*.log
+
+# Package Files #
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+### Spring Boot ###
+target/
+.mvn/wrapper/maven-wrapper.jar
+**/src/main/**/target/
+**/src/test/**/target/
+
+### Configuration files with sensitive data ###
+
+### Environment Files ###
+.env
+.env.*
