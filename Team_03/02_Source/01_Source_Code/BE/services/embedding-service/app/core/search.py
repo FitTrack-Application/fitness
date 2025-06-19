@@ -175,6 +175,7 @@ class SearchService:
         3. The unit extracted can be in various forms, such as grams, milliliters, cups, etc. If the unit is not specified, assume it is grams for solid foods and milliliters for liquid foods.  
         4. Convert the quantity to grams or milliliters using these available units: {unit_list}. There may be some additional units in the description that are not in the list, then you should use international standards to convert the amount into grams or mimilliliters. The amount will be stored in number_of_servings, and the unit using will be either gram or milliliter.
         5. If no quantity is specified, assume number of serving is 100 for gram unit or milliliter unit (100g or 100ml). 
+        6. If the food is unknown, don't return it in the result.
         
         Available units and their gram conversions:
         {json.dumps(UNIT_CONVERSIONS, indent=2, ensure_ascii=False)}
