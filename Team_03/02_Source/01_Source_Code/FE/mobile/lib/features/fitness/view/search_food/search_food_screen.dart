@@ -171,9 +171,9 @@ class _SearchFoodScreenState extends State<SearchFoodScreen> with SingleTickerPr
           title: const Text('Ask AI for Food Suggestions'),
           content: TextField(
             controller: _aiPromptController,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               hintText: 'Enter your food query (e.g., "healthy breakfast ideas")',
-              //hintStyle: Theme.of(rootContext).textTheme.bodyMedium,
+              hintStyle: Theme.of(context).textTheme.bodyMedium,
             ),
             maxLines: 3,
           ),
