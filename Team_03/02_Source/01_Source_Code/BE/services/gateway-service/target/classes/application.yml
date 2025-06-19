@@ -1,0 +1,77 @@
+server:
+  port: ${GATEWAY_SERVICE_PORT:8088} # Port của gateway service (mặc định là 8088)
+
+spring:
+  application:
+    name: gateway-service
+  main:
+    allow-bean-definition-overriding: true # Cho phép override bean nếu bị trùng tên
+  cloud:
+    gateway:
+      httpclient:
+        connect-timeout: 3000 # Thời gian timeout khi connect (ms) - nhỏ lại cho local
+        response-timeout: 10s # Thời gian chờ phản hồi từ service downstream
+        pool:
+          max-connections: 200 # Tổng số kết nối tối đa
+      default-filters:
+        - name: Retry
+          args:
+            retries: 2 # Retry 2 lần nếu thất bại
+            statuses: BAD_GATEWAY, GATEWAY_TIMEOUT, INTERNAL_SERVER_ERROR, REQUEST_TIMEOUT, SERVICE_UNAVAILABLE
+            methods: GET, POST, PUT, DELETE
+            backoff:
+              firstBackoff: 2000ms # Retry lần đầu sau 2s
+              maxBackoff: 8000ms # Retry tối đa sau 8s
+              factor: 2
+              basedOnPreviousValue: false
+        - name: CircuitBreaker
+          args:
+            name: serviceCircuitBreaker
+            fallbackUri: forward:/fallback # Đường dẫn fallback khi circuit breaker open
+      routes:
+        - id: food_service
+          uri: ${FOOD_SERVICE_HOST:http://food-service:8080}
+          predicates:
+            - Path=/api/foods/**,/api/meal-entries/**,/api/meal-logs/**,/api/recipes/**,/api/serving-units/**,/api/food-reports/**,/food/graphql
+        - id: statistic_service
+          uri: ${STATISTIC_SERVICE_HOST:http://statistic-service:8081}
+          predicates:
+            - Path=/api/statistics/**,/api/fit-profiles/**,/api/nutrition-goals/**,/api/step-logs/**,/api/weight-logs/**,/api/weight-goals/**,/api/surveys/**,/api/latest-logins/**,/api/admin/**,/api/dashboard/**
+        - id: exercise_service
+          uri: ${EXERCISE_SERVICE_HOST:http://exercise-service:8082}
+          predicates:
+            - Path=/api/exercises/**,/api/exercise-logs/**,/api/exercise-log-entries/**,/api/exercise-reports/**
+        - id: media_service
+          uri: ${MEDIA_SERVICE_HOST:http://media-service:8083}
+          predicates:
+            - Path=/api/media/**
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      serviceCircuitBreaker:
+        slidingWindowSize: 50 # Số lượng request dùng để thống kê trạng thái
+        minimumNumberOfCalls: 20 # Số call tối thiểu để circuit breaker bắt đầu hoạt động
+        failureRateThreshold: 60 # % lỗi để chuyển trạng thái sang open
+        waitDurationInOpenState: 30s # Thời gian open trước khi thử lại
+        permittedNumberOfCallsInHalfOpenState: 10 # Số call cho phép trong half-open
+        slowCallRateThreshold: 70 # % số call chậm để tính lỗi
+        slowCallDurationThreshold: 30s # Ngưỡng thời gian call bị coi là chậm
+        registerHealthIndicator: true
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+  timelimiter:
+    instances:
+      serviceCircuitBreaker:
+        timeoutDuration: 60s # Hạn thời gian cho mỗi request
+        cancelRunningFuture: true
+
+keycloak:
+  introspection-uri: ${KEYCLOAK_AUTH_SERVER_HOST}/realms/${KEYCLOAK_REALM}/protocol/openid-connect/token/introspect
+  client-id: ${KEYCLOAK_CLIENT_ID}
+  client-secret: ${KEYCLOAK_CLIENT_SECRET}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

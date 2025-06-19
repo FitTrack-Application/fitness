@@ -1,0 +1,6 @@
+/app/src/main/java/com/hcmus/mediaservice/MediaServiceApplication.java
+/app/src/main/java/com/hcmus/mediaservice/config/AWSConfig.java
+/app/src/main/java/com/hcmus/mediaservice/config/ApiResponse.java
+/app/src/main/java/com/hcmus/mediaservice/config/DotenvConfig.java
+/app/src/main/java/com/hcmus/mediaservice/controller/MediaController.java
+/app/src/main/java/com/hcmus/mediaservice/service/MediaService.java

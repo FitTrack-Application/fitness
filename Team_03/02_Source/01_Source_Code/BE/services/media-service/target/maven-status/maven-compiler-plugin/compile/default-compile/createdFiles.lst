@@ -1,0 +1,7 @@
+com/hcmus/mediaservice/config/ApiResponse.class
+com/hcmus/mediaservice/config/AWSConfig.class
+com/hcmus/mediaservice/controller/MediaController.class
+com/hcmus/mediaservice/MediaServiceApplication.class
+com/hcmus/mediaservice/config/DotenvConfig.class
+com/hcmus/mediaservice/config/ApiResponse$ApiResponseBuilder.class
+com/hcmus/mediaservice/service/MediaService.class
