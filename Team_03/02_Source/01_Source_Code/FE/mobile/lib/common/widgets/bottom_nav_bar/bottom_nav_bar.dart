@@ -46,10 +46,10 @@ class BottomNavBar extends StatelessWidget {
             BottomNavigationBarItem(
               icon: Icon(
                 navProvider.currentIndex == 2
-                    ? Icons.person // Icon khi được chọn
-                    : Icons.person_outlined, // Icon khi không được chọn
+                    ? Icons.more // Icon khi được chọn
+                    : Icons.more_outlined, // Icon khi không được chọn
               ),
-              label: 'Profile',
+              label: 'More',
             ),
           ],
         );

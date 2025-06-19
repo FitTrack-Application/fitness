@@ -7,22 +7,20 @@ class SurveyViewModel extends ChangeNotifier {
   // Fields for survey data
   String name = 'Nguyễn Văn A';
   int age = 28;
-  String gender = 'Male';
+  String gender = 'MALE';
   double height = 175.0;
   double weight = 70.5;
   String goal = "Gain weight";
   double weightGoal = 75;
   double goalPerWeek = 0.2;
-  String activityLevel = 'Moderately active';
-  
-
+  String activityLevel = 'MODERATE';
 
   // Calculate daily net calorie goal
   double calculateCalorieGoal() {
     double calorieGoal;
 
     // Base calorie calculation using Mifflin-St Jeor Equation
-    if (gender == 'Male') {
+    if (gender == 'MALE') {
       calorieGoal = (10 * weight) + (6.25 * height) - (5 * age) + 5;
     } else {
       calorieGoal = (10 * weight) + (6.25 * height) - (5 * age) - 161;
@@ -31,19 +29,19 @@ class SurveyViewModel extends ChangeNotifier {
     // Adjust for activity level
     double activityFactor;
     switch (activityLevel) {
-      case 'Sedentary':
+      case 'SEDENTARY':
         activityFactor = 1.2;
         break;
-      case 'Lightly active':
+      case 'LIGHT':
         activityFactor = 1.375;
         break;
-      case 'Moderately active':
+      case 'MODERATE':
         activityFactor = 1.55;
         break;
-      case 'Very active':
+      case 'ACTIVE':
         activityFactor = 1.725;
         break;
-      case 'Extra active':
+      case 'VERY_ACTIVE':
         activityFactor = 1.9;
         break;
       default:
@@ -54,10 +52,11 @@ class SurveyViewModel extends ChangeNotifier {
     // Adjust for goal type
     switch (goal) {
       case 'Lose weight':
-        calorieGoal -= 500 * goalPerWeek; // Subtract calories for weight loss
+        calorieGoal -=
+            7700 / 7 * goalPerWeek; // Subtract calories for weight loss
         break;
       case 'Gain weight':
-        calorieGoal += 500 * goalPerWeek; // Add calories for weight gain
+        calorieGoal += 7700 / 7 * goalPerWeek; // Add calories for weight gain
         break;
       case 'Maintain weight':
         break; // No adjustment for maintenance
@@ -69,29 +68,28 @@ class SurveyViewModel extends ChangeNotifier {
   }
 
   // Send survey data to the API
-  Future<void> sendSurveyData() async {
+  Future<bool> sendSurveyData() async {
     final userInfo = {
       "name": name,
       "age": age,
       "gender": gender,
       "height": height,
       "weight": weight,
-      "goalType": goal,
-      "weightGoal": weightGoal,
-      "goalPerWeek": goalPerWeek,
+      "goalWeight": weightGoal,
+      "weeklyGoal": goalPerWeek,
       "activityLevel": activityLevel,
-      "calorieGoal": 2000.00,
-      "imageURL": "https://example.com/avatar.jpg"
+      "imageUrl": null,
+      "startingDate":
+          "${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().day.toString().padLeft(2, '0')}",
     };
-
-    debugPrint("Sending survey data: ${userInfo.toString()}");
 
     try {
       await _apiService.userSurvey(userInfo);
       debugPrint("Survey data submitted successfully!");
+      return true; // Indicate success
     } catch (e) {
       debugPrint("Error submitting survey: $e");
-      throw Exception("Failed to submit survey data");
+      return false; // Indicate failure
     }
   }
 }

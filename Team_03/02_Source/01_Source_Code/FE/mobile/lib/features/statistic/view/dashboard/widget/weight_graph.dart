@@ -122,14 +122,17 @@ class WeightGraph extends StatelessWidget {
                                 showTitles: true,
                                 reservedSize: 30,
                                 interval: daysInterval.toDouble(),
-                                getTitlesWidget:
-                                    (double value, TitleMeta meta) {
-                                  final date = minDate
-                                      .add(Duration(days: value.toInt()));
+                                getTitlesWidget: (double value, TitleMeta meta) {
+                                  final date = minDate.add(Duration(days: value.toInt()));
+
+                                  // Skip rendering labels if they are at the edges and overcrowded
+                                  if (value == 0 || value == totalDays) {
+                                    return const SizedBox.shrink();
+                                  }
+
                                   return Text(
                                     DateFormat('MM/dd').format(date),
-                                    style: WeightGraphTheme.titleDataStyle(
-                                        context),
+                                    style: WeightGraphTheme.titleDataStyle(context),
                                   );
                                 },
                               ),
@@ -139,20 +142,23 @@ class WeightGraph extends StatelessWidget {
                                 showTitles: true,
                                 reservedSize: 40,
                                 interval: weightInterval,
-                                getTitlesWidget:
-                                    (double value, TitleMeta meta) {
+                                getTitlesWidget: (double value, TitleMeta meta) {
+                                  // Skip rendering labels if they are at the edges and overcrowded
+                                  if (value == minWeight || value == maxWeight) {
+                                    return const SizedBox.shrink();
+                                  }
+
                                   return Text(
                                     '${value.toInt()}',
-                                    style: WeightGraphTheme.titleDataStyle(
-                                        context),
+                                    style: WeightGraphTheme.titleDataStyle(context),
                                   );
                                 },
                               ),
                             ),
-                            topTitles: AxisTitles(
+                            topTitles: const AxisTitles(
                               sideTitles: SideTitles(showTitles: false),
                             ),
-                            rightTitles: AxisTitles(
+                            rightTitles: const AxisTitles(
                               sideTitles: SideTitles(showTitles: false),
                             ),
                           ),
@@ -184,6 +190,30 @@ class WeightGraph extends StatelessWidget {
                                 dashArray: [5, 5],
                               ),
                             ],
+                          ),
+                          lineTouchData: LineTouchData(
+                            touchTooltipData: LineTouchTooltipData(
+                              tooltipRoundedRadius: 8, // Add rounded corners
+                              tooltipPadding:
+                                  const EdgeInsets.all(8), // Add padding
+                              tooltipMargin:
+                                  8, // Add margin between the tooltip and the point
+                              getTooltipItems:
+                                  (List<LineBarSpot> touchedSpots) {
+                                return touchedSpots.map((spot) {
+                                  final date = minDate
+                                      .add(Duration(days: spot.x.toInt()));
+                                  return LineTooltipItem(
+                                    '${DateFormat('MM/dd').format(date)}\n ${spot.y.toStringAsFixed(1)}',
+                                    const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  );
+                                }).toList();
+                              },
+                            ),
+                            handleBuiltInTouches: true,
                           ),
                         ),
                       ),

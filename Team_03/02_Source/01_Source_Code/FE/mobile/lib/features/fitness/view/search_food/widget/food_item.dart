@@ -34,7 +34,7 @@ class FoodItemWidget extends StatelessWidget {
                 contentPadding: const EdgeInsets.all(12),
                 title: Text(food.name, style: theme.textTheme.titleMedium),
                 subtitle: Text(
-                  '${food.calories.toStringAsFixed(0)} kcal • '
+                  '${food.calories.toStringAsFixed(0)} cal • '
                       '${food.protein.toStringAsFixed(1)}g P • '
                       '${food.carbs.toStringAsFixed(1)}g C • '
                       '${food.fat.toStringAsFixed(1)}g F',

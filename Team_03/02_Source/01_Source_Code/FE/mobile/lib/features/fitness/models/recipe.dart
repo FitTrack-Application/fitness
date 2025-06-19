@@ -1,43 +1,52 @@
+import 'package:mobile/features/fitness/models/serving_unit.dart';
 import 'food.dart';
 
 class Recipe {
   final String id;
   final String name;
-  final String description;
-  final double servingSize;
-  final double calories;
-  final double carbs;
-  final double fat;
-  final double protein;
-  final String unit;
-  final List<Food> foodList;
+  final String direction;
+  final List<Food> recipeEntries;
+
   Recipe({
     required this.id,
     required this.name,
-    required this.description,
-    required this.servingSize,
-    required this.calories,
-    required this.carbs,
-    required this.fat,
-    required this.protein,
-    required this.unit,
-    required this.foodList
+    required this.direction,
+    required this.recipeEntries,
   });
 
   factory Recipe.fromJson(Map<String, dynamic> json) {
     return Recipe(
       id: json['id'] ?? '',
       name: json['name'] ?? '',
-      description: json['description'] ?? '',
-      calories: (json['calories'] ?? 0).toDouble(),
-      protein: (json['protein'] ?? 0).toDouble(),
-      carbs: (json['carbs'] ?? 0).toDouble(),
-      fat: (json['fat'] ?? 0).toDouble(),
-      servingSize: 100.0, // Mặc định
-      unit: 'grams', // Mặc định
-      foodList: (json['foodList'] as List<dynamic>? ?? [])
-          .map((item) => Food.fromJson(item))
+      direction: json['direction'] ?? '',
+      recipeEntries: (json['recipeEntries'] as List<dynamic>? ?? [])
+          .map((item) => Food.recipeEntriesFromJson(item))
           .toList(),
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'direction': direction,
+      //'servingUnit': servingUnit.toJson(),
+      //'numberOfServings': numberOfServings,
+      'recipeEntries': recipeEntries.map((food) => food.idToJson()).toList(),
+    };
+  }
+
+  // Total nutritional values (computed from foodList)
+  double get numberOfServings =>
+      recipeEntries.fold(0, (sum, food) => sum + food.numberOfServings);
+  double get calories =>
+      recipeEntries.fold(0, (sum, food) => sum + food.calories);
+
+  double get protein =>
+      recipeEntries.fold(0, (sum, food) => sum + food.protein);
+
+  double get fat =>
+      recipeEntries.fold(0, (sum, food) => sum + food.fat);
+
+  double get carbs =>
+      recipeEntries.fold(0, (sum, food) => sum + food.carbs);
 }

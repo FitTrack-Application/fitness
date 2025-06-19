@@ -53,21 +53,21 @@ const Sidebar = () => {
       <Logo>Admin Dashboard</Logo>
       <NavMenu>
         <NavItem
-          to="/dashboard"
+          to="/admin/dashboard"
           className={({ isActive }) => (isActive ? "active" : "")}
         >
           <BarChart2 size={20} />
           Dashboard
         </NavItem>
         <NavItem
-          to="/food"
+          to="/admin/food"
           className={({ isActive }) => (isActive ? "active" : "")}
         >
           <Coffee size={20} />
           Food Management
         </NavItem>
         <NavItem
-          to="/exercise"
+          to="/admin/exercise"
           className={({ isActive }) => (isActive ? "active" : "")}
         >
           <Activity size={20} />

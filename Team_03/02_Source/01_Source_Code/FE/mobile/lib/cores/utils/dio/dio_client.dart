@@ -12,9 +12,10 @@ class DioClient {
   DioClient._internal() {
     dio = Dio(
       BaseOptions(
-        baseUrl: 'http://10.0.2.2:8088',
-        connectTimeout: const Duration(seconds: 30),
-        receiveTimeout: const Duration(seconds: 30),
+        // baseUrl: 'http://10.0.2.2:8088',
+        baseUrl: 'https://gateway-service.calmbush-23bf89f4.southeastasia.azurecontainerapps.io',
+        connectTimeout: const Duration(seconds: 120),
+        receiveTimeout: const Duration(seconds: 120),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',

@@ -1,92 +1,69 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobile/features/fitness/models/meal_log.dart';
+import 'package:provider/provider.dart';
 import '../../../../cores/constants/colors.dart';
 import '../../models/food.dart';
-import '../../models/recipe.dart';
+import '../../models/serving_unit.dart';
+import '../../services/repository/recipe_repository.dart';
+import '../../viewmodels/create_recipe_viewmodel.dart';
 
-
-class CreateRecipeScreen extends StatefulWidget {
-  const CreateRecipeScreen({super.key});
-
-  @override
-  State<CreateRecipeScreen> createState() => _CreateRecipeScreenState();
-}
-
-class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
-  final TextEditingController _recipeNameController = TextEditingController();
-  final TextEditingController _recipeDescriptionController = TextEditingController();
-  List<Food> selectedFoods = [];
-
-  void _addFood(Food food) {
-    setState(() {
-      selectedFoods.add(food);
-    });
-  }
-
-  void _removeFood(Food food) {
-    setState(() {
-      selectedFoods.remove(food);
-    });
-  }
+class CreateRecipeScreen extends StatelessWidget {
+  final String mealogId;
+  final MealType mealType;
+  const CreateRecipeScreen({
+    super.key,
+    required this.mealType,
+    required this.mealogId,
+  });
 
   @override
   Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => CreateRecipeViewModel(RecipeRepository()),
+      child: _CreateRecipeScreenContent(
+        mealogId: mealogId,
+        mealType: mealType,
+      ),
+    );
+  }
+}
+
+
+class _CreateRecipeScreenContent extends StatelessWidget {
+  final String mealogId;
+  final MealType mealType;
+
+  const _CreateRecipeScreenContent({
+    required this.mealogId,
+    required this.mealType,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final viewModel = context.watch<CreateRecipeViewModel>();
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Create Recipe', style: Theme.of(context).textTheme.titleLarge),
         actions: [
           TextButton(
-            onPressed: () {
-              final name = _recipeNameController.text.trim();
-              final description = _recipeDescriptionController.text.trim(); // You'll want a separate controller for this!
-
-              if (name.isEmpty) {
+            onPressed: () async {
+              final recipe = await viewModel.createRecipe();
+              if (recipe == null) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Please enter a recipe name.')),
+                  const SnackBar(content: Text('Failed to create recipe.')),
                 );
                 return;
               }
-
-              if (selectedFoods.isEmpty) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Please add at least one ingredient.')),
-                );
-                return;
-              }
-
-              double totalCalories = 0;
-              double totalProtein = 0;
-              double totalCarbs = 0;
-              double totalFat = 0;
-
-              for (var food in selectedFoods) {
-                totalCalories += food.calories;
-                totalProtein += food.protein;
-                totalCarbs += food.carbs;
-                totalFat += food.fat;
-              }
-
-              final recipe = Recipe(
-                id: UniqueKey().toString(), // or generate UUID
-                name: name,
-                description: description,
-                servingSize: 100.0,
-                unit: 'grams',
-                calories: totalCalories,
-                protein: totalProtein,
-                carbs: totalCarbs,
-                fat: totalFat,
-                foodList: selectedFoods,
+              await context.push(
+                '/recipe_detail/$mealogId?mealType=${mealTypeToString(mealType)}',
+                extra: recipe,
               );
-              onRecipeCreated(Recipe recipe) async {
-                // Navigate to the detail screen
-                await context.push('/recipe_detail', extra: recipe);
-
-                // Then return the recipe to previous screen (e.g., after viewing/editing)
-                context.pop(recipe);
-              }
-              onRecipeCreated(recipe);
-            },
+              context.pop(recipe);
+              // Save and pop
+              Navigator.pop(context, recipe);
+                        },
             child: const Text('Save', style: TextStyle(color: HighlightColors.highlight500)),
           ),
         ],
@@ -94,29 +71,47 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TextField(
-              controller: _recipeNameController,
+              controller: viewModel.nameController,
               decoration: InputDecoration(
                 labelText: 'Recipe Name',
-                labelStyle: Theme.of(context).textTheme.bodyMedium,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               ),
             ),
             const SizedBox(height: 20),
             TextField(
-              controller: _recipeDescriptionController,
+              controller: viewModel.descriptionController,
               decoration: InputDecoration(
-                labelText: 'Description',
-                labelStyle: Theme.of(context).textTheme.bodyMedium,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
+                labelText: 'Direction',
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               ),
             ),
+            const SizedBox(height: 20),
+            // viewModel.isLoadingUnits
+            //     ? const CircularProgressIndicator()
+            //     : DropdownButtonFormField<ServingUnit>(
+            //   value: viewModel.selectedUnit, // vm.selectedUnit must now be nullable
+            //   items: viewModel.servingUnits.map((unit) {
+            //     return DropdownMenuItem<ServingUnit>(
+            //       value: unit,
+            //       child: Text('${unit.unitName} (${unit.unitSymbol})'),
+            //     );
+            //   }).toList(),
+            //   onChanged: (unit) {
+            //     if (unit != null) {
+            //       viewModel.setSelectedUnit(unit);
+            //     }
+            //   },
+            //   decoration: InputDecoration(
+            //     labelText: 'Serving Unit',
+            //     labelStyle: Theme.of(context).textTheme.bodyLarge, // match label font
+            //     border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+            //   ),
+            //   style: Theme.of(context).textTheme.bodyLarge, // controls selected text style
+            //   dropdownColor: NeutralColors.light100, // optional: matches card theme
+            // ),
+
             const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -125,9 +120,7 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                 ElevatedButton(
                   onPressed: () async {
                     final food = await context.push<Food>('/search_food_for_recipe');
-                    if (food != null) {
-                      _addFood(food);
-                    }
+                    if (food != null) viewModel.addFood(food);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: TonalButtonColors.primary,
@@ -135,35 +128,25 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                   ),
                   child: const Text('+ Add Food'),
                 ),
-
               ],
             ),
             const SizedBox(height: 10),
             Expanded(
-              child: selectedFoods.isEmpty
-                  ? Center(
-                child: Text('No ingredients yet.', style: Theme.of(context).textTheme.bodyLarge),
-              )
+              child: viewModel.selectedFoods.isEmpty
+                  ? const Center(child: Text('No ingredients yet.'))
                   : ListView.builder(
-                itemCount: selectedFoods.length,
-                itemBuilder: (context, index) {
-                  final food = selectedFoods[index];
+                itemCount: viewModel.selectedFoods.length,
+                itemBuilder: (_, index) {
+                  final food = viewModel.selectedFoods[index];
                   return Card(
-                    margin: const EdgeInsets.symmetric(vertical: 6),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                     color: NeutralColors.light100,
                     child: ListTile(
-                      contentPadding: const EdgeInsets.all(12),
-                      title: Text(food.name, style: Theme.of(context).textTheme.titleSmall),
-                      subtitle: Text(
-                        '${food.calories.toStringAsFixed(0)} kcal - ${food.protein}g P / ${food.carbs}g C / ${food.fat}g F',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(color: NeutralColors.dark100),
-                      ),
+                      title: Text(food.name),
+                      subtitle: Text('${food.calories} kcal • ${food.protein}g P / ${food.carbs}g C / ${food.fat}g F'),
                       trailing: IconButton(
                         icon: const Icon(Icons.delete, color: AccentColors.red300),
-                        onPressed: () => _removeFood(food),
+                        onPressed: () => viewModel.removeFood(food),
                       ),
                     ),
                   );

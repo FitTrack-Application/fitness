@@ -72,10 +72,10 @@ const FoodManagement = () => {
         complete: async (results) => {
           if (results.data && results.data.length > 0) {
             try {
-              await uploadFoodData(results.data);
+              const response = await uploadFoodData(results.data);
               setMessage({
                 type: "success",
-                text: `Successfully imported ${results.data.length} food items.`,
+                text: `${response.message}`,
               });
               // Reset form
               setFile(null);

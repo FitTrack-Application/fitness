@@ -6,7 +6,9 @@ import 'step_two.dart';
 import 'step_three.dart';
 import 'step_four.dart';
 import 'step_five.dart';
-import 'package:mobile/features/auth/viewmodels/survey_viewmodel.dart'; 
+import 'package:mobile/features/auth/viewmodels/survey_viewmodel.dart';
+import 'package:mobile/features/auth/viewmodels/auth_viewmodel.dart';
+
 class UserSurvey extends StatefulWidget {
   final String email;
   final String password;
@@ -25,6 +27,7 @@ class UserSurvey extends StatefulWidget {
 class _UserSurveyState extends State<UserSurvey> {
   int _currentStep = 0;
   final SurveyViewModel surveyViewModel = SurveyViewModel();
+  final AuthViewModel authViewModel = AuthViewModel();
 
   final GlobalKey<FormState> _stepOneKey = GlobalKey<FormState>();
   final GlobalKey<FormState> _stepTwoKey = GlobalKey<FormState>();
@@ -35,6 +38,10 @@ class _UserSurveyState extends State<UserSurvey> {
     setState(() {
       if (_currentStep > 0) {
         _currentStep--;
+      }
+      if (_currentStep == 0) {
+        authViewModel.logout();
+        context.go('/welcome');
       }
     });
   }
@@ -65,10 +72,19 @@ class _UserSurveyState extends State<UserSurvey> {
       if (_currentStep < 5) {
         _currentStep++;
       } else {
-        // Submit survey data and navigate to dashboard
-        surveyViewModel.sendSurveyData().then((_) {
-          context.go('/dashboard');
+        // Submit survey data and handle success or failure
+        surveyViewModel.sendSurveyData().then((success) {
+          if (success) {
+            context.go('/dashboard'); // Navigate to dashboard on success
+          } else {
+            // Show error message if submission fails
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                  content: Text("Failed to submit survey. Please try again.")),
+            );
+          }
         }).catchError((error) {
+          // Handle unexpected errors
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text("Error submitting survey: $error")),
           );
@@ -95,8 +111,8 @@ class _UserSurveyState extends State<UserSurvey> {
             Expanded(
               child: _currentStep == 0
                   ? StepOne(
-                      nameController: TextEditingController(
-                          text: surveyViewModel.name),
+                      nameController:
+                          TextEditingController(text: surveyViewModel.name),
                       formKey: _stepOneKey,
                       onNameChanged: (value) {
                         surveyViewModel.name = value;
@@ -257,11 +273,16 @@ class Summary extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Name: ${surveyViewModel.name}', style: Theme.of(context).textTheme.bodyMedium),
-                        Text('Gender: ${surveyViewModel.gender}', style: Theme.of(context).textTheme.bodyMedium),
-                        Text('Age: ${surveyViewModel.age}', style: Theme.of(context).textTheme.bodyMedium),
-                        Text('Height: ${surveyViewModel.height} cm', style: Theme.of(context).textTheme.bodyMedium),
-                        Text('Weight: ${surveyViewModel.weight} kg', style: Theme.of(context).textTheme.bodyMedium),
+                        Text('Name: ${surveyViewModel.name}',
+                            style: Theme.of(context).textTheme.bodyMedium),
+                        Text('Gender: ${surveyViewModel.gender}',
+                            style: Theme.of(context).textTheme.bodyMedium),
+                        Text('Age: ${surveyViewModel.age}',
+                            style: Theme.of(context).textTheme.bodyMedium),
+                        Text('Height: ${surveyViewModel.height} cm',
+                            style: Theme.of(context).textTheme.bodyMedium),
+                        Text('Weight: ${surveyViewModel.weight} kg',
+                            style: Theme.of(context).textTheme.bodyMedium),
                       ],
                     ),
                   ),
@@ -278,11 +299,15 @@ class Summary extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        
-                        Text(surveyViewModel.activityLevel, style: Theme.of(context).textTheme.bodyMedium),
-                        Text('Goal: ${surveyViewModel.goal}', style: Theme.of(context).textTheme.bodyMedium),
-                        Text('Weight Goal: ${surveyViewModel.weightGoal} kg', style: Theme.of(context).textTheme.bodyMedium),
-                        Text('Goal per Week: ${surveyViewModel.goalPerWeek.toString()} kg', style: Theme.of(context).textTheme.bodyMedium),
+                        Text(surveyViewModel.activityLevel,
+                            style: Theme.of(context).textTheme.bodyMedium),
+                        Text('Goal: ${surveyViewModel.goal}',
+                            style: Theme.of(context).textTheme.bodyMedium),
+                        Text('Weight Goal: ${surveyViewModel.weightGoal} kg',
+                            style: Theme.of(context).textTheme.bodyMedium),
+                        Text(
+                            'Goal per Week: ${surveyViewModel.goalPerWeek.toString()} kg',
+                            style: Theme.of(context).textTheme.bodyMedium),
                         const Text(' '),
                       ],
                     ),
@@ -291,7 +316,6 @@ class Summary extends StatelessWidget {
               ),
             ],
           ),
-          
         ],
       ),
     );

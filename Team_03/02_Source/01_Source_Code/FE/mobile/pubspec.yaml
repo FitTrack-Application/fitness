@@ -2,7 +2,7 @@ name: mobile
 description: "FitTrack - Mobile App"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -33,7 +33,6 @@ dependencies:
   http: ^0.13.5
   pie_chart: ^5.3.2
 
-
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
@@ -45,20 +44,21 @@ dependencies:
   fl_chart: ^0.65.0
   intl: ^0.20.2
   fluttertoast: ^8.2.12
-#  permission_handler: ^11.3.1
-#  simple_barcode_scanner: ^0.1.0
+  #  permission_handler: ^11.3.1
+  #  simple_barcode_scanner: ^0.1.0
   simple_barcode_scanner: ^0.3.0
-#  camera: ^0.10.6
-# flutter_barcode_scanner: ^2.0.0
-#  barcode_scan2: ^4.2.4
+  #  camera: ^0.10.6
+  # flutter_barcode_scanner: ^2.0.0
+  #  barcode_scan2: ^4.2.4
   image_picker: ^0.8.7+3
   flutter_appauth: ^9.0.0
   flutter_secure_storage: ^9.0.0
   url_launcher: ^6.2.5
   openid_client: ^0.4.7
-#  app_links: ^6.4.0
+  #  app_links: ^6.4.0
   crypto: ^3.0.3
 
+  http_parser: any
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -69,13 +69,13 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^4.0.0
+  flutter_launcher_icons: ^0.14.3
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter packages.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
@@ -83,8 +83,8 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-  - assets/images/
-  - assets/logo/
+    - assets/images/
+    - assets/logo/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
@@ -111,3 +111,7 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+flutter_launcher_icons:
+  android: true
+  ios: false
+  image_path: "assets/icon/app_icon.png"

@@ -48,10 +48,6 @@ const LogoutButton = styled.button`
 const Header = ({ onLogout }) => {
   return (
     <HeaderContainer>
-      <UserSection>
-        <User size={20} />
-        <UserInfo>Admin User</UserInfo>
-      </UserSection>
       <LogoutButton onClick={onLogout}>
         <LogOut size={16} />
         Logout

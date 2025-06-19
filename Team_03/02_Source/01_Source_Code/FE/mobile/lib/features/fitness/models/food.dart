@@ -31,7 +31,7 @@ class Food {
       protein: (json['protein'] ?? 0).toDouble(),
       carbs: (json['carbs'] ?? 0).toDouble(),
       fat: (json['fat'] ?? 0).toDouble(),
-      numberOfServings: (json['numberOfServings'] ?? 1).toDouble(),
+      numberOfServings: (json['numberOfServings'] ?? 100).toDouble(),
       servingUnit: json['servingUnit'] != null
           ? ServingUnit.fromJson(json['servingUnit'])
           : ServingUnit(
@@ -53,6 +53,34 @@ class Food {
       'protein': protein,
       'imageUrl': imageUrl,
       'servingUnit': servingUnit.toJson(),
+      'numberOfServings': numberOfServings,
+    };
+  }
+
+  factory Food.recipeEntriesFromJson(Map<String, dynamic> json) {
+    return Food(
+      id: json['id'] ?? '',
+      name: json['foodName'] ?? '',
+      calories: (json['calories'] ?? 0).toDouble(),
+      protein: (json['protein'] ?? 0).toDouble(),
+      carbs: (json['carbs'] ?? 0).toDouble(),
+      fat: (json['fat'] ?? 0).toDouble(),
+      numberOfServings: (json['numberOfServings'] ?? 100).toDouble(),
+      servingUnit: json['servingUnit'] != null
+          ? ServingUnit.fromJson(json['servingUnit'])
+          : ServingUnit(
+        id: '',
+        unitName: 'Gram',
+        unitSymbol: 'g',
+      ),
+      imageUrl: json['imageUrl'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> idToJson() {
+    return {
+      'foodId': id,
+      'servingUnitId': '9b0f9cf0-1c6e-4c1e-a3a1-8a9fddc20a0b',
       'numberOfServings': numberOfServings,
     };
   }

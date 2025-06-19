@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mobile/features/fitness/view/search_food/widget/error_display.dart';
 import 'package:provider/provider.dart';
 
@@ -36,7 +35,7 @@ class _SearchFoodForRecipeScreenState extends State<SearchFoodForRecipeScreen> w
     _controller.addListener(() => _debounceSearch());
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<SearchFoodViewModel>().searchFoods(query: '', isInMyRecipesTab: false);
+      context.read<SearchFoodViewModel>().searchFoods(query: '', tabType: TabType.all);
     });
   }
 
@@ -49,7 +48,7 @@ class _SearchFoodForRecipeScreenState extends State<SearchFoodForRecipeScreen> w
 
     final newTimer = Timer(const Duration(milliseconds: 500), () {
       context.read<SearchFoodViewModel>().searchFoods(
-        query: controller.text,
+        query: controller.text, tabType: TabType.all,
       );
     });
     _debounce = newTimer;
@@ -70,7 +69,7 @@ class _SearchFoodForRecipeScreenState extends State<SearchFoodForRecipeScreen> w
         _scrollController.position.maxScrollExtent - 200 && // Load before reaching the end
         !viewModel.isFetchingMore &&
         viewModel.hasMoreData) {
-      viewModel.loadMoreFoods();
+      viewModel.loadMoreFoods(tabType: TabType.all);
     }
   }
 
@@ -78,7 +77,7 @@ class _SearchFoodForRecipeScreenState extends State<SearchFoodForRecipeScreen> w
     final controller =  _controller;
 
     context.read<SearchFoodViewModel>().searchFoods(
-      query: controller.text,
+      query: controller.text, tabType: TabType.all,
     );
   }
 
@@ -143,7 +142,7 @@ class _SearchFoodForRecipeScreenState extends State<SearchFoodForRecipeScreen> w
                     icon: const Icon(Icons.clear),
                     onPressed: () {
                       _controller.clear();
-                      context.read<SearchFoodViewModel>().searchFoods(query: '', isInMyRecipesTab: false);
+                      context.read<SearchFoodViewModel>().searchFoods(query: '', tabType: TabType.all);
                     },
                   )
                       : null,
@@ -200,7 +199,7 @@ class _SearchFoodForRecipeScreenState extends State<SearchFoodForRecipeScreen> w
               padding: const EdgeInsets.all(16.0),
               child: ErrorDisplay(
                 message: viewModel.loadMoreError,
-                onRetry: () => viewModel.loadMoreFoods(),
+                onRetry: () => viewModel.loadMoreFoods(tabType: TabType.all),
                 compact: true,
               ),
             );
@@ -215,7 +214,7 @@ class _SearchFoodForRecipeScreenState extends State<SearchFoodForRecipeScreen> w
           return FoodItemWidget(
             food: food,
             onTap: () => (),
-            onAdd: () => Navigator.pop(context, food) //TODO handle onAdd method here
+            onAdd: () => {Navigator.pop(context, food)} //TODO handle onAdd method here
           );
 
               },

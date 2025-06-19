@@ -26,6 +26,11 @@ class CalorieSummary extends StatelessWidget {
     const colorFat = NutritionColor.fat;
     const colorProtein = NutritionColor.protein;
 
+    // Calculate calories from each nutrient
+    final caloriesFromCarbs = carbs * 4;
+    final caloriesFromFat = fat * 9;
+    final caloriesFromProtein = protein * 4;
+
     return Expanded(
       child: Column(
         children: [
@@ -45,7 +50,7 @@ class CalorieSummary extends StatelessWidget {
             child: Column(
               children: [
                 Text(
-                  "$calories",
+                  "${calories.toInt()}",
                   style: textTheme.headlineMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -60,12 +65,27 @@ class CalorieSummary extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    _buildCalorieIndicator(context, "Carbs",
-                        _calculatePercentage(carbs), colorCarbs),
                     _buildCalorieIndicator(
-                        context, "Fat", _calculatePercentage(fat), colorFat),
-                    _buildCalorieIndicator(context, "Protein",
-                        _calculatePercentage(protein), colorProtein),
+                        context,
+                        "Carbs",
+                        caloriesFromCarbs.toStringAsFixed(0),
+                        colorCarbs,
+                        "${carbs.toStringAsFixed(1)}g"
+                    ),
+                    _buildCalorieIndicator(
+                        context,
+                        "Fat",
+                        caloriesFromFat.toStringAsFixed(0),
+                        colorFat,
+                        "${fat.toStringAsFixed(1)}g"
+                    ),
+                    _buildCalorieIndicator(
+                        context,
+                        "Protein",
+                        caloriesFromProtein.toStringAsFixed(0),
+                        colorProtein,
+                        "${protein.toStringAsFixed(1)}g"
+                    ),
                   ],
                 ),
               ],
@@ -76,15 +96,13 @@ class CalorieSummary extends StatelessWidget {
     );
   }
 
-  // Tính phần trăm dựa trên calo tổng cộng
-  String _calculatePercentage(double nutrientValue) {
-    if (calories == 0) return "0%"; // Tránh chia cho 0
-    double percentage = (nutrientValue / calories) * 100;
-    return "${percentage.toStringAsFixed(1)}%"; // Chuyển đổi thành chuỗi với 1 chữ số thập phân
-  }
-
   Widget _buildCalorieIndicator(
-      BuildContext context, String label, String percent, Color color) {
+      BuildContext context,
+      String label,
+      String calories,
+      Color color,
+      String grams,
+      ) {
     final textTheme = Theme.of(context).textTheme;
 
     return Column(
@@ -100,10 +118,16 @@ class CalorieSummary extends StatelessWidget {
           style: textTheme.bodySmall,
         ),
         Text(
-          percent,
+          "$calories cal",
           style: textTheme.bodyMedium?.copyWith(
             color: color,
             fontWeight: FontWeight.bold,
+          ),
+        ),
+        Text(
+          grams,
+          style: textTheme.bodySmall?.copyWith(
+            color: color.withOpacity(0.7),
           ),
         ),
       ],

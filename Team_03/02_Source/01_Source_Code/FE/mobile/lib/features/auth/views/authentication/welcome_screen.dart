@@ -51,13 +51,24 @@ class WelcomeScreen extends StatelessWidget {
                   onPressed: () async {
                     final success = await authViewModel.login();
                     if (success) {
-                      // Gọi API sau khi đăng nhập thành công
+                      // Check if the survey is completed
                       try {
-                        GoRouter.of(context).go('/dashboard');
+                        final hasSurvey =
+                            await authViewModel.checkSurveyStatus();
+                        if (!hasSurvey) {
+                          GoRouter.of(context)
+                              .go('/survey'); // Navigate to survey
+                        } else if (hasSurvey) {
+                          GoRouter.of(context)
+                              .go('/dashboard'); // Navigate to dashboard
+                        }
                       } catch (e) {
+                        // Show error message and navigate back to /welcome
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Error: $e')),
+                          const SnackBar(
+                              content: Text('Failed to check survey status')),
                         );
+                        GoRouter.of(context).go('/welcome');
                       }
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -75,13 +86,24 @@ class WelcomeScreen extends StatelessWidget {
                 onTap: () async {
                   final success = await authViewModel.login();
                   if (success) {
-                    // Gọi API sau khi đăng nhập thành công
+                    // Check if the survey is completed
+
                     try {
-                      GoRouter.of(context).go('/dashboard');
+                      final hasSurvey = await authViewModel.checkSurveyStatus();
+                      if (!hasSurvey) {
+                        GoRouter.of(context)
+                            .go('/survey'); // Navigate to survey
+                      } else if (hasSurvey) {
+                        GoRouter.of(context)
+                            .go('/dashboard'); // Navigate to dashboard
+                      }
                     } catch (e) {
+                      // Show error message and navigate back to /welcome
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Error: $e')),
+                        const SnackBar(
+                            content: Text('Failed to check survey status')),
                       );
+                      GoRouter.of(context).go('/welcome');
                     }
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(

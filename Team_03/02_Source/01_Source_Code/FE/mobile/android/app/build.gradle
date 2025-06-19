@@ -5,6 +5,18 @@ plugins {
     id "dev.flutter.flutter-gradle-plugin"
 }
 
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file("key.properties")
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
+//def keyProperties = new Properties()
+//def keyPropertiesFile = rootProject.file('key.properties')
+//if (keyPropertiesFile.exists()) {
+//    keyProperties.load(new FileInputStream(keyPropertiesFile))
+//}
+
 android {
     namespace = "com.fittrack.mobile"
     compileSdk = 35
@@ -26,21 +38,57 @@ android {
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
-        versionCode = flutter.versionCode
-        versionName = flutter.versionName
+//        versionCode = flutter.versionCode
+//        versionName = flutter.versionName
+        versionCode = 9
+        versionName = "1.0.8"
 
         manifestPlaceholders = [
             appAuthRedirectScheme: "com.fittrack.mobile",
         ]
     }
 
-    buildTypes {
-        release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.debug
-        }
-    }
+//    signingConfigs {
+//        release {
+//            keyAlias keystoreProperties['keyAlias']
+//            keyPassword keystoreProperties['keyPassword']
+//            storeFile file(keystoreProperties['storeFile'])
+//            storePassword keystoreProperties['storePassword']
+//        }
+//    }
+//
+//    buildTypes {
+//        release {
+//            minifyEnabled false
+//            shrinkResources false
+//            signingConfig signingConfigs.release
+//        }
+//    }
+
+    // signingConfigs {
+    //     release {
+    //         keyAlias keystoreProperties['keyAlias']
+    //         keyPassword keystoreProperties['keyPassword']
+    //         storeFile file(keystoreProperties['storeFile'])
+    //         storePassword keystoreProperties['storePassword']
+    //     }
+    // }
+
+    // buildTypes {
+    //     release {
+    //         minifyEnabled false
+    //         shrinkResources false
+    //         signingConfig signingConfigs.release
+    //     }
+    // }
+
+//    buildTypes {
+//        release {
+//            // TODO: Add your own signing config for the release build.
+//            // Signing with the debug keys for now, so `flutter run --release` works.
+//            signingConfig = signingConfigs.debug
+//        }
+//    }
 }
 
 flutter {

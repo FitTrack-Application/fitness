@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../services/keycloak_service.dart';
+import 'package:mobile/features/auth/services/api_service.dart';
 
 class AuthViewModel extends ChangeNotifier {
   final KeycloakService _keycloakService = KeycloakService();
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
-
+  final ApiService _apiService = ApiService();
   bool _isLoggedIn = false;
   bool get isLoggedIn => _isLoggedIn;
 
@@ -36,5 +37,18 @@ class AuthViewModel extends ChangeNotifier {
     await _keycloakService.logout();
     _isLoggedIn = false;
     notifyListeners();
+  }
+
+  Future<bool> checkSurveyStatus() async {
+    debugPrint("Error checking survey status: ");
+    try {
+      final hasSurvey = await _apiService.checkSurvey();
+      debugPrint("Survey status: $hasSurvey");
+      // Save the survey status in secure storage
+      return hasSurvey;
+    } catch (e) {
+      debugPrint("Error checking survey status: $e");
+      return true; // Default to false if there's an error
+    }
   }
 }

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:mobile/features/fitness/models/exercise.dart';
-import 'package:mobile/features/fitness/models/food.dart';
+import 'package:mobile/features/fitness/models/exercise_entry.dart';
 import 'package:mobile/features/fitness/models/meal_entry.dart';
 import 'package:provider/provider.dart';
 
@@ -189,28 +188,33 @@ class _DiaryScreenState extends State<DiaryScreen>
             children: [
               Text('Calories Remaining', style: textTheme.titleSmall),
               const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _buildCalorieColumn(
-                      viewModel.calorieGoal.toInt(), 'Goal', context),
-                  const SizedBox(width: 12),
-                  Text('-', style: textTheme.bodySmall),
-                  const SizedBox(width: 12),
-                  _buildCalorieColumn(
-                      viewModel.caloriesConsumed.toInt(), 'Food', context),
-                  const SizedBox(width: 12),
-                  Text('+', style: textTheme.bodySmall),
-                  const SizedBox(width: 12),
-                  _buildCalorieColumn(
-                      viewModel.caloriesBurned.toInt(), 'Exercise', context),
-                  const SizedBox(width: 12),
-                  Text('=', style: textTheme.bodySmall),
-                  const SizedBox(width: 12),
-                  _buildCalorieColumn(
-                      viewModel.caloriesRemaining.toInt(), 'Remaining', context,
-                      bold: true),
-                ],
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    _buildCalorieColumn(
+                        viewModel.calorieGoal.toInt(), 'Goal', context),
+                    const SizedBox(width: 12),
+                    Text('-', style: textTheme.bodySmall),
+                    const SizedBox(width: 12),
+                    _buildCalorieColumn(
+                        viewModel.caloriesConsumed.toInt(), 'Food', context),
+                    const SizedBox(width: 12),
+                    Text('+', style: textTheme.bodySmall),
+                    const SizedBox(width: 12),
+                    _buildCalorieColumn(
+                        viewModel.caloriesBurned.toInt(), 'Exercise', context),
+                    const SizedBox(width: 12),
+                    Text('=', style: textTheme.bodySmall),
+                    const SizedBox(width: 12),
+                    _buildCalorieColumn(
+                      viewModel.caloriesRemaining.toInt(),
+                      'Remaining',
+                      context,
+                      bold: true,
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -319,11 +323,14 @@ class _DiaryScreenState extends State<DiaryScreen>
               ],
             ),
           ),
-          ...viewModel.exerciseItems
-              .map((item) => _buildExerciseItem(item, context)),
+          ...viewModel.exerciseEntries
+              .map((item) => _buildExerciseItem(item, context, viewModel)),
           TextButton(
             onPressed: () {
               // Thêm navigation đến màn add exercise
+              const workoutLogId = "71c0a08a-ed95-44d5-a226-747a4c54c3f0";
+              context.push(
+                  '/searchExercise/$workoutLogId');
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -358,7 +365,7 @@ class _DiaryScreenState extends State<DiaryScreen>
             style: textTheme.bodyMedium,
           ),
           subtitle: Text(
-              "${item.food.calories} cal, Carbs: ${item.food.carbs}g, Fat: ${item.food.fat}g, Protein: ${item.food.protein}g",
+              "${item.numberOfServings} ${item.servingUnit.unitSymbol}, ${item.food.calories.toInt()} cal, Carbs: ${item.food.carbs}g, Fat: ${item.food.fat}g, Protein: ${item.food.protein}g",
               style: textTheme.bodySmall),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
@@ -417,13 +424,63 @@ class _DiaryScreenState extends State<DiaryScreen>
     );
   }
 
-  Widget _buildExerciseItem(Exercise item, BuildContext context) {
+  Widget _buildExerciseItem(ExerciseEntry item, BuildContext context, DiaryViewModel viewModel) {
     final textTheme = Theme.of(context).textTheme;
-
+    final isRemoving = viewModel.isRemovingFood(item.id);
     return Column(
       children: [
         ListTile(
-          title: Text(item.exerciseId),
+          title: Text(
+            item.exercise.name,
+            style: textTheme.bodyMedium,
+          ),
+          subtitle: Text(
+              '${item.exercise.caloriesBurnedPerMinute} kcal/min',
+              style: textTheme.bodySmall),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('${item.exercise.caloriesBurnedPerMinute} kcal/min'),
+              IconButton(
+                icon: isRemoving
+                    ? const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+                    : const Icon(Icons.delete_outline, color: Colors.red),
+                onPressed: isRemoving
+                    ? null
+                    : () async {
+                  // Hiện hộp thoại xác nhận
+                  final shouldDelete = await showDialog<bool>(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text("Xác nhận xóa"),
+                      content: Text(
+                          "Bạn có chắc muốn xóa ${item.exercise.name} khỏi nhật ký?"),
+                      actions: [
+                        TextButton(
+                          onPressed: () =>
+                              Navigator.of(context).pop(false),
+                          child: const Text("Hủy"),
+                        ),
+                        TextButton(
+                          onPressed: () =>
+                              Navigator.of(context).pop(true),
+                          child: const Text("Xóa"),
+                        ),
+                      ],
+                    ),
+                  );
+
+                  if (shouldDelete == true) {
+                    await viewModel.removeExerciseFromDiary(item.id);
+                  }
+                },
+              ),
+            ],
+          ),
         ),
         const Divider(
           height: 0.1,

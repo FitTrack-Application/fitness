@@ -34,6 +34,15 @@ class _AddStepState extends State<AddStep> {
             icon: const Icon(Icons.check), // Confirm button icon
             onPressed: () {
               if (_formKey.currentState!.validate() && _selectedDate != null) {
+                // Validate that the selected date is not in the future
+                if (_selectedDate!.isAfter(DateTime.now())) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                        content: Text('Date cannot be in the future')),
+                  );
+                  return;
+                }
+
                 final steps = int.parse(_stepsController.text);
                 final formattedDate =
                     DateFormat('yyyy-MM-dd').format(_selectedDate!);
@@ -49,7 +58,10 @@ class _AddStepState extends State<AddStep> {
                 context.go('/dashboard');
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Please fill in all fields')),
+                  const SnackBar(
+                    content: Text("Please try again"),
+                    backgroundColor: Colors.red,
+                  ),
                 );
               }
             },
@@ -74,8 +86,15 @@ class _AddStepState extends State<AddStep> {
                   if (value == null || value.isEmpty) {
                     return 'Please enter the number of steps';
                   }
-                  if (int.tryParse(value) == null) {
+                  final steps = int.tryParse(value);
+                  if (steps == null) {
                     return 'Please enter a valid number';
+                  }
+                  if (steps >= 15000) {
+                    return 'Steps must be less than 15000';
+                  }
+                  if (steps < 0) {
+                    return 'Steps cannot be negative';
                   }
                   return null;
                 },
@@ -88,7 +107,7 @@ class _AddStepState extends State<AddStep> {
                     _selectedDate == null
                         ? "Select Date"
                         : DateFormat('yyyy-MM-dd').format(_selectedDate!),
-                    style: Theme.of(context).textTheme.bodyMedium,
+                    style: Theme.of(context).textTheme.titleSmall,
                   ),
                   TextButton(
                     onPressed: () async {
@@ -96,7 +115,8 @@ class _AddStepState extends State<AddStep> {
                         context: context,
                         initialDate: DateTime.now(),
                         firstDate: DateTime(2000),
-                        lastDate: DateTime(2100),
+                        lastDate:
+                            DateTime.now(), // Prevent selecting future dates
                       );
                       if (pickedDate != null) {
                         setState(() {

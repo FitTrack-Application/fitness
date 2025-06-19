@@ -16,6 +16,7 @@ class EditGender extends StatefulWidget {
 
 class _EditGenderState extends State<EditGender> {
   late String selectedGender;
+  final List<String> genders = ['Male', 'Female', 'Other'];
 
   @override
   void initState() {
@@ -27,32 +28,41 @@ class _EditGenderState extends State<EditGender> {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16.0),
-      height: 250, // Set a fixed height for the modal
+      height: 300, // Set a fixed height for the modal
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const SizedBox(height: 10),
-          RadioListTile<String>(
-            title: const Text('Male'),
-            value: 'Male',
-            groupValue: selectedGender,
-            onChanged: (value) {
-              setState(() {
-                selectedGender = value!;
-              });
-            },
+          Expanded(
+            child: ListWheelScrollView.useDelegate(
+              itemExtent: 50,
+              physics: const FixedExtentScrollPhysics(),
+              onSelectedItemChanged: (index) {
+                setState(() {
+                  selectedGender = genders[index];
+                });
+              },
+              childDelegate: ListWheelChildBuilderDelegate(
+                builder: (context, index) {
+                  return Center(
+                    child: Text(
+                      genders[index],
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: selectedGender == genders[index]
+                            ? FontWeight.bold
+                            : FontWeight.normal,
+                        color: selectedGender == genders[index]
+                            ? Colors.blue
+                            : Colors.black,
+                      ),
+                    ),
+                  );
+                },
+                childCount: genders.length,
+              ),
+            ),
           ),
-          RadioListTile<String>(
-            title: const Text('Female'),
-            value: 'Female',
-            groupValue: selectedGender,
-            onChanged: (value) {
-              setState(() {
-                selectedGender = value!;
-              });
-            },
-          ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {
               widget.onGenderChanged(selectedGender);

@@ -4,10 +4,11 @@ import '../models/dashboard.dart';
 import '../models/weight_entry.dart';
 import '../models/step_entry.dart';
 import '../services/dashboard_api_service.dart';
+import 'package:mobile/features/auth/services/api_service.dart';
 
 class DashboardViewModel extends ChangeNotifier {
   final DashboardApiService apiService;
-
+  final ApiService _apiGoalService = ApiService();
   DashboardViewModel(this.apiService);
 
   bool isLoading = false;
@@ -17,9 +18,8 @@ class DashboardViewModel extends ChangeNotifier {
   List<ActivityLog> activities = [];
   int totalCaloriesConsumed = 0;
   int totalCaloriesBurned = 0;
-  Macronutrients macronutrients = Macronutrients(carbs: 0, protein: 0, fat: 0);
   int caloriesGoal = 0;
-
+  double targetWeight = 70;
   List<WeightEntry> weightEntries = [
     WeightEntry(date: DateTime.now(), weight: 0), // Example default entry
   ];
@@ -29,24 +29,19 @@ class DashboardViewModel extends ChangeNotifier {
   int get caloriesRemaining =>
       caloriesGoal - totalCaloriesConsumed; //+ totalCaloriesBurned;
 
-  int get carbsPercent => _calculateMacroPercent(macronutrients.carbs);
-  int get proteinPercent => _calculateMacroPercent(macronutrients.protein);
-  int get fatPercent => _calculateMacroPercent(macronutrients.fat);
-
   Future<void> fetchDashboardData({required String token}) async {
     isLoading = true;
     notifyListeners();
 
     try {
-      final result = createMockData();
-      //final result = await apiService.fetchDashboardData(token);
-      meals = result.meals;
-      activities = result.activities;
+      //final result = createMockData();
+      final result = await apiService.fetchDashboardData();
+
       caloriesGoal = result.caloriesGoal;
       totalCaloriesConsumed = result.totalCaloriesConsumed;
       totalCaloriesBurned = result.totalCaloriesBurned;
-      macronutrients = result.macronutrients;
       errorMessage = null;
+      notifyListeners();
     } catch (e) {
       errorMessage = e.toString();
     } finally {
@@ -55,9 +50,9 @@ class DashboardViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> fetchWeightStatistics() async {
+  Future<void> fetchWeightStatistics(BuildContext context) async {
     try {
-      final result = await apiService.fetchWeightStatistics();
+      final result = await apiService.fetchWeightStatistics(context);
       weightEntries = result;
       notifyListeners();
     } catch (e) {
@@ -65,16 +60,16 @@ class DashboardViewModel extends ChangeNotifier {
       stepEntries = [
         StepEntry(date: DateTime.now(), steps: 500), // Example default entry
         StepEntry(
-            date: DateTime.now().subtract(Duration(days: 1)), steps: 1000),
+            date: DateTime.now().subtract(const Duration(days: 1)), steps: 1000),
       ];
     } finally {
       notifyListeners();
     }
   }
 
-  Future<void> fetchStepStatistics() async {
+  Future<void> fetchStepStatistics(BuildContext context) async {
     try {
-      final result = await apiService.fetchStepStatistics();
+      final result = await apiService.fetchStepStatistics(context);
       stepEntries = result;
       notifyListeners();
     } catch (e) {
@@ -82,7 +77,7 @@ class DashboardViewModel extends ChangeNotifier {
       stepEntries = [
         StepEntry(date: DateTime.now(), steps: 500), // Example default entry
         StepEntry(
-            date: DateTime.now().subtract(Duration(days: 1)), steps: 1000),
+            date: DateTime.now().subtract(const Duration(days: 1)), steps: 1000),
       ];
     } finally {
       notifyListeners();
@@ -107,10 +102,11 @@ class DashboardViewModel extends ChangeNotifier {
       weightEntries
           .add(WeightEntry(date: DateTime.parse(date), weight: weight));
       notifyListeners();
+      await fetchWeightStatistics(context);
 
       // Show success notification
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Weight log added successfully!'),
           backgroundColor: Colors.green,
         ),
@@ -120,7 +116,7 @@ class DashboardViewModel extends ChangeNotifier {
 
       // Show error notification
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Failed to add weight log. Please try again.'),
           backgroundColor: Colors.red,
         ),
@@ -143,10 +139,11 @@ class DashboardViewModel extends ChangeNotifier {
       // Update the local list and notify listeners
       stepEntries.add(StepEntry(date: DateTime.parse(date), steps: steps));
       notifyListeners();
+      await fetchStepStatistics(context);
 
       // Show success notification
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Step log added successfully!'),
           backgroundColor: Colors.green,
         ),
@@ -156,7 +153,7 @@ class DashboardViewModel extends ChangeNotifier {
 
       // Show error notification
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Failed to add step log. Please try again.'),
           backgroundColor: Colors.red,
         ),
@@ -164,32 +161,27 @@ class DashboardViewModel extends ChangeNotifier {
     }
   }
 
-  int _calculateMacroPercent(int macroValue) {
-    final total =
-        macronutrients.carbs + macronutrients.protein + macronutrients.fat;
-    if (total == 0) return 0;
-    return ((macroValue / total) * 100).toInt();
-  }
-}
+  Future<void> fetchWeightGoal(BuildContext context) async {
+    try {
+      final response = await _apiGoalService.getGoal(context);
 
-DashboardLogModel createMockData() {
-  return DashboardLogModel(
-    caloriesGoal: 2000,
-    totalCaloriesConsumed: 1200,
-    totalCaloriesBurned: 400,
-    macronutrients: Macronutrients(
-      carbs: 150,
-      protein: 100,
-      fat: 50,
-    ),
-    meals: [
-      MealLog(id: 1, name: "Breakfast", calories: 350),
-      MealLog(id: 2, name: "Lunch", calories: 450),
-      MealLog(id: 3, name: "Dinner", calories: 400),
-    ],
-    activities: [
-      ActivityLog(id: 1, name: "Running", caloriesBurned: 300),
-      ActivityLog(id: 2, name: "Cycling", caloriesBurned: 100),
-    ],
-  );
+      // Extract the "data" field from the response
+      if (response.containsKey('data') &&
+          response['data'] is Map<String, dynamic>) {
+        final goalData = response['data'];
+
+        targetWeight = goalData['goalWeight'];
+      } else {
+        throw Exception(
+            "Invalid response format: 'data' field is missing or invalid");
+      }
+    } catch (e) {
+      errorMessage = "Failed to fetch goal data";
+      debugPrint("Error fetching goal: $e");
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
+  }
+
 }

@@ -1,26 +1,33 @@
 import 'package:flutter/cupertino.dart';
 import 'package:mobile/features/fitness/services/repository/meal_log_repository.dart';
+import 'package:mobile/features/fitness/services/repository/recipe_repository.dart';
+import 'package:mobile/features/fitness/services/repository/workout_log_repository.dart';
 
-import '../models/exercise.dart';
-import '../models/food.dart';
+import '../models/exercise_entry.dart';
 import '../models/meal_entry.dart';
 import '../models/meal_log.dart';
+import '../models/recipe.dart';
+import '../models/workout_log.dart';
 import '../services/repository/food_repository.dart';
 
 class DiaryViewModel extends ChangeNotifier {
   final MealLogRepository _mealLogRepository;
   final FoodRepository _foodRepository;
+  final WorkoutLogRepository _workoutLogRepository;
+  final RecipeRepository _recipeRepository;
 
   DateTime selectedDate = DateTime.now();
   bool isLoading = false;
   // #### Food ####
   // Thay thế biến isAdding bằng Set các foodIds đang được thêm
   final Set<String> _addingFoodIds = {};
-
+  late Set<String> _addingRecipeIds = {};
   // Thêm set để theo dõi các món ăn đang được xóa
   final Set<String> _removingFoodIds = {};
 
   // #### Exercise ####
+  WorkoutLogFitness? workoutLog;
+
   // Thay thế biến isAdding bằng Set các exerciseIds đang được thêm
   final Set<String> _addingExerciseIds = {};
   // Thêm set để theo dõi các bài tập đang được xóa
@@ -28,24 +35,30 @@ class DiaryViewModel extends ChangeNotifier {
 
   String? errorMessage;
   List<MealLogFitness> mealLogs = [];
-  List<Exercise> exerciseItems = [];
+  List<ExerciseEntry> exerciseEntries = [];
   int calorieGoal = 0;
+  int exerciseCalorieGoal = 0;
 
-  DiaryViewModel() : _mealLogRepository = MealLogRepository(),
-                     _foodRepository = FoodRepository() {
+  DiaryViewModel() :
+        _mealLogRepository = MealLogRepository(),
+        _foodRepository = FoodRepository(),
+        _recipeRepository = RecipeRepository(),
+        _workoutLogRepository = WorkoutLogRepository() {
     fetchDiaryForSelectedDate();
+    fetchCaloriesGoal();
+    //fetchExerciseCalorieGoal();
   }
 
   // Getters
   bool isAddingFood(String foodId) => _addingFoodIds.contains(foodId);
-
+  bool isAddingRecipe(String recipeId) => _addingRecipeIds.contains(recipeId);
   // Getter để kiểm tra món ăn có đang được xóa không
   bool isRemovingFood(String foodId) => _removingFoodIds.contains(foodId);
 
   // Getters
   bool isAddingExercise(String exerciseId) => _addingExerciseIds.contains(exerciseId);
 
-  // Getter để kiểm tra món ăn có đang được xóa không
+  // Getter để kiểm tra bài tập có đang được xóa không
   bool isRemovingExercise(String exerciseId) => _removingExerciseIds.contains(exerciseId);
 
   // Getters
@@ -85,8 +98,7 @@ class DiaryViewModel extends ChangeNotifier {
   double get caloriesConsumed =>
       breakfastCalories + lunchCalories + dinnerCalories + snackCalories;
 
-  double get caloriesBurned => exerciseItems.fold(
-      0, (sum, exercise) => sum + exercise.calories.toDouble());
+  int get caloriesBurned => workoutLog?.totalCaloriesBurned ?? 0;
 
   double get caloriesRemaining => calorieGoal - caloriesConsumed + caloriesBurned;
 
@@ -98,10 +110,12 @@ class DiaryViewModel extends ChangeNotifier {
         selectedDate.day == now.day;
   }
 
+  get currentMealLogId => null;
+
   /// Thay đổi ngày đã chọn
-  void changeSelectedDate(DateTime date) {
+  Future<void> changeSelectedDate(DateTime date) async {
     selectedDate = date;
-    fetchDiaryForSelectedDate();
+    await fetchDiaryForSelectedDate();
     notifyListeners();
   }
 
@@ -122,9 +136,18 @@ class DiaryViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      // TODO: Call API to fetch exercises
-      exerciseItems = [];
+      // Fetch workout log
+      try {
+        workoutLog = await _workoutLogRepository.fetchWorkoutLogForDate(selectedDate);
+       // workoutLog ??= await _workoutLogRepository.createWorkoutLogForDate(selectedDate);
+        exerciseEntries = workoutLog?.exerciseEntries ?? [];
+      } catch (e) {
+        print('Error fetching workout log: $e');
+        workoutLog = null;
+        exerciseEntries = [];
+      }
 
+      // Fetch meal logs
       try {
         mealLogs = await _mealLogRepository.fetchMealLogsForDate(selectedDate);
       } catch (e) {
@@ -182,6 +205,40 @@ class DiaryViewModel extends ChangeNotifier {
     }
   }
 
+  Future<void> addRecipeToDiary({
+    required String mealLogId,
+    required String recipeId,
+    required String servingUnitId,
+    required double numberOfServings,
+  }) async {
+    _addingRecipeIds.add(recipeId);
+    notifyListeners();
+
+    try {
+      // Get default serving unit if not provided
+      if (servingUnitId.isEmpty){
+        final servingUnitList = await _recipeRepository.getAllServingUnits();
+        if (servingUnitList.isNotEmpty) {
+          servingUnitId = servingUnitList.first.id;
+        }
+      }
+
+      await _mealLogRepository.addMealEntryToLog(
+          mealLogId: mealLogId,
+          foodId: recipeId,
+          servingUnitId: servingUnitId,
+          numberOfServings: numberOfServings);
+      // Cập nhật lại diary sau khi thêm thành công
+      await fetchDiaryForSelectedDate();
+    } catch (e) {
+      errorMessage = "Không thể thêm thức ăn: ${e.toString()}";
+      notifyListeners();
+    } finally {
+      // Xóa foodId khỏi danh sách đang xử lý
+      _addingFoodIds.remove(recipeId);
+      notifyListeners();
+    }
+  }
   /// Xóa thức ăn khỏi nhật ký
   Future<void> removeFoodFromDiary(String mealEntryId) async {
     _removingFoodIds.add(mealEntryId);
@@ -200,6 +257,9 @@ class DiaryViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  /// Add recipe to diary
+
 
   /// Edit meal entry in meal log
   Future<void> editFoodInDiary({
@@ -230,8 +290,81 @@ class DiaryViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> addExerciseToWorkout(String exerciseId, DateTime date) async {
-    /////
+  /// Thêm bài tập vào nhật ký
+  Future<void> addExerciseToDiary(String? workoutLogId, {
+    required String exerciseId,
+    required double duration,
+
+  }) async {
+    _addingExerciseIds.add(exerciseId);
+    notifyListeners();
+
+    try {
+      // Kiểm tra xem đã có workout log cho ngày này chưa
+      workoutLog ??= await _workoutLogRepository.createWorkoutLogForDate(selectedDate);
+
+      await _workoutLogRepository.addExerciseEntry(
+        workoutLogId: workoutLog!.id,
+        exerciseId: exerciseId,
+        duration: duration,
+      );
+
+      // Cập nhật lại diary sau khi thêm thành công
+      await fetchDiaryForSelectedDate();
+    } catch (e) {
+      errorMessage = "Không thể thêm bài tập: ${e.toString()}";
+      notifyListeners();
+    } finally {
+      // Xóa exerciseId khỏi danh sách đang xử lý
+      _addingExerciseIds.remove(exerciseId);
+      notifyListeners();
+    }
+  }
+
+  /// Xóa bài tập khỏi nhật ký
+  Future<void> removeExerciseFromDiary(String exerciseEntryId) async {
+    _removingExerciseIds.add(exerciseEntryId);
+    notifyListeners();
+
+    try {
+      await _workoutLogRepository.deleteExerciseEntry(exerciseEntryId);
+
+      // Cập nhật lại UI sau khi xóa thành công
+      await fetchDiaryForSelectedDate();
+    } catch (e) {
+      errorMessage = "Không thể xóa bài tập: ${e.toString()}";
+      notifyListeners();
+    } finally {
+      _removingExerciseIds.remove(exerciseEntryId);
+      notifyListeners();
+    }
+  }
+
+  /// Chỉnh sửa bài tập trong nhật ký
+  Future<void> editExerciseInDiary({
+    required String exerciseEntryId,
+    required String exerciseId,
+    required int duration,
+  }) async {
+    _addingExerciseIds.add(exerciseEntryId); // Tạm dùng chung set để hiện trạng thái loading
+    notifyListeners();
+
+    try {
+      await _workoutLogRepository.editExerciseEntry(
+        exerciseEntryId: exerciseEntryId,
+        exerciseId: exerciseId,
+        duration: duration,
+      );
+
+      // Cập nhật lại nhật ký sau khi chỉnh sửa
+      await fetchDiaryForSelectedDate();
+    } catch (e) {
+      errorMessage = "Không thể cập nhật bài tập: ${e.toString()}";
+      notifyListeners();
+    } finally {
+      _addingExerciseIds.remove(exerciseEntryId);
+      notifyListeners();
+    }
   }
 
   Future<void> fetchCaloriesGoal() async {
