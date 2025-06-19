@@ -47,3 +47,6 @@ management:
     web:
       exposure:
         include: "*"
+
+host:
+  embedding-service: ${EMBEDDING_SERVICE_HOST:http://embedding-service:8000}

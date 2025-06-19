@@ -124,14 +124,14 @@ public class FoodController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<?>> addFood(@Valid @RequestBody FoodRequest foodRequest) {
+    public ResponseEntity<ApiResponse<FoodDto>> addFood(@Valid @RequestBody FoodRequest foodRequest) {
         if (CustomSecurityContextHolder.hasRole("ADMIN")) {
-            ApiResponse<?> response = foodService.createFood(foodRequest, null);
+            ApiResponse<FoodDto> response = foodService.createFood(foodRequest, null);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         }
 
         UUID userId = CustomSecurityContextHolder.getCurrentUserId();
-        ApiResponse<?> response = foodService.createFood(foodRequest, userId);
+        ApiResponse<FoodDto> response = foodService.createFood(foodRequest, userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -148,14 +148,14 @@ public class FoodController {
     }
 
     @PutMapping("/{foodId}")
-    public ResponseEntity<ApiResponse<?>> updateFood(@PathVariable UUID foodId, @Valid @RequestBody FoodRequest foodRequest) {
+    public ResponseEntity<ApiResponse<FoodDto>> updateFood(@PathVariable UUID foodId, @Valid @RequestBody FoodRequest foodRequest) {
         if (CustomSecurityContextHolder.hasRole("ADMIN")) {
-            ApiResponse<?> response = foodService.updateFoodByIdAndUserId(foodId, foodRequest, null);
+            ApiResponse<FoodDto> response = foodService.updateFoodByIdAndUserId(foodId, foodRequest, null);
             return ResponseEntity.ok(response);
         }
 
         UUID userId = CustomSecurityContextHolder.getCurrentUserId();
-        ApiResponse<?> response = foodService.updateFoodByIdAndUserId(foodId, foodRequest, userId);
+        ApiResponse<FoodDto> response = foodService.updateFoodByIdAndUserId(foodId, foodRequest, userId);
         return ResponseEntity.ok(response);
     }
 }

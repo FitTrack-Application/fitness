@@ -11,7 +11,7 @@ import java.util.Map;
 
 @FeignClient(
     name = "media-service",
-    url = "${MEDIA_SERVICE_HOST}",
+    url = "${host.media-service}",
     configuration = FeignConfig.class
 )
 
