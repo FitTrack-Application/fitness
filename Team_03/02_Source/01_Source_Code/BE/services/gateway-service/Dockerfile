@@ -2,8 +2,8 @@ FROM openjdk:17-jdk-slim
 
 WORKDIR /app
 
-COPY target/statistic-service-0.0.1-SNAPSHOT.jar app.jar
+COPY target/gateway-service-0.0.1-SNAPSHOT.jar app.jar
 
-EXPOSE 8081
+EXPOSE 8088
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
