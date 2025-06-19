@@ -65,7 +65,12 @@ class VectorDatabaseService:
             return most_similar_food
             
         except Exception as e:
-            print(f"Error searching foods: {e}")
-            return []
+            print(f"Lỗi khi tìm kiếm thực phẩm: {e}")
+            # Trả về dict mặc định thay vì list rỗng
+            return {
+                "food_id": "",
+                "food_name": "",
+                "similarity_score": 0.0
+            }
     
 vector_db_service = VectorDatabaseService()
