@@ -1,14 +1,16 @@
-package com.hcmus.foodservice.event;
+package com.hcmus.foodservice.event.events;
 
 import java.time.Instant;
 import java.util.UUID;
 
-public class FoodCreatedEvent implements DomainEvent {
+import com.hcmus.foodservice.event.DomainEvent;
+
+public class FoodDeletedEvent implements DomainEvent {
     private final UUID foodId;
     private final String name;
     private final Instant occurredAt;
 
-    public FoodCreatedEvent(UUID foodId, String name) {
+    public FoodDeletedEvent(UUID foodId, String name) {
         this.foodId = foodId;
         this.name = name;
         this.occurredAt = Instant.now();
@@ -19,7 +21,7 @@ public class FoodCreatedEvent implements DomainEvent {
 
     @Override
     public String getType() {
-        return "FoodCreated";
+        return "FoodDeleted";
     }
 
     @Override
